@@ -1,0 +1,12 @@
+# Add this to ~/.m2/settings.xml
+
+<profiles>
+
+	<profile>	
+		<id>standard-test</id>
+		<activation>
+			<activeByDefault>true</activeByDefault>
+		</activation>
+	</profile>
+
+</profiles>
