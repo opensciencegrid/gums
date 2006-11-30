@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : gums.config
+    Created on : Nov 14, 2006, 10:05 AM
+    Author     : Packard
+    Description: Rename to gums.config as starting point
+-->
+
+<gums>
+	<persistenceFactories>
+		<persistenceFactory name='mysql' className='gov.bnl.gums.persistence.HibernatePersistenceFactory'
+			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
+			hibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'
+			hibernate.connection.url='jdbc:mysql://@SERVER@/GUMS_1_1'
+			hibernate.connection.username='@USER@'
+			hibernate.connection.password='@PASSWORD@'
+			hibernate.connection.autoReconnect='true'
+			hibernate.c3p0.min_size='3'
+			hibernate.c3p0.max_size='20'
+			hibernate.c3p0.timeout='180' />
+	</persistenceFactories>
+	
+	<userGroups>
+		<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' persistenceFactory='mysql' name='userGroupA' writePermission='true'/>
+		<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' persistenceFactory='mysql' name='userGroupB' readPermission='true'/>
+	</userGroups>
+	
+	<accountMappers>
+		<accountMapper className='gov.bnl.gums.account.GroupAccountMapper' groupName='accountA' name='accountMapperA'/>
+		<accountMapper className='gov.bnl.gums.account.GroupAccountMapper' groupName='accountB' name='accountMapperB'/>
+	</accountMappers>
+	
+	<groupToAccountMappings>
+		<groupToAccountMapping name='groupA' userGroups='userGroupA' accountMappers='accountMapperA'/>
+		<groupToAccountMapping name='groupB' userGroups='userGroupB' accountMappers='accountMapperB'/>
+	</groupToAccountMappings>
+	  
+	<hostToAccountMappings>
+		<hostToAccountMapping className='gov.bnl.gums.hostToAccount.CertificateHostToAccountMapping' cn='*.site.com' groups='groupA,groupB' />
+	</hostToAccountMappings>
+</gums>

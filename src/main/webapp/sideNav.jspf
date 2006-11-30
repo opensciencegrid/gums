@@ -1,0 +1,20 @@
+<%@page pageEncoding="UTF-8"%>
+<div id="content">
+<div id="sideNav">
+<ul>
+  <li><a href="index.jsp">Home</a></li>
+  <li><a href="addAccountRange_form.jsp">Add Account Range</a></li>
+  <li>Configuration</li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="persistenceFactories.jsp">Persistence Factories</a></li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="virtualOrganizations.jsp">Virtual Organizatins</a></li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="userGroups.jsp">User Groups</a></li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="accountMappers.jsp">Account Mappers</a></li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="groupToAccount.jsp">Group To Account</a></li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="hostToGroup.jsp">Host To Group</a></li>
+  <li><a href="generateGridMapfile_form.jsp">Generate Grid Mapfile</a></li>
+  <li><a href="generateInverseMap_form.jsp">Generate Inverse Map</a></li>
+  <li><a href="manualGroupMappings_form.jsp">Manual Group Mappings</a></li>
+  <li><a href="map_form.jsp">Map User</a></li>
+  <li><a href="updateMembers_form.jsp">Update Members</a></li>
+</ul>
+</div>
