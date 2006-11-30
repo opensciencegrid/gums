@@ -36,9 +36,9 @@
 		</repository>
 	</distributionManagement>
  
-   	<scm>
+   	<!--scm>
 	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</developerConnection>
-	</scm>
+	</scm-->
  
     <build>
 		<plugins>
