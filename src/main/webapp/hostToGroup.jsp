@@ -35,20 +35,21 @@ Configuration configuration = gums.getConfiguration();
 String message = null;
 
 if (request.getParameter("action")==null || 
-	"saveAndReturn".equals(request.getParameter("action")) || 
+	"save".equals(request.getParameter("action")) || 
 	"delete".equals(request.getParameter("action")) ||
 	"up".equals(request.getParameter("action")) ||
 	"down".equals(request.getParameter("action"))) {
-	if ("saveAndReturn".equals(request.getParameter("action"))) {
+	
+	if ("save".equals(request.getParameter("action"))) {
 		try{
 			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
 			int index = configuration.getHostToGroupMappings().indexOf(h2GMapping);
 			if (index!=-1) {
 				configuration.getHostToGroupMappings().remove(index);
-				configuration.getHostToGroupMappings().add(index, ConfigurationWebToolkit.parseHostToGroupMapping(request));
+				configuration.getHostToGroupMappings().add(index, ConfigurationWebToolkit.parseHostToGroupMapping(configuration, request));
 			}
 			else
-				configuration.getHostToGroupMappings().add( ConfigurationWebToolkit.parseHostToGroupMapping(request) );
+				configuration.getHostToGroupMappings().add( ConfigurationWebToolkit.parseHostToGroupMapping(configuration, request) );
 			gums.setConfiguration(configuration);
 			message = "<div class=\"success\">Host to group mapping has been saved.</div>";
 		}catch(Exception e){
@@ -69,6 +70,8 @@ if (request.getParameter("action")==null ||
 		}
 	}
 
+	String movedName = null;
+
 	if ("up".equals(request.getParameter("action"))) {
 		try{
 			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
@@ -76,6 +79,7 @@ if (request.getParameter("action")==null ||
 			configuration.getHostToGroupMappings().remove(index);
 			configuration.getHostToGroupMappings().add(Math.max(0, index-1), h2GMapping);
 			gums.setConfiguration(configuration);
+			movedName = request.getParameter("name");
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error moving up: " + e.getMessage() + "</div>";
 		}
@@ -88,6 +92,7 @@ if (request.getParameter("action")==null ||
 			configuration.getHostToGroupMappings().remove(index);
 			configuration.getHostToGroupMappings().add(Math.min(configuration.getHostToGroupMappings().size(), index+1), h2GMapping);
 			gums.setConfiguration(configuration);
+			movedName = request.getParameter("name");
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error moving down: " + e.getMessage() + "</div>";
 		}
@@ -111,31 +116,23 @@ if (request.getParameter("action")==null ||
 			out.write(
 	   	"<tr>"+
 			"<td width=\"50\" valign=\"top\">"+
-				"<form action=\"hostToGroup.jsp\" method=\"get\">"+
-					"<input type=\"image\" src=\"images/Up24.gif\" name=\"action\" value=\"up\">"+
-					"<input type=\"image\" src=\"images/Edit24.gif\" name=\"action\" value=\"edit\">"+
-					"<input type=\"image\" src=\"images/Down24.gif\" name=\"action\" value=\"down\">"+
-					"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this host to group mapping?'))return false;\">"+
-					"<input type=\"hidden\" name=\"name\" value=\"" + cH2GMapping.getName() + "\">"+
+				"<form action=\"hostToGroup.jsp#" + cH2GMapping.getName() + "\" method=\"get\">"+
+					"<a name=\"" + cH2GMapping.getName() + "\">"+
+						"<input type=\"image\" src=\"images/Up24.gif\" name=\"action\" value=\"up\">"+
+						"<input type=\"image\" src=\"images/Edit24.gif\" name=\"action\" value=\"edit\">"+
+						"<input type=\"image\" src=\"images/Down24.gif\" name=\"action\" value=\"down\" onclick=\"\">"+
+						"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this host to group mapping?'))return false;\">"+
+						"<input type=\"hidden\" name=\"name\" value=\"" + cH2GMapping.getName() + "\">"+
+					"</a>"+
 				"</form>"+
 			"</td>"+
 	  		"<td align=\"left\">"+
-		   		"<table class=\"configElement\" width=\"100%\">"+
+		   		"<table class=\"" + (cH2GMapping.getName().equals(movedName)?"configMovedElement":"configElement") + "\" width=\"100%\">"+
 		  			"<tr>"+
 			    		"<td>"+
-				    		"For hosts matching ");
-				    		
-			if( cH2GMapping.getCn()!=null ) {
-				out.write(
-					"CN = <span style=\"font-style:italic\">"+cH2GMapping.getCn()+"</span>, ");
-			}
-			else {
-				out.write(
-					"DN = <span style=\"font-style:italic\">"+cH2GMapping.getDn()+"</span>, ");
-			}
-				
-			out.write(
-			    	"perform mappings using group(s) (try in order): ");
+				    		"For hosts matching "+
+				    		"<span style=\"font-style:italic\">" + cH2GMapping.getName() + "</span>, "+
+				    		"perform mappings using group(s) (try in order): ");
 			
 			Iterator g2AMappingsIt = cH2GMapping.getGroupToAccountMappings().iterator();
 			while(g2AMappingsIt.hasNext())
@@ -170,8 +167,10 @@ if (request.getParameter("action")==null ||
 
 else if ("edit".equals(request.getParameter("action"))
 	|| "add".equals(request.getParameter("action"))
-	|| "save".equals(request.getParameter("action"))) {
+	|| "reload".equals(request.getParameter("action"))) {
+	
 	HostToGroupMapping h2GMapping = null;
+	
 	if ("edit".equals(request.getParameter("action"))) {
 		try {
 			h2GMapping = (HostToGroupMapping)configuration.getHostToGroupMapping( request.getParameter("name") );
@@ -181,96 +180,81 @@ else if ("edit".equals(request.getParameter("action"))
 		}
 	}
 
-	if ("save".equals(request.getParameter("action"))) {
+	if ("reload".equals(request.getParameter("action"))) {
 		try{
-			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
-			int index = configuration.getHostToGroupMappings().indexOf(h2GMapping);
-			if (index!=-1) {
-				configuration.getHostToGroupMappings().remove(index);
-				configuration.getHostToGroupMappings().add(index, ConfigurationWebToolkit.parseHostToGroupMapping(request));
-			}
-			else
-				configuration.getHostToGroupMappings().add( ConfigurationWebToolkit.parseHostToGroupMapping(request) );
-			gums.setConfiguration(configuration);
-			message = "<div class=\"success\">Host to group mapping has been saved.</div>";
-		}catch(Exception e){
-			message = "<div class=\"failure\">Error saving host to group mapping: " + e.getMessage() + "</div>";
+			h2GMapping = ConfigurationWebToolkit.parseHostToGroupMapping(configuration, request);
+		} catch(Exception e) {
+			out.write( "<div class=\"failure\">Error reloading host to group mapping: " + e.getMessage() + "</div>" );
+			return;
 		}
 	}
 	
-	if (h2GMapping==null || h2GMapping instanceof CertificateHostToGroupMapping) {
-		CertificateHostToGroupMapping cH2GMapping = (CertificateHostToGroupMapping)h2GMapping;
+	CertificateHostToGroupMapping cH2GMapping = (CertificateHostToGroupMapping)h2GMapping;
 		
-		out.write(
+	out.write(
 "<form action=\"hostToGroup.jsp\" method=\"get\">"+
 	"<input type=\"hidden\" name=\"action\" value=\"\">"+
-	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">");
-
-		out.write(
+	"<input type=\"hidden\" name=\"originalAction\" value=\""+ 
+	("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action")) +
+	"\">"+
+	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
 		"<tr>"+
     		"<td nowrap width=\"1px\">"+
 	    		"For hosts matching"+
 		    "</td>"+
 		    "<td nowrap>");
-			
-		if (cH2GMapping == null) {
-			boolean isCN = true;
-			out.write(
-			    	"<input maxlength=\"256\" size=\"64\" name=\"name\" value=\"\"/>"+
-					" cn<input type=\"radio\" name=\"hostType\" value=\"cn\" checked>"+
-				    " dn<input type=\"radio\" name=\"hostType\" value=\"dn\">");
-		}
-		else {
-			if( cH2GMapping.getCn()!=null )
-				out.write(
-					"CN = <span style=\"font-style:italic\">" + cH2GMapping.getCn() + "</span>,");
-			else
-				out.write(
-					"DN = <span style=\"font-style:italic\">" + cH2GMapping.getDn() + "</span>,");
-		}
 
+	if ("add".equals(request.getParameter("originalAction")))
 		out.write(
+		    	"<input maxlength=\"256\" size=\"64\" name=\"name\" value=\"" + cH2GMapping.getName() + "\"/>"+
+				" cn<input type=\"radio\" name=\"type\" value=\"cn\" " + (cH2GMapping.getCn()!=null?"checked":"") + ">"+
+			    " dn<input type=\"radio\" name=\"type\" value=\"dn\" " + (cH2GMapping.getDn()!=null?"checked":"") + ">");
+	else
+		out.write(
+		    	"<span style=\"font-style:italic\">" + cH2GMapping.getName() + "</span>"+
+		    	"<input type=\"hidden\" name=\"name\" value=\"" + cH2GMapping.getName() + "\"/>"+
+		    	"<input type=\"hidden\" name=\"type\" value=\"" + (cH2GMapping.getDn()!=null?"dn":"cn") + "\">");	
+
+	out.write(
 		    "</td>"+
 		"</tr>"+
 		"<tr>"+
 			"<td nowrap>perform mappings using<br>group(s) (try in order)</td>"+
 			"<td>");
-		
-		int counter = 0;
-		if (cH2GMapping!=null) {
-			Collection g2AMappings = cH2GMapping.getGroupToAccountMappings();
-			Iterator g2AMappingsIt = g2AMappings.iterator();
-			while(g2AMappingsIt.hasNext())
-			{
-				GroupToAccountMapping g2AMapping = (GroupToAccountMapping)g2AMappingsIt.next();
-				out.write( ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
-					configuration.getGroupToAccountMappings().values(), 
-					g2AMapping.getName(),
-					"onchange=\"document.forms[0].elements['action'].value='save';document.forms[0].submit();\"") );
-				counter++;
-			}
+	
+	// Create multiple group to account mappings
+	int counter = 0;
+	if (cH2GMapping!=null) {
+		Collection g2AMappings = cH2GMapping.getGroupToAccountMappings();
+		Iterator g2AMappingsIt = g2AMappings.iterator();
+		while(g2AMappingsIt.hasNext())
+		{
+			GroupToAccountMapping g2AMapping = (GroupToAccountMapping)g2AMappingsIt.next();
+			out.write( ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
+				configuration.getGroupToAccountMappings().values(), 
+				g2AMapping.getName(),
+				"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"") );
+			counter++;
 		}
-		out.write( ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
-			configuration.getGroupToAccountMappings().values(), 
-			null,
-			"onchange=\"document.forms[0].elements['action'].value='save';document.forms[0].submit();\"") );
-		
-		out.write(
-		"</td>"+
-		"<td width=\"25\"></td>"+
-	"</tr>");
-
-		out.write(
-	"<tr>"+
-        "<td colspan=2>"+
-        	"<div style=\"text-align: center;\">"+
-        		"<button type=\"submit\" onclick=\"document.forms[0].elements['action'].value='saveAndReturn';document.forms[0].submit();\">Save</button>"+
-        	"</div>"+
-        "</td>"+
-	"</tr>"+
-  "</table>"+
-"</form>");
 	}
+	out.write( ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
+		configuration.getGroupToAccountMappings().values(), 
+		null,
+		"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"") );
+	
+	out.write(
+			"</td>"+
+			"<td width=\"25\"></td>"+
+		"</tr>"+
+		"<tr>"+
+	        "<td colspan=2>"+
+	        	"<div style=\"text-align: center;\">"+
+	        		"<button type=\"submit\" onclick=\"document.forms[0].elements['action'].value='save';document.forms[0].submit();\">Save</button>"+
+	        	"</div>"+
+	        "</td>"+
+		"</tr>"+
+	"</table>"+
+"</form>");
 }
 
 %>

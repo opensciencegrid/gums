@@ -19,9 +19,25 @@ public class ConfigurationWebToolkit implements Remote {
 		return null;
 	}
 	
-	static public CertificateHostToGroupMapping parseHostToGroupMapping(HttpServletRequest request) {
+	static public CertificateHostToGroupMapping parseHostToGroupMapping(Configuration configuration, HttpServletRequest request) throws Exception {
+		String name = request.getParameter("name");
 		CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping();
-		hostToGroupMapping.setCn("blah");
+		String type = request.getParameter("type");
+		if(type.equals("cn"))
+			hostToGroupMapping.setCn(name);
+		else if(type.equals("dn"))
+			hostToGroupMapping.setDn(name);
+		int counter = 0;
+		while(request.getParameter("g2AM" + counter)!=null) {
+			if (request.getParameter("g2AM" + counter)!="") {
+				GroupToAccountMapping g2AM = (GroupToAccountMapping)configuration.getGroupToAccountMappings().get( request.getParameter("g2AM" + counter) );
+				if (g2AM!=null)
+					hostToGroupMapping.addGroupToAccountMapping(g2AM);
+				else
+					throw new Exception("group to account mapping " + request.getParameter("g2AM" + counter) + "does not exist");
+			}
+			counter++;
+		}
 		return hostToGroupMapping;
 	}	
 	

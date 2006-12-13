@@ -176,6 +176,10 @@
     BORDER: rgb(255,204,51) 1px solid;
     }
     
+  #body table.configMovedElement {
+    BORDER: rgb(255,204,51) 2px solid;
+    }    
+    
   .failure {
   	color:red;
   }
