@@ -6,7 +6,7 @@
 <%@ page import="gov.bnl.gums.groupToAccount.*" %>
 <%@ page import="gov.bnl.gums.userGroup.*" %>
 <%@ page import="gov.bnl.gums.configuration.*" %>
-<%@ page import="gov.bnl.gums.admin.ConfigurationWebToolkit" %>
+<%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -26,104 +26,128 @@
 <%-- <jsp:useBean id="beanInstanceName" scope="session" class="beanPackage.BeanClassName" /> --%>
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
-Configures group to account manager mappings.
+Configures group to account mapper mappings.
 </p>
 
 <%
-String errorMessage = null;
-Configuration configuration;
-if( request.getParameter("save")!=null )
-{
-	try{
-		configuration = ConfigurationWebToolkit.loadConfiguration(request);
-		gums.setConfiguration(configuration);
-		out.write(
-"<p>Configuration has been successfully saved!</p>");
-	}catch(Exception e){
-		errorMessage =
-"<p>" + e.getMessage() + "</p>";
-		out.write(errorMessage);
-	}
-}
+Configuration configuration = gums.getConfiguration();
 
-if( request.getParameter("save")==null || errorMessage!=null )
-{
-	configuration = gums.getConfiguration();
-	Collection groupMappers = configuration.getGroupMapping().values();
-	Collection userGroupManagers = configuration.getUserGroupManagers().getValues(); 
-	Collection accountManagers = configuration.getAccountManagers().getValues(); 
+if ( request.getParameter("action")==null || "save".equals(request.getParameter("action")) ) {
+	if ( "save".equals(request.getParameter("action")) ) {
+		try{
+			configuration.addGroupToAccountMapping( ConfigurationWebToolkit.parseGroupToAccountMapping(request) );
+			out.write(
+"<p>Group to account mapping has been successfully saved!</p>");
+		}catch(Exception e){
+			out.write(
+"<p>Error saving group to account mapping: " + e.getMessage() + "</p>");
+		}
+	}
+	
+	Collection g2AMappings = configuration.getGroupToAccountMappings().values();
 	
 	out.write(
-"<form action=\"groupMapper.jsp\" method=\"get\">"+
-  "<table>");
+"<form action=\"groupToAccount.jsp\" method=\"get\">"+
+  "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
 
-	Iterator groupMapperIt = groupMappers.iterator();
+	Iterator g2AMappingIt = g2AMappings.iterator();
 	int counter = 0;
-	while(counter==0 || groupMapperIt.hasNext())
+	while(counter<10 || g2AMappingIt.hasNext())
 	{
-		Group2AccountMapper group2AccountMapper = groupMapperIt.hasNext()?(GroupMapper)groupMapperIt.next():null;     
+		GroupToAccountMapping g2AMapping = g2AMappingIt.hasNext()?(GroupToAccountMapping)g2AMappingIt.next():null;     
 	
 		out.write(
 	"<tr>"+
-		"<td width=\"25\">"+
-			"<input type=\"submit\" name=\"HM_Add"+counter+"\" value=\"+\" style=\"font-family:fixed;\">"+
-			"<input type=\"submit\" name=\"HM_Remove"+counter+"\" value=\"-\" style=\"font-family:fixed;\">"+
+		"<td width=\"25\" valign=\"top\">"+
+			"<input type=\"image\" src=\"images/Edit24.gif\" name=\"action\" value=\"Edit"+counter+"\">"+
+			"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"Delete"+counter+"\">"+
 		"</td>"+
    		"<td>"+
-    		"<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">"+
+    		"<table class=\"configElement\" width=\"100%\">"+
    				"<tr>"+
-		    		"<td nowrap>"+
-			    		"Map group <input maxlength=\"32\" name=\"GM_name" + counter + "\" value=\""+
-			    		(groupMapper!=null?group2AccountMapper.getName():"")+
-			    		"\"><br/>");
-		out.write(
-				    	"&nbsp;&nbsp;&nbsp;where group membership approved by user group manager "+
-				    	"<select maxlength=\"32\" name=\"GM_vOManager" + counter + "\" size=\"3\">");
-		Iterator userGroupManagerIt = userGroupManagers.iterator();
-		while(userGroupManagerIt.hasNext())
+   					"<td>"+
+			    		"For users mapped to group <span style=\"font-style:italic\">"+(g2AMapping!=null?g2AMapping.getName():"")+
+			    		"</span>, obtain local account from account mapper (try in order) <span style=\"font-style:italic\">");
+
+		Iterator accountMapperIt =  g2AMapping.getAccountMappers().iterator();
+		while(accountMapperIt.hasNext())
 		{
-			UserGroupManager userGroupManager = (UserGroupManager)managerIt.next();
-			out.write(	
-							"<option + (userGroupManager.getName().equals(groupMapper.getUserManager()))?"selected":"" + ">"+
-								userGroupManager.getName()+
-							"</option>");
+			AccountMapper accountMapper = (AccountMapper)accountMapperIt.next();
+			out.write( accountMapper.getName() );
+			if (accountMapperIt.hasNext())
+				out.write(", ");
 		}
-			
-		out.write(
-			    		"</select><br/>"+
-				    	"to account obtained from account manager(s) ");
-		out.write(		"<select maxlength=\"32\" name=\"GM_accountManagers" + counter + "\" onchange=\"submit()\" multiple>");
-		Collection accountManagers = groupMapper.getAccountManagers();
-		Iterator accountManagersIt = accountManagers.iterator();
-		int subCounter = 0;
-		while(accountManagersIt.hasNext())
+		
+		out.write(		"</span> if member of VO (try in order): <span style=\"font-style:italic\">");
+				    	
+		Iterator userGroupIt = g2AMapping.getUserGroups().iterator();
+		while(userGroupIt.hasNext())
 		{
-			AccountManager accountManager = (AccountManager)accountManagersIt.next();
-			out.write(
-							"<option " + (accountManagers.getName().equals(groupMapper.getAccountManager()))?"selected":"" + ">" +
-								groupMapper.getName()+
-							"</option>");
-	
+			UserGroup userGroup = (UserGroup)userGroupIt.next();
+			out.write( userGroup.getName() );
+			if (userGroupIt.hasNext())
+				out.write(", ");
 		}
-		out.write(		"</select>"+
-				   	"</td>"+
+		
+		out.write(	"</span></td>"+
 		      	"</tr>"+
 			"</table>"+
 		"</td>"+
 		"<td width=\"25\"></td>"+
-     "</tr>");
+     "</tr>\n");
 	
 		counter++;
 	} // end of group mapper while loop
 	
 	out.write(
 	"<tr>"+
-        "<td colspan=2><div style=\"text-align: center;\"><button type=\"submit\" name=\"save\">Save</button></div>"+
+        "<td colspan=2><div style=\"text-align: center;\"><button type=\"submit\" name=\"action\" value=\"add\">Add new 'host to group mapping'</button></div>"+
         "</td>"+
 	"</tr>"+
   "</table>"+
 "</form>");
 } // end of non-postback else
+
+else if ( "add".equals(request.getParameter("action")) || "edit".equals(request.getParameter("action")) ) {
+	GroupToAccountMapping groupToAccountMapping = null; 
+	if( "add".equals(request.getParameter("action")) ) {
+		groupToAccountMapping = new GroupToAccountMapping();
+	} else {
+		try{
+			groupToAccountMapping = configuration.getGroupToAccountMapping( ConfigurationWebToolkit.parseGroupToAccountMapping(request).getName() );
+		}catch(Exception e){
+			out.write(
+"<p>Error loading group to account mapping: " + e.getMessage() + "</p>");
+		}		
+	}
+	
+		out.write(
+	"<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
+		"<tr>"+
+	   		"<td>");
+	
+	
+			
+			out.write(
+			"</td>"+
+	     "</tr>"+
+		"<tr>"+
+	        "<td colspan=2><div style=\"text-align: center;\"><button type=\"submit\" name=\"action\" value=\"save\">Save</button></div>"+
+	        "</td>"+
+		"</tr>"+
+	"</table>");	
+}
+
+else if ( "delete".equals(request.getParameter("action")) ) {
+		try{
+			configuration.deleteGroupToAccountMapping( ConfigurationWebToolkit.parseGroupToAccountMapping(request).getName() );
+			out.write(
+"<p>Group to account mapping has been successfully saved!</p>");
+		}catch(Exception e){
+			out.write(
+"<p>Error saving group to account mapping: " + e.getMessage() + "</p>");
+		}
+}
 
 %>
 

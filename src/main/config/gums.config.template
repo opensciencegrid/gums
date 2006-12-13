@@ -37,6 +37,6 @@
 	</groupToAccountMappings>
 	  
 	<hostToAccountMappings>
-		<hostToAccountMapping className='gov.bnl.gums.hostToAccount.CertificateHostToAccountMapping' cn='*.site.com' groups='groupA,groupB' />
+		<hostToAccountMapping cn='*.site.com' groupToAccountMappings='groupA,groupB' />
 	</hostToAccountMappings>
 </gums>

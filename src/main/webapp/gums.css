@@ -171,7 +171,19 @@
     WIDTH: 90%;
     POSITION: CENTER;
     }
-  
+    
+  #body table.configElement {
+    BORDER: rgb(255,204,51) 1px solid;
+    }
+    
+  .failure {
+  	color:red;
+  }
+
+  .success {
+  	color:green;
+  }
+
   a { color: rgb(153, 51, 0);
     text-decoration: none;
     }
