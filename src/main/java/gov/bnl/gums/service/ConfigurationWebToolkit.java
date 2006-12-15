@@ -7,11 +7,18 @@
 package gov.bnl.gums.service;
 
 import gov.bnl.gums.account.AccountMapper;
+import gov.bnl.gums.account.AccountPoolMapper;
+import gov.bnl.gums.account.GecosAccountMapper;
+import gov.bnl.gums.account.GecosLdapAccountMapper;
+import gov.bnl.gums.account.GroupAccountMapper;
+import gov.bnl.gums.account.ManualAccountMapper;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.CertificateHostToGroupMapping;
 import gov.bnl.gums.hostToGroup.HostToGroupMapping;
+import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.userGroup.UserGroup;
+import gov.bnl.gums.userGroup.VirtualOrganization;
 
 import javax.servlet.http.HttpServletRequest;
 import java.rmi.Remote;
@@ -72,8 +79,51 @@ public class ConfigurationWebToolkit implements Remote {
 		
 		return groupToAccountMapping;
 	}		
+
+	static public AccountMapper parseAccountMapper(Configuration configuration, HttpServletRequest request) throws Exception {
+		AccountMapper accountMapper = null;
+		
+		String className = request.getParameter("className");
+		
+		if (className.equals("gov.bnl.gums.account.GroupAccountMapper")) {
+			accountMapper = new GroupAccountMapper();
+			accountMapper.setName( request.getParameter("name") );
+			if (request.getParameter("accountName")!=null)
+				((GroupAccountMapper)accountMapper).setAccountName( request.getParameter("accountName") );
+		}
+		else if (className.equals("gov.bnl.gums.account.ManualAccountMapper")) {
+			accountMapper = new ManualAccountMapper();
+			accountMapper.setName( request.getParameter("name") );
+			if (request.getParameter("accountName")!=null)
+				((ManualAccountMapper)accountMapper).setAccountName( request.getParameter("accountName") );
+			if (request.getParameter("persistenceFactory")!=null)
+				((ManualAccountMapper)accountMapper).setPersistenceFactory( (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("persistenceFactory") ) );
+		}
+		else if (className.equals("gov.bnl.gums.account.AccountPoolMapper")) {
+			accountMapper = new AccountPoolMapper();
+			accountMapper.setName( request.getParameter("name") );
+			if (request.getParameter("accountPool")!=null)
+				((AccountPoolMapper)accountMapper).setAccountPool( request.getParameter("accountPool") );
+			if (request.getParameter("persistenceFactory")!=null)
+				((AccountPoolMapper)accountMapper).setPersistenceFactory( (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("persistenceFactory") ) );
+		}
+		else if (className.equals("gov.bnl.gums.account.GecosLdapAccountMapper")) {
+			accountMapper = new GecosLdapAccountMapper();
+			accountMapper.setName( request.getParameter("name") );
+			if (request.getParameter("serviceUrl")!=null)
+				((GecosLdapAccountMapper)accountMapper).setJndiLdapUrl( request.getParameter("serviceUrl") );
+		}
+
+		return accountMapper;
+	}		
+
+	static public UserGroup parseUserGroup(Configuration configuration, HttpServletRequest request) throws Exception {
+		UserGroup userGroup = null;
+
+		return userGroup;
+	}
 	
-	static public String getReferencesStr(Configuration configuration, String g2AMappingName) {
+	static public String getHostToGroupReferences(Configuration configuration, String g2AMappingName) {
 		String retStr = null;
 		Collection h2GMappings = configuration.getHostToGroupMappings();
 		Iterator it = h2GMappings.iterator();
@@ -95,9 +145,38 @@ public class ConfigurationWebToolkit implements Remote {
 		return retStr;
 	}
 	
-	static public String createSelectBox(String name, Collection items, String selected, String javascript) {
-		String retStr = new String("<select name=\""+name+"\" " + (javascript!=null?javascript:"") + ">"+
-			"<option " + (selected==null?"selected":"") + "></option>");
+	static public String getGroupToAccountMapperReferences(Configuration configuration, String accountMapperName) {
+		String retStr = null;
+		Collection g2AMappings = configuration.getGroupToAccountMappings().values();
+		Iterator it = g2AMappings.iterator();
+		while (it.hasNext()) {
+			GroupToAccountMapping g2AMapping = (GroupToAccountMapping)it.next();
+			Iterator it2 = g2AMapping.getAccountMappers().iterator();
+			while (it2.hasNext()) {
+				AccountMapper thisAccountMapper = (AccountMapper)it2.next();
+				if (thisAccountMapper.getName().equals(accountMapperName)) {
+					if (retStr==null) 
+						retStr = "";
+					retStr += g2AMapping.getName() + ", ";
+					break;
+				}
+			}
+		}
+		if(retStr!=null)
+			retStr = retStr.substring(0, retStr.length()-2);
+		return retStr;
+	}
+	
+	static public String getUserGroupReferences(Configuration configuration, String accountMapperName) {
+		String retStr = null;
+
+		return retStr;
+	}	
+	
+	static public String createSelectBox(String name, Collection items, String selected, String javascript, boolean includeEmptySlot) {
+		String retStr = "<select name=\""+name+"\" " + (javascript!=null?javascript:"") + ">";
+		if (includeEmptySlot)
+			retStr += "<option " + (selected==null?"selected":"") + "></option>";
 		Iterator it = items.iterator();
 		while(it.hasNext())
 		{
@@ -112,14 +191,20 @@ public class ConfigurationWebToolkit implements Remote {
 	}
 	
 	static private String getName(Object obj) {
-		if(obj instanceof CertificateHostToGroupMapping)
+		if(obj instanceof String)
+			return (String)obj;
+		else if(obj instanceof CertificateHostToGroupMapping)
 			return ((CertificateHostToGroupMapping)obj).getName();
-		if(obj instanceof GroupToAccountMapping)
+		else if(obj instanceof GroupToAccountMapping)
 			return ((GroupToAccountMapping)obj).getName();
-		if(obj instanceof AccountMapper)
+		else if(obj instanceof AccountMapper)
 			return ((AccountMapper)obj).getName();
-		if(obj instanceof UserGroup)
+		else if(obj instanceof UserGroup)
 			return ((UserGroup)obj).getName();
+		else if(obj instanceof PersistenceFactory)
+			return ((PersistenceFactory)obj).getName();
+		else if(obj instanceof VirtualOrganization)
+			return ((VirtualOrganization)obj).getName();
 		else
 			return "";
 	}

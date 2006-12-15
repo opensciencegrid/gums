@@ -129,9 +129,9 @@ if (request.getParameter("action")==null ||
 		   		"<table class=\"" + (cH2GMapping.getName().equals(movedName)?"configMovedElement":"configElement") + "\" width=\"100%\">"+
 		  			"<tr>"+
 			    		"<td>"+
-				    		"For hosts matching "+
+				    		"For requests from hosts matching "+
 				    		"<span style=\"color:blue\">" + cH2GMapping.getName() + "</span>, "+
-				    		"perform mappings using group" + (cH2GMapping.getGroupToAccountMappings().size()>1?"s":"") + " ");
+				    		"route request to group" + (cH2GMapping.getGroupToAccountMappings().size()>1?"s":"") + " ");
 			
 			Iterator g2AMappingsIt = cH2GMapping.getGroupToAccountMappings().iterator();
 			while(g2AMappingsIt.hasNext())
@@ -206,7 +206,7 @@ else if ("edit".equals(request.getParameter("action"))
 	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
 		"<tr>"+
     		"<td nowrap width=\"1px\">"+
-	    		"For hosts matching"+
+	    		"For requests from hosts matching"+
 		    "</td>"+
 		    "<td nowrap>");
 
@@ -225,7 +225,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    "</td>"+
 		"</tr>"+
 		"<tr>"+
-			"<td nowrap>perform mappings using<br>group(s) (try in order)</td>"+
+			"<td nowrap>route request to group(s) (try in order)</td>"+
 			"<td>");
 	
 	// Create multiple group to account mappings
@@ -240,7 +240,8 @@ else if ("edit".equals(request.getParameter("action"))
 				ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
 					configuration.getGroupToAccountMappings().values(), 
 					g2AMapping.getName(),
-					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"") );
+					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+					true) );
 			counter++;
 		}
 	}
@@ -248,7 +249,8 @@ else if ("edit".equals(request.getParameter("action"))
 		ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
 			configuration.getGroupToAccountMappings().values(), 
 			null,
-			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"") );
+			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+			true) );
 	
 	out.write(
 			"</td>"+

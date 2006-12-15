@@ -50,8 +50,8 @@ if (request.getParameter("action")==null ||
 
 	if ("delete".equals(request.getParameter("action"))) {
 		try{
-			String getReferencesStr = ConfigurationWebToolkit.getReferencesStr(configuration, request.getParameter("name"));
-			if( getReferencesStr==null ) {
+			String references = ConfigurationWebToolkit.getHostToGroupReferences(configuration, request.getParameter("name"));
+			if( references==null ) {
 				if (configuration.getGroupToAccountMappings().remove( request.getParameter("name") )!=null) {
 					gums.setConfiguration(configuration);
 					message = "<div class=\"success\">Group to account mapping has been deleted.</div>";
@@ -60,7 +60,7 @@ if (request.getParameter("action")==null ||
 					message = "<div class=\"failure\">Error deleting group to account mapping</div>";
 			}
 			else
-				message = "<div class=\"failure\">You cannot delete this item until removing references to it within host to group mapping(s) that matches against " + getReferencesStr + "</div>";
+				message = "<div class=\"failure\">You cannot delete this item until removing references to it within host to group mapping(s) that match against " + references + "</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error deleting group to account mapping: " + e.getMessage() + "</div>";
 		}
@@ -80,7 +80,7 @@ if (request.getParameter("action")==null ||
 		
 		out.write(
 	   	"<tr>"+
-			"<td width=\"25\" valign=\"top\">"+
+			"<td width=\"50\" valign=\"top\">"+
 				"<form action=\"groupToAccount.jsp\" method=\"get\">"+
 					"<input type=\"image\" src=\"images/Edit24.gif\" name=\"action\" value=\"edit\">"+
 					"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this group to account mapping?'))return false;\">"+
@@ -91,24 +91,11 @@ if (request.getParameter("action")==null ||
 		   		"<table class=\"configElement\" width=\"100%\">"+
 		  			"<tr>"+
 			    		"<td>"+
-				    		"For hosts mapped to group "+
-				    		"<span style=\"color:blue\">" + g2AMapping.getName() + "</span>, "+
-				    		"perform mappings using account mapper" + (g2AMapping.getAccountMappers().size()>1?"s":"") + " ");
-			
-		Iterator accountMappersIt = g2AMapping.getAccountMappers().iterator();
-		while(accountMappersIt.hasNext())
-		{
-			AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();
-			out.write( "<span style=\"color:blue\">"+accountMapper.getName()+"</span>" );
-			if( accountMappersIt.hasNext() )
-				out.write(", ");
-		}
+				    		"For requests routed to group "+
+				    		"<span style=\"color:blue\">" + g2AMapping.getName() + "</span>");
+				    		
+		out.write(			" where user member of user group" + (g2AMapping.getUserGroups().size()>1 ? "s " : " ") );
 		
-		if (g2AMapping.getAccountMappers().size()>1)
-			out.write(		" (try in order)");
-		
-		out.write(			" if member of user group" + (g2AMapping.getUserGroups().size()>1?"s":"") + " ");
-
 		Iterator userGroupsIt = g2AMapping.getUserGroups().iterator();
 		while(userGroupsIt.hasNext())
 		{
@@ -120,7 +107,21 @@ if (request.getParameter("action")==null ||
 		
 		if (g2AMapping.getUserGroups().size()>1)
 			out.write(		" (try in order)");
+				
+		out.write(			", route request to account mapper" + (g2AMapping.getAccountMappers().size()>1 ? "s " : " ") );
+
+		Iterator accountMappersIt = g2AMapping.getAccountMappers().iterator();
+		while(accountMappersIt.hasNext())
+		{
+			AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();
+			out.write( "<span style=\"color:blue\">"+accountMapper.getName()+"</span>" );
+			if( accountMappersIt.hasNext() )
+				out.write(", ");
+		}
 		
+		if (g2AMapping.getAccountMappers().size()>1)
+			out.write(		" (try in order)");
+			
 		out.write(	
 						".</td>"+
 			      	"</tr>"+
@@ -179,7 +180,7 @@ else if ("edit".equals(request.getParameter("action"))
 	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
 		"<tr>"+
     		"<td nowrap width=\"1px\">"+
-	    		"For hosts mapped to group "+
+	    		"For requests routed to group "+
 		    "</td>"+
 		    "<td nowrap>");
 
@@ -195,40 +196,11 @@ else if ("edit".equals(request.getParameter("action"))
 		    "</td>"+
 		"</tr>"+
 		"<tr>"+
-			"<td nowrap>perform mappings using account<br>mapper(s) (try in order)</td>"+
-			"<td>");
-	
-	// Create multiple group to account mappings
-	int counter = 0;
-	if (g2AMapping!=null) {
-		Collection accountMappers = g2AMapping.getAccountMappers();
-		Iterator accountMappersIt = accountMappers.iterator();
-		while(accountMappersIt.hasNext())
-		{
-			AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();
-			out.write( 
-				ConfigurationWebToolkit.createSelectBox("aM"+counter, 
-					configuration.getAccountMappers().values(), 
-					accountMapper.getName(),
-					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"") );
-			counter++;
-		}
-	}
-	out.write( 
-		ConfigurationWebToolkit.createSelectBox("aM"+counter, 
-			configuration.getAccountMappers().values(), 
-			null,
-			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"") );
-
-	out.write(
-		    "</td>"+
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap>if member of user group<br> (try in order)</td>"+
+			"<td nowrap>where user member of user group<br> (try in order)</td>"+
 			"<td>");
 
 	// Create multiple user groups
-	counter = 0;
+	int counter = 0;
 	if (g2AMapping!=null) {
 		Collection userGroups = g2AMapping.getUserGroups();
 		Iterator userGroupsIt = userGroups.iterator();
@@ -239,7 +211,8 @@ else if ("edit".equals(request.getParameter("action"))
 				ConfigurationWebToolkit.createSelectBox("uG"+counter, 
 					configuration.getUserGroups().values(), 
 					userGroup.getName(),
-					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"") );
+					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+					true) );
 			counter++;
 		}
 	}
@@ -247,8 +220,40 @@ else if ("edit".equals(request.getParameter("action"))
 		ConfigurationWebToolkit.createSelectBox("uG"+counter, 
 			configuration.getUserGroups().values(), 
 			null,
-			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"") );
+			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+			true) );
+
+	out.write(
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap>route request to account<br>mapper(s) (try in order)</td>"+
+			"<td>");
 	
+	// Create multiple group to account mappings
+	counter = 0;
+	if (g2AMapping!=null) {
+		Collection accountMappers = g2AMapping.getAccountMappers();
+		Iterator accountMappersIt = accountMappers.iterator();
+		while(accountMappersIt.hasNext())
+		{
+			AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();
+			out.write( 
+				ConfigurationWebToolkit.createSelectBox("aM"+counter, 
+					configuration.getAccountMappers().values(), 
+					accountMapper.getName(),
+					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+					true) );
+			counter++;
+		}
+	}
+	out.write( 
+		ConfigurationWebToolkit.createSelectBox("aM"+counter, 
+			configuration.getAccountMappers().values(), 
+			null,
+			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+			true) );
+
 	out.write(
 			"</td>"+
 			"<td width=\"25\"></td>"+

@@ -26,7 +26,7 @@
 <%-- <jsp:useBean id="beanInstanceName" scope="session" class="beanPackage.BeanClassName" /> --%>
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
-Configures group to account mapper mappings.
+Configures user groups.
 </p>
 
 <%
@@ -36,69 +36,37 @@ String message = null;
 
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
-	"delete".equals(request.getParameter("action")) ||
-	"up".equals(request.getParameter("action")) ||
-	"down".equals(request.getParameter("action"))) {
+	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
 		try{
-			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
-			int index = configuration.getHostToGroupMappings().indexOf(h2GMapping);
-			if (index!=-1) {
-				configuration.getHostToGroupMappings().remove(index);
-				configuration.getHostToGroupMappings().add(index, ConfigurationWebToolkit.parseHostToGroupMapping(configuration, request));
-			}
-			else
-				configuration.getHostToGroupMappings().add( ConfigurationWebToolkit.parseHostToGroupMapping(configuration, request) );
+			configuration.getUserGroups().put(request.getParameter("name"), ConfigurationWebToolkit.parseUserGroup(configuration, request));
 			gums.setConfiguration(configuration);
-			message = "<div class=\"success\">Host to group mapping has been saved.</div>";
+			message = "<div class=\"success\">User group has been saved.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error saving host to group mapping: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error saving account mapper: " + e.getMessage() + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("action"))) {
 		try{
-			if( configuration.removeHostToGroupMapping( request.getParameter("name") )!=null ) {
-				gums.setConfiguration(configuration);
-				message = "<div class=\"success\">Host to group mapping has been deleted.</div>";
+			String references = ConfigurationWebToolkit.getUserGroupReferences(configuration, request.getParameter("name"));
+			if( references==null ) {
+				if (configuration.getUserGroups().remove( request.getParameter("name") )!=null) {
+					gums.setConfiguration(configuration);
+					message = "<div class=\"success\">User group has been deleted.</div>";
+				}
+				else
+					message = "<div class=\"failure\">Error deleting user group</div>";
 			}
 			else
-				message = "<div class=\"failure\">Error deleting host to group mapping</div>";
+				message = "<div class=\"failure\">You cannot delete this item until removing references to it within group to account mapping(s): " + references + "</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error deleting host to group mapping: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error deleting user group: " + e.getMessage() + "</div>";
 		}
 	}
 
-	String movedName = null;
-
-	if ("up".equals(request.getParameter("action"))) {
-		try{
-			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
-			int index = configuration.getHostToGroupMappings().indexOf(h2GMapping);
-			configuration.getHostToGroupMappings().remove(index);
-			configuration.getHostToGroupMappings().add(Math.max(0, index-1), h2GMapping);
-			gums.setConfiguration(configuration);
-			movedName = request.getParameter("name");
-		}catch(Exception e){
-			message = "<div class=\"failure\">Error moving up: " + e.getMessage() + "</div>";
-		}
-	}
-	
-	if ("down".equals(request.getParameter("action"))) {
-		try{
-			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
-			int index = configuration.getHostToGroupMappings().indexOf(h2GMapping);
-			configuration.getHostToGroupMappings().remove(index);
-			configuration.getHostToGroupMappings().add(Math.min(configuration.getHostToGroupMappings().size(), index+1), h2GMapping);
-			gums.setConfiguration(configuration);
-			movedName = request.getParameter("name");
-		}catch(Exception e){
-			message = "<div class=\"failure\">Error moving down: " + e.getMessage() + "</div>";
-		}
-	}	
-
-	Collection h2GMappings = configuration.getHostToGroupMappings();
+	Collection userGroups = configuration.getUserGroups().values();
 	
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
@@ -106,57 +74,69 @@ if (request.getParameter("action")==null ||
 	if(message!=null)
 		out.write( "<tr><td colspan=\"2\">" + message + "</td></tr>" );
 				
-	Iterator h2GMappingsIt = h2GMappings.iterator();
-	while(h2GMappingsIt.hasNext()) {
-		HostToGroupMapping h2GMapping = h2GMappingsIt.hasNext() ? (HostToGroupMapping)h2GMappingsIt.next() : null;
+	Iterator userGroupsIt = userGroups.iterator();
+	while(userGroupsIt.hasNext()) {
+		UserGroup userGroup = userGroupsIt.hasNext() ? (UserGroup)userGroupsIt.next() : null;
 		
-		if(h2GMapping instanceof CertificateHostToGroupMapping) {
-			CertificateHostToGroupMapping cH2GMapping = (CertificateHostToGroupMapping)h2GMapping;
-			
-			out.write(
+		out.write(
 	   	"<tr>"+
 			"<td width=\"50\" valign=\"top\">"+
-				"<form action=\"hostToGroup.jsp#" + cH2GMapping.getName() + "\" method=\"get\">"+
-					"<a name=\"" + cH2GMapping.getName() + "\">"+
-						"<input type=\"image\" src=\"images/Up24.gif\" name=\"action\" value=\"up\">"+
-						"<input type=\"image\" src=\"images/Edit24.gif\" name=\"action\" value=\"edit\">"+
-						"<input type=\"image\" src=\"images/Down24.gif\" name=\"action\" value=\"down\" onclick=\"\">"+
-						"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this host to group mapping?'))return false;\">"+
-						"<input type=\"hidden\" name=\"name\" value=\"" + cH2GMapping.getName() + "\">"+
-					"</a>"+
+				"<form action=\"userGroups.jsp\" method=\"get\">"+
+					"<input type=\"image\" src=\"images/Edit24.gif\" name=\"action\" value=\"edit\">"+
+					"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this user group?'))return false;\">"+
+					"<input type=\"hidden\" name=\"name\" value=\"" + userGroup.getName() + "\">"+
 				"</form>"+
 			"</td>"+
 	  		"<td align=\"left\">"+
-		   		"<table class=\"" + (cH2GMapping.getName().equals(movedName)?"configMovedElement":"configElement") + "\" width=\"100%\">"+
+		   		"<table class=\"configElement\" width=\"100%\">"+
 		  			"<tr>"+
 			    		"<td>"+
-				    		"For hosts matching "+
-				    		"<span style=\"font-style:italic\">" + cH2GMapping.getName() + "</span>, "+
-				    		"perform mappings using group(s) (try in order): ");
-			
-			Iterator g2AMappingsIt = cH2GMapping.getGroupToAccountMappings().iterator();
-			while(g2AMappingsIt.hasNext())
-			{
-				GroupToAccountMapping g2AMapping = (GroupToAccountMapping)g2AMappingsIt.next();
-				out.write( "<span style=\"font-style:italic\">"+g2AMapping.getName()+"</span>" );
-				if( g2AMappingsIt.hasNext() )
-					out.write(", ");
-			}
-			
-			out.write(	
+				    		"For certificate, check membership in user group"+
+				    		" <span style=\"color:blue\">" + userGroup.getName() + "</span>");
+				    		
+		if (userGroup instanceof ManualUserGroup) {
+			out.write(		" by searching persistence factory" + 
+							" <span style=\"color:blue\">" + ((ManualUserGroup)userGroup).getPersistenceFactory() + "</span>");
+		} else if (userGroup instanceof LDAPUserGroup) {
+			out.write(		" by querying LDAP server"+ 
+							" <span style=\"color:blue\">" + ((LDAPUserGroup)userGroup).getServer() + "</span>"+
+							" with query "+ 
+							" <span style=\"color:blue\">" + ((LDAPUserGroup)userGroup).getQuery() + "</span>"+
+							" and caching results in persistence factory "+ 
+							" <span style=\"color:blue\">" + ((LDAPUserGroup)userGroup).getPersistenceFactory() + "</span>");
+		} else if (userGroup instanceof VOMSUserGroup) {
+			out.write(		" by querying virtual organization " + "<span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVirtualOrganization() + "</span>");
+
+			if ( !((VOMSUserGroup)userGroup).getRemainderUrl().equals("") )
+				out.write(	" via service URL <span style=\"font-style:italic\">{base URL}</span><span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getRemainderUrl() + "</span>");
+
+			if ( ((VOMSUserGroup)userGroup).getVoGroup().equals("") )
+				out.write(	" where non-VOMS certificates are " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "<span style=\"color:blue\">" : "<span style=\"color:blue\">not") + "accepted</span>");
+							
+			if ( !((VOMSUserGroup)userGroup).getVoGroup().equals("") )
+				out.write(	" where certificate matches group" + 
+							" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoGroup() + "</span>");
+	
+			if ( !((VOMSUserGroup)userGroup).getVoRole().equals("") )
+				out.write(	" and role" + 
+							" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoRole() + "</span>");
+		}
+
+		out.write(			". Members have <span style=\"color:blue\">" + userGroup.getAccess() + "</span> access to GUMS.");
+		
+		out.write(	
 						"</td>"+
 			      	"</tr>"+
 				"</table>"+
 			"</td>"+
 			"<td width=\"10\"></td>"+		
 		"</tr>");
-		}
 	}
 
 	out.write(
 		"<tr>"+
 	        "<td colspan=2>"+
-	        	"<form action=\"hostToGroup.jsp\" method=\"get\">"+
+	        	"<form action=\"userGroups.jsp\" method=\"get\">"+
 	        		"<div style=\"text-align: center;\"><button type=\"submit\" name=\"action\" value=\"add\">Add</button></div>"+
 	        	"</form>"+
 	        "</td>"+
@@ -169,83 +149,132 @@ else if ("edit".equals(request.getParameter("action"))
 	|| "add".equals(request.getParameter("action"))
 	|| "reload".equals(request.getParameter("action"))) {
 	
-	HostToGroupMapping h2GMapping = null;
+	UserGroup userGroup = null;
+	
+	ArrayList userGroupClasses = new ArrayList();
+	userGroupClasses.add("gov.bnl.gums.userGroup.LDAPUserGroup");
+	userGroupClasses.add("gov.bnl.gums.account.ManualUserGroup");
+	userGroupClasses.add("gov.bnl.gums.account.VOMSUserGroup");
 	
 	if ("edit".equals(request.getParameter("action"))) {
 		try {
-			h2GMapping = (HostToGroupMapping)configuration.getHostToGroupMapping( request.getParameter("name") );
+			userGroup = (UserGroup)configuration.getUserGroups().get( request.getParameter("name") );
 		} catch(Exception e) {
-			out.write( "<div class=\"failure\">Error getting host to group mapping: " + e.getMessage() + "</div>" );
+			out.write( "<div class=\"failure\">Error getting user group: " + e.getMessage() + "</div>" );
 			return;
 		}
 	}
 
 	if ("reload".equals(request.getParameter("action"))) {
 		try{
-			h2GMapping = ConfigurationWebToolkit.parseHostToGroupMapping(configuration, request);
+			userGroup = ConfigurationWebToolkit.parseUserGroup(configuration, request);
 		} catch(Exception e) {
-			out.write( "<div class=\"failure\">Error reloading host to group mapping: " + e.getMessage() + "</div>" );
+			out.write( "<div class=\"failure\">Error reloading user group: " + e.getMessage() + "</div>" );
 			return;
 		}
 	}
-	
-	CertificateHostToGroupMapping cH2GMapping = (CertificateHostToGroupMapping)h2GMapping;
+		
+	else if ("add".equals(request.getParameter("action"))) {
+		userGroup = new GroupUserGroup();
+	}		
 		
 	out.write(
-"<form action=\"hostToGroup.jsp\" method=\"get\">"+
+"<form action=\"userGroups.jsp\" method=\"get\">"+
 	"<input type=\"hidden\" name=\"action\" value=\"\">"+
 	"<input type=\"hidden\" name=\"originalAction\" value=\""+ 
-	("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action")) +
+		("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action")) +
 	"\">"+
 	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
 		"<tr>"+
     		"<td nowrap width=\"1px\">"+
-	    		"For hosts matching"+
+	    		"For certificate, check membership in user group "+
 		    "</td>"+
 		    "<td nowrap>");
 
-	if ("add".equals(request.getParameter("originalAction")))
+	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
 		out.write(
-		    	"<input maxlength=\"256\" size=\"64\" name=\"name\" value=\"" + cH2GMapping.getName() + "\"/>"+
-				" cn<input type=\"radio\" name=\"type\" value=\"cn\" " + (cH2GMapping.getCn()!=null?"checked":"") + ">"+
-			    " dn<input type=\"radio\" name=\"type\" value=\"dn\" " + (cH2GMapping.getDn()!=null?"checked":"") + ">");
+		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (userGroup.getName()!=null ? userGroup.getName() : "") + "\"/>");
 	else
 		out.write(
-		    	"<span style=\"font-style:italic\">" + cH2GMapping.getName() + "</span>"+
-		    	"<input type=\"hidden\" name=\"name\" value=\"" + cH2GMapping.getName() + "\"/>"+
-		    	"<input type=\"hidden\" name=\"type\" value=\"" + (cH2GMapping.getDn()!=null?"dn":"cn") + "\">");	
+		    	userGroup.getName()+
+		    	"<input type=\"hidden\" name=\"name\" value=\"" + userGroup.getName() + "\"/>");	
 
 	out.write(
 		    "</td>"+
 		"</tr>"+
 		"<tr>"+
-			"<td nowrap>perform mappings using<br>group(s) (try in order)</td>"+
-			"<td>");
-	
-	// Create multiple group to account mappings
-	int counter = 0;
-	if (cH2GMapping!=null) {
-		Collection g2AMappings = cH2GMapping.getGroupToAccountMappings();
-		Iterator g2AMappingsIt = g2AMappings.iterator();
-		while(g2AMappingsIt.hasNext())
-		{
-			GroupToAccountMapping g2AMapping = (GroupToAccountMapping)g2AMappingsIt.next();
-			out.write( ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
-				configuration.getGroupToAccountMappings().values(), 
-				g2AMapping.getName(),
-				"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"") );
-			counter++;
-		}
-	}
-	out.write( ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
-		configuration.getGroupToAccountMappings().values(), 
-		null,
-		"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"") );
-	
-	out.write(
+    		"<td nowrap width=\"1px\">"+
+	    		"of class "+
+		    "</td>"+
+		    "<td nowrap>"+
+			ConfigurationWebToolkit.createSelectBox("className", 
+				userGroupClasses, 
+				userGroup.getClass().toString().substring(6),
+				"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+				false)+
+		    "</td>"+
+		"</tr>");
+
+	if (userGroup instanceof ManualUserGroup) {
+		out.write(	
+		"<tr>"+
+			"<td nowrap>"+
+				"by searching persistence factory"+
 			"</td>"+
-			"<td width=\"25\"></td>"+
+			"<td>"+ 
+				ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
+						configuration.getPersistenceFactories().values(), 
+						((ManualUserGroup)userGroup).getPersistenceFactory(),
+						null,
+						false)+
+				"</td>"+
+		"</tr>");
+	} else if (userGroup instanceof LDAPUserGroup) {
+		out.write(	
+		"<tr>"+
+			"<td nowrap>"+
+				"by querying LDAP server"+
+			"</td>"+
+			"<td>"+ 
+				"<input maxlength=\"256\" size=\"32\" name=\"server\" value=\"" + ((LDAPUserGroup)userGroup).getServer() + "\"/>"+
+			"</td>"+
 		"</tr>"+
+		"<tr>"+
+			"<td nowrap>"+
+				"with query"+
+			"</td>"+
+			"<td>"+ 
+				"<input maxlength=\"256\" size=\"32\" name=\"server\" value=\"" + ((LDAPUserGroup)userGroup).getQuery() + "\"/>"+
+			"</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap>"+
+				"and caching results in<br>persistence factory"+
+			"</td>"+
+			"<td>"+ 
+				"<input maxlength=\"256\" size=\"32\" name=\"persistenceFactory\" value=\"" + ((LDAPUserGroup)userGroup).getPersistenceFactory() + "\"/>"+
+			"</td>"+
+		"</tr>");
+	} else if (userGroup instanceof VOMSUserGroup) {
+		out.write(		
+			" by querying virtual organization " + "<span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVirtualOrganization() + "</span>");
+
+			if ( !((VOMSUserGroup)userGroup).getRemainderUrl().equals("") )
+				out.write(	" via service URL <span style=\"font-style:italic\">{base URL}</span><span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getRemainderUrl() + "</span>");
+
+			if ( ((VOMSUserGroup)userGroup).getVoGroup().equals("") )
+				out.write(	" where non-VOMS certificates are " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "<span style=\"color:blue\">" : "<span style=\"color:blue\">not") + "accepted</span>");
+							
+			if ( !((VOMSUserGroup)userGroup).getVoGroup().equals("") )
+				out.write(	" where certificate matches group" + 
+							" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoGroup() + "</span>");
+	
+			if ( !((VOMSUserGroup)userGroup).getVoRole().equals("") )
+				out.write(	" and role" + 
+							" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoRole() + "</span>");
+	}
+			
+	out.write(
 		"<tr>"+
 	        "<td colspan=2>"+
 	        	"<div style=\"text-align: center;\">"+
