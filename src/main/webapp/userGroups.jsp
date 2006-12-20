@@ -33,6 +33,7 @@ Configures user groups.
 
 Configuration configuration = gums.getConfiguration();
 String message = null;
+Collection userGroups = configuration.getUserGroups().values();
 
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
@@ -44,13 +45,13 @@ if (request.getParameter("action")==null ||
 			gums.setConfiguration(configuration);
 			message = "<div class=\"success\">User group has been saved.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error saving account mapper: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error saving user group: " + e.getMessage() + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("action"))) {
 		try{
-			String references = ConfigurationWebToolkit.getUserGroupReferences(configuration, request.getParameter("name"));
+			String references = ConfigurationWebToolkit.getGroupToAccountMappingReferences(configuration, request.getParameter("name"), "gov.bnl.gums.userGroup.UserGroup");
 			if( references==null ) {
 				if (configuration.getUserGroups().remove( request.getParameter("name") )!=null) {
 					gums.setConfiguration(configuration);
@@ -66,8 +67,6 @@ if (request.getParameter("action")==null ||
 		}
 	}
 
-	Collection userGroups = configuration.getUserGroups().values();
-	
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
 
@@ -91,11 +90,13 @@ if (request.getParameter("action")==null ||
 		   		"<table class=\"configElement\" width=\"100%\">"+
 		  			"<tr>"+
 			    		"<td>"+
-				    		"For certificate, check membership in user group"+
+				    		"Check if member of user group"+
 				    		" <span style=\"color:blue\">" + userGroup.getName() + "</span>");
 				    		
 		if (userGroup instanceof ManualUserGroup) {
-			out.write(		" by searching persistence factory" + 
+			out.write(		" by searching within group" +
+							" <span style=\"color:blue\">" + ((ManualUserGroup)userGroup).getGroup() + "</span>" +
+							" in persistence factory" + 
 							" <span style=\"color:blue\">" + ((ManualUserGroup)userGroup).getPersistenceFactory() + "</span>");
 		} else if (userGroup instanceof LDAPUserGroup) {
 			out.write(		" by querying LDAP server"+ 
@@ -108,7 +109,7 @@ if (request.getParameter("action")==null ||
 			out.write(		" by querying virtual organization " + "<span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVirtualOrganization() + "</span>");
 
 			if ( !((VOMSUserGroup)userGroup).getRemainderUrl().equals("") )
-				out.write(	" via service URL <span style=\"font-style:italic\">{base URL}</span><span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getRemainderUrl() + "</span>");
+				out.write(	" at URL <span style=\"font-style:italic\">{base URL}</span><span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getRemainderUrl() + "</span>");
 
 			if ( ((VOMSUserGroup)userGroup).getVoGroup().equals("") )
 				out.write(	" where non-VOMS certificates are " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "<span style=\"color:blue\">" : "<span style=\"color:blue\">not") + "accepted</span>");
@@ -153,8 +154,8 @@ else if ("edit".equals(request.getParameter("action"))
 	
 	ArrayList userGroupClasses = new ArrayList();
 	userGroupClasses.add("gov.bnl.gums.userGroup.LDAPUserGroup");
-	userGroupClasses.add("gov.bnl.gums.account.ManualUserGroup");
-	userGroupClasses.add("gov.bnl.gums.account.VOMSUserGroup");
+	userGroupClasses.add("gov.bnl.gums.userGroup.ManualUserGroup");
+	userGroupClasses.add("gov.bnl.gums.userGroup.VOMSUserGroup");
 	
 	if ("edit".equals(request.getParameter("action"))) {
 		try {
@@ -175,7 +176,7 @@ else if ("edit".equals(request.getParameter("action"))
 	}
 		
 	else if ("add".equals(request.getParameter("action"))) {
-		userGroup = new GroupUserGroup();
+		userGroup = new VOMSUserGroup();
 	}		
 		
 	out.write(
@@ -186,8 +187,8 @@ else if ("edit".equals(request.getParameter("action"))
 	"\">"+
 	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
 		"<tr>"+
-    		"<td nowrap width=\"1px\">"+
-	    		"For certificate, check membership in user group "+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"Check if member of user group"+
 		    "</td>"+
 		    "<td nowrap>");
 
@@ -203,7 +204,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    "</td>"+
 		"</tr>"+
 		"<tr>"+
-    		"<td nowrap width=\"1px\">"+
+    		"<td nowrap style=\"text-align: right;\">"+
 	    		"of class "+
 		    "</td>"+
 		    "<td nowrap>"+
@@ -218,21 +219,29 @@ else if ("edit".equals(request.getParameter("action"))
 	if (userGroup instanceof ManualUserGroup) {
 		out.write(	
 		"<tr>"+
-			"<td nowrap>"+
-				"by searching persistence factory"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"by searching within group"+
+			"</td>"+
+			"<td>"+ 
+				"<input maxlength=\"256\" size=\"32\" name=\"group\" value=\"" + ((ManualUserGroup)userGroup).getGroup() + "\"/>"+
+			"</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"in persistence factory"+
 			"</td>"+
 			"<td>"+ 
 				ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
 						configuration.getPersistenceFactories().values(), 
 						((ManualUserGroup)userGroup).getPersistenceFactory(),
 						null,
-						false)+
-				"</td>"+
+						true)+
+				"</td>"+" ."+
 		"</tr>");
 	} else if (userGroup instanceof LDAPUserGroup) {
 		out.write(	
 		"<tr>"+
-			"<td nowrap>"+
+			"<td nowrap style=\"text-align: right;\">"+
 				"by querying LDAP server"+
 			"</td>"+
 			"<td>"+ 
@@ -240,45 +249,98 @@ else if ("edit".equals(request.getParameter("action"))
 			"</td>"+
 		"</tr>"+
 		"<tr>"+
-			"<td nowrap>"+
+			"<td nowrap style=\"text-align: right;\">"+
 				"with query"+
 			"</td>"+
 			"<td>"+ 
-				"<input maxlength=\"256\" size=\"32\" name=\"server\" value=\"" + ((LDAPUserGroup)userGroup).getQuery() + "\"/>"+
+				"<input maxlength=\"256\" size=\"32\" name=\"query\" value=\"" + ((LDAPUserGroup)userGroup).getQuery() + "\"/>"+
 			"</td>"+
 		"</tr>"+
 		"<tr>"+
-			"<td nowrap>"+
-				"and caching results in<br>persistence factory"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"and caching results in persistence factory"+
 			"</td>"+
 			"<td>"+ 
-				"<input maxlength=\"256\" size=\"32\" name=\"persistenceFactory\" value=\"" + ((LDAPUserGroup)userGroup).getPersistenceFactory() + "\"/>"+
+				ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
+						configuration.getPersistenceFactories().values(), 
+						((LDAPUserGroup)userGroup).getPersistenceFactory(),
+						null,
+						true)+" ."+
 			"</td>"+
 		"</tr>");
 	} else if (userGroup instanceof VOMSUserGroup) {
-		out.write(		
-			" by querying virtual organization " + "<span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVirtualOrganization() + "</span>");
-
-			if ( !((VOMSUserGroup)userGroup).getRemainderUrl().equals("") )
-				out.write(	" via service URL <span style=\"font-style:italic\">{base URL}</span><span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getRemainderUrl() + "</span>");
-
-			if ( ((VOMSUserGroup)userGroup).getVoGroup().equals("") )
-				out.write(	" where non-VOMS certificates are " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "<span style=\"color:blue\">" : "<span style=\"color:blue\">not") + "accepted</span>");
-							
-			if ( !((VOMSUserGroup)userGroup).getVoGroup().equals("") )
-				out.write(	" where certificate matches group" + 
-							" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoGroup() + "</span>");
-	
-			if ( !((VOMSUserGroup)userGroup).getVoRole().equals("") )
-				out.write(	" and role" + 
-							" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoRole() + "</span>");
+		out.write(	
+			"<tr>"+
+				"<td nowrap style=\"text-align: right;\">"+
+					"by querying virtual organization"+
+				"</td>"+
+				"<td>"+ 
+					ConfigurationWebToolkit.createSelectBox("vo", 
+							configuration.getVirtualOrganizations().values(), 
+							((VOMSUserGroup)userGroup).getVirtualOrganization(),
+							null,
+							true)+
+				"</td>"+
+			"</tr>"+		
+			"<tr>"+
+				"<td nowrap style=\"text-align: right;\">"+
+					"at URL "+
+				"</td>"+
+				"<td>"+ 
+					"{base URL}<input maxlength=\"256\" size=\"32\" name=\"url\" value=\"" + ((VOMSUserGroup)userGroup).getRemainderUrl() + "\"/>"+
+				"</td>"+
+			"</tr>"+
+			"<tr>"+
+				"<td nowrap style=\"text-align: right;\">"+
+					"where non-VOMS certificates are"+
+				"</td>"+
+				"<td>"+ 
+					"<select name=\"nVOMS\" onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\">"+
+						"<option " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"selected":"") + ">allowed</option>"+
+						"<option " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"":"selected") + ">not allowed</option>"+
+					"</select>" + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? " ." : "") +
+				"</td>"+
+			"</tr>");
+			
+			if( !((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ) {
+				out.write(
+			"<tr>"+
+				"<td nowrap style=\"text-align: right;\">"+
+					"where certificate matches group (optional)"+
+				"</td>"+
+				"<td>"+ 
+					"<input name=\"group\" value=\"" + ((VOMSUserGroup)userGroup).getVoGroup() + "\"/>"+
+				"</td>"+
+			"</tr>"+
+			"<tr>"+
+				"<td nowrap style=\"text-align: right;\">"+
+					"and role (optional)"+
+				"</td>"+
+				"<td>"+ 
+					"<input name=\"role\" value=\"" + ((VOMSUserGroup)userGroup).getVoRole() + "\"/>."+
+				"</td>"+
+			"</tr>");
+			}
 	}
 			
 	out.write(
-		"<tr>"+
+			"<tr>"+
+				"<td nowrap style=\"text-align: right;\">"+
+					"Members have "+
+				"</td>"+
+				"<td>"+ 
+					"<select name=\"access\">"+
+						"<option " + (userGroup.getAccess().equals("read self")?"selected":"") + ">read self</option>"+
+						"<option " + (userGroup.getAccess().equals("read all")?"selected":"") + ">read all</option>"+
+						"<option " + (userGroup.getAccess().equals("write")?"selected":"") + ">write</option>"+
+					"</select> access."+
+				"</td>"+
+			"</tr>"+
+			"<tr>"+
 	        "<td colspan=2>"+
+				ConfigurationWebToolkit.createDoSubmit(userGroups, request)+
 	        	"<div style=\"text-align: center;\">"+
-	        		"<button type=\"submit\" onclick=\"document.forms[0].elements['action'].value='save';document.forms[0].submit();\">Save</button>"+
+	        		"<button type=\"submit\" onclick=\"return doSubmit()\">Save</button>"+
 	        	"</div>"+
 	        "</td>"+
 		"</tr>"+

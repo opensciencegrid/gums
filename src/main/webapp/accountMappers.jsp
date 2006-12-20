@@ -33,6 +33,7 @@ Configures account mappers.
 
 Configuration configuration = gums.getConfiguration();
 String message = null;
+Collection accountMappers = configuration.getAccountMappers().values();
 
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
@@ -50,7 +51,7 @@ if (request.getParameter("action")==null ||
 
 	if ("delete".equals(request.getParameter("action"))) {
 		try{
-			String references = ConfigurationWebToolkit.getGroupToAccountMapperReferences(configuration, request.getParameter("name"));
+			String references = ConfigurationWebToolkit.getGroupToAccountMappingReferences(configuration, request.getParameter("name"), "gov.bnl.gums.account.AccountMapper");
 			if( references==null ) {
 				if (configuration.getAccountMappers().remove( request.getParameter("name") )!=null) {
 					gums.setConfiguration(configuration);
@@ -66,8 +67,6 @@ if (request.getParameter("action")==null ||
 		}
 	}
 
-	Collection accountMappers = configuration.getAccountMappers().values();
-	
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
 
@@ -181,7 +180,7 @@ else if ("edit".equals(request.getParameter("action"))
 	"\">"+
 	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
 		"<tr>"+
-    		"<td nowrap width=\"1px\">"+
+    		"<td nowrap style=\"text-align: right;\">"+
 	    		"For requests routed to account mapper "+
 		    "</td>"+
 		    "<td nowrap>");
@@ -198,7 +197,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    "</td>"+
 		"</tr>"+
 		"<tr>"+
-    		"<td nowrap width=\"1px\">"+
+    		"<td nowrap style=\"text-align: right;\">"+
 	    		"of class "+
 		    "</td>"+
 		    "<td nowrap>"+
@@ -213,7 +212,7 @@ else if ("edit".equals(request.getParameter("action"))
 	if (accountMapper instanceof GroupAccountMapper) {
 		out.write(	
 		"<tr>"+
-			"<td nowrap>"+
+			"<td nowrap style=\"text-align: right;\">"+
 				"map to account"+
 			"</td>"+
 			"<td>"+ 
@@ -223,7 +222,7 @@ else if ("edit".equals(request.getParameter("action"))
 	} else if (accountMapper instanceof ManualAccountMapper) {
 		out.write(	
 		"<tr>"+
-			"<td nowrap>"+
+			"<td nowrap style=\"text-align: right;\">"+
 				"map to account"+
 			"</td>"+
 			"<td>"+ 
@@ -231,8 +230,10 @@ else if ("edit".equals(request.getParameter("action"))
 			"</td>"+
 		"</tr>"+
 		"<tr>"+
+			"<td style=\"text-align: right;\">"+
+				"if host found in persistence factory"+
+			"</td>"+
 			"<td>"+
-				"if host found in persistence factory</td><td>"+
 				ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
 					configuration.getPersistenceFactories().values(), 
 					((ManualAccountMapper)accountMapper).getPersistenceFactory(),
@@ -243,15 +244,15 @@ else if ("edit".equals(request.getParameter("action"))
 	} else if (accountMapper instanceof AccountPoolMapper) {
 		out.write(	
 		"<tr>"+
-			"<td nowrap>"+
-				"map to free or previously assigned<br>account within pool"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"map to free or previously assigned account within pool"+
 			"</td>"+
 			"<td>"+ 
 				"<input maxlength=\"256\" size=\"32\" name=\"accountPool\" value=\"" + ((AccountPoolMapper)accountMapper).getAccountPool() + "\"/>"+
 			"</td>"+
 		"</tr>"+
 		"<tr>"+
-			"<td>"+
+			"<td nowrap style=\"text-align: right;\">"+
 				"as contained in persistence factory"+
 			"</td>"+
 			"<td>"+
@@ -265,20 +266,21 @@ else if ("edit".equals(request.getParameter("action"))
 	} else if (accountMapper instanceof GecosLdapAccountMapper) {
 		out.write(	
 		"<tr>"+
-			"<td nowrap>"+
-				"map to account assigned by JNDI<br>LDAP service"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"map to account assigned by JNDI LDAP service"+
 			"</td>"+
 			"<td>"+ 
 				"<input maxlength=\"256\" size=\"32\" name=\"serviceUrl\" value=\"" + ((GecosLdapAccountMapper)accountMapper).getJndiLdapUrl() + "\"/>"+
 			"</td>"+
 		"</tr>");
 	}	
-			
+
 	out.write(
 		"<tr>"+
 	        "<td colspan=2>"+
+				ConfigurationWebToolkit.createDoSubmit(accountMappers, request)+
 	        	"<div style=\"text-align: center;\">"+
-	        		"<button type=\"submit\" onclick=\"document.forms[0].elements['action'].value='save';document.forms[0].submit();\">Save</button>"+
+	        		"<button type=\"submit\" onclick=\"return doSubmit()\">Save</button>"+
 	        	"</div>"+
 	        "</td>"+
 		"</tr>"+

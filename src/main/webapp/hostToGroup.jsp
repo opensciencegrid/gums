@@ -34,6 +34,7 @@ Configure host to group mappings.
 Configuration configuration = gums.getConfiguration();
 String message = null;
 String movedName = null;
+Collection h2GMappings = configuration.getHostToGroupMappings();
 
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
@@ -97,8 +98,6 @@ if (request.getParameter("action")==null ||
 		}
 	}	
 
-	Collection h2GMappings = configuration.getHostToGroupMappings();
-	
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
 
@@ -205,7 +204,7 @@ else if ("edit".equals(request.getParameter("action"))
 	"\">"+
 	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
 		"<tr>"+
-    		"<td nowrap width=\"1px\">"+
+    		"<td nowrap style=\"text-align: right;\">"+
 	    		"For requests from hosts matching"+
 		    "</td>"+
 		    "<td nowrap>");
@@ -225,7 +224,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    "</td>"+
 		"</tr>"+
 		"<tr>"+
-			"<td nowrap>route request to group(s) (try in order)</td>"+
+			"<td nowrap style=\"text-align: right;\">route request to group(s)</td>"+
 			"<td>");
 	
 	// Create multiple group to account mappings
@@ -250,19 +249,17 @@ else if ("edit".equals(request.getParameter("action"))
 			configuration.getGroupToAccountMappings().values(), 
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-			true) );
+			true)+
+			"(try in order)");
 	
 	out.write(
 			"</td>"+
-			"<td width=\"25\"></td>"+
 		"</tr>"+
 		"<tr>"+
-	        "<td colspan=2>"+
+	        "<td colspan=2 style=\"text-align: right;\">"+
+				ConfigurationWebToolkit.createDoSubmit(h2GMappings, request)+
 	        	"<div style=\"text-align: center;\">"+
-	        		"<button type=\"submit\" onclick=\""+
-	        			"if(document.forms[0].elements['name'].value==''){alert('Hosts field cannot be empty');return false;}"+
-	        			"document.forms[0].elements['action'].value='save';document.forms[0].submit();\""+
-	        		">Save</button>"+
+	        		"<button type=\"submit\" onclick=\"return doSubmit()\">Save</button>"+
 	        	"</div>"+
 	        "</td>"+
 		"</tr>"+

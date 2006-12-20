@@ -3,7 +3,6 @@
 <%@page import="gov.bnl.gums.*"%>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
 <%@ page import="gov.bnl.gums.account.*" %>
-<%@ page import="gov.bnl.gums.groupToAccount.*" %>
 <%@ page import="gov.bnl.gums.userGroup.*" %>
 <%@ page import="gov.bnl.gums.configuration.*" %>
 <%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
@@ -26,137 +25,108 @@
 <%-- <jsp:useBean id="beanInstanceName" scope="session" class="beanPackage.BeanClassName" /> --%>
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
-Configures group to account mapper mappings.
+Configures virtual organizations.
 </p>
 
 <%
 
 Configuration configuration = gums.getConfiguration();
 String message = null;
+Collection virtualOrganizations = configuration.getVirtualOrganizations().values();
 
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
-	"delete".equals(request.getParameter("action")) ||
-	"up".equals(request.getParameter("action")) ||
-	"down".equals(request.getParameter("action"))) {
+	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
 		try{
-			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
-			int index = configuration.getHostToGroupMappings().indexOf(h2GMapping);
-			if (index!=-1) {
-				configuration.getHostToGroupMappings().remove(index);
-				configuration.getHostToGroupMappings().add(index, ConfigurationWebToolkit.parseHostToGroupMapping(configuration, request));
-			}
-			else
-				configuration.getHostToGroupMappings().add( ConfigurationWebToolkit.parseHostToGroupMapping(configuration, request) );
+			configuration.getVirtualOrganizations().put(request.getParameter("name"), ConfigurationWebToolkit.parseVirtualOrganization(configuration, request));
 			gums.setConfiguration(configuration);
-			message = "<div class=\"success\">Host to group mapping has been saved.</div>";
+			message = "<div class=\"success\">Virtual organization has been saved.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error saving host to group mapping: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error saving virtual organization: " + e.getMessage() + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("action"))) {
 		try{
-			if( configuration.removeHostToGroupMapping( request.getParameter("name") )!=null ) {
-				gums.setConfiguration(configuration);
-				message = "<div class=\"success\">Host to group mapping has been deleted.</div>";
+			String references = ConfigurationWebToolkit.getVOMSUserGroupReferences(configuration, request.getParameter("name"));
+			if( references==null ) {
+				if (configuration.getVirtualOrganizations().remove( request.getParameter("name") )!=null) {
+					gums.setConfiguration(configuration);
+					message = "<div class=\"success\">Virtual organization has been deleted.</div>";
+				}
+				else
+					message = "<div class=\"failure\">Error deleting virtual organization</div>";
 			}
 			else
-				message = "<div class=\"failure\">Error deleting host to group mapping</div>";
+				message = "<div class=\"failure\">You cannot delete this item until removing references to it within group to account mapping(s): " + references + "</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error deleting host to group mapping: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error deleting virtual organization: " + e.getMessage() + "</div>";
 		}
 	}
 
-	String movedName = null;
-
-	if ("up".equals(request.getParameter("action"))) {
-		try{
-			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
-			int index = configuration.getHostToGroupMappings().indexOf(h2GMapping);
-			configuration.getHostToGroupMappings().remove(index);
-			configuration.getHostToGroupMappings().add(Math.max(0, index-1), h2GMapping);
-			gums.setConfiguration(configuration);
-			movedName = request.getParameter("name");
-		}catch(Exception e){
-			message = "<div class=\"failure\">Error moving up: " + e.getMessage() + "</div>";
-		}
-	}
-	
-	if ("down".equals(request.getParameter("action"))) {
-		try{
-			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
-			int index = configuration.getHostToGroupMappings().indexOf(h2GMapping);
-			configuration.getHostToGroupMappings().remove(index);
-			configuration.getHostToGroupMappings().add(Math.min(configuration.getHostToGroupMappings().size(), index+1), h2GMapping);
-			gums.setConfiguration(configuration);
-			movedName = request.getParameter("name");
-		}catch(Exception e){
-			message = "<div class=\"failure\">Error moving down: " + e.getMessage() + "</div>";
-		}
-	}	
-
-	Collection h2GMappings = configuration.getHostToGroupMappings();
-	
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
 
 	if(message!=null)
 		out.write( "<tr><td colspan=\"2\">" + message + "</td></tr>" );
 				
-	Iterator h2GMappingsIt = h2GMappings.iterator();
-	while(h2GMappingsIt.hasNext()) {
-		HostToGroupMapping h2GMapping = h2GMappingsIt.hasNext() ? (HostToGroupMapping)h2GMappingsIt.next() : null;
+	Iterator virtualOrganizationsIt = virtualOrganizations.iterator();
+	while(virtualOrganizationsIt.hasNext()) {
+		VirtualOrganization virtualOrganization = virtualOrganizationsIt.hasNext() ? (VirtualOrganization)virtualOrganizationsIt.next() : null;
 		
-		if(h2GMapping instanceof CertificateHostToGroupMapping) {
-			CertificateHostToGroupMapping cH2GMapping = (CertificateHostToGroupMapping)h2GMapping;
-			
-			out.write(
+		out.write(
 	   	"<tr>"+
 			"<td width=\"50\" valign=\"top\">"+
-				"<form action=\"hostToGroup.jsp#" + cH2GMapping.getName() + "\" method=\"get\">"+
-					"<a name=\"" + cH2GMapping.getName() + "\">"+
-						"<input type=\"image\" src=\"images/Up24.gif\" name=\"action\" value=\"up\">"+
-						"<input type=\"image\" src=\"images/Edit24.gif\" name=\"action\" value=\"edit\">"+
-						"<input type=\"image\" src=\"images/Down24.gif\" name=\"action\" value=\"down\" onclick=\"\">"+
-						"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this host to group mapping?'))return false;\">"+
-						"<input type=\"hidden\" name=\"name\" value=\"" + cH2GMapping.getName() + "\">"+
-					"</a>"+
+				"<form action=\"virtualOrganizations.jsp\" method=\"get\">"+
+					"<input type=\"image\" src=\"images/Edit24.gif\" name=\"action\" value=\"edit\">"+
+					"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this virtual organization?'))return false;\">"+
+					"<input type=\"hidden\" name=\"name\" value=\"" + virtualOrganization.getName() + "\">"+
 				"</form>"+
 			"</td>"+
 	  		"<td align=\"left\">"+
-		   		"<table class=\"" + (cH2GMapping.getName().equals(movedName)?"configMovedElement":"configElement") + "\" width=\"100%\">"+
+		   		"<table class=\"configElement\" width=\"100%\">"+
 		  			"<tr>"+
 			    		"<td>"+
-				    		"For hosts matching "+
-				    		"<span style=\"font-style:italic\">" + cH2GMapping.getName() + "</span>, "+
-				    		"perform mappings using group(s) (try in order): ");
-			
-			Iterator g2AMappingsIt = cH2GMapping.getGroupToAccountMappings().iterator();
-			while(g2AMappingsIt.hasNext())
-			{
-				GroupToAccountMapping g2AMapping = (GroupToAccountMapping)g2AMappingsIt.next();
-				out.write( "<span style=\"font-style:italic\">"+g2AMapping.getName()+"</span>" );
-				if( g2AMappingsIt.hasNext() )
-					out.write(", ");
-			}
-			
-			out.write(	
+				    		"Check if member of virtual organization"+
+				    		" <span style=\"color:blue\">" + virtualOrganization.getName() + "</span>");
+				    		
+		out.write(		" by querying VOMS server at base URL " + "<span style=\"color:blue\">" + virtualOrganization.getBaseUrl() + "</span> (additional path specified in parent user group)");
+
+		if ( !virtualOrganization.getSslKey().equals("") ) {
+			out.write(	" SSL key <span style=\"color:blue\">" + virtualOrganization.getSslKey() + "</span>");
+			if ( !virtualOrganization.getSslCertfile().equals("") && !virtualOrganization.getSslCAFiles().equals("") )
+				out.write(	
+						"," );
+			else if ( !virtualOrganization.getSslCertfile().equals("") || !virtualOrganization.getSslCAFiles().equals("") )
+				out.write(	
+						" and" );
+		}
+
+		if ( !virtualOrganization.getSslCertfile().equals("") ) {
+			out.write(	" SSL certificate file <span style=\"color:blue\">" + virtualOrganization.getSslCertfile() + "</span>");
+			if ( !virtualOrganization.getSslCAFiles().equals("") )
+				out.write(	
+						" and" );
+		}
+						
+		if ( !virtualOrganization.getSslCAFiles().equals("") )
+			out.write(	" SSL CA files <span style=\"color:blue\">" + virtualOrganization.getSslCAFiles() + "</span>");
+
+		out.write(	
 						"</td>"+
 			      	"</tr>"+
 				"</table>"+
 			"</td>"+
 			"<td width=\"10\"></td>"+		
 		"</tr>");
-		}
 	}
 
 	out.write(
 		"<tr>"+
 	        "<td colspan=2>"+
-	        	"<form action=\"hostToGroup.jsp\" method=\"get\">"+
+	        	"<form action=\"virtualOrganizations.jsp\" method=\"get\">"+
 	        		"<div style=\"text-align: center;\"><button type=\"submit\" name=\"action\" value=\"add\">Add</button></div>"+
 	        	"</form>"+
 	        "</td>"+
@@ -169,87 +139,99 @@ else if ("edit".equals(request.getParameter("action"))
 	|| "add".equals(request.getParameter("action"))
 	|| "reload".equals(request.getParameter("action"))) {
 	
-	HostToGroupMapping h2GMapping = null;
+	VirtualOrganization virtualOrganization = null;
 	
 	if ("edit".equals(request.getParameter("action"))) {
 		try {
-			h2GMapping = (HostToGroupMapping)configuration.getHostToGroupMapping( request.getParameter("name") );
+			virtualOrganization = (VirtualOrganization)configuration.getVirtualOrganizations().get( request.getParameter("name") );
 		} catch(Exception e) {
-			out.write( "<div class=\"failure\">Error getting host to group mapping: " + e.getMessage() + "</div>" );
+			out.write( "<div class=\"failure\">Error getting virtual organization: " + e.getMessage() + "</div>" );
 			return;
 		}
 	}
 
 	if ("reload".equals(request.getParameter("action"))) {
 		try{
-			h2GMapping = ConfigurationWebToolkit.parseHostToGroupMapping(configuration, request);
+			virtualOrganization = ConfigurationWebToolkit.parseVirtualOrganization(configuration, request);
 		} catch(Exception e) {
-			out.write( "<div class=\"failure\">Error reloading host to group mapping: " + e.getMessage() + "</div>" );
+			out.write( "<div class=\"failure\">Error reloading virtual organization: " + e.getMessage() + "</div>" );
 			return;
 		}
 	}
-	
-	CertificateHostToGroupMapping cH2GMapping = (CertificateHostToGroupMapping)h2GMapping;
+		
+	else if ("add".equals(request.getParameter("action"))) {
+		virtualOrganization = new VirtualOrganization();
+	}		
 		
 	out.write(
-"<form action=\"hostToGroup.jsp\" method=\"get\">"+
+"<form action=\"virtualOrganizations.jsp\" method=\"get\">"+
 	"<input type=\"hidden\" name=\"action\" value=\"\">"+
 	"<input type=\"hidden\" name=\"originalAction\" value=\""+ 
-	("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action")) +
+		("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action")) +
 	"\">"+
 	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
 		"<tr>"+
-    		"<td nowrap width=\"1px\">"+
-	    		"For hosts matching"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"Check if member of virtual organization "+
 		    "</td>"+
 		    "<td nowrap>");
 
-	if ("add".equals(request.getParameter("originalAction")))
+	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
 		out.write(
-		    	"<input maxlength=\"256\" size=\"64\" name=\"name\" value=\"" + cH2GMapping.getName() + "\"/>"+
-				" cn<input type=\"radio\" name=\"type\" value=\"cn\" " + (cH2GMapping.getCn()!=null?"checked":"") + ">"+
-			    " dn<input type=\"radio\" name=\"type\" value=\"dn\" " + (cH2GMapping.getDn()!=null?"checked":"") + ">");
+		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (virtualOrganization.getName()!=null ? virtualOrganization.getName() : "") + "\"/>");
 	else
 		out.write(
-		    	"<span style=\"font-style:italic\">" + cH2GMapping.getName() + "</span>"+
-		    	"<input type=\"hidden\" name=\"name\" value=\"" + cH2GMapping.getName() + "\"/>"+
-		    	"<input type=\"hidden\" name=\"type\" value=\"" + (cH2GMapping.getDn()!=null?"dn":"cn") + "\">");	
-
-	out.write(
-		    "</td>"+
-		"</tr>"+
+		    	virtualOrganization.getName()+
+		    	"<input type=\"hidden\" name=\"name\" value=\"" + virtualOrganization.getName() + "\"/>");	
+		    	
+	out.write(	
 		"<tr>"+
-			"<td nowrap>perform mappings using<br>group(s) (try in order)</td>"+
-			"<td>");
-	
-	// Create multiple group to account mappings
-	int counter = 0;
-	if (cH2GMapping!=null) {
-		Collection g2AMappings = cH2GMapping.getGroupToAccountMappings();
-		Iterator g2AMappingsIt = g2AMappings.iterator();
-		while(g2AMappingsIt.hasNext())
-		{
-			GroupToAccountMapping g2AMapping = (GroupToAccountMapping)g2AMappingsIt.next();
-			out.write( ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
-				configuration.getGroupToAccountMappings().values(), 
-				g2AMapping.getName(),
-				"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"") );
-			counter++;
-		}
-	}
-	out.write( ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
-		configuration.getGroupToAccountMappings().values(), 
-		null,
-		"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"") );
-	
-	out.write(
+			"<td nowrap style=\"text-align: right;\">"+
+				"by querying VOMS server at base URL"+
 			"</td>"+
-			"<td width=\"25\"></td>"+
+			"<td>"+ 
+				"<input maxlength=\"256\" size=\"32\" name=\"baseURL\" value=\"" + virtualOrganization.getBaseUrl() + "\"/>(additional path in user group)"+
+			"</td>"+
 		"</tr>"+
 		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"using SSL key"+
+			"</td>"+
+			"<td>"+ 
+				"<input maxlength=\"256\" size=\"32\" name=\"sslKey\" value=\"" + virtualOrganization.getSslKey() + "\"/> ,"+
+			"</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"SSL cert file"+
+			"</td>"+
+			"<td>"+ 
+				"<input maxlength=\"256\" size=\"32\" name=\"sslCert\" value=\"" + virtualOrganization.getSslCertfile() + "\"/> ,"+
+			"</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"SSL CA files (optional)"+
+			"</td>"+
+			"<td>"+ 
+				"<input maxlength=\"256\" size=\"32\" name=\"sslCA\" value=\"" + virtualOrganization.getSslCAFiles() + "\"/> ,"+
+			"</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"SSL key password (optional)"+
+			"</td>"+
+			"<td>"+ 
+				"<input type=\"password\" maxlength=\"256\" size=\"32\" name=\"sslKeyPW\" value=\"" + virtualOrganization.getSslKeyPasswd() + "\"/>"+
+			"</td>"+
+		"</tr>");
+						
+	out.write(
+			"<tr>"+
 	        "<td colspan=2>"+
+				ConfigurationWebToolkit.createDoSubmit(virtualOrganizations, request)+
 	        	"<div style=\"text-align: center;\">"+
-	        		"<button type=\"submit\" onclick=\"document.forms[0].elements['action'].value='save';document.forms[0].submit();\">Save</button>"+
+	        		"<button type=\"submit\" onclick=\"return doSubmit()\">Save</button>"+
 	        	"</div>"+
 	        "</td>"+
 		"</tr>"+

@@ -33,6 +33,7 @@ Configures group to account mapper mappings.
 
 Configuration configuration = gums.getConfiguration();
 String message = null;
+Collection g2AMappings = configuration.getGroupToAccountMappings().values();
 
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
@@ -66,8 +67,6 @@ if (request.getParameter("action")==null ||
 		}
 	}
 
-	Collection g2AMappings = configuration.getGroupToAccountMappings().values();
-	
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
 
@@ -179,7 +178,7 @@ else if ("edit".equals(request.getParameter("action"))
 	"\">"+
 	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
 		"<tr>"+
-    		"<td nowrap width=\"1px\">"+
+    		"<td nowrap style=\"text-align: right;\">"+
 	    		"For requests routed to group "+
 		    "</td>"+
 		    "<td nowrap>");
@@ -196,7 +195,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    "</td>"+
 		"</tr>"+
 		"<tr>"+
-			"<td nowrap>where user member of user group<br> (try in order)</td>"+
+			"<td nowrap style=\"text-align: right;\">where user member of user group</td>"+
 			"<td>");
 
 	// Create multiple user groups
@@ -221,13 +220,14 @@ else if ("edit".equals(request.getParameter("action"))
 			configuration.getUserGroups().values(), 
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-			true) );
+			true)+
+			"(try in order)");
 
 	out.write(
 		    "</td>"+
 		"</tr>"+
 		"<tr>"+
-			"<td nowrap>route request to account<br>mapper(s) (try in order)</td>"+
+			"<td nowrap style=\"text-align: right;\">route request to account mapper(s)</td>"+
 			"<td>");
 	
 	// Create multiple group to account mappings
@@ -252,16 +252,19 @@ else if ("edit".equals(request.getParameter("action"))
 			configuration.getAccountMappers().values(), 
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-			true) );
+			true)+
+			"(try in order)");
 
 	out.write(
 			"</td>"+
-			"<td width=\"25\"></td>"+
 		"</tr>"+
 		"<tr>"+
 	        "<td colspan=2>"+
 	        	"<div style=\"text-align: center;\">"+
-	        		"<button type=\"submit\" onclick=\"document.forms[0].elements['action'].value='save';document.forms[0].submit();\">Save</button>"+
+				ConfigurationWebToolkit.createDoSubmit(g2AMappings, request)+
+	        	"<div style=\"text-align: center;\">"+
+	        		"<button type=\"submit\" onclick=\"return doSubmit()\">Save</button>"+
+	        	"</div>"+
 	        	"</div>"+
 	        "</td>"+
 		"</tr>"+
