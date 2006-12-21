@@ -6,25 +6,12 @@
 
 package gov.bnl.gums.service;
 
-import gov.bnl.gums.account.AccountMapper;
-import gov.bnl.gums.account.AccountPoolMapper;
-import gov.bnl.gums.account.GecosAccountMapper;
-import gov.bnl.gums.account.GecosLdapAccountMapper;
-import gov.bnl.gums.account.GroupAccountMapper;
-import gov.bnl.gums.account.ManualAccountMapper;
+import gov.bnl.gums.account.*;
 import gov.bnl.gums.configuration.Configuration;
-import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
-import gov.bnl.gums.hostToGroup.CertificateHostToGroupMapping;
-import gov.bnl.gums.hostToGroup.HostToGroupMapping;
-import gov.bnl.gums.persistence.HibernatePersistenceFactory;
-import gov.bnl.gums.persistence.LDAPPersistenceFactory;
-import gov.bnl.gums.persistence.LocalPersistenceFactory;
-import gov.bnl.gums.persistence.PersistenceFactory;
-import gov.bnl.gums.userGroup.LDAPUserGroup;
-import gov.bnl.gums.userGroup.ManualUserGroup;
-import gov.bnl.gums.userGroup.UserGroup;
-import gov.bnl.gums.userGroup.VOMSUserGroup;
-import gov.bnl.gums.userGroup.VirtualOrganization;
+import gov.bnl.gums.groupToAccount.*;
+import gov.bnl.gums.hostToGroup.*;
+import gov.bnl.gums.persistence.*;
+import gov.bnl.gums.userGroup.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.rmi.Remote;
