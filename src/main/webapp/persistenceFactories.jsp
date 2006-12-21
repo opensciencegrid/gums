@@ -59,7 +59,7 @@ if (request.getParameter("action")==null ||
 					message = "<div class=\"failure\">Error deleting persistence factory</div>";
 			}
 			else
-				message = "<div class=\"failure\">You cannot delete this item until removing references to it within: " + references + "</div>";
+				message = "<div class=\"failure\">You cannot delete this item until removing references to it within " + references + ".</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error deleting persistence factory: " + e.getMessage() + "</div>";
 		}
@@ -90,41 +90,31 @@ if (request.getParameter("action")==null ||
 			    		"<td>");
 			    		
 		if (persistenceFactory instanceof HibernatePersistenceFactory) {
-			out.write( 		"Use <span style=\"color:blue\">hibernate</span> persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span> to store user and account mapping information");
-			if( ((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url")!=null ) {
-	    		out.write( 
-	    					" at MySQL URL " + "<span style=\"color:blue\">" + 
-	    					((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url") +
-	    					"</span>" );
-			}
+			out.write(	"Store user information in <span style=\"color:blue\">hibernate</span> persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span>"+
+						" at MySQL URL " + "<span style=\"color:blue\">" + 
+    					((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url") +
+    					"</span>" );
 		}
 		else if (persistenceFactory instanceof LDAPPersistenceFactory) {
-			out.write( 		"Use <span style=\"color:blue\">LDAP</span> persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span> to store user and account mapping information");
-			if( ((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("ldap.java.naming.provider.url")!=null ) {
-	    		out.write( 
-	    					" at URL " + "<span style=\"color:blue\">" + 
-	    					((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("ldap.java.naming.provider.url") +
-	    					"</span>" );
-			}
+			out.write(	"Store user information in <span style=\"color:blue\">LDAP</span> persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span>"+
+						" at LDAP URL " + "<span style=\"color:blue\">" + 
+    					((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url") +
+    					"</span>." +
+    					(((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?" Update GID":" Do not update GID") + " with every access.");
 		}
 		else if (persistenceFactory instanceof LocalPersistenceFactory) {
-			out.write( 		"Use <span style=\"color:blue\">local</span> persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span> to store user and account mapping information");
-			if( ((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("mmysql.hibernate.connection.url")!=null ) {
-	    		out.write( 
-	    					" at MySQL URL " + "<span style=\"color:blue\">" + 
-	    					((LocalPersistenceFactory)persistenceFactory).getProperties().getProperty("mysql.hibernate.connection.url") +
-	    					"</span>" );
-			}
-			if( ((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("ldap.java.naming.provider.url")!=null ) {
-	    		out.write( 
-	    					" at LDAP URL " + "<span style=\"color:blue\">" + 
-	    					((LocalPersistenceFactory)persistenceFactory).getProperties().getProperty("ldap.java.naming.provider.url") +
-	    					"</span>" );
-			}			
+			out.write( 	"Store user information in <span style=\"color:blue\">local</span> persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span>"+
+						" at MySQL URL " + "<span style=\"color:blue\">"+ 
+    					((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.url")+
+    					"</span>"+
+    					" and LDAP URL " + "<span style=\"color:blue\">"+ 
+    					((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.provider.url")+
+    					"</span>."+
+    					(((LocalPersistenceFactory)persistenceFactory).isSynchGroups()?" Update GID":" Do not update GID") + " with every access.");
 		}
 		
 		out.write(
-						".</td>"+
+						"</td>"+
 			      	"</tr>"+
 				"</table>"+
 			"</td>"+
@@ -149,6 +139,15 @@ else if ("edit".equals(request.getParameter("action"))
 	|| "reload".equals(request.getParameter("action"))) {
 	
 	PersistenceFactory persistenceFactory = null;
+
+	ArrayList persistenceFactoryClasses = new ArrayList();
+	persistenceFactoryClasses.add("gov.bnl.gums.persistence.HibernatePersistenceFactory");
+	persistenceFactoryClasses.add("gov.bnl.gums.persistence.LDAPPersistenceFactory");
+	persistenceFactoryClasses.add("gov.bnl.gums.persistence.LocalPersistenceFactory");
+	
+	ArrayList authenticationTypes = new ArrayList();
+	authenticationTypes.add("simple");
+	authenticationTypes.add("none");
 	
 	if ("edit".equals(request.getParameter("action"))) {
 		try {
@@ -170,12 +169,216 @@ else if ("edit".equals(request.getParameter("action"))
 		
 	else if ("add".equals(request.getParameter("action"))) {
 		persistenceFactory = new HibernatePersistenceFactory();
+		((HibernatePersistenceFactory)persistenceFactory).setProperties( ConfigurationWebToolkit.getHibernateProperties(persistenceFactory, request, false) );
 	}		
-		
+			
+	out.write(	
+"<form action=\"persistenceFactories.jsp\" method=\"get\">"+
+	"<input type=\"hidden\" name=\"action\" value=\"\">"+
+	"<input type=\"hidden\" name=\"originalAction\" value=\""+ 
+		("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action")) +
+	"\">"+
+	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"Store user information in persistence factory "+
+		    "</td>"+
+		    "<td nowrap>");
 
+	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
+		out.write(
+		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (persistenceFactory.getName()!=null ? persistenceFactory.getName() : "") + "\"/>");
+	else
+		out.write(
+		    	persistenceFactory.getName()+
+		    	"<input type=\"hidden\" name=\"name\" value=\"" + persistenceFactory.getName() + "\"/>");	
+		    	
+	out.write(
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+	    		"of class"+
+		    "</td>"+
+		    "<td nowrap>"+
+			ConfigurationWebToolkit.createSelectBox("className", 
+				persistenceFactoryClasses, 
+				persistenceFactory.getClass().toString().substring(6),
+				"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+				false)+
+		    "</td>"+
+		"</tr>");
+	
+	if (persistenceFactory instanceof HibernatePersistenceFactory) {
+		out.write( 
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"at MySQL URL"+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"<input maxlength=\"256\" size=\"64\" name=\"mySqlUrl\" value=\"" + ((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url") + "\"/>"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"with MySQL username"+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"<input maxlength=\"256\" size=\"32\" name=\"mySqlUsername\" value=\"" + ((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.username") + "\"/>"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"and MySQL password"+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"<input type=\"password\" maxlength=\"256\" size=\"32\" name=\"mySqlPassword\" value=\"" + ((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.password") + "\"/>"+
+		    "</td>"+
+		"</tr>");
+	}
+	else if (persistenceFactory instanceof LDAPPersistenceFactory) {
+		out.write( 
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"at LDAP URL"+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"<input maxlength=\"256\" size=\"64\" name=\"ldapUrl\" value=\"" + ((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url") + "\"/>"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"with authentication type "+
+		    "</td>"+
+		    "<td nowrap>"+
+				ConfigurationWebToolkit.createSelectBox("ldapAuthentication", 
+					authenticationTypes, 
+					((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.authentication"),
+					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+					false)+
+					(((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.authentication").equals("simple") ? "" : ".")+
+		    "</td>"+
+		"</tr>");
+		
+		if (((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.authentication").equals("simple")) {
+			out.write(
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"and principle "+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"<input maxlength=\"256\" size=\"64\" name=\"ldapPrincipal\" value=\"" + ((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.principal") + "\"/>"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"and credentials "+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"<input type=\"password\" maxlength=\"256\" size=\"32\" name=\"ldapCredentials\" value=\"" + ((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.credentials") + "\"/> ."+
+		    "</td>"+
+		"</tr>");
+		}
+		
+		out.write(
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"Update GID for every access? "+
+		    "</td>"+
+		    "<td nowrap>"+
+				"<select name=\"synchGroups\"><option "+
+				(((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"selected":"")+
+				">true</option><option "+
+				(((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"":"selected")+
+				">false</option></select>"+
+		    "</td>"+
+		"</tr>"
+		);
+	}
+	else if (persistenceFactory instanceof LocalPersistenceFactory) {
+		out.write( 
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"at MySQL URL "+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"<input maxlength=\"256\" size=\"64\" name=\"mySqlUrl\" value=\"" + ((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.url") + "\"/>"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"with username "+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"<input maxlength=\"256\" size=\"32\" name=\"mySqlUsername\" value=\"" + ((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.username") + "\"/>"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"and password "+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"<input type=\"password\" maxlength=\"256\" size=\"32\" name=\"mySqlPassword\" value=\"" + ((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.password") + "\"/>"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"and at LDAP URL "+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"<input maxlength=\"256\" size=\"64\" name=\"ldapUrl\" value=\"" + ((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.provider.url") + "\"/>"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"with authentication type "+
+		    "</td>"+
+		    "<td nowrap>"+
+				ConfigurationWebToolkit.createSelectBox("ldapAuthentication", 
+					authenticationTypes, 
+					((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.authentication"),
+					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+					false)+
+					(((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.authentication").equals("simple") ? "" : ".")+
+		    "</td>"+
+		"</tr>");
+		
+		if (((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.authentication").equals("simple")) {
+			out.write(
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"and principle"+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"<input maxlength=\"256\" size=\"64\" name=\"ldapPrincipal\" value=\"" + ((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.principal") + "\"/>"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"and credentials"+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"<input type=\"ldapCredentials\" maxlength=\"256\" size=\"32\" name=\"ldapCredentials\" value=\"" + ((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.credentials") + "\"/> ."+
+		    "</td>"+
+		"</tr>");
+		}
+		
+		out.write(
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"Update GID for every access? "+
+		    "</td>"+
+		    "<td nowrap>"+
+				"<select name=\"synchGroups\"><option "+
+				(((LocalPersistenceFactory)persistenceFactory).isSynchGroups()?"selected":"")+
+				">true</option><option "+
+				(((LocalPersistenceFactory)persistenceFactory).isSynchGroups()?"":"selected")+
+				">false</option></select>"+
+		    "</td>"+
+		"</tr>"
+		);
+	}
 						
 	out.write(
-			"<tr>"+
+		"<tr>"+
 	        "<td colspan=2>"+
 				ConfigurationWebToolkit.createDoSubmit(persistenceFactories, request)+
 	        	"<div style=\"text-align: center;\">"+

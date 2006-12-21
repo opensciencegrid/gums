@@ -175,10 +175,14 @@
   #body table.configElement {
     BORDER: rgb(255,204,51) 1px solid;
     }
-    
+      
   #body table.configMovedElement {
     BORDER: rgb(255,204,51) 2px solid;
     }    
+    
+  #body table.userElement {
+    BORDER: rgb(255,204,51) 1px solid;
+    }
     
   .failure {
   	color:red;

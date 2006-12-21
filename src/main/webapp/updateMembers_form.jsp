@@ -11,7 +11,7 @@
 <%@include file="topNav.jspf"%>
 <div id="title">
 <h1><span>GUMS</span></h1>
-<h2><span>Update VO Members Database</span></h2>
+<h2><span>GUMS User Management</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
@@ -19,8 +19,7 @@
 <%-- <jsp:useBean id="beanInstanceName" scope="session" class="beanPackage.BeanClassName" /> --%>
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
-Updates the list of members of each group by connecting to the different VO
-servers.
+Updates the list of members of each group by connecting to the different VO servers.
 </p>
 
 <form action="updateMembers.jsp" method="get">

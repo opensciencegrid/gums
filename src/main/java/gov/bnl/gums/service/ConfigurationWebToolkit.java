@@ -188,57 +188,49 @@ public class ConfigurationWebToolkit implements Remote {
 		if (className.equals("gov.bnl.gums.persistence.HibernatePersistenceFactory")) {
 			persistenceFactory = new HibernatePersistenceFactory();
 			persistenceFactory.setName( request.getParameter("name") );
-			
-			Properties properties = new Properties();
-			properties.put("mysql.hibernate.connection.driver_class", request.getParameter("driverClass"));
-			properties.put("mysql.hibernate.dialect", request.getParameter("dialect"));
-			properties.put("mysql.hibernate.c3p0.min_size", request.getParameter("min_size"));
-			properties.put("mysql.hibernate.c3p0.max_size", request.getParameter("max_size"));
-			properties.put("mysql.hibernate.c3p0.timeout", request.getParameter("timeout"));
-			properties.put("mysql.hibernate.connection.url", request.getParameter("url"));
-			properties.put("mysql.hibernate.connection.username", request.getParameter("username"));
-			properties.put("mysql.hibernate.connection.password", request.getParameter("password"));
-			properties.put("mysql.hibernate.connection.autoReconnect", request.getParameter("autoReconnect"));
-			((HibernatePersistenceFactory)persistenceFactory).setProperties(properties);
+			((HibernatePersistenceFactory)persistenceFactory).setProperties( getHibernateProperties(persistenceFactory, request, false) );
 		} 
 		else if (className.equals("gov.bnl.gums.persistence.LDAPPersistenceFactory")) {
 			persistenceFactory = new LDAPPersistenceFactory();
 			persistenceFactory.setName( request.getParameter("name") );
-			((LDAPPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups").equals("true") );
-			
-			Properties properties = new Properties();
-			properties.put("ldap.java.naming.provider.url", request.getParameter("ldapUrl"));
-			properties.put("ldap.java.naming.factory.initial", request.getParameter("initial"));
-			properties.put("ldap.java.naming.security.authentication", request.getParameter("auth"));
-			properties.put("ldap.java.naming.security.principal", request.getParameter("auth"));
-			properties.put("ldap.java.naming.security.credentials", request.getParameter("cred"));
-			((LocalPersistenceFactory)persistenceFactory).setProperties(properties);
+			((LDAPPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").equals("true") : false );
+			((LDAPPersistenceFactory)persistenceFactory).setProperties( getLdapProperties(persistenceFactory, request, false) );
 		} 
 		else if (className.equals("gov.bnl.gums.persistence.LocalPersistenceFactory")) {
 			persistenceFactory = new LocalPersistenceFactory();
 			persistenceFactory.setName( request.getParameter("name") );
-			((LocalPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups").equals("true") );
-			
-			Properties properties = new Properties();
-			properties.put("mysql.hibernate.connection.driver_class", request.getParameter("driverClass"));
-			properties.put("mysql.hibernate.dialect", request.getParameter("dialect"));
-			properties.put("mysql.hibernate.c3p0.min_size", request.getParameter("min_size"));
-			properties.put("mysql.hibernate.c3p0.max_size", request.getParameter("max_size"));
-			properties.put("mysql.hibernate.c3p0.timeout", request.getParameter("timeout"));
-			properties.put("mysql.hibernate.connection.url", request.getParameter("url"));
-			properties.put("mysql.hibernate.connection.username", request.getParameter("username"));
-			properties.put("mysql.hibernate.connection.password", request.getParameter("password"));
-			properties.put("mysql.hibernate.connection.autoReconnect", request.getParameter("autoReconnect"));
-			properties.put("ldap.java.naming.provider.url", request.getParameter("ldapUrl"));
-			properties.put("ldap.java.naming.factory.initial", request.getParameter("initial"));
-			properties.put("ldap.java.naming.security.authentication", request.getParameter("auth"));
-			properties.put("ldap.java.naming.security.principal", request.getParameter("auth"));
-			properties.put("ldap.java.naming.security.credentials", request.getParameter("cred"));
-			((LocalPersistenceFactory)persistenceFactory).setProperties(properties);
+			((LocalPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").equals("true") : false );
+			Properties properties = getHibernateProperties(persistenceFactory, request, true);
+			properties.putAll(getLdapProperties(persistenceFactory, request, true));
+			((LocalPersistenceFactory)persistenceFactory).setProperties( properties );
 		}
 
 		return persistenceFactory;
-	}		
+	}
+	
+	static public Properties getHibernateProperties(PersistenceFactory persistenceFactory, HttpServletRequest request, boolean includeMySql) {
+		Properties properties = new Properties();
+		properties.put((includeMySql?"mysql.":"") + "hibernate.connection.url", (request.getParameter("mySqlUrl")!=null ? request.getParameter("mySqlUrl") : ""));
+		properties.put((includeMySql?"mysql.":"") + "hibernate.connection.username", (request.getParameter("mySqlUsername")!=null ? request.getParameter("mySqlUsername") : ""));
+		properties.put((includeMySql?"mysql.":"") + "hibernate.connection.password", (request.getParameter("mySqlPassword")!=null ? request.getParameter("mySqlPassword") : ""));
+		properties.put((includeMySql?"mysql.":"") + "hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+		properties.put((includeMySql?"mysql.":"") + "hibernate.dialect", "net.sf.hibernate.dialect.MySQLDialect");
+		properties.put((includeMySql?"mysql.":"") + "hibernate.c3p0.min_size", "3");
+		properties.put((includeMySql?"mysql.":"") + "hibernate.c3p0.max_size", "20");
+		properties.put((includeMySql?"mysql.":"") + "hibernate.c3p0.timeout", "180");
+		properties.put((includeMySql?"mysql.":"") + "hibernate.connection.autoReconnect", "true");
+		return properties;
+	}
+
+	static public Properties getLdapProperties(PersistenceFactory persistenceFactory, HttpServletRequest request, boolean includeLdap) {
+		Properties properties = new Properties();
+		properties.put((includeLdap?"ldap.":"") + "java.naming.security.authentication", (request.getParameter("ldapAuthentication")!=null ? request.getParameter("ldapAuthentication") : "simple"));
+		properties.put((includeLdap?"ldap.":"") + "java.naming.security.principal", (request.getParameter("ldapPrincipal")!=null ? request.getParameter("ldapPrincipal") : ""));
+		properties.put((includeLdap?"ldap.":"") + "java.naming.security.credentials", (request.getParameter("ldapCredentials")!=null ? request.getParameter("ldapCredentials") : ""));
+		properties.put((includeLdap?"ldap.":"") + "java.naming.provider.url", "com.mysql.jdbc.Driver");
+		properties.put((includeLdap?"ldap.":"") + "java.naming.factory.initial", "net.sf.hibernate.dialect.MySQLDialect");
+		return properties;
+	}
 	
 	static public String getHostToGroupReferences(Configuration configuration, String g2AMappingName) {
 		String retStr = null;
@@ -318,6 +310,56 @@ public class ConfigurationWebToolkit implements Remote {
 	
 	static public String getReferencesForPersistenceFactory(Configuration configuration, String persistenceFactory) {
 		String retStr = null;
+		Iterator it;
+		
+		it = configuration.getVirtualOrganizations().values().iterator();
+		while (it.hasNext()) {
+			VirtualOrganization vo = (VirtualOrganization)it.next();
+			if(vo.getPersistenceFactory().equals(persistenceFactory)) {
+				if (retStr==null) 
+					retStr = "";
+				retStr += "virtual organization " + vo.getName() + ", ";
+			}
+		}
+
+		it = configuration.getUserGroups().values().iterator();
+		while (it.hasNext()) {
+			UserGroup userGroup = (UserGroup)it.next();
+			if (userGroup instanceof LDAPUserGroup) {
+				if (((LDAPUserGroup)userGroup).getPersistenceFactory().equals(persistenceFactory)) {
+					if (retStr==null) 
+						retStr = "";
+					retStr += "user group " + userGroup.getName() + ", ";
+				}
+			} else if (userGroup instanceof ManualUserGroup) {
+				if (((ManualUserGroup)userGroup).getPersistenceFactory().equals(persistenceFactory)) {
+					if (retStr==null) 
+						retStr = "";
+					retStr += "user group " + userGroup.getName() + ", ";
+				}
+			}
+		}
+
+		it = configuration.getAccountMappers().values().iterator();
+		while (it.hasNext()) {
+			AccountMapper accountMapper = (AccountMapper)it.next();
+			if (accountMapper instanceof ManualAccountMapper) {
+				if (((ManualAccountMapper)accountMapper).getPersistenceFactory().equals(persistenceFactory)) {
+					if (retStr==null) 
+						retStr = "";
+					retStr += "account mapper " + accountMapper.getName() + ", ";
+				}
+			} else if (accountMapper instanceof AccountPoolMapper) {
+				if (((AccountPoolMapper)accountMapper).getPersistenceFactory().equals(persistenceFactory)) {
+					if (retStr==null) 
+						retStr = "";
+					retStr += "account mapper " + accountMapper.getName() + ", ";
+				}
+			}
+		}
+
+		if(retStr!=null)
+			retStr = retStr.substring(0, retStr.length()-2);
 		
 		return retStr;
 	}		

@@ -92,7 +92,7 @@ if (request.getParameter("action")==null ||
 				    		"Check if member of virtual organization"+
 				    		" <span style=\"color:blue\">" + virtualOrganization.getName() + "</span>");
 				    		
-		out.write(		" by querying VOMS server at base URL " + "<span style=\"color:blue\">" + virtualOrganization.getBaseUrl() + "</span> (additional path specified in parent user group)");
+		out.write(		" by querying VOMS server at base URL " + "<span style=\"color:blue\">" + virtualOrganization.getBaseUrl() + "</span> (additional path specified in user group)");
 
 		if ( !virtualOrganization.getSslKey().equals("") ) {
 			out.write(	" SSL key <span style=\"color:blue\">" + virtualOrganization.getSslKey() + "</span>");
