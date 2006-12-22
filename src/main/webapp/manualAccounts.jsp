@@ -51,7 +51,7 @@ if (request.getParameter("action")==null ||
 	if ("delete".equals(request.getParameter("action"))) {
 		ManualAccountMapper manualAccountMapper = (ManualAccountMapper)accountMappers.get(request.getParameter("accountMapper"));
 		try{
-			gums.manualGroupRemove(manualAccountMapper.getPersistenceFactory(), manualAccountMapper.getName(), request.getParameter("dn"));
+			gums.manualMappingRemove(manualAccountMapper.getPersistenceFactory(), manualAccountMapper.getName(), request.getParameter("dn"));
 			message = "<div class=\"success\">Mapping has been deleted.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error deleting mapping: " + e.getMessage() + "</div>";
@@ -82,7 +82,7 @@ if (request.getParameter("action")==null ||
 				out.write(
    	"<tr>"+
 		"<td width=\"25\" valign=\"top\">"+
-			"<form action=\"manualAccountMappers.jsp\" method=\"get\">"+
+			"<form action=\"manualAccounts.jsp\" method=\"get\">"+
 				"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this mapping?'))return false;\">"+
 				"<input type=\"hidden\" name=\"dn\" value=\"" + mapping.getDn() + "\">"+
 				"<input type=\"hidden\" name=\"accountMapper\" value=\"" + manualAccountMapper.getName() + "\">"+
