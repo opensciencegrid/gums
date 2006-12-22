@@ -97,14 +97,12 @@ if (request.getParameter("action")==null ||
 			out.write(		"map to account " + 
 							"<span style=\"color:blue\">" + ((GroupAccountMapper)accountMapper).getAccountName() + "</span>");
 		} else if (accountMapper instanceof ManualAccountMapper) {
-			out.write(		"map to account " + 
-							"<span style=\"color:blue\">" + ((ManualAccountMapper)accountMapper).getAccountName() + "</span> "+
-							"if host found in persistence factory "+
+			out.write(		"search within this group in persistence factory "+
 							"<span style=\"color:blue\">" + ((ManualAccountMapper)accountMapper).getPersistenceFactory() + "</span>");
 		} else if (accountMapper instanceof AccountPoolMapper) {
 			out.write(		"map to free or previously assigned account within pool " + 
 							"<span style=\"color:blue\">" + ((AccountPoolMapper)accountMapper).getAccountPool() + "</span> "+
-							"as contained in persistence factory "+
+							"in persistence factory "+
 							"<span style=\"color:blue\">" + ((AccountPoolMapper)accountMapper).getPersistenceFactory() + "</span>");
 		} else if (accountMapper instanceof GecosLdapAccountMapper) {
 			out.write(		"map to account assigned by JNDI LDAP service " + 
@@ -222,16 +220,8 @@ else if ("edit".equals(request.getParameter("action"))
 	} else if (accountMapper instanceof ManualAccountMapper) {
 		out.write(	
 		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"map to account"+
-			"</td>"+
-			"<td>"+ 
-				"<input maxlength=\"256\" size=\"32\" name=\"accountName\" value=\"" + ((ManualAccountMapper)accountMapper).getAccountName() + "\"/>"+
-			"</td>"+
-		"</tr>"+
-		"<tr>"+
 			"<td style=\"text-align: right;\">"+
-				"if host found in persistence factory"+
+				"search within this group in persistence factory "+
 			"</td>"+
 			"<td>"+
 				ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
@@ -253,7 +243,7 @@ else if ("edit".equals(request.getParameter("action"))
 		"</tr>"+
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
-				"as contained in persistence factory"+
+				"in persistence factory"+
 			"</td>"+
 			"<td>"+
 				ConfigurationWebToolkit.createSelectBox("persistenceFactory", 

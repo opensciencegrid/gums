@@ -88,8 +88,6 @@ public class ConfigurationWebToolkit implements Remote {
 		else if (className.equals("gov.bnl.gums.account.ManualAccountMapper")) {
 			accountMapper = new ManualAccountMapper();
 			accountMapper.setName( request.getParameter("name") );
-			if (request.getParameter("accountName")!=null)
-				((ManualAccountMapper)accountMapper).setAccountName( request.getParameter("accountName") );
 			if (request.getParameter("persistenceFactory")!=null)
 				((ManualAccountMapper)accountMapper).setPersistenceFactory( (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("persistenceFactory") ) );
 		}

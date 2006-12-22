@@ -94,9 +94,7 @@ if (request.getParameter("action")==null ||
 				    		" <span style=\"color:blue\">" + userGroup.getName() + "</span>");
 				    		
 		if (userGroup instanceof ManualUserGroup) {
-			out.write(		" by searching within group" +
-							" <span style=\"color:blue\">" + ((ManualUserGroup)userGroup).getGroup() + "</span>" +
-							" in persistence factory" + 
+			out.write(		" by searching within this group in persistence factory" + 
 							" <span style=\"color:blue\">" + ((ManualUserGroup)userGroup).getPersistenceFactory() + "</span>");
 		} else if (userGroup instanceof LDAPUserGroup) {
 			out.write(		" by querying LDAP server"+ 
@@ -220,15 +218,7 @@ else if ("edit".equals(request.getParameter("action"))
 		out.write(	
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
-				"by searching within group"+
-			"</td>"+
-			"<td>"+ 
-				"<input maxlength=\"256\" size=\"32\" name=\"group\" value=\"" + ((ManualUserGroup)userGroup).getGroup() + "\"/>"+
-			"</td>"+
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"in persistence factory"+
+				"by searching within this group in persistence factory "+
 			"</td>"+
 			"<td>"+ 
 				ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
@@ -236,7 +226,7 @@ else if ("edit".equals(request.getParameter("action"))
 						((ManualUserGroup)userGroup).getPersistenceFactory(),
 						null,
 						true)+
-				"</td>"+" ."+
+				".</td>"+
 		"</tr>");
 	} else if (userGroup instanceof LDAPUserGroup) {
 		out.write(	
@@ -265,8 +255,8 @@ else if ("edit".equals(request.getParameter("action"))
 						configuration.getPersistenceFactories().values(), 
 						((LDAPUserGroup)userGroup).getPersistenceFactory(),
 						null,
-						true)+" ."+
-			"</td>"+
+						true)+
+			".</td>"+
 		"</tr>");
 	} else if (userGroup instanceof VOMSUserGroup) {
 		out.write(	

@@ -3,6 +3,7 @@
 <%@page import="gov.bnl.gums.*"%>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
 <%@ page import="gov.bnl.gums.account.*" %>
+<%@ page import="gov.bnl.gums.db.*" %>
 <%@ page import="gov.bnl.gums.configuration.*" %>
 <%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
@@ -33,15 +34,6 @@ Configuration configuration = gums.getConfiguration();
 HashMap accountMappers = configuration.getAccountMappers();
 String message = null;
 
-// Retrieve users in Manual User Group
-ArrayList manualUsers = new ArrayList();
-Iterator it = accountMappers.values().iterator();
-while (it.hasNext()) {
-	AccountMapper accountMapper = (AccountMapper)it.next();	
-	if (accountMapper instanceof ManualAccountMapper)
-		manualUsers.addAll( ((ManualAccountMapper)accountMapper).getMemberList() );
-}
-
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
 	"delete".equals(request.getParameter("action"))) {
@@ -49,20 +41,20 @@ if (request.getParameter("action")==null ||
 	if ("save".equals(request.getParameter("action"))) {
 		ManualAccountMapper manualAccountMapper = (ManualAccountMapper)accountMappers.get(request.getParameter("accountMapper"));
 		try{
-			gums.manualMappingAdd(manualAccountMapper.getPersistenceFactory(), manualAccountMapper.getAccountName(), request.getParameter("DN"), request.getParameter("account"));
-			message = "<div class=\"success\">User has been saved.</div>";
+			gums.manualMappingAdd(manualAccountMapper.getPersistenceFactory(), manualAccountMapper.getName(), request.getParameter("dn"), request.getParameter("account"));
+			message = "<div class=\"success\">Mapping has been saved.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error saving user: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error saving mapping: " + e.getMessage() + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("action"))) {
 		ManualAccountMapper manualAccountMapper = (ManualAccountMapper)accountMappers.get(request.getParameter("accountMapper"));
 		try{
-			gums.manualGroupRemove(manualAccountMapper.getPersistenceFactory(), manualAccountMapper.getGroup(), request.getParameter("DN"));
-			message = "<div class=\"success\">User has been deleted.</div>";
+			gums.manualGroupRemove(manualAccountMapper.getPersistenceFactory(), manualAccountMapper.getName(), request.getParameter("dn"));
+			message = "<div class=\"success\">Mapping has been deleted.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error deleting user: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error deleting mapping: " + e.getMessage() + "</div>";
 		}
 	}
 
@@ -77,22 +69,22 @@ if (request.getParameter("action")==null ||
 	while(accountMappersIt.hasNext()) {
 		AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();
 		if (accountMapper instanceof ManualAccountMapper) {
-			ManualAccountMapper manualAccountMapper = (ManualAccountMapper)accountMappersIt.next();
+			ManualAccountMapper manualAccountMapper = (ManualAccountMapper)accountMapper;
 			
-			List users = manualAccountMapper.getMemberList();
-			if (users==null)
+			List mappings = manualAccountMapper.getMappings();
+			if (mappings==null)
 				continue;
 				
-			Iterator usersIt = users.iterator();
-			while (usersIt.hasNext()) {
-				GridUser user = (GridUser)usersIt;
+			Iterator mappingsIt = mappings.iterator();
+			while (mappingsIt.hasNext()) {
+				HibernateMapping mapping = (HibernateMapping)mappingsIt.next();
 
 				out.write(
    	"<tr>"+
-		"<td width=\"50\" valign=\"top\">"+
+		"<td width=\"25\" valign=\"top\">"+
 			"<form action=\"manualAccountMappers.jsp\" method=\"get\">"+
-				"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this user?'))return false;\">"+
-				"<input type=\"hidden\" name=\"dn\" value=\"" + user.getCertificateDN() + "\">"+
+				"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this mapping?'))return false;\">"+
+				"<input type=\"hidden\" name=\"dn\" value=\"" + mapping.getDn() + "\">"+
 				"<input type=\"hidden\" name=\"accountMapper\" value=\"" + manualAccountMapper.getName() + "\">"+
 			"</form>"+
 		"</td>"+
@@ -100,9 +92,9 @@ if (request.getParameter("action")==null ||
 	   		"<table class=\"userElement\" width=\"100%\">"+
 	  			"<tr>"+
 		    		"<td>"+
-			    		"When mapped by manual account mapper <span style=\"color:blue\">" + manualAccountMapper.getName() + "</span>," +
-			    		" map user with DN <span style=\"color:blue\">" + user.getCertificateDN() + "</span>" +
-			    		" to account <span style=\"color:blue\">" + manualAccountMapper.getAccountName() + "</span>." +
+			    		"When mapped by account mapper <span style=\"color:blue\">" + manualAccountMapper.getName() + "</span>," +
+			    		" map user with DN <span style=\"color:blue\">" + mapping.getDn() + "</span>" +
+			    		" to account <span style=\"color:blue\">" + mapping.getAccount() + "</span>." +
 		    		"</td>"+
 	  			"</tr>"+
 			"</table>"+
@@ -126,7 +118,16 @@ if (request.getParameter("action")==null ||
 }
 
 else if ("add".equals(request.getParameter("action"))) {
-/*	GridUser user = new GridUser();
+	HibernateMapping mapping = new HibernateMapping();
+
+	// Retrieve mappings in Manual Account Mappers
+	ArrayList manualAccountMappers = new ArrayList();
+	Iterator accountMappersIt = accountMappers.values().iterator();
+	while (accountMappersIt.hasNext()) {
+		AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();	
+		if (accountMapper instanceof ManualAccountMapper)
+			manualAccountMappers.add( accountMapper.getName() );
+	}
 		
 	out.write(
 "<form action=\"manualAccounts.jsp\" method=\"get\">"+
@@ -134,10 +135,10 @@ else if ("add".equals(request.getParameter("action"))) {
 	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
-				"When mapped by manual account mapper  "+
+				"When mapped by account mapper "+
 			"</td>"+
 			"<td>"+ 
-				ConfigurationWebToolkit.createSelectBox("accountMapper", accountMappers.values(), null, null, accountMappers.size()>1)+" ,"
+				ConfigurationWebToolkit.createSelectBox("accountMapper", manualAccountMappers, null, null, manualAccountMappers.size()>1)+" ,"+
 			"</td>"+
 		"</tr>"+
 		"<tr>"+
@@ -172,7 +173,7 @@ else if ("add".equals(request.getParameter("action"))) {
 	        "</td>"+
 		"</tr>"+
 	"</table>"+
-"</form>");*/
+"</form>");
 }
 
 %>

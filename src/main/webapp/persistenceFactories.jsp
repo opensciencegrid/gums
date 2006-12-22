@@ -90,20 +90,20 @@ if (request.getParameter("action")==null ||
 			    		"<td>");
 			    		
 		if (persistenceFactory instanceof HibernatePersistenceFactory) {
-			out.write(	"Store user information in <span style=\"color:blue\">hibernate</span> persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span>"+
+			out.write(	"Store user information in hibernate persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span>"+
 						" at MySQL URL " + "<span style=\"color:blue\">" + 
     					((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url") +
     					"</span>" );
 		}
 		else if (persistenceFactory instanceof LDAPPersistenceFactory) {
-			out.write(	"Store user information in <span style=\"color:blue\">LDAP</span> persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span>"+
+			out.write(	"Store user information in LDAP persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span>"+
 						" at LDAP URL " + "<span style=\"color:blue\">" + 
     					((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url") +
     					"</span>." +
     					(((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?" Update GID":" Do not update GID") + " with every access.");
 		}
 		else if (persistenceFactory instanceof LocalPersistenceFactory) {
-			out.write( 	"Store user information in <span style=\"color:blue\">local</span> persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span>"+
+			out.write( 	"Store user information in local persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span>"+
 						" at MySQL URL " + "<span style=\"color:blue\">"+ 
     					((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.url")+
     					"</span>"+
