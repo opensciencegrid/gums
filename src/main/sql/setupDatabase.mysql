@@ -23,6 +23,3 @@ CREATE TABLE `MAPPING` (
 ) TYPE=InnoDB;
 
 CREATE INDEX complete ON MAPPING (MAP(10), DN(70));
-
-/DC=org/DC=doegrids/OU=Services/CN=host/gridgk01.racf.bnl.gov
-/C=CH/O=CERN/OU=GRID/CN=Trevor Vickey 9635
