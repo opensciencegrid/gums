@@ -219,7 +219,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     
     private java.util.List retrieveMembers(Session session, Transaction tx) throws Exception {
         Query q;
-        q = session.createQuery("FROM UserMapping u WHERE u.group = ?");
+        q = session.createQuery("FROM HibernateUser u WHERE u.group = ?");
         q.setString(0, group);
         List hibernateUsers = q.list();
         List members = new ArrayList(hibernateUsers.size());
@@ -233,10 +233,10 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     
     private boolean removeMember(Session session, Transaction tx, GridUser user) throws Exception {
         if (user.getVoFQAN() == null) {
-            int n = session.delete("FROM UserMapping u WHERE u.group = ? AND u.dn = ? AND u.fqan is null", new Object[] {group, user.getCertificateDN()}, new Type[] {new StringType(), new StringType()});
+            int n = session.delete("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan is null", new Object[] {group, user.getCertificateDN()}, new Type[] {new StringType(), new StringType()});
             return n > 0;
         } else {
-            int n = session.delete("FROM UserMapping u WHERE u.group = ? AND u.dn = ? AND u.fqan = ?", new Object[] {group, user.getCertificateDN(), user.getVoFQAN().toString()}, new Type[] {new StringType(), new StringType(), new StringType()});
+            int n = session.delete("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan = ?", new Object[] {group, user.getCertificateDN(), user.getVoFQAN().toString()}, new Type[] {new StringType(), new StringType(), new StringType()});
             return n > 0;
         }
     }

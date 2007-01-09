@@ -33,7 +33,7 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
     private HibernatePersistenceFactory persistenceFactory;
     private String map;
     
-    /** Creates a new instance of AccountMapping */
+    /** Creates a new instance of HibernateMapping */
     public HibernateMappingDB(HibernatePersistenceFactory persistenceFactory, String map) {
         this.persistenceFactory = persistenceFactory;
         this.map = map;
@@ -111,7 +111,7 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
     
     private java.util.List retrieveMappings(Session session, Transaction tx) throws Exception {
         Query q;
-        q = session.createQuery("FROM AccountMapping m WHERE m.map = ?");
+        q = session.createQuery("FROM HibernateMapping m WHERE m.map = ?");
         q.setString(0, map);
         List hibernateMappings = q.list();
         return hibernateMappings;
@@ -119,7 +119,7 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
     
     private HibernateMapping retrieveMapping(Session session, Transaction tx, String userDN) throws Exception{
         Query q;
-        q = session.createQuery("FROM AccountMapping m WHERE m.map = ? AND m.dn = ?");
+        q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ?");
         q.setString(0, map);
         q.setString(1, userDN);
         return (HibernateMapping) q.uniqueResult();
@@ -160,7 +160,7 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
     }
     
     private boolean removeMapping(Session session, Transaction tx, String userDN) throws Exception {
-        int n = session.delete("FROM AccountMapping m WHERE m.map = ? AND m.dn = ?", new Object[] {map, userDN}, new Type[] {new StringType(), new StringType()});
+        int n = session.delete("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ?", new Object[] {map, userDN}, new Type[] {new StringType(), new StringType()});
         return n > 0;
     }
 
@@ -254,7 +254,7 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
             session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();
             Query q;
-            q = session.createQuery("FROM AccountMapping m WHERE m.map = ? AND m.dn is null ORDER BY m.account LIMIT 1");
+            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn is null ORDER BY m.account LIMIT 1");
             q.setString(0, map);
             HibernateMapping mapping = (HibernateMapping) q.uniqueResult();
             if (mapping == null) {
@@ -296,7 +296,7 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
             session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();
             Query q;
-            q = session.createQuery("FROM AccountMapping m WHERE m.map = ? AND m.dn = ? ORDER BY m.account LIMIT 1");
+            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ? ORDER BY m.account LIMIT 1");
             q.setString(0, map);
             q.setString(1, userDN);
             HibernateMapping mapping = (HibernateMapping) q.uniqueResult();
@@ -337,7 +337,7 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
             session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();
             Query q;
-            q = session.createQuery("FROM AccountMapping m WHERE m.map = ? AND m.dn = ? ORDER BY m.account LIMIT 1");
+            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ? ORDER BY m.account LIMIT 1");
             q.setString(0, map);
             q.setString(1, userDN);
             HibernateMapping mapping = (HibernateMapping) q.uniqueResult();
@@ -380,7 +380,7 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
             session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();
             Query q;
-            q = session.createQuery("FROM AccountMapping m WHERE m.map = ? AND m.dn is not null");
+            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn is not null");
             q.setString(0, map);
             List mappings = (List) q.list();
             Iterator iter = mappings.iterator();
