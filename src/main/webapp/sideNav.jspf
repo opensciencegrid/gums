@@ -17,7 +17,8 @@
   <li>&nbsp;&nbsp;&nbsp;<a href="updateMembers_form.jsp">Update VO Members</a></li>
   <li>Test</li>
   <li>&nbsp;&nbsp;&nbsp;<a href="map_form.jsp">Map User</a></li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="inverseMap_form.jsp">Inverse Map User</a></li>
   <li>&nbsp;&nbsp;&nbsp;<a href="generateGridMapfile_form.jsp">Generate Grid Mapfile</a></li>
-  <li>&nbsp;&nbsp;&nbsp;<a href="generateInverseMap_form.jsp">Generate Inverse Map</a></li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="generateInverseMapfile_form.jsp">Generate Inverse Mapfile</a></li>
 </ul>
 </div>

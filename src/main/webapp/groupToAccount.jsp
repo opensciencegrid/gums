@@ -185,15 +185,25 @@ else if ("edit".equals(request.getParameter("action"))
 
 	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
 		out.write(
-		    	"<input maxlength=\"256\" size=\"64\" name=\"name\" value=\"" + g2AMapping.getName() + "\"/>");
+		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (g2AMapping.getName()!=null ? g2AMapping.getName() : "") + "\"/>" +
+		    "</td>" +
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+				"myGroupToAccountMapping"+
+		    "</td>"+
+		"</tr>");
 	else
 		out.write(
 		    	g2AMapping.getName()+
-		    	"<input type=\"hidden\" name=\"name\" value=\"" + g2AMapping.getName() + "\"/>");	
+		    	"<input type=\"hidden\" name=\"name\" value=\"" + g2AMapping.getName() + "\"/>" +
+		    "</td>" +
+		"</tr>");
 
 	out.write(
-		    "</td>"+
-		"</tr>"+
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">where user member of user group</td>"+
 			"<td>");

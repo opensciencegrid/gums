@@ -178,11 +178,23 @@ else if ("edit".equals(request.getParameter("action"))
 
 	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
 		out.write(
-		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (virtualOrganization.getName()!=null ? virtualOrganization.getName() : "") + "\"/>");
+		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (virtualOrganization.getName()!=null ? virtualOrganization.getName() : "") + "\"/>" +
+		    "</td>" +
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+				"myVirtualOrganization"+
+		    "</td>"+
+		"</tr>");
 	else
 		out.write(
 		    	virtualOrganization.getName()+
-		    	"<input type=\"hidden\" name=\"name\" value=\"" + virtualOrganization.getName() + "\"/>");	
+		    	"<input type=\"hidden\" name=\"name\" value=\"" + virtualOrganization.getName() + "\"/>" +
+		    "</td>" +
+		"</tr>");	
 		    	
 	out.write(	
 		"<tr>"+
@@ -193,6 +205,14 @@ else if ("edit".equals(request.getParameter("action"))
 				"<input maxlength=\"256\" size=\"32\" name=\"baseURL\" value=\"" + virtualOrganization.getBaseUrl() + "\"/>(additional path in user group)"+
 			"</td>"+
 		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"https://lcg-voms.cern.ch:8443/voms"+
+		    "</td>"+
+		"</tr>"+	
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
 				"using SSL key"+
@@ -201,6 +221,14 @@ else if ("edit".equals(request.getParameter("action"))
 				"<input maxlength=\"256\" size=\"32\" name=\"sslKey\" value=\"" + virtualOrganization.getSslKey() + "\"/> ,"+
 			"</td>"+
 		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"/etc/grid-security/gumskey.pem"+
+		    "</td>"+
+		"</tr>"+	
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
 				"SSL cert file"+
@@ -209,6 +237,14 @@ else if ("edit".equals(request.getParameter("action"))
 				"<input maxlength=\"256\" size=\"32\" name=\"sslCert\" value=\"" + virtualOrganization.getSslCertfile() + "\"/> ,"+
 			"</td>"+
 		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"/etc/grid-security/gumscert.pem"+
+		    "</td>"+
+		"</tr>"+
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
 				"SSL CA files (optional)"+
@@ -216,6 +252,14 @@ else if ("edit".equals(request.getParameter("action"))
 			"<td>"+ 
 				"<input maxlength=\"256\" size=\"32\" name=\"sslCA\" value=\"" + virtualOrganization.getSslCAFiles() + "\"/> ,"+
 			"</td>"+
+		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"/etc/grid-security/certificates"+
+		    "</td>"+
 		"</tr>"+
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+

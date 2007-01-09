@@ -185,15 +185,25 @@ else if ("edit".equals(request.getParameter("action"))
 
 	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
 		out.write(
-		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (accountMapper.getName()!=null ? accountMapper.getName() : "") + "\"/>");
+		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (accountMapper.getName()!=null ? accountMapper.getName() : "") + "\"/>" +
+		    "</td>" +
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+				"myAccountMapper"+
+		    "</td>"+
+		"</tr>");
 	else
 		out.write(
 		    	accountMapper.getName()+
-		    	"<input type=\"hidden\" name=\"name\" value=\"" + accountMapper.getName() + "\"/>");	
+		    	"<input type=\"hidden\" name=\"name\" value=\"" + accountMapper.getName() + "\"/>" +
+		    "</td>" +
+		"</tr>");
 
 	out.write(
-		    "</td>"+
-		"</tr>"+
 		"<tr>"+
     		"<td nowrap style=\"text-align: right;\">"+
 	    		"of class "+
@@ -216,6 +226,14 @@ else if ("edit".equals(request.getParameter("action"))
 			"<td>"+ 
 				"<input maxlength=\"256\" size=\"32\" name=\"accountName\" value=\"" + ((GroupAccountMapper)accountMapper).getAccountName() + "\"/>"+
 			"</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+				"myAccount"+
+		    "</td>"+
 		"</tr>");
 	} else if (accountMapper instanceof ManualAccountMapper) {
 		out.write(	
@@ -243,6 +261,14 @@ else if ("edit".equals(request.getParameter("action"))
 		"</tr>"+
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+				"myPool"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
 				"in persistence factory"+
 			"</td>"+
 			"<td>"+
@@ -252,7 +278,14 @@ else if ("edit".equals(request.getParameter("action"))
 						null,
 						false)+
 			"</td>"+
-		"</tr>" );
+		"</tr>");
+		if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
+			out.write(
+			"<tr>"+
+				"<td colspan=\"2\" nowrap style=\"text-align: center;\">"+
+					"NOTE: After saving, you should also add a range of accounts for this pool (click \"Add Pool Account Range\")"+
+			    "</td>"+
+			"</tr>" );
 	} else if (accountMapper instanceof GecosLdapAccountMapper) {
 		out.write(	
 		"<tr>"+
@@ -262,6 +295,14 @@ else if ("edit".equals(request.getParameter("action"))
 			"<td>"+ 
 				"<input maxlength=\"256\" size=\"32\" name=\"serviceUrl\" value=\"" + ((GecosLdapAccountMapper)accountMapper).getJndiLdapUrl() + "\"/>"+
 			"</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+				"ldap://localhost/dc=usatlas,dc=bnl,dc=gov"+
+		    "</td>"+
 		"</tr>");
 	}	
 

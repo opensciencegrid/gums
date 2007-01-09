@@ -192,15 +192,25 @@ else if ("edit".equals(request.getParameter("action"))
 
 	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
 		out.write(
-		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (userGroup.getName()!=null ? userGroup.getName() : "") + "\"/>");
+		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (userGroup.getName()!=null ? userGroup.getName() : "") + "\"/>" +
+		    "</td>" +
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+				"myUserGroup"+
+		    "</td>"+
+		"</tr>");
 	else
 		out.write(
 		    	userGroup.getName()+
-		    	"<input type=\"hidden\" name=\"name\" value=\"" + userGroup.getName() + "\"/>");	
+		    	"<input type=\"hidden\" name=\"name\" value=\"" + userGroup.getName() + "\"/>" +
+		    "</td>" +
+		"</tr>");		
 
 	out.write(
-		    "</td>"+
-		"</tr>"+
 		"<tr>"+
     		"<td nowrap style=\"text-align: right;\">"+
 	    		"of class "+
@@ -225,7 +235,7 @@ else if ("edit".equals(request.getParameter("action"))
 						configuration.getPersistenceFactories().values(), 
 						((ManualUserGroup)userGroup).getPersistenceFactory(),
 						null,
-						true)+
+						configuration.getPersistenceFactories().size()>1)+
 				".</td>"+
 		"</tr>");
 	} else if (userGroup instanceof LDAPUserGroup) {
@@ -238,6 +248,14 @@ else if ("edit".equals(request.getParameter("action"))
 				"<input maxlength=\"256\" size=\"32\" name=\"server\" value=\"" + ((LDAPUserGroup)userGroup).getServer() + "\"/>"+
 			"</td>"+
 		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"grid-vo.nikhef.nl"+
+		    "</td>"+
+		"</tr>"+		
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
 				"with query"+
@@ -245,6 +263,14 @@ else if ("edit".equals(request.getParameter("action"))
 			"<td>"+ 
 				"<input maxlength=\"256\" size=\"32\" name=\"query\" value=\"" + ((LDAPUserGroup)userGroup).getQuery() + "\"/>"+
 			"</td>"+
+		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"ou=usatlas,o=atlas,dc=eu-datagrid,dc=org"+
+		    "</td>"+
 		"</tr>"+
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
@@ -280,6 +306,14 @@ else if ("edit".equals(request.getParameter("action"))
 					"{base URL}<input maxlength=\"256\" size=\"32\" name=\"url\" value=\"" + ((VOMSUserGroup)userGroup).getRemainderUrl() + "\"/>"+
 				"</td>"+
 			"</tr>"+
+		    "<tr>"+
+	    		"<td nowrap style=\"text-align: right;\">"+
+		    		"i.e."+
+			    "</td>"+
+			    "<td nowrap>"+
+			    	"/atlas/services/VOMSAdmin"+
+			    "</td>"+
+			"</tr>"+			
 			"<tr>"+
 				"<td nowrap style=\"text-align: right;\">"+
 					"where non-VOMS certificates are"+

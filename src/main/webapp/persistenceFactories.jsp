@@ -187,11 +187,23 @@ else if ("edit".equals(request.getParameter("action"))
 
 	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
 		out.write(
-		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (persistenceFactory.getName()!=null ? persistenceFactory.getName() : "") + "\"/>");
+		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (persistenceFactory.getName()!=null ? persistenceFactory.getName() : "") + "\"/>" +
+		    "</td>" +
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+				"myPersistenceFactory"+
+		    "</td>"+
+		"</tr>");
 	else
 		out.write(
 		    	persistenceFactory.getName()+
-		    	"<input type=\"hidden\" name=\"name\" value=\"" + persistenceFactory.getName() + "\"/>");	
+		    	"<input type=\"hidden\" name=\"name\" value=\"" + persistenceFactory.getName() + "\"/>" +
+		    "</td>" +
+		"</tr>");	
 		    	
 	out.write(
 		"<tr>"+
@@ -217,6 +229,14 @@ else if ("edit".equals(request.getParameter("action"))
 		    	"<input maxlength=\"256\" size=\"64\" name=\"mySqlUrl\" value=\"" + ((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url") + "\"/>"+
 		    "</td>"+
 		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"jdbc:mysql://localhost.localdomain:3306/GUMS_1_1"+
+		    "</td>"+
+		"</tr>"+
 		"<tr>"+
     		"<td nowrap style=\"text-align: right;\">"+
 	    		"with MySQL username"+
@@ -225,6 +245,14 @@ else if ("edit".equals(request.getParameter("action"))
 		    	"<input maxlength=\"256\" size=\"32\" name=\"mySqlUsername\" value=\"" + ((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.username") + "\"/>"+
 		    "</td>"+
 		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"gums"+
+		    "</td>"+
+		"</tr>"+		
 		"<tr>"+
     		"<td nowrap style=\"text-align: right;\">"+
 	    		"and MySQL password"+
@@ -244,6 +272,14 @@ else if ("edit".equals(request.getParameter("action"))
 		    	"<input maxlength=\"256\" size=\"64\" name=\"ldapUrl\" value=\"" + ((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url") + "\"/>"+
 		    "</td>"+
 		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"ldap://localhost/dc=racf,dc=bnl,dc=gov"+
+		    "</td>"+
+		"</tr>"+	
 		"<tr>"+
     		"<td nowrap style=\"text-align: right;\">"+
 	    		"with authentication type "+
@@ -268,9 +304,17 @@ else if ("edit".equals(request.getParameter("action"))
 		    	"<input maxlength=\"256\" size=\"64\" name=\"ldapPrincipal\" value=\"" + ((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.principal") + "\"/>"+
 		    "</td>"+
 		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"uid=gumsAdmin,ou=People,dc=racf,dc=bnl,dc=gov"+
+		    "</td>"+
+		"</tr>"+	
 		"<tr>"+
     		"<td nowrap style=\"text-align: right;\">"+
-	    		"and credentials "+
+	    		"and password "+
 		    "</td>"+
 		    "<td nowrap>"+
 		    	"<input type=\"password\" maxlength=\"256\" size=\"32\" name=\"ldapCredentials\" value=\"" + ((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.credentials") + "\"/> ."+
@@ -303,12 +347,28 @@ else if ("edit".equals(request.getParameter("action"))
 		    	"<input maxlength=\"256\" size=\"64\" name=\"mySqlUrl\" value=\"" + ((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.url") + "\"/>"+
 		    "</td>"+
 		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"jdbc:mysql://localhost.localdomain:3306/GUMS_1_1"+
+		    "</td>"+
+		"</tr>"+
 		"<tr>"+
     		"<td nowrap style=\"text-align: right;\">"+
 	    		"with username "+
 		    "</td>"+
 		    "<td nowrap>"+
 		    	"<input maxlength=\"256\" size=\"32\" name=\"mySqlUsername\" value=\"" + ((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.username") + "\"/>"+
+		    "</td>"+
+		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"gums"+
 		    "</td>"+
 		"</tr>"+
 		"<tr>"+
@@ -325,6 +385,14 @@ else if ("edit".equals(request.getParameter("action"))
 		    "</td>"+
 		    "<td nowrap>"+
 		    	"<input maxlength=\"256\" size=\"64\" name=\"ldapUrl\" value=\"" + ((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.provider.url") + "\"/>"+
+		    "</td>"+
+		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"ldap://localhost/dc=racf,dc=bnl,dc=gov"+
 		    "</td>"+
 		"</tr>"+
 		"<tr>"+
@@ -351,9 +419,17 @@ else if ("edit".equals(request.getParameter("action"))
 		    	"<input maxlength=\"256\" size=\"64\" name=\"ldapPrincipal\" value=\"" + ((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.principal") + "\"/>"+
 		    "</td>"+
 		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"uid=gumsAdmin,ou=People,dc=racf,dc=bnl,dc=gov"+
+		    "</td>"+
+		"</tr>"+			
 		"<tr>"+
     		"<td nowrap style=\"text-align: right;\">"+
-	    		"and credentials"+
+	    		"and password"+
 		    "</td>"+
 		    "<td nowrap>"+
 		    	"<input type=\"ldapCredentials\" maxlength=\"256\" size=\"32\" name=\"ldapCredentials\" value=\"" + ((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.credentials") + "\"/> ."+

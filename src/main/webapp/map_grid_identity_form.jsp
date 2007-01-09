@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <title>Map User Form</title>
+  <title>Map Grid Identity Form</title>
   <link href="gums.css" type="text/css" rel="stylesheet">
 </head>
 <body>
@@ -23,7 +23,7 @@
 --%>
 Determines the local account used for the grid identity on a specific service.
 </p>
-<form action="map.jsp" method="get">
+<form action="map_grid_identity.jsp" method="get">
   <table id="form" border="0" cellpadding="2" cellspacing="2">
     <tbody>
       <tr>
@@ -35,7 +35,7 @@ Determines the local account used for the grid identity on a specific service.
       </tr>
       <tr>
         <td style="text-align: right;">i.e.</td>
-        <td>/DC=org/DC=doegrids/OU=Services/CN=mygk.mysite.com</td>
+        <td>/DC=org/DC=doegrids/OU=Services/CN=host/mygk.mysite.com</td>
       </tr>
       <tr>
         <td style="text-align: right;">DN (Distinguished

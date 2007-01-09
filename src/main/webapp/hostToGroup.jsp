@@ -213,16 +213,26 @@ else if ("edit".equals(request.getParameter("action"))
 		out.write(
 		    	"<input maxlength=\"256\" size=\"64\" name=\"name\" value=\"" + cH2GMapping.getName() + "\"/>"+
 				" cn<input type=\"radio\" name=\"type\" value=\"cn\" " + (cH2GMapping.getDn()==null?"checked":"") + ">"+
-			    " dn<input type=\"radio\" name=\"type\" value=\"dn\" " + (cH2GMapping.getDn()!=null?"checked":"") + ">");
+			    " dn<input type=\"radio\" name=\"type\" value=\"dn\" " + (cH2GMapping.getDn()!=null?"checked":"") + ">"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+				"myHostToGroupMapping"+
+		    "</td>"+
+		"</tr>");			    
 	else
 		out.write(
 		    	cH2GMapping.getName()+
 		    	"<input type=\"hidden\" name=\"name\" value=\"" + cH2GMapping.getName() + "\"/>"+
-		    	"<input type=\"hidden\" name=\"type\" value=\"" + (cH2GMapping.getDn()!=null?"dn":"cn") + "\">");	
+		    	"<input type=\"hidden\" name=\"type\" value=\"" + (cH2GMapping.getDn()!=null?"dn":"cn") + "\">"+
+		    "</td>"+
+		"</tr>");
 
 	out.write(
-		    "</td>"+
-		"</tr>"+
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">route request to group(s)</td>"+
 			"<td>");

@@ -4,14 +4,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <title>generateGridMapfile Form</title>
+  <title>Inverse map generation</title>
   <link href="gums.css" type="text/css" rel="stylesheet">
 </head>
 <body>
 <%@include file="topNav.jspf"%>
 <div id="title">
 <h1><span>GUMS</span></h1>
-<h2><span>Generate grid-mapfile</span></h2>
+<h2><span>Generate inverse map</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
@@ -20,10 +20,10 @@
 <%-- <jsp:useBean id="beanInstanceName" scope="session" class="beanPackage.BeanClassName" /> --%>
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
-Generates the grid-mapfile relative to the given service.
+Generates the inverse map for the given service.
 </p>
 
-<form action="generateGridMapfile.jsp" method="get">
+<form action="generateInverseMap.jsp" method="get">
   <table id="form" border="0" cellpadding="2" cellspacing="2">
     <tbody>
       <tr>
@@ -35,11 +35,11 @@ Generates the grid-mapfile relative to the given service.
       </tr>
       <tr>
         <td style="text-align: right;">i.e.</td>
-        <td>/DC=org/DC=doegrids/OU=Services/CN=mygk.mysite.com</td>
+        <td>/DC=org/DC=doegrids/OU=Services/CN=host/mygk.mysite.com</td>
       </tr>
       <tr>
         <td colspan="2" rowspan="1">
-        <div style="text-align: center;"><button type="submit">Generate grid-mapfile</button></div>
+        <div style="text-align: center;"><button type="submit">Generate inverse map</button></div>
         </td>
       </tr>
     </tbody>
