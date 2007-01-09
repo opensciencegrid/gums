@@ -26,22 +26,9 @@
 Adds range of accounts to a pool.
 </p>
 
-<form action="addAccountRange.jsp" method="get">
+<form action="accountRange.jsp" method="get">
   <table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
     <tbody>
-      <tr colspan="2">
-        <td style="text-align: right;">Persistence Factory: </td>
-        <td style="text-align: left;">
-<%
-		out.write(
-			ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
-				gums.getConfiguration().getPersistenceFactories().values(), 
-				null,
-				null,
-				gums.getConfiguration().getPersistenceFactories().values().size()>1) );
-%>  
-		</td>
-	  </tr>
 	  <tr>
         <td style="text-align: right;">Pool Account Mapper: </td>
         <td style="text-align: left;">

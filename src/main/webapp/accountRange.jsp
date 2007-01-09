@@ -19,7 +19,10 @@
 <div id="body">
 <p>
 
-<% gums.poolAddAccount(persistenceFactory, ((AccountPoolMapper)gums.getConfiguration().getAccountMappers( accountMapper )).getAccountPool(), range); %>
+<% gums.poolAddAccount(
+	((AccountPoolMapper)gums.getConfiguration().getAccountMappers().get(request.getParameter("accountMapper"))).getPersistenceFactory(), 
+	((AccountPoolMapper)gums.getConfiguration().getAccountMappers().get(request.getParameter("accountMapper"))).getAccountPool(), 
+	request.getParameter("range")); %>
 Accounts have been successfully added to the pool!
 </p>
 

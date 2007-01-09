@@ -166,6 +166,14 @@ else if ("add".equals(request.getParameter("action"))) {
 			"</td>"+
 		"</tr>"+
 		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+			    "myAccount"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
 	        "<td colspan=2>"+
 	        	"<div style=\"text-align: center;\">"+
 	        		"<button type=\"submit\" onclick=\"document.forms[0].elements['action'].value='save'; return true;\">Add</button>"+

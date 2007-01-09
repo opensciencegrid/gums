@@ -40,11 +40,14 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
+		Map origGroupToAccountMappings = new HashMap();
+		origGroupToAccountMappings.putAll(configuration.getGroupToAccountMappings());	
 		try{
 			configuration.getGroupToAccountMappings().put(request.getParameter("name"), ConfigurationWebToolkit.parseGroupToAccountMapping(configuration, request));
 			gums.setConfiguration(configuration);
 			message = "<div class=\"success\">Group to account mapping has been saved.</div>";
 		}catch(Exception e){
+			configuration.setGroupToAccountMappings(origGroupToAccountMappings);
 			message = "<div class=\"failure\">Error saving group to account mapping: " + e.getMessage() + "</div>";
 		}
 	}
@@ -221,7 +224,7 @@ else if ("edit".equals(request.getParameter("action"))
 					configuration.getUserGroups().values(), 
 					userGroup.getName(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-					true) );
+					false) );
 			counter++;
 		}
 	}
@@ -253,7 +256,7 @@ else if ("edit".equals(request.getParameter("action"))
 					configuration.getAccountMappers().values(), 
 					accountMapper.getName(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-					true) );
+					false) );
 			counter++;
 		}
 	}

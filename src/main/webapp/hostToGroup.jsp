@@ -43,6 +43,8 @@ if (request.getParameter("action")==null ||
 	"down".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
+		ArrayList origHostToGroupMappings = new ArrayList();
+		origHostToGroupMappings.addAll(configuration.getHostToGroupMappings());	
 		try{
 			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
 			int index = configuration.getHostToGroupMappings().indexOf(h2GMapping);
@@ -55,6 +57,7 @@ if (request.getParameter("action")==null ||
 			gums.setConfiguration(configuration);
 			message = "<div class=\"success\">Host to group mapping has been saved.</div>";
 		}catch(Exception e){
+			configuration.setHostToGroupMappings(origHostToGroupMappings);
 			message = "<div class=\"failure\">Error saving host to group mapping: " + e.getMessage() + "</div>";
 		}
 	}
@@ -250,7 +253,7 @@ else if ("edit".equals(request.getParameter("action"))
 					configuration.getGroupToAccountMappings().values(), 
 					g2AMapping.getName(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-					true) );
+					false) );
 			counter++;
 		}
 	}

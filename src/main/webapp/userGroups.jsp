@@ -40,11 +40,14 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
+		Map origUserGroups = new HashMap();
+		origUserGroups.putAll(configuration.getUserGroups());
 		try{
 			configuration.getUserGroups().put(request.getParameter("name"), ConfigurationWebToolkit.parseUserGroup(configuration, request));
 			gums.setConfiguration(configuration);
 			message = "<div class=\"success\">User group has been saved.</div>";
 		}catch(Exception e){
+			configuration.setUserGroups(origUserGroups);
 			message = "<div class=\"failure\">Error saving user group: " + e.getMessage() + "</div>";
 		}
 	}
@@ -281,7 +284,7 @@ else if ("edit".equals(request.getParameter("action"))
 						configuration.getPersistenceFactories().values(), 
 						((LDAPUserGroup)userGroup).getPersistenceFactory(),
 						null,
-						true)+
+						configuration.getPersistenceFactories().values().size()>1)+
 			".</td>"+
 		"</tr>");
 	} else if (userGroup instanceof VOMSUserGroup) {
@@ -295,7 +298,7 @@ else if ("edit".equals(request.getParameter("action"))
 							configuration.getVirtualOrganizations().values(), 
 							((VOMSUserGroup)userGroup).getVirtualOrganization(),
 							null,
-							true)+
+							configuration.getVirtualOrganizations().values().size()>1)+
 				"</td>"+
 			"</tr>"+		
 			"<tr>"+

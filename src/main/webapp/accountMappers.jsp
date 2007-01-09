@@ -40,11 +40,14 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
+		Map origAccountMappers = new HashMap();
+		origAccountMappers.putAll(configuration.getAccountMappers());
 		try{
 			configuration.getAccountMappers().put(request.getParameter("name"), ConfigurationWebToolkit.parseAccountMapper(configuration, request));
 			gums.setConfiguration(configuration);
 			message = "<div class=\"success\">Account mapper has been saved.</div>";
 		}catch(Exception e){
+			configuration.setAccountMappers(origAccountMappers);
 			message = "<div class=\"failure\">Error saving account mapper: " + e.getMessage() + "</div>";
 		}
 	}
@@ -246,7 +249,7 @@ else if ("edit".equals(request.getParameter("action"))
 					configuration.getPersistenceFactories().values(), 
 					((ManualAccountMapper)accountMapper).getPersistenceFactory(),
 					null,
-					false)+
+					configuration.getPersistenceFactories().size()>1)+
 			"</td>"+
 		"</tr>");
 	} else if (accountMapper instanceof AccountPoolMapper) {
@@ -276,7 +279,7 @@ else if ("edit".equals(request.getParameter("action"))
 						configuration.getPersistenceFactories().values(), 
 						((AccountPoolMapper)accountMapper).getPersistenceFactory(),
 						null,
-						false)+
+						configuration.getPersistenceFactories().size()>1)+
 			"</td>"+
 		"</tr>");
 		if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))

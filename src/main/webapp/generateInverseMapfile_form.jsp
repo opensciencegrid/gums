@@ -23,7 +23,7 @@
 Generates the inverse map for the given service.
 </p>
 
-<form action="generateInverseMap.jsp" method="get">
+<form action="generateInverseMapfile.jsp" method="get">
   <table id="form" border="0" cellpadding="2" cellspacing="2">
     <tbody>
       <tr>

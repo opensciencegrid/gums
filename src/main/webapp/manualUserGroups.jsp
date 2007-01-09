@@ -169,7 +169,7 @@ else if ("add".equals(request.getParameter("action"))) {
 				"is member of user group "+
 			"</td>"+
 			"<td>"+ 
-				ConfigurationWebToolkit.createSelectBox("userGroup", manualUserGroups, null, null, userGroups.size()>1)+
+				ConfigurationWebToolkit.createSelectBox("userGroup", manualUserGroups, null, null, manualUserGroups.size()>1)+
 			"</td>"+
 		"</tr>"+
 		"<tr>"+

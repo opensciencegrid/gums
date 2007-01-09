@@ -14,6 +14,9 @@ import gov.bnl.gums.persistence.*;
 import gov.bnl.gums.userGroup.*;
 
 import javax.servlet.http.HttpServletRequest;
+
+import net.sf.hibernate.collection.Map;
+
 import java.rmi.Remote;
 import java.util.Collection;
 import java.util.Iterator;
@@ -26,7 +29,6 @@ public class ConfigurationWebToolkit implements Remote {
 	
 	static public CertificateHostToGroupMapping parseHostToGroupMapping(Configuration configuration, HttpServletRequest request) throws Exception {
 		CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping();
-
 		String type = request.getParameter("type");
 		if(type.equals("cn"))
 			hostToGroupMapping.setCn( request.getParameter("name") );

@@ -38,11 +38,14 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
+		Map origPersistenceFactories = new HashMap();
+		origPersistenceFactories.putAll(configuration.getPersistenceFactories());	
 		try{
 			configuration.getPersistenceFactories().put(request.getParameter("name"), ConfigurationWebToolkit.parsePersistenceFactory(configuration, request));
 			gums.setConfiguration(configuration);
 			message = "<div class=\"success\">Persistence factory has been saved.</div>";
 		}catch(Exception e){
+			configuration.setPersistenceFactories(origPersistenceFactories);
 			message = "<div class=\"failure\">Error saving persistence factory: " + e.getMessage() + "</div>";
 		}
 	}

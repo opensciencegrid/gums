@@ -39,11 +39,14 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
+		Map origVirtualOrganizations = new HashMap();
+		origVirtualOrganizations.putAll(configuration.getVirtualOrganizations());
 		try{
 			configuration.getVirtualOrganizations().put(request.getParameter("name"), ConfigurationWebToolkit.parseVirtualOrganization(configuration, request));
 			gums.setConfiguration(configuration);
 			message = "<div class=\"success\">Virtual organization has been saved.</div>";
 		}catch(Exception e){
+			configuration.setVirtualOrganizations(origVirtualOrganizations);
 			message = "<div class=\"failure\">Error saving virtual organization: " + e.getMessage() + "</div>";
 		}
 	}
