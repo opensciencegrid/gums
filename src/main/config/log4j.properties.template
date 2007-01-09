@@ -1,0 +1,38 @@
+log4j.rootLogger=INFO
+log4j.logger.gov.bnl.gums=INFO, devFile
+log4j.logger.org.edg.security=WARN, edgFile
+log4j.logger.org.glite.security=WARN, egeeFile
+log4j.logger.org.opensciencegrid=INFO, privLogFile
+
+log4j.appender.stderr=org.apache.log4j.ConsoleAppender
+log4j.appender.stderr.target=System.err
+log4j.appender.stderr.layout=org.apache.log4j.PatternLayout
+log4j.appender.stderr.layout.ConversionPattern=%m%n
+
+log4j.appender.devFile=org.apache.log4j.RollingFileAppender
+log4j.appender.devFile.File=../var/log/gums-developer.${user.name}.log
+log4j.appender.devFile.MaxFileSize=100KB
+log4j.appender.devFile.MaxBackupIndex=5
+log4j.appender.devFile.layout=org.apache.log4j.PatternLayout
+log4j.appender.devFile.layout.ConversionPattern=%d{DATE} %c{2} [%p]: %m%n
+
+log4j.appender.edgFile=org.apache.log4j.RollingFileAppender
+log4j.appender.edgFile.File=../var/log/gums-edg-security.${user.name}.log
+log4j.appender.edgFile.MaxFileSize=100KB
+log4j.appender.edgFile.MaxBackupIndex=5
+log4j.appender.edgFile.layout=org.apache.log4j.PatternLayout
+log4j.appender.edgFile.layout.ConversionPattern=%d{DATE} %c{2} [%p]: %m%n
+
+log4j.appender.egeeFile=org.apache.log4j.RollingFileAppender
+log4j.appender.egeeFile.File=../var/log/gums-egee-security.${user.name}.log
+log4j.appender.egeeFile.MaxFileSize=100KB
+log4j.appender.egeeFile.MaxBackupIndex=5
+log4j.appender.egeeFile.layout=org.apache.log4j.PatternLayout
+log4j.appender.egeeFile.layout.ConversionPattern=%d{DATE} %c{2} [%p]: %m%n
+
+log4j.appender.privLogFile=org.apache.log4j.RollingFileAppender
+log4j.appender.privLogFile.File=../var/log/gums-privilege.${user.name}.log
+log4j.appender.privLogFile.MaxFileSize=1000KB
+log4j.appender.privLogFile.MaxBackupIndex=10
+log4j.appender.privLogFile.layout=org.apache.log4j.PatternLayout
+log4j.appender.privLogFile.layout.ConversionPattern=%d{DATE} %c{2} [%p]: %m%n

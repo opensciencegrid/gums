@@ -1,0 +1,117 @@
+/*
+ * NISAccountMapper.java
+ *
+ * Created on May 25, 2004, 2:25 PM
+ */
+
+package gov.bnl.gums.account;
+
+import gov.bnl.gums.GUMS;
+import gov.bnl.gums.NISClient;
+
+import java.util.*;
+
+import org.apache.commons.logging.*;
+
+/** Maps a user to a local account based on the CN of the certificate and the
+ * gecos field in the NIS/YP database. The mapping can't be perfect, but contains
+ * a series of heuristics that solve up to 90% of the cases, depending on how
+ * the NIS database itself is kept.
+ * <p>
+ * It's suggested not to use this policy by itself, but to have it part of a 
+ * CompositeAccountMapper in which a ManualAccountMapper comes first. This allows
+ * to override those user mapping that are not satisfying.
+ *
+ * @author  Gabriele Carcassi
+ */
+public class NISAccountMapper extends AccountMapper {
+    static Log log = LogFactory.getLog(NISAccountMapper.class);
+    static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+    
+    /**
+     * Holds value of property jndiNisUrl.
+     */
+    private String jndiNisUrl = "";
+    
+    /** Creates a new instance of NISAccountMapper */
+    public NISAccountMapper() {
+        adminLog.warn("The use of gov.bnl.gums.NISAccountMapper is deprecated. Please use gov.bnl.gums.GecosNisAccoutMapper: it provides the same functionalities.");
+    }
+    
+    public String mapUser(String userDN) {
+        String[] nameSurname = parseNameAndSurname(userDN);
+        return nisClient(jndiNisUrl).findAccount(nameSurname[0], nameSurname[1]);
+    }
+    
+    public boolean containsMap(String userDN, String accountName) {
+    	return false;
+    }
+    
+    public static String[] parseNameAndSurname(String certificateSubject) {
+        int begin = certificateSubject.indexOf("CN=") + 3;
+        String CN = certificateSubject.substring(begin);
+        
+        StringTokenizer tokenizer = new StringTokenizer(CN);
+        List tokens = new ArrayList();
+        while (tokenizer.hasMoreTokens()) {
+            tokens.add(tokenizer.nextToken());
+        }
+        
+        String name = (String) tokens.get(0);
+
+        int nSurname = 1;
+        while (!checkSurname((String) tokens.get(tokens.size()-nSurname))) {
+            nSurname++;
+        }
+        String surname = (String) tokens.get(tokens.size()-nSurname);
+        
+        log.trace("Certificate '" + certificateSubject + "' divided in name='" + name + "' and surname='" + surname + "'");
+        return new String[] {name, surname};
+    }
+    
+    static boolean checkSurname(String possibleSurname) {
+        if (Character.isDigit(possibleSurname.charAt(0))) {
+            return false;
+        }
+        if (possibleSurname.charAt(possibleSurname.length() - 1) == '.') {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Getter for property jndiNisUrl.
+     * @return Value of property jndiNisUrl.
+     */
+    public String getJndiNisUrl() {
+        return jndiNisUrl;
+    }
+    
+    /**
+     * Setter for property jndiNisUrl.
+     * @param jndiNisUrl New value of property jndiNisUrl.
+     */
+    public void setJndiNisUrl(String jndiNisUrl) {
+        this.jndiNisUrl = jndiNisUrl;
+    }
+    
+    private Map nisClients = new Hashtable();
+    private NISClient nisClient(String jndiNisUrl) {
+        NISClient client = (NISClient) nisClients.get(jndiNisUrl);
+        if (client != null) {
+            log.trace("Reusing NisClient for '" + jndiNisUrl +"'");
+            return client;
+        }
+        log.debug("Creating new NisClient for '" + jndiNisUrl + "'");
+        client = new NISClient(jndiNisUrl);
+        nisClients.put(jndiNisUrl, client);
+        return client;
+    }
+
+    public String toXML() {
+    	return super.toXML() +
+			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
+    }          
+    
+}
