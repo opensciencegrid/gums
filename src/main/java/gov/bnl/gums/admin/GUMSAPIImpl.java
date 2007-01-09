@@ -98,6 +98,7 @@ public class GUMSAPIImpl implements GUMSAPI {
         } catch (AuthorizationDeniedException e) {
             gumsResourceAdminLog.info(logUserAccess() + "Failed to add to persistence '" + persistanceManager + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
             siteLog.info(logUserAccess() + "Unauthorized access to add to persistence '" + persistanceManager + "' group '" + group + "' user '" + userDN + "'");
+            throw e;
         } catch (RuntimeException e) {
             gumsResourceAdminLog.error(logUserAccess() + "Failed to add to persistence '" + persistanceManager + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
             siteLog.info(logUserAccess() + "Failed to add to persistence '" + persistanceManager + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
@@ -276,7 +277,13 @@ public class GUMSAPIImpl implements GUMSAPI {
     }
     
     public void setConfiguration(Configuration configuration) throws Exception {
-		gums().setConfiguration(configuration);
+    	if (hasWriteAccess(currentUser()))
+    		gums().setConfiguration(configuration);
+    	else {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
+    		siteLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
+    		throw new AuthorizationDeniedException();
+    	}
     }
     
     String logUserAccess() {

@@ -248,6 +248,67 @@ public class Configuration {
     }     
     
     /**
+     * Sets group mappings in configuration.
+     * @param mapper a GroupMapper object.
+     */
+    public void setGroupToAccountMappings(Map groupToAccountMappings) {
+        log.trace("Setting GroupToAccountMappers in configuration: " + groupToAccountMappings);
+        this.groupToAccountMappings.clear();
+        this.groupToAccountMappings.putAll(groupToAccountMappings);
+    }    
+    
+    /**
+     * Sets host groups in configuation.
+     * @param mapper a Host2GroupMapper object
+     */
+    public void setHostToGroupMappings(ArrayList hostToGroupMappings) {
+        log.trace("Setting HostToGroupMappigns in configuration: " + hostToGroupMappings);
+        this.hostToGroupMappings.clear();
+        this.hostToGroupMappings.addAll(hostToGroupMappings);
+    }    
+
+    /**
+     * Sets persistence factory in configuration.
+     * @param persistenceFactory a persistenceFactory object.
+     */
+    public void setPersistenceFactories(Map persistenceFactories) {
+        log.trace("Setting PersistenceFactories in configuration: " + persistenceFactories);
+        this.persistenceFactories.clear();
+        this.persistenceFactories.putAll(persistenceFactories);
+    }    
+    
+    /**
+     * Sets account mappers in configuration.
+     * @param accountMapper an AccountMapper object.
+     */
+    public void setAccountMappers(Map accountMappers) {
+        log.trace("Setting AccountMappers in configuration: " + accountMappers);
+        this.accountMappers.clear();
+        this.accountMappers.putAll(accountMappers);
+    }    
+    
+    /**
+     * Sets account managers in configuration.
+     * @param accountManager an AccountManager object.
+     */
+    public void setUserGroups(Map userGroups) {
+        log.trace("Setting UserGroups in configuration: " + userGroups);
+        this.userGroups.clear();
+        this.userGroups.putAll(userGroups);
+    }    
+    
+
+    /**
+     * Sets virtual organizations in configuration.
+     * @param vO a VO object.
+     */
+    public void setVirtualOrganizations(Map virtualOrganizations) {
+        log.trace("Setting UserGroups in configuration: " + virtualOrganizations);
+        this.virtualOrganizations.clear();
+        this.virtualOrganizations.putAll(virtualOrganizations);
+    }    
+    
+    /**
      * Setter for property keyStore.
      * @param keyStore New value of property keyStore.
      */
