@@ -56,9 +56,30 @@ public class FileConfigurationStore implements ConfigurationStore {
         if (create) {
     		try {
     			BufferedWriter out = new BufferedWriter(new FileWriter(filename));
-    			out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n");
-    			out.write("<gums>\n\n");               	
-    			out.write("</gums>");  
+    			out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n"+
+	    			"<gums>\n\n"+
+	    				"\t<persistenceFactories>"+
+	    					"\t<persistenceFactory"+
+				    			"\t\tclassName='gov.bnl.gums.persistence.HibernatePersistenceFactory'"+
+				    			"\t\tname='mysql'"+
+				    			"\t\thibernate.connection.driver_class='com.mysql.jdbc.Driver'"+
+				    			"\t\thibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'"+
+				    			"\t\thibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_1'"+
+				    			"\t\thibernate.connection.username='gums'"+
+				    			"\t\thibernate.connection.password=''"+
+				    			"\t\thibernate.connection.autoReconnect='true'"+
+				    			"\t\thibernate.c3p0.min_size='3'"+
+				    			"\t\thibernate.c3p0.max_size='20'"+
+				    			"\t\thibernate.c3p0.timeout='180' />"+
+				    	"\t</persistenceFactories>"+
+	    				"\t<userGroups>"+
+				    		"\t<userGroup"+
+				    			"\t\tclassName='gov.bnl.gums.userGroup.ManualUserGroup'"+
+				    			"\t\tname='admin'"+
+				    			"\t\tpersistenceFactory='mysql'"+
+				    			"\t\taccess='write'/>"+
+	    				"\t</userGroups>"+
+	    			"</gums>");
     			out.close();
     		} catch (IOException e1) {
     			gumsResourceAdminLog.error("Could not create gums.config: " + e1.getMessage());
