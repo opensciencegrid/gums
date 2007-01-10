@@ -288,7 +288,7 @@ public class ResourceManager {
                     Iterator accountMappersIt = accountMappers.iterator();
                     while (accountMappersIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();
-                        if (accountMapper.mapUser(user.getCertificateDN()).equals(accountName)) {
+                        if (accountName.equals(accountMapper.mapUser(user.getCertificateDN()))) {
                         	if (allDNs==null)
                         		allDNs = new String();
                         	else
