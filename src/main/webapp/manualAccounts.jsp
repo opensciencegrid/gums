@@ -31,7 +31,7 @@ Configures manual account mappings.
 <%
 
 Configuration configuration = gums.getConfiguration();
-HashMap accountMappers = configuration.getAccountMappers();
+Map accountMappers = configuration.getAccountMappers();
 String message = null;
 
 if (request.getParameter("action")==null || 

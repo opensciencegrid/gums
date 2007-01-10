@@ -30,7 +30,7 @@ Configures users in manual user groups.
 <%
 
 Configuration configuration = gums.getConfiguration();
-HashMap userGroups = configuration.getUserGroups();
+Map userGroups = configuration.getUserGroups();
 String message = null;
 
 if (request.getParameter("action")==null || 
