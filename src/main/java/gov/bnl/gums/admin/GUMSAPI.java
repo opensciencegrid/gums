@@ -28,7 +28,7 @@ public interface GUMSAPI extends Remote {
     void manualGroupRemove(String persistanceManager, String group, String userDN);
     void manualMappingAdd(String persistanceManager, String group, String userDN, String account);
     void manualMappingRemove(String persistanceManager, String group, String userDN);
-    void poolAddAccount(String persistanceManager, String group, String username);
+    void addAccountRange(String persistanceManager, String group, String range);
     String mapUser(String hostname, String userDN, String fqan);
     String mapAccount(String accountName);
     void mapfileCacheRefresh();

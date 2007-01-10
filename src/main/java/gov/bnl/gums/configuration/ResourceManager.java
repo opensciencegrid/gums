@@ -289,11 +289,12 @@ public class ResourceManager {
                     while (accountMappersIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();
                         if (accountMapper.containsMap(user.getCertificateDN(), accountName)) {
-                        	if (allDNs!=null)
+                        	if (allDNs==null)
                         		allDNs = new String();
                         	else
                         		allDNs += "\n";
-                        	allDNs += user.getCertificateDN();
+                        	if (allDNs.indexOf(user.getCertificateDN())==-1)
+                        		allDNs += user.getCertificateDN();
                         }
                     }            		
             	}

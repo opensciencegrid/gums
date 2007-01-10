@@ -40,7 +40,7 @@ public class VOMSUserGroup extends UserGroup {
     private VirtualOrganization vo;
     private String voGroup = "";
     private String voRole = "";
-    private String fqan = "";
+    private String fqan = null; // null since it is optional
     private List matchFQANValues = Arrays.asList(new String[] {"ignore", "vo", "group", "exact"});
     private String matchFQAN = defaultMatchFQAN;
     private String remainderUrl = "";

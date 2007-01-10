@@ -14,9 +14,9 @@
 			name='persistenceFactoryA'
 			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
 			hibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'
-			hibernate.connection.url='jdbc:mysql://@SERVER@/GUMS_1_1'
-			hibernate.connection.username='@USER@'
-			hibernate.connection.password='@PASSWORD@'
+			hibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_1'
+			hibernate.connection.username='gums'
+			hibernate.connection.password=''
 			hibernate.connection.autoReconnect='true'
 			hibernate.c3p0.min_size='3'
 			hibernate.c3p0.max_size='20'
@@ -33,33 +33,38 @@
 	</virtualOrganizations>
 
 	<userGroups>
-		<userGroup 
-			className='gov.bnl.gums.userGroup.LDAPUserGroup' 
+		<userGroup
+			className='gov.bnl.gums.userGroup.ManualUserGroup'
 			name='userGroupA'
-			server='grid-vo.nikhef.nl' 
-			query='ou=usatlas,o=atlas,dc=eu-datagrid,dc=org' 
-			persistenceFactory='persistenceFactoryA'/>
+			persistenceFactory='persistenceFactoryA'
+			access='write'/>
 		<userGroup
 			className='gov.bnl.gums.userGroup.VOMSUserGroup' 
 			name='userGroupB'
 			virtualOrganization='virtualOrganizationA'
 			remainderUrl='/atlas/services/VOMSAdmin'/>	
-		<userGroup
-			className='gov.bnl.gums.userGroup.ManualUserGroup'
+		<userGroup 
+			className='gov.bnl.gums.userGroup.LDAPUserGroup' 
 			name='userGroupC'
-			persistenceFactory='persistenceFactoryA'
-			access='read all'/>
+			server='grid-vo.nikhef.nl' 
+			query='ou=usatlas,o=atlas,dc=eu-datagrid,dc=org' 
+			persistenceFactory='persistenceFactoryA'/>
 	</userGroups>
 	
 	<accountMappers>
 		<accountMapper
-			className='gov.bnl.gums.account.GroupAccountMapper'
+			className='gov.bnl.gums.account.ManualAccountMapper'
 			name='accountMapperA'
-			accountName='accountA'/>
+			persistenceFactory='persistenceFactoryA'/>
 		<accountMapper
 			className='gov.bnl.gums.account.GroupAccountMapper'
 			name='accountMapperB'
 			accountName='accountB'/>
+		<accountMapper
+			className='gov.bnl.gums.account.AccountPoolMapper'
+			name='accountMapperB'
+			persistenceFactory='persistenceFactoryA'
+			accountPool='accountC'/>
 	</accountMappers>
 	
 	<groupToAccountMappings>
@@ -80,6 +85,6 @@
 	<hostToGroupMappings>
 		<hostToGroupMapping 
 			cn='*.site.com' 
-			groupToAccountMappings='groupToAccountMappingA,groupToAccountMappingB, groupToAccountMappingC'/>
+			groupToAccountMappings='groupToAccountMappingA, groupToAccountMappingB, groupToAccountMappingC'/>
 	</hostToGroupMappings>
 </gums>

@@ -174,7 +174,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     public String mapUser(String hostname, String userDN, String fqan) {
         try {
-            if (hasReadSelfAccess(currentUser(), hostname)) {
+            if ( (hasReadSelfAccess(currentUser()) && currentUser().getCertificateDN().equals(userDN)) || hasReadAllAccess(currentUser())) {
                 String username = gums().getResourceManager().map(hostname, new GridUser(userDN, fqan));
                 gumsResourceAdminLog.info(logUserAccess() + "Mapped on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' to '" + username + "'");
                 return username;
@@ -247,31 +247,6 @@ public class GUMSAPIImpl implements GUMSAPI {
         }
     }
 
-    public void poolAddAccount(String persistanceManager, String group, String username) {
-        try {
-            if (hasWriteAccess(currentUser())) {
-                PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceManager);
-                if (factory == null) {
-                    throw new RuntimeException("PersistenceManager '" + persistanceManager + "' does not exist");
-                }
-                AccountPoolMapperDB db = factory.retrieveAccountPoolMapperDB(group);
-                db.addAccount(username);
-                gumsResourceAdminLog.info(logUserAccess() + "Added account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "'");
-                siteLog.info(logUserAccess() + "Added account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "'");
-            } else {
-                throw new AuthorizationDeniedException();
-            }
-        } catch (AuthorizationDeniedException e) {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
-            siteLog.info(logUserAccess() + "Unauthorized access to add account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "'");
-            throw e;
-        } catch (RuntimeException e) {
-            gumsResourceAdminLog.error(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
-            siteLog.info(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
-            throw e;
-        }
-    }
-    
     public Configuration getConfiguration() {
     	return gums().getConfiguration();
     }
@@ -328,17 +303,15 @@ public class GUMSAPIImpl implements GUMSAPI {
         return false;
     }    
     
-    private boolean hasReadSelfAccess(GridUser user, String hostname) {
-        if (user == null) return false;
-        if ( user.getCertificateDN().indexOf(hostname)==-1 )
-        	return false;
+    private boolean hasReadSelfAccess(GridUser currentUser) {
+        if (currentUser == null) return false;
         if (gums().getConfiguration().getReadSelfUserGroups() == null)
             return false;
         Collection readSelfUserGroups = gums().getConfiguration().getReadSelfUserGroups();
         Iterator it = readSelfUserGroups.iterator();
         while (it.hasNext()) {
         	UserGroup userGroupManager = (UserGroup)it.next();
-        	if (userGroupManager.isInGroup(user))
+        	if (userGroupManager.isInGroup(currentUser))
         		return true;
         }
         return false;
@@ -356,6 +329,55 @@ public class GUMSAPIImpl implements GUMSAPI {
         		return true;
         }
         return false;
+    }
+    
+    public void addAccountRange(String persistenceManager, String groupName, String range) {
+        String firstAccount = range.substring(0, range.indexOf('-'));
+        String lastAccountN = range.substring(range.indexOf('-') + 1);
+        String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
+        String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
+        int nFirstAccount = Integer.parseInt(firstAccountN);
+        int nLastAccount = Integer.parseInt(lastAccountN);
+
+        StringBuffer last = new StringBuffer(firstAccount);
+        String nLastAccountString = Integer.toString(nLastAccount);
+        last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
+        
+        System.out.println("Adding accounts between '" + firstAccount + "' and '" + last.toString() + "' to pool '" + groupName + "'");
+        
+        StringBuffer buf = new StringBuffer(firstAccount);
+        int len = firstAccount.length();
+        for (int account = nFirstAccount; account <= nLastAccount; account++) {
+            String nAccount = Integer.toString(account);
+            buf.replace(len - nAccount.length(), len, nAccount);
+            addPoolAccount(persistenceManager, groupName, buf.toString());
+            System.out.println(buf.toString() + " added");
+        }
+    }
+    
+    private void addPoolAccount(String persistanceManager, String group, String username) {
+        try {
+            if (hasWriteAccess(currentUser())) {
+                PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceManager);
+                if (factory == null) {
+                    throw new RuntimeException("PersistenceManager '" + persistanceManager + "' does not exist");
+                }
+                AccountPoolMapperDB db = factory.retrieveAccountPoolMapperDB(group);
+                db.addAccount(username);
+                gumsResourceAdminLog.info(logUserAccess() + "Added account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "'");
+                siteLog.info(logUserAccess() + "Added account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "'");
+            } else {
+                throw new AuthorizationDeniedException();
+            }
+        } catch (AuthorizationDeniedException e) {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Unauthorized access to add account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "'");
+            throw e;
+        } catch (RuntimeException e) {
+            gumsResourceAdminLog.error(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
+            throw e;
+        }
     }
     
 }

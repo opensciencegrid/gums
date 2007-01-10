@@ -24,7 +24,7 @@ public class GUMSAPIMock implements GUMSAPI {
     public void updateGroups() {
     }
 
-    public void poolAddAccount(String persistanceManager, String group, String username) {
+    public void addAccountRange(String persistanceManager, String group, String range) {
     }
 
     public void mapfileCacheRefresh() {
