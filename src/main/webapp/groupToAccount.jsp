@@ -224,7 +224,7 @@ else if ("edit".equals(request.getParameter("action"))
 					configuration.getUserGroups().values(), 
 					userGroup.getName(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-					false) );
+					true) );
 			counter++;
 		}
 	}
@@ -256,7 +256,7 @@ else if ("edit".equals(request.getParameter("action"))
 					configuration.getAccountMappers().values(), 
 					accountMapper.getName(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-					false) );
+					true) );
 			counter++;
 		}
 	}

@@ -253,7 +253,7 @@ else if ("edit".equals(request.getParameter("action"))
 					configuration.getGroupToAccountMappings().values(), 
 					g2AMapping.getName(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-					false) );
+					true) );
 			counter++;
 		}
 	}
