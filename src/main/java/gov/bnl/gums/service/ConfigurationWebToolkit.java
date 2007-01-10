@@ -131,6 +131,10 @@ public class ConfigurationWebToolkit implements Remote {
 				((LDAPUserGroup)userGroup).setQuery( request.getParameter("query") );
 			if (request.getParameter("persistenceFactory")!=null)
 				((LDAPUserGroup)userGroup).setPersistenceFactory( (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("persistenceFactory") ) );
+			if (request.getParameter("query")!=null)
+				((LDAPUserGroup)userGroup).setQuery( request.getParameter("query") );
+			if (request.getParameter("persistenceFactory")!=null)
+				((LDAPUserGroup)userGroup).setPersistenceFactory( (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("persistenceFactory") ) );
 		} else if (className.equals("gov.bnl.gums.userGroup.VOMSUserGroup")) {
 			userGroup = new VOMSUserGroup();
 			userGroup.setName( request.getParameter("name") );

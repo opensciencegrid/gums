@@ -105,7 +105,7 @@ if (request.getParameter("action")==null ||
 							" with query "+ 
 							" <span style=\"color:blue\">" + ((LDAPUserGroup)userGroup).getQuery() + "</span>"+
 							" and caching results in persistence factory "+ 
-							" <span style=\"color:blue\">" + ((LDAPUserGroup)userGroup).getPersistenceFactory() + "</span>");
+							" <span style=\"color:blue\">" + ((LDAPUserGroup)userGroup).getPersistenceFactory() + "</span>.");
 		} else if (userGroup instanceof VOMSUserGroup) {
 			out.write(		" by querying virtual organization " + "<span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVirtualOrganization() + "</span>");
 
@@ -286,7 +286,31 @@ else if ("edit".equals(request.getParameter("action"))
 						null,
 						configuration.getPersistenceFactories().values().size()>1)+
 			".</td>"+
-		"</tr>");
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"Use SSL keystore (optional) "+
+			"</td>"+
+			"<td>"+ 
+				"<input maxlength=\"256\" size=\"64\" name=\"keyStore\" value=\"" + ((LDAPUserGroup)userGroup).getKeyStore() + "\"/>"+
+			"</td>"+
+		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"/absolute/path/to/keystore"+
+		    "</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"with keystore password (optional) "+
+			"</td>"+
+			"<td>"+ 
+				"<input maxlength=\"256\" size=\"32\" type=\"password\" name=\"keyPassword\" value=\"" + ((LDAPUserGroup)userGroup).getKeyPassword() + "\"/>"+
+			" .</td>"+
+		"</tr>");				
 	} else if (userGroup instanceof VOMSUserGroup) {
 		out.write(	
 			"<tr>"+
