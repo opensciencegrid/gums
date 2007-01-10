@@ -43,12 +43,6 @@ public class AccountPoolMapper extends AccountMapper {
         return db.assignAccount(userDN);
     }    
     
-    public boolean containsMap(String userDN, String accountName) {
-    	Map mappings = db.retrieveAccountMap();
-    	String resultAccount = (String)mappings.get(userDN);
-    	return resultAccount!=null && resultAccount.equals(accountName);
-    }
-    
     public String getPersistenceFactory() {
        return (persistenceFactory!=null ? persistenceFactory.getName() : "");
     }

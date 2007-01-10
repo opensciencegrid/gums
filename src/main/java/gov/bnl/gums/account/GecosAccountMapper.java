@@ -100,10 +100,6 @@ public abstract class GecosAccountMapper extends AccountMapper {
      */
     protected abstract String mapName();
     
-    public boolean containsMap(String userDN, String accountName) {
-    	return false;
-    }
-    
     public String toXML() {
     	return super.toXML();
     }

@@ -69,10 +69,6 @@ public class CompositeAccountMapper extends AccountMapper {
         return null;
     }
     
-    public boolean containsMap(String userDN, String accountName) {
-    	return false;
-    }
-    
     /**
      * Adds a mapper at the end of the list of mapper used by this composite.
      * @param mapper The new mapper to be used only if all the previous mappers failed

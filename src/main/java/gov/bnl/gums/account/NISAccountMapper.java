@@ -43,10 +43,6 @@ public class NISAccountMapper extends AccountMapper {
         return nisClient(jndiNisUrl).findAccount(nameSurname[0], nameSurname[1]);
     }
     
-    public boolean containsMap(String userDN, String accountName) {
-    	return false;
-    }
-    
     public static String[] parseNameAndSurname(String certificateSubject) {
         int begin = certificateSubject.indexOf("CN=") + 3;
         String CN = certificateSubject.substring(begin);

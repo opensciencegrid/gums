@@ -48,10 +48,6 @@ public class GroupAccountMapper extends AccountMapper {
         
         return accountName;
     }
-    
-    public boolean containsMap(String userDN, String accountName) {
-    	return this.accountName == accountName;
-    }
 
     public String toXML() {
     	return super.toXML() +

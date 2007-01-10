@@ -32,19 +32,6 @@ public class ManualAccountMapper extends AccountMapper {
         return db.retrieveMapping(userDN);
     }
     
-    public boolean containsMap(String userDN, String accountName) {
-    	List mappings = db.retrieveMappings();
-    	if (mappings!=null) {
-        	Iterator mappingsIt = mappings.iterator();
-        	while (mappingsIt.hasNext()) {
-        		HibernateMapping mapping = (HibernateMapping)mappingsIt.next();
-        		if (mapping.getDn().equals(userDN) && mapping.getAccount().equals(accountName))
-        			return true;
-        	}
-    	}
-    	return false;
-    }
-    
     public void createMapping(String userDN, String account) {
         db.createMapping(userDN, account);
     }

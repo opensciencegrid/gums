@@ -25,8 +25,6 @@ public abstract class AccountMapper {
      * @return a user account (i.e. 'atlas').
      */
     public abstract String mapUser(String userDN);
-
-    public abstract boolean containsMap(String userDN, String accountName);
     
     AccountMapper() {
     }
