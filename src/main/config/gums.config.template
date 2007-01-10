@@ -35,7 +35,7 @@
 	<userGroups>
 		<userGroup
 			className='gov.bnl.gums.userGroup.ManualUserGroup'
-			name='userGroupA'
+			name='admin'
 			persistenceFactory='persistenceFactoryA'
 			access='write'/>
 		<userGroup
@@ -70,7 +70,7 @@
 	<groupToAccountMappings>
 		<groupToAccountMapping
 			name='groupToAccountMappingA' 
-			userGroups='userGroupA' 
+			userGroups='admin' 
 			accountMappers='accountMapperA'/>
 		<groupToAccountMapping 
 			name='groupToAccountMappingB' 
@@ -78,7 +78,7 @@
 			accountMappers='accountMapperB'/>
 		<groupToAccountMapping 
 			name='groupToAccountMappingC' 
-			userGroups='userGroupA, userGroupB' 
+			userGroups='admin, userGroupB' 
 			accountMappers='accountMapperA, accountMapperB'/>
 	</groupToAccountMappings>
 	  
