@@ -56,7 +56,7 @@ Adds range of accounts to a pool.
       </tr>
 	  <tr>
         <td style="text-align: right;">i.e.: </td>
-        <td style="text-align: left;">myAccount1-100</td>
+        <td style="text-align: left;">myAccount001-100</td>
       </tr>
       <tr>
         <td colspan="2" style="text-align: center;"><button type="submit">Add Accounts</button></td>

@@ -15,7 +15,7 @@
   <li>&nbsp;&nbsp;&nbsp;<a href="manualUserGroups.jsp">Manual User Group Members</a></li>
   <li>&nbsp;&nbsp;&nbsp;<a href="manualAccounts.jsp">Manual Account Mappings</a></li>
   <li>&nbsp;&nbsp;&nbsp;<a href="updateMembers_form.jsp">Update VO Members</a></li>
-  <li>Test</li>
+  <li>Test Mappings</li>
   <li>&nbsp;&nbsp;&nbsp;<a href="map_grid_identity_form.jsp">Map Grid Identity</a></li>
   <li>&nbsp;&nbsp;&nbsp;<a href="map_account_form.jsp">Map Account</a></li>
   <li>&nbsp;&nbsp;&nbsp;<a href="generateGridMapfile_form.jsp">Generate Grid Mapfile</a></li>

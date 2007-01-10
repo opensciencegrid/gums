@@ -34,7 +34,6 @@ public class ConfigurationWebToolkit implements Remote {
 			hostToGroupMapping.setCn( request.getParameter("name") );
 		else if(type.equals("dn"))
 			hostToGroupMapping.setDn( request.getParameter("name") );
-		
 		int counter = 0;
 		while(request.getParameter("g2AM" + counter)!=null) {
 			String g2AMName = request.getParameter("g2AM" + counter);

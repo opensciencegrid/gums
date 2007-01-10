@@ -35,7 +35,7 @@ Generates the grid-mapfile relative to the given service.
       </tr>
       <tr>
         <td style="text-align: right;">i.e.</td>
-        <td>/DC=org/DC=doegrids/OU=Services/CN=mygk.mysite.com</td>
+        <td>/DC=org/DC=doegrids/OU=Services/CN=mygk.site.com</td>
       </tr>
       <tr>
         <td colspan="2" rowspan="1">

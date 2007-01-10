@@ -18,16 +18,33 @@
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
+<%
+	String result = null;
+	try {
+		result = gums.generateGridMapfile(hostname); 
+%>
+
 <p>Grid-mapfile for <%= hostname %>: </p>
-  <table id="form" >
+  <table id="form">
     <tbody>
       <tr>
         <td>
-<pre><%= gums.generateGridMapfile(hostname) %></pre>
+<pre>
+<%
+	out.println(result);
+%>
+</pre>
         </td>
       </tr>
     </tbody>
   </table>
+<BR><BR>
+
+<%
+	} catch(Exception e) {
+		out.println("<BR><div class=\"failure\">Error generating mapfile: " + e.getMessage() + "</div>");
+	}
+%>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>

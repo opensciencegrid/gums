@@ -93,7 +93,7 @@ if (request.getParameter("action")==null ||
 		    		"<td>"+
 			    		"User with DN <span style=\"color:blue\">" + user.getCertificateDN() + "</span>" +
 //			    		" and FQAN <span style=\"color:blue\">" + (user.getVoFQAN()!=null ? user.getVoFQAN() : "") + "</span>" +
-			    		" is member of user group <span style=\"color:blue\">" + manualUserGroup.getName() + "</span>." +
+			    		" is a member of user group <span style=\"color:blue\">" + manualUserGroup.getName() + "</span>." +
 		    		"</td>"+
 	  			"</tr>"+
 			"</table>"+
@@ -145,7 +145,7 @@ else if ("add".equals(request.getParameter("action"))) {
 	    		"i.e."+
 		    "</td>"+
 		    "<td nowrap>"+
-			    "/DC=org/DC=doegrids/OU=People/CN=Joe Smith 12345"+
+			    "/DC=org/DC=doegrids/OU=People/CN=John Smith 12345"+
 		    "</td>"+
 		"</tr>"+		
 /*		"<tr>"+

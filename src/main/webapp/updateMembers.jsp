@@ -17,11 +17,17 @@
 <%@include file="sideNav.jspf"%>
 <div id="body">
 <p>
-
-<% gums.updateGroups(); %>
-VO Members Database has been successfully updated!
+<BR>
+<% 
+	try {
+		gums.updateGroups();
+		out.println("VO Members Database has been successfully updated!");
+	} catch(Exception e) {
+		out.println("<div class=\"failure\">Error updating groups: " + e.getMessage() + "</div>");
+	}
+%>
 </p>
-
+<BR>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>

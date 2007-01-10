@@ -14,20 +14,37 @@
 <%@include file="topNav.jspf"%>
 <div id="title">
 <h1><span>GUMS</span></h1>
-<h2><span>Generate inverse map</span></h2>
+<h2><span>Generate inverse mapfile</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
-<p>Inverse map for <%= hostname %>: </p>
+<%
+	String result = null;
+	try {
+		result = gums.generateGrid3UserVoMap(hostname); 
+%>		
+	
+<p>Inverse mapfile for <%= hostname %>: </p>
   <table id="form" >
     <tbody>
       <tr>
         <td>
-<pre><%= gums.generateGrid3UserVoMap(hostname) %></pre>
+<pre>
+<%
+	out.println(result); 
+%>
+</pre>
         </td>
       </tr>
     </tbody>
-  </table>
+  </table>	
+<BR><BR>
+		
+<%		
+	} catch(Exception e) {
+		out.println("<BR><div class=\"failure\">Error generating inverse mapfile: " + e.getMessage() + "</div>");
+	}
+%>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>

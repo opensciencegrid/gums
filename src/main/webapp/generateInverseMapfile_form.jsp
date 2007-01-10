@@ -35,11 +35,11 @@ Generates the inverse map for the given service.
       </tr>
       <tr>
         <td style="text-align: right;">i.e.</td>
-        <td>/DC=org/DC=doegrids/OU=Services/CN=host/mygk.mysite.com</td>
+        <td>/DC=org/DC=doegrids/OU=Services/CN=mygk.site.com</td>
       </tr>
       <tr>
         <td colspan="2" rowspan="1">
-        <div style="text-align: center;"><button type="submit">Generate inverse map</button></div>
+        <div style="text-align: center;"><button type="submit">Generate inverse mapfile</button></div>
         </td>
       </tr>
     </tbody>

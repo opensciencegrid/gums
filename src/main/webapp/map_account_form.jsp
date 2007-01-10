@@ -17,7 +17,7 @@
 <div id="body">
 
 <p>
-Determines which stored grid identities are mapped to a local account.
+Determines which grid identities are mapped to a local account (only cached entries).
 </p>
 <form action="map_account.jsp" method="get">
   <table id="form" border="0" cellpadding="2" cellspacing="2">
@@ -34,7 +34,7 @@ Determines which stored grid identities are mapped to a local account.
       </tr>
       <tr>
         <td colspan="2" rowspan="1">
-        <div style="text-align: center;"><button type="submit">Inverse map user</button></div>
+        <div style="text-align: center;"><button type="submit">Map Account</button></div>
         </td>
       </tr>
     </tbody>

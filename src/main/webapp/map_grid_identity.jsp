@@ -20,18 +20,30 @@
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
+<% 
+	String account = null;
+	try {
+		account = gums.mapUser(hostname, DN, FQAN);
+%>
+
 <p>On '<%= hostname %>', '<%= DN %>' is mapped to:</p>
   <table id="form" >
     <tbody>
       <tr>
         <td>
-<% out.println(gums.mapUser(hostname, DN, FQAN));%>
+<% 
+			out.println(account);
+%>
         </td>
       </tr>
     </tbody>
   </table>
-
 <BR><BR>
+<%
+	} catch(Exception e) {
+		out.println("<BR><div class=\"failure\">Error mapping grid identity: " + e.getMessage() + "</div>");
+	}
+%>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>

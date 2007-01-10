@@ -18,14 +18,19 @@
 <%@include file="sideNav.jspf"%>
 <div id="body">
 <p>
-
-<% gums.poolAddAccount(
-	((AccountPoolMapper)gums.getConfiguration().getAccountMappers().get(request.getParameter("accountMapper"))).getPersistenceFactory(), 
-	((AccountPoolMapper)gums.getConfiguration().getAccountMappers().get(request.getParameter("accountMapper"))).getAccountPool(), 
-	request.getParameter("range")); %>
-Accounts have been successfully added to the pool!
+<BR>
+<% try {
+		gums.addAccountRange(
+			((AccountPoolMapper)gums.getConfiguration().getAccountMappers().get(request.getParameter("accountMapper"))).getPersistenceFactory(), 
+			((AccountPoolMapper)gums.getConfiguration().getAccountMappers().get(request.getParameter("accountMapper"))).getAccountPool(), 
+			request.getParameter("range")); 
+		out.println("Accounts have been successfully added to the pool!");
+	} catch(Exception e) {
+		out.println("<div class=\"failure\">Error saving pool account range: " + e.getMessage() + "</div>");
+	}
+%>
 </p>
-
+<BR>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>

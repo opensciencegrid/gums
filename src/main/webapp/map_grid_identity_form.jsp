@@ -35,26 +35,22 @@ Determines the local account used for the grid identity on a specific service.
       </tr>
       <tr>
         <td style="text-align: right;">i.e.</td>
-        <td>/DC=org/DC=doegrids/OU=Services/CN=host/mygk.mysite.com</td>
+        <td>/DC=org/DC=doegrids/OU=Services/CN=mygk.site.com</td>
       </tr>
       <tr>
-        <td style="text-align: right;">DN (Distinguished
-Name) for user:<br>
+        <td style="text-align: right;">DN (Distinguished Name) for user:<br>
         </td>
-        <td><input maxlength="256"
- size="64" name="DN"><br>
+        <td><input maxlength="256" size="64" name="DN"><br>
         </td>
       </tr>
       <tr>
         <td style="text-align: right;">i.e.</td>
-        <td>/DC=org/DC=doegrids/OU=People/CN=Joe Smith 12345</td>
+        <td>/DC=org/DC=doegrids/OU=People/CN=John Smith 12345</td>
       </tr>
       <tr>
-        <td style="text-align: right;">VOMS FQAN
-for user:<br>
+        <td style="text-align: right;">VOMS FQAN for user:<br>
         </td>
-        <td><input maxlength="256"
- size="64" name="FQAN"><br>
+        <td><input maxlength="256" size="64" name="FQAN"><br>
         </td>
       </tr>
       <tr>
