@@ -68,14 +68,14 @@ public class ConfigurationToolkitTest extends TestCase {
         assertSame(conf, acc);
         assertTrue(acc.getUserGroups().size()==3);
         
-        assertTrue( ((UserGroup)acc.getWriteUserGroups().get(0)).getName().equals("write") );
+        assertTrue( ((UserGroup)acc.getWriteUserGroups().get(2)).getName().equals("write") );
         
-        assertTrue( ((UserGroup)acc.getReadAllUserGroups().get(0)).getName().equals("write") );
         assertTrue( ((UserGroup)acc.getReadAllUserGroups().get(1)).getName().equals("readAll") );
+        assertTrue( ((UserGroup)acc.getReadAllUserGroups().get(2)).getName().equals("write") );
         
-        assertTrue( ((UserGroup)acc.getReadSelfUserGroups().get(0)).getName().equals("write") );
+        assertTrue( ((UserGroup)acc.getReadSelfUserGroups().get(0)).getName().equals("readSelf") );
         assertTrue( ((UserGroup)acc.getReadSelfUserGroups().get(1)).getName().equals("readAll") );
-        assertTrue( ((UserGroup)acc.getReadSelfUserGroups().get(2)).getName().equals("readSelf") );
+        assertTrue( ((UserGroup)acc.getReadSelfUserGroups().get(2)).getName().equals("write") );
     }
 
     public void testUserGroupWrongClass() throws Exception {

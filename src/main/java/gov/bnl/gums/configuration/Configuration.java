@@ -30,11 +30,11 @@ public class Configuration {
     private Log log = LogFactory.getLog(Configuration.class);
     
     private ArrayList hostToGroupMappings = new ArrayList();
-    private HashMap groupToAccountMappings = new HashMap();
-    private HashMap persistenceFactories = new HashMap();
-    private HashMap accountMappers = new HashMap();
-    private HashMap virtualOrganizations = new HashMap();
-    private HashMap userGroups = new HashMap();
+    private TreeMap groupToAccountMappings = new TreeMap();
+    private TreeMap persistenceFactories = new TreeMap();
+    private TreeMap accountMappers = new TreeMap();
+    private TreeMap virtualOrganizations = new TreeMap();
+    private TreeMap userGroups = new TreeMap();
     private KeyStore keyStore = new KeyStore();
     private boolean errorOnMissedMapping;
 
@@ -43,7 +43,7 @@ public class Configuration {
      * indexed by their name property.
      * @return a List of Group2AccountMapper objects.
      */
-    public HashMap getGroupToAccountMappings() {
+    public Map getGroupToAccountMappings() {
         return groupToAccountMappings;
     }
     
@@ -92,7 +92,7 @@ public class Configuration {
      * indexed by their name property.
      * @return a List of PersistentManager objects.
      */
-    public HashMap getPersistenceFactories()  {
+    public Map getPersistenceFactories()  {
         return persistenceFactories;
     }
     
@@ -101,7 +101,7 @@ public class Configuration {
      * indexed by their name property.
      * @return a List of AccountManager objects.
      */
-    public HashMap getAccountMappers()  {
+    public Map getAccountMappers()  {
         return accountMappers;
     }
  
@@ -110,7 +110,7 @@ public class Configuration {
      * <p>
      * @return a list of UserGroupManager objects.
      */
-    public HashMap getUserGroups() {
+    public Map getUserGroups() {
         return userGroups;
     }    
 
@@ -120,7 +120,7 @@ public class Configuration {
      * <p>
      * @return a list of VO objects.
      */
-    public HashMap getVirtualOrganizations() {
+    public Map getVirtualOrganizations() {
         return virtualOrganizations;
     }      
     
