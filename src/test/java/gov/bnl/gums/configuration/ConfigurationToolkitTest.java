@@ -54,9 +54,9 @@ public class ConfigurationToolkitTest extends TestCase {
         String xml = 
         "<gums>" +
 	        "<userGroups>" +
-	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='readSelf' persistenceFactory='mysql' access='read self'/>" +
-	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='readAll' persistenceFactory='mysql' access='read all'/>" +
-	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='write' persistenceFactory='mysql' access='write'/>" +
+	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='myGroupA' persistenceFactory='mysql' access='read self'/>" +
+	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='myGroupB' persistenceFactory='mysql' access='read all'/>" +
+	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='myGroupC' persistenceFactory='mysql' access='write'/>" +
 	        "</userGroups>" +
         "</gums>";
         Digester digester = toolkit.retrieveDigester();
@@ -68,14 +68,14 @@ public class ConfigurationToolkitTest extends TestCase {
         assertSame(conf, acc);
         assertTrue(acc.getUserGroups().size()==3);
         
-        assertTrue( ((UserGroup)acc.getWriteUserGroups().get(2)).getName().equals("write") );
+        assertTrue( ((UserGroup)acc.getWriteUserGroups().get(0)).getName().equals("myGroupC") );
         
-        assertTrue( ((UserGroup)acc.getReadAllUserGroups().get(1)).getName().equals("readAll") );
-        assertTrue( ((UserGroup)acc.getReadAllUserGroups().get(2)).getName().equals("write") );
+        assertTrue( ((UserGroup)acc.getReadAllUserGroups().get(0)).getName().equals("myGroupB") );
+        assertTrue( ((UserGroup)acc.getReadAllUserGroups().get(1)).getName().equals("myGroupC") );
         
-        assertTrue( ((UserGroup)acc.getReadSelfUserGroups().get(0)).getName().equals("readSelf") );
-        assertTrue( ((UserGroup)acc.getReadSelfUserGroups().get(1)).getName().equals("readAll") );
-        assertTrue( ((UserGroup)acc.getReadSelfUserGroups().get(2)).getName().equals("write") );
+        assertTrue( ((UserGroup)acc.getReadSelfUserGroups().get(0)).getName().equals("myGroupA") );
+        assertTrue( ((UserGroup)acc.getReadSelfUserGroups().get(1)).getName().equals("myGroupB") );
+        assertTrue( ((UserGroup)acc.getReadSelfUserGroups().get(2)).getName().equals("myGroupC") );
     }
 
     public void testUserGroupWrongClass() throws Exception {

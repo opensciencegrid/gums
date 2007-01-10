@@ -46,6 +46,8 @@ public class LDAPUserGroup extends UserGroup {
     protected ConfigurationStore confStore;
     private String server = "";
     private String query = "";
+	private String keyStore = "";
+	private String keyPassword = "";
     
     public LDAPUserGroup() {
     }
@@ -66,14 +68,33 @@ public class LDAPUserGroup extends UserGroup {
         db.loadUpdatedList(retrieveMembers());
     }
     
+    public void setKeyStore(String keyStore) {
+    	this.keyStore = keyStore;
+    }
+    
+    public String getKeyStore() {
+    	return keyStore;
+    }
+    
+    public void setKeyPassword(String keyPassword) {
+    	this.keyPassword = keyPassword;
+    }
+    
+    public String getKeyPassword() {
+    	return keyPassword;
+    }
+    
     /**
      * Returns the list of member retrieved from the LDAP server. The members are not saved in the database.
+     * Must be synchronized since the System properties are being set
      * @return A list of VOEntry objects representing the members.
      */
-    private List retrieveMembers() {
+    private synchronized List retrieveMembers() {
         java.util.Properties jndiProperties = new java.util.Properties();
         jndiProperties.put("java.naming.provider.url","ldap://"+server);
         jndiProperties.put("java.naming.factory.initial","com.sun.jndi.ldap.LdapCtxFactory");
+        System.setProperty("javax.net.ssl.keyStore",getKeyStore());
+        System.setProperty("javax.net.ssl.keyStorePassword",getKeyPassword());
         log.info("Retrieving members from '" + jndiProperties.getProperty("java.naming.provider.url") +
                  "'  '" + query + "'");
         try {
@@ -234,6 +255,8 @@ public class LDAPUserGroup extends UserGroup {
     	return super.toXML() +
     	"\t\t\tserver='"+server+"'\n" +
 		"\t\t\tquery='"+query+"'\n" +
-		"\t\t\tpersistenceFactory='"+persistenceFactory.getName()+"'/>\n\n";
+		"\t\t\tpersistenceFactory='"+persistenceFactory.getName()+"'\n" +
+		"\t\t\tkeyStore='"+keyStore+"'\n" +
+		"\t\t\tkeyPassword='"+keyPassword+"'/>\n\n";
     }    
 }

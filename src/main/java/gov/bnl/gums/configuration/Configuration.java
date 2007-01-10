@@ -35,7 +35,6 @@ public class Configuration {
     private TreeMap accountMappers = new TreeMap();
     private TreeMap virtualOrganizations = new TreeMap();
     private TreeMap userGroups = new TreeMap();
-    private KeyStore keyStore = new KeyStore();
     private boolean errorOnMissedMapping;
 
     /**
@@ -176,14 +175,6 @@ public class Configuration {
     }   
     
     /**
-     * Getter for property keyStore.
-     * @return Value of property keyStore.
-     */
-    public KeyStore getKeyStore() {
-        return keyStore;
-    }
-    
-    /**
      * Adds a group mapping to the configuration.
      * @param mapper a GroupMapper object.
      */
@@ -297,7 +288,6 @@ public class Configuration {
         this.userGroups.putAll(userGroups);
     }    
     
-
     /**
      * Sets virtual organizations in configuration.
      * @param vO a VO object.
@@ -307,17 +297,6 @@ public class Configuration {
         this.virtualOrganizations.clear();
         this.virtualOrganizations.putAll(virtualOrganizations);
     }    
-    
-    /**
-     * Setter for property keyStore.
-     * @param keyStore New value of property keyStore.
-     */
-    public void setKeyStore(KeyStore keyStore) {
-        log.trace("Changing the keyStore system properties");
-        System.setProperty("javax.net.ssl.keyStore",keyStore.getLocation());
-        System.setProperty("javax.net.ssl.keyStorePassword",keyStore.getPassword());
-        this.keyStore = keyStore;
-    }      
     
     /**
      * Getter for property errorOnMissedMapping.
