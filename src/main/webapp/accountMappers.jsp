@@ -40,7 +40,7 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
-		Map origAccountMappers = new HashMap();
+		Map origAccountMappers = new TreeMap();
 		origAccountMappers.putAll(configuration.getAccountMappers());
 		try{
 			configuration.getAccountMappers().put(request.getParameter("name"), ConfigurationWebToolkit.parseAccountMapper(configuration, request));

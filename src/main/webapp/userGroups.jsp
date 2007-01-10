@@ -40,7 +40,7 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
-		Map origUserGroups = new HashMap();
+		Map origUserGroups = new TreeMap();
 		origUserGroups.putAll(configuration.getUserGroups());
 		try{
 			configuration.getUserGroups().put(request.getParameter("name"), ConfigurationWebToolkit.parseUserGroup(configuration, request));

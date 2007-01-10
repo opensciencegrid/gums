@@ -39,7 +39,7 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
-		Map origVirtualOrganizations = new HashMap();
+		Map origVirtualOrganizations = new TreeMap();
 		origVirtualOrganizations.putAll(configuration.getVirtualOrganizations());
 		try{
 			configuration.getVirtualOrganizations().put(request.getParameter("name"), ConfigurationWebToolkit.parseVirtualOrganization(configuration, request));

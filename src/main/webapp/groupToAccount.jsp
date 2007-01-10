@@ -40,7 +40,7 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
-		Map origGroupToAccountMappings = new HashMap();
+		Map origGroupToAccountMappings = new TreeMap();
 		origGroupToAccountMappings.putAll(configuration.getGroupToAccountMappings());	
 		try{
 			configuration.getGroupToAccountMappings().put(request.getParameter("name"), ConfigurationWebToolkit.parseGroupToAccountMapping(configuration, request));

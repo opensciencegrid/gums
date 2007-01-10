@@ -38,7 +38,7 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
-		Map origPersistenceFactories = new HashMap();
+		Map origPersistenceFactories = new TreeMap();
 		origPersistenceFactories.putAll(configuration.getPersistenceFactories());	
 		try{
 			configuration.getPersistenceFactories().put(request.getParameter("name"), ConfigurationWebToolkit.parsePersistenceFactory(configuration, request));
