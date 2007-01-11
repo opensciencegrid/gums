@@ -16,9 +16,9 @@
   <li>&nbsp;&nbsp;&nbsp;<a href="manualAccounts.jsp">Manual Account Mappings</a></li>
   <li>&nbsp;&nbsp;&nbsp;<a href="updateMembers_form.jsp">Update VO Members</a></li>
   <li>Test Mappings</li>
-  <li>&nbsp;&nbsp;&nbsp;<a href="map_grid_identity_form.jsp">Map Grid Identity</a></li>
-  <li>&nbsp;&nbsp;&nbsp;<a href="map_account_form.jsp">Map Account</a></li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="map_grid_identity_form.jsp">Map Grid Identity to Account</a></li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="map_account_form.jsp">Map Account to Grid Identity(s)</a></li>
   <li>&nbsp;&nbsp;&nbsp;<a href="generateGridMapfile_form.jsp">Generate Grid Mapfile</a></li>
-  <li>&nbsp;&nbsp;&nbsp;<a href="generateInverseMapfile_form.jsp">Generate Inverse Mapfile</a></li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="generateInverseMapfile_form.jsp">Generate Grid3UserVO Mapfile</a></li>
 </ul>
 </div>
