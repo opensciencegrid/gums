@@ -1,0 +1,254 @@
+#!/bin/sh
+###########################################################################
+# This process is intended to be run as a root cron process.
+#
+# It executes the GUMS client process in order to refresh the
+# following files from the GUMS server:
+#  1.  /etc/grid-security/grid-mapfile
+#      This refresh of the grid-mapfile will only occur when running in
+#      the gatekeeper PRIMA callout is NOT in effect based on the
+#      absence of the /etc/grid-security/gsi-authz.conf file.
+#
+#  2.  VDT_LOCATION/monitoring/grid3-user-vo-map.txt
+#      This refresh will always occur.
+#
+# This cron will perform this task as follows for each map file:
+#  - It will make a copy of the current files with a '.cronsaved' # suffix.  
+#  - The new map file will be created with a '.new' suffix.
+#  - If not successful, it will exit and cron should send an email regarding 
+#  - If successful, 
+#      it will check to see if the new file has changed and if so
+#        it will replace the current map file with  the '.new' file error.
+#       otherwise it will leave the map file alone.
+#      (Note: this is done to minimize the impact on the MonALISA 
+#             VO_Modules module in the case of the user-vo map file.
+#             It re-caches that file if the timestamp changes.)
+#
+# The only required modification to this file is the setting of the
+# VDT_LOCATION variable.  No other environmental settings are required.
+# It does have to source the VDT_LOCATION/setup.sh file in order to
+# insure the VDT version of java is used.
+#
+# Updates:
+# 1. 9/28/2006 (John Weigand)
+#    - This change is one in a set of changes to bring some integrity to
+#      the mapping of users to VOs (MonaAlisa) and in identifying the
+#      VO's that a CE node actually supports.  The actual changes made 
+#      here address the migriation of the grid3-user-vo-map.txt file
+#      that is generated to a new name (osg-user-vo-map.txt file).
+#      To do this, the script will create the 'real' file as 
+#      osg-user-vo-map.txt and symlink the deprecated grid3-user-vo-map.txt
+#      file to it.
+#    - A second change is to refine the criteria for determining if
+#      PRIMA/GUMS is being used as the authorization service or not.
+#      The previous test was just for the existence of the gsi-authz.conf
+#      which was not completely accurate.  It will now test for the
+#      actual PRIMA callout in that file.  The only caveat with this
+#      method is that if the callout string changes, this must change.
+#    - The osg-user-vo-map.txt file is only created for OSG sites.
+#      The criterea for determining an OSG site is the existence
+#      of the $VDT_LOCATION/monitoring/osg-attributes.conf file.
+#      If this file does NOT exist, then the inverse map file will
+#      NOT be created.
+#   
+###########################################################################
+######################################################################
+
+VDT_LOCATION=/storage/local/data1/osg-ce
+
+######################################################################
+######################################################################
+function logerr {
+  echo "ERROR: The $PGM process failed.
+
+$1
+"
+  exit 1
+}
+#-----------------------------
+function verify_permissions {
+  if [ ! -f $1 ];then
+    if [ ! -w $(dirname $1) ];then 
+      logerr "This process needs to modify or create several files.
+Access/permissions denied for file $1
+"
+    fi
+  elif [ ! -w $1 ];then
+    logerr "This process needs to modify or create several files.
+
+Access/permissions denied for file $1
+"
+  fi
+}
+#-----------------------------
+function replace_if_changed {
+  diff -q $1 $2 >/dev/null 2>&1
+  if [ "$?" = 1 ];then
+    cp -pf $2 $2.cronsaved
+    mv $1 $2
+  fi
+  rm -f $1
+  >$2.last_checked
+}
+
+#-------------------------------
+function generate_grid_mapfile {
+  #--- check to see if PRIMA callout is used --
+  GRID_MAP_USED=no
+  if [ ! -f $PRIMA_CALLOUT ];then
+    GRID_MAP_USED=yes   
+  else
+    rtn=$(grep -v "^#" $PRIMA_CALLOUT | grep -q "$PRIMA_CALLOUT_STRING";echo $?)
+    if [ $rtn -ne 0 ];then
+      GRID_MAP_USED=yes
+    fi
+  fi
+
+  #--- generate grid-mapfile if callout not used --
+  if [ "$GRID_MAP_USED" = "yes" ];then
+    # this is in the event no grid-mapfile exists
+    if [ ! -e $MAPFILE ];then
+      touch $MAPFILE
+      chmod 644 $MAPFILE
+    fi
+    for file in $MAPFILE $MAPFILE_NEW $MAPFILE_SAVED 
+    do
+      verify_permissions $file
+    done
+    $GUMSDIR/gums-host generateGridMapfile >$MAPFILE_NEW 2>&1
+    if [ "$?" != "0" ];then
+      logerr "The GUMS client generateGridMapfile process failed while 
+attempting to generate the $MAPFILE file.
+
+---- output --------------------------------------
+$(cat $MAPFILE_NEW)
+"
+    fi
+  replace_if_changed $MAPFILE_NEW $MAPFILE 
+  fi
+}
+
+#-------------------------------
+function generate_user_vo_mapfile {
+  #---- transition code for new name ----
+  # this is the section that can be removed when all 
+  # software using this file is changed AND all sites
+  # are at the appropriate release
+  for file in $INVERSEMAP $INVERSEMAP_DEPRECATED
+  do
+    verify_permissions $file
+  done
+  #
+  # If the new one does not exist and the old one does
+  # .. this would be the one time transitionary change
+  if [ ! -e $INVERSEMAP ] && [ -e $INVERSEMAP_DEPRECATED ];then
+    mv $INVERSEMAP_DEPRECATED $INVERSEMAP
+    rm -f $INVERSEMAP_DEPRECATED.cronsaved $INVERSEMAP_DEPRECATED.new $INVERSEMAP_DEPRECATED.osgsave
+    ln -s $INVERSEMAP $INVERSEMAP_DEPRECATED
+  fi
+  
+  # If the new one exists and the old one is not a link,
+  # we need to make things right
+  # ... not sure this should occur, but this would make
+  #     things right if it does
+  # ... this also takes care of the condition a new 
+  #     implementation with the new name, but the software 
+  #     using the file has not been upgraded yet. 
+  #     The map file exists, but there is neither an 
+  #     old one nor link for the old map file and the 
+  #     software using it has not been upgraded yet.
+  if [ -e $INVERSEMAP ] && [ ! -L $INVERSEMAP_DEPRECATED ];then
+    rm -f $INVERSEMAP_DEPRECATED
+    rm -f $INVERSEMAP_DEPRECATED.cronsaved $INVERSEMAP_DEPRECATED.new $INVERSEMAP_DEPRECATED.osgsave
+    ln -s $INVERSEMAP $INVERSEMAP_DEPRECATED
+  fi
+  #---- end of transition code for new name --------
+
+  # ----------------------------------------------------
+  # No changes should be needed here after the transition 
+  # to the new name is complete and all software is
+  # upgraded.
+  #
+  for file in $INVERSEMAP $INVERSEMAP_NEW $INVERSEMAP_SAVED
+  do
+    verify_permissions $file
+  done
+
+  # This check makes sure a map file exists to later
+  # 'diff' against in the replace_if_changed function.
+  if [ ! -e $INVERSEMAP ];then
+    touch $INVERSEMAP
+    chmod 644 $INVERSEMAP
+  fi
+  if [ ! -L $INVERSEMAP_DEPRECATED ];then
+    ln -s $INVERSEMAP $INVERSEMAP_DEPRECATED
+  fi
+
+  if [ -e $INVERSEMAP ];then
+    $GUMSDIR/gums-host generateGrid3UserVoMap  >$INVERSEMAP_NEW 2>&1
+    if [ "$?" != "0" ];then
+    logerr "The GUMS client generateGrid3UserVoMap process failed while 
+attempting to generate the $INVERSEMAP file.
+
+---- output --------------------------------------
+  $(cat $INVERSEMAP_NEW)
+" 
+    fi
+    replace_if_changed $INVERSEMAP_NEW $INVERSEMAP 
+  fi
+
+
+}
+
+
+#### MAIN ###############################################################
+PGM=$(basename $0)
+PRIMA_CALLOUT=/etc/grid-security/gsi-authz.conf
+PRIMA_CALLOUT_STRING="libprima_authz_module_gcc32dbg"
+GUMSDIR=$VDT_LOCATION/gums/bin
+
+MAPFILE=/etc/grid-security/grid-mapfile
+MAPFILE_NEW=$MAPFILE.new
+MAPFILE_SAVED=$MAPFILE.cronsaved
+
+OSG_SITE_CRITERIA=$VDT_LOCATION/monitoring/osg-attributes.conf
+INVERSEMAP_DEPRECATED=$VDT_LOCATION/monitoring/grid3-user-vo-map.txt
+INVERSEMAP=$VDT_LOCATION/monitoring/osg-user-vo-map.txt
+INVERSEMAP_NEW=$INVERSEMAP.new
+INVERSEMAP_SAVED=$INVERSEMAP.cronsaved
+
+#------------------------------
+#  validate VDT_LOCATION  
+#------------------------------
+if [ ! -d $VDT_LOCATION ] || [ -z "$VDT_LOCATION" ];then
+  logerr "Invalid VDT_LOCATION($VDT_LOCATION)"
+fi
+setup=$VDT_LOCATION/setup.sh
+if [ ! -r $setup ];then
+  logerr "Invalid OSG installation. Setup file ($setup) does not exist."
+fi
+source $setup
+
+#----------------------
+#  validate GUMS  
+#----------------------
+if [ ! -d $GUMSDIR ];then
+  logerr "Invalid GUMS VDT installation.
+The GUMS directory ($GUMSDIR) does not exist or is not readable.
+"
+fi
+
+#--------------------
+#  gridmap file  
+#--------------------
+generate_grid_mapfile
+
+#-------------------------------------
+#  user-vo map file if an OSG site ---
+#-------------------------------------
+if [ -e $OSG_SITE_CRITERIA ];then
+  generate_user_vo_mapfile
+fi
+
+exit 0
+
