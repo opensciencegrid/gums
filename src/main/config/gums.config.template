@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-    Document   : gums.config
-    Created on : Nov 14, 2006, 10:05 AM
-    Author     : Packard
-    Description: Rename to gums.config as starting point
--->
-
-<gums>
+<gums version='1.2'>
 	<persistenceFactories>
 		<persistenceFactory
 			className='gov.bnl.gums.persistence.HibernatePersistenceFactory'
@@ -62,7 +55,7 @@
 			accountName='accountB'/>
 		<accountMapper
 			className='gov.bnl.gums.account.AccountPoolMapper'
-			name='accountMapperB'
+			name='accountMapperC'
 			persistenceFactory='persistenceFactoryA'
 			accountPool='accountC'/>
 	</accountMappers>
