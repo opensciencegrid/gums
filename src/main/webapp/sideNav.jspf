@@ -19,6 +19,6 @@
   <li>&nbsp;&nbsp;&nbsp;<a href="map_grid_identity_form.jsp">Map Grid Identity to Account</a></li>
   <li>&nbsp;&nbsp;&nbsp;<a href="map_account_form.jsp">Map Account to Grid Identity(s)</a></li>
   <li>&nbsp;&nbsp;&nbsp;<a href="generateGridMapfile_form.jsp">Generate Grid Mapfile</a></li>
-  <li>&nbsp;&nbsp;&nbsp;<a href="generateInverseMapfile_form.jsp">Generate Grid3UserVO Mapfile</a></li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="generateGrid3UserVoMap_form.jsp">Generate Grid3-User-VO-Map</a></li>
 </ul>
 </div>

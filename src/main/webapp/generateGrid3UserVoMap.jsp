@@ -7,42 +7,42 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <title>Generate Grid-Mapfile</title>
+  <title>Generate Grid3-User-VO-Map</title>
   <link href="gums.css" type="text/css" rel="stylesheet">
 </head>
 <body>
 <%@include file="topNav.jspf"%>
 <div id="title">
 <h1><span>GUMS</span></h1>
-<h2><span>Generate Grid-Mapfile</span></h2>
+<h2><span>Generate Grid3-User-VO-Map</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
 <%
 	String result = null;
 	try {
-		result = gums.generateGridMapfile(hostname); 
-%>
-
-<p>Grid-mapfile for <%= hostname %>: </p>
-  <table id="form">
+		result = gums.generateGrid3UserVoMap(hostname); 
+%>		
+	
+<p>Grid3-user-VO-map for <%= hostname %>: </p>
+  <table id="form" >
     <tbody>
       <tr>
         <td>
 <pre>
 <%
-	out.println(result);
+	out.println(result); 
 %>
 </pre>
         </td>
       </tr>
     </tbody>
-  </table>
+  </table>	
 <BR><BR>
-
-<%
+		
+<%		
 	} catch(Exception e) {
-		out.println("<BR><div class=\"failure\">Error generating grid-mapfile: " + e.getMessage() + "</div>");
+		out.println("<BR><div class=\"failure\">Error generating grid3-user-VO-map: " + e.getMessage() + "</div>");
 	}
 %>
 </div>
