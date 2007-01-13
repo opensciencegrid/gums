@@ -35,4 +35,5 @@ public interface GUMSAPI extends Remote {
     void updateGroups();
     Configuration getConfiguration();
     void setConfiguration(Configuration configuration) throws Exception;
+    String getVersion();
 }

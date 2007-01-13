@@ -355,6 +355,10 @@ public class GUMSAPIImpl implements GUMSAPI {
         }
     }
     
+    public String getVersion() {
+    	return GUMS.getVersion();
+    }
+    
     private void addPoolAccount(String persistanceManager, String group, String username) {
         try {
             if (hasWriteAccess(currentUser())) {

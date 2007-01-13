@@ -30,6 +30,7 @@ public class GUMS {
     static final public String resourceAdminLog = "gums.resourceAdmin";
     static private Log log = LogFactory.getLog(GUMS.class);
     static private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+    static final public String version = "1.2";
     private static Timer timer;
     
     private Configuration conf;
@@ -60,6 +61,10 @@ public class GUMS {
         this.conf = conf;
     }
     
+    public static String getVersion() {
+    	return version;
+    }
+    
     private static synchronized void startUpdateThread(final GUMS gums) {
         // If JNDI property is set, run the update every x minutes
         if (timer == null) {
@@ -74,7 +79,7 @@ public class GUMS {
                                 gumsResourceAdminLog.info("Starting automatic updateGroups");
                                 gums.getResourceManager().updateGroups();
                                 gumsResourceAdminLog.info("Automatic updateGroups ended");
-                            } catch (RuntimeException e) {
+                            } catch (Exception e) {
                                 gumsResourceAdminLog.error("Automatic updateGroups failed - " + e.getMessage());
                                 log.info("Automatic updateGroups failed", e);
                             }
@@ -118,12 +123,16 @@ public class GUMS {
      * @todo should this method actually save the configuration?
      * @param conf the new configuration
      */
-    public void setConfiguration(Configuration conf) throws Exception {
-        this.conf = conf;
-        if (!confStore.isReadOnly()) {
-            confStore.setConfiguration(conf);
-        }
-        else
-        	throw new Exception("cannot write configuration because it is read only");
+    public void setConfiguration(Configuration conf) {
+    	try {
+	        this.conf = conf;
+	        if (!confStore.isReadOnly()) {
+	            confStore.setConfiguration(conf);
+	        }
+	        else
+	        	throw new RuntimeException("cannot write configuration because it is read-only");
+    	} catch(Exception e) {
+    		throw new RuntimeException("cannot write configuration" + e.getMessage());
+    	}
     }
 }

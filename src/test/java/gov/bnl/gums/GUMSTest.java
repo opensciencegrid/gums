@@ -45,12 +45,11 @@ public class GUMSTest extends TestCase {
 		assertEquals(3, conf.getGroupToAccountMappings().size());
 		GroupToAccountMapping groupToAccountMapping = (GroupToAccountMapping) conf.getGroupToAccountMappings().get("groupToAccountMappingA");
 		Collection userGroups = (Collection) groupToAccountMapping.getUserGroups();
+		assertEquals("persistenceFactoryA", ((ManualUserGroup)userGroups.iterator().next()).getPersistenceFactory());
+		assertEquals("admin", ((UserGroup)userGroups.iterator().next()).getName());
+		assertEquals("write", ((UserGroup)userGroups.iterator().next()).getAccess());
 		Collection accountMappers = (Collection) groupToAccountMapping.getAccountMappers();
-		assertEquals("persistenceFactoryA", ((LDAPUserGroup)userGroups.iterator().next()).getPersistenceFactory());
-		assertEquals("userGroupA", ((UserGroup)userGroups.iterator().next()).getName());
-		assertEquals("grid-vo.nikhef.nl", ((LDAPUserGroup)userGroups.iterator().next()).getServer());
-		assertEquals("ou=usatlas,o=atlas,dc=eu-datagrid,dc=org", ((LDAPUserGroup)userGroups.iterator().next()).getQuery());
-		assertEquals("accountA", ((GroupAccountMapper)accountMappers.iterator().next()).getAccountName());
+		assertEquals("accountMapperA", ((ManualAccountMapper)accountMappers.iterator().next()).getName());
 		assertEquals(1, conf.getHostToGroupMappings().size());
     }
     

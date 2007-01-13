@@ -36,7 +36,7 @@ public interface ConfigurationStore {
      * due to an inconsistency in the store, it should throw an exception.
      * @return A configuration object.
      */
-    Configuration retrieveConfiguration();
+    Configuration retrieveConfiguration() throws RuntimeException;
     
     /**
      * Set and store the configuration.

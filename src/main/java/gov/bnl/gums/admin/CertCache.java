@@ -55,7 +55,7 @@ public class CertCache implements Filter {
         return CertToolkit.getUserDN(getUserCertificate());
     }
     
-    static String getConfPath() {
+    public static String getConfPath() {
         String base = context.getRealPath("/");
         log.trace("Path to the web app: '" + base + "'");
         String fullpath = base + "/WEB-INF/classes/gums.config";

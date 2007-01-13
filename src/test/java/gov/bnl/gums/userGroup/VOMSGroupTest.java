@@ -41,7 +41,7 @@ public class VOMSGroupTest extends TestCase {
         group = vomsGroup;
         vomsGroup.setRemainderUrl("/star/services/VOMSAdmin");
         vomsGroup.setVirtualOrganization(vo);
-        vomsGroup.setIgnoreFQAN(true);
+//        vomsGroup.setIgnoreFQAN(true);
         vomsGroup.setVirtualOrganization(vo);
     }
 

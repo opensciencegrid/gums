@@ -33,7 +33,7 @@ import org.edg.security.voms.service.admin.*;
  * @author  Gabriele Carcassi
  */
 public class VOMSUserGroup extends UserGroup {
-	private static final String defaultMatchFQAN = "exact";
+//	private static final String defaultMatchFQAN = "exact";
 	private static final boolean defaultAcceptProxyWithoutFQAN = true;
     private Log log = LogFactory.getLog(VOMSUserGroup.class);
     private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
@@ -42,7 +42,7 @@ public class VOMSUserGroup extends UserGroup {
     private String voRole = "";
     private String fqan = null; // null since it is optional
     private List matchFQANValues = Arrays.asList(new String[] {"ignore", "vo", "group", "exact"});
-    private String matchFQAN = defaultMatchFQAN;
+//    private String matchFQAN = defaultMatchFQAN;
     private String remainderUrl = "";
     private boolean acceptProxyWithoutFQAN = defaultAcceptProxyWithoutFQAN;
 
@@ -84,20 +84,20 @@ public class VOMSUserGroup extends UserGroup {
         // To avoid a query on the db, we check if the fqan matches first
 
         // If we have an exact match, fqan has to be the same
-        if ("exact".equals(matchFQAN)) {
+        if ("exact".equals(getMatchFQAN())) {
             if (!user.getVoFQAN().toString().equals(fqan))
                 return false;
         }
 
         // If we match the vo, we check the vo is the same
-        if ("vo".equals(matchFQAN)) {
+        if ("vo".equals(getMatchFQAN())) {
             FQAN theFQAN = new FQAN(fqan);
             if (!user.getVoFQAN().getVo().equals(theFQAN.getVo()))
                 return false;
         }
         
         // If we match the group, we make sure the VO starts with the group
-        if ("group".equals(matchFQAN)) {
+        if ("group".equals(getMatchFQAN())) {
             if (!user.getVoFQAN().toString().startsWith(voGroup))
                 return false;
         }
@@ -245,8 +245,14 @@ public class VOMSUserGroup extends UserGroup {
      * @return One of the following:  "ignore", "vo", "group" or "exact".
      */
     public String getMatchFQAN() {
-
-        return this.matchFQAN;
+    	if (!voRole.equals("") && !voGroup.equals("") && !acceptProxyWithoutFQAN)
+    		return (String)matchFQANValues.get(3);
+    	else if (!voGroup.equals("") && !acceptProxyWithoutFQAN)
+    		return (String)matchFQANValues.get(2);
+    	else if (!acceptProxyWithoutFQAN)
+    		return (String)matchFQANValues.get(1);
+    	else
+    		return (String)matchFQANValues.get(0);
     }
     
     /**
@@ -259,16 +265,16 @@ public class VOMSUserGroup extends UserGroup {
      * @return False if FQAN is used during the match
      * @deprecated As of GUMS 1.1, use matchFQAN and acceptProxyWithoutFQAN
      */
-    public boolean isIgnoreFQAN() {
+/*    public boolean isIgnoreFQAN() {
         return "ignore".equals(matchFQAN);
-    }
+    }*/
     
     /**
      * Changes the way FQAN is used to match.
      * @param ignoreFQAN False if FQAN is used during the matchNew value of property ignoreFQAN.
      * @deprecated As of GUMS 1.1, use matchFQAN and acceptProxyWithoutFQAN
      */
-    public void setIgnoreFQAN(boolean ignoreFQAN) {
+/*    public void setIgnoreFQAN(boolean ignoreFQAN) {
         resourceAdminLog.warn("The attribute \"ignoreFQAN\" for VOMSGroup is deprecated: use matchFQAN instead. DO NOT MIX ignoreFQAN and matchFQAN.");
         if (ignoreFQAN) {
             matchFQAN = "ignore";
@@ -277,20 +283,20 @@ public class VOMSUserGroup extends UserGroup {
             matchFQAN = "exact";
             acceptProxyWithoutFQAN = false;
         }
-    }
+    }*/
 
     /**
      * Changes the scheme according to which the FQAN will be matched. See
      * getMatchFQAN for more details.
      * @param matchFQAN One of the following:  "ignore", "vo", "group" or "exact".
      */
-    public void setMatchFQAN(String matchFQAN) {
+/*    public void setMatchFQAN(String matchFQAN) {
         if (!matchFQANValues.contains(matchFQAN)) {
             throw new IllegalArgumentException("The accepted values for matchFQAN in VOMSGroup are: " + matchFQANValues);
         }
 
         this.matchFQAN = matchFQAN;
-    }      
+    }*/ 
     
     private void prepareFQAN() {
         if (voGroup == null) {
@@ -348,8 +354,8 @@ public class VOMSUserGroup extends UserGroup {
         	retStr += "\t\t\tvoGroup='"+voGroup+"'\n";
     	if (voRole!=null)
     		retStr += "\t\t\tvoRole='"+voRole+"'\n";
-        if (matchFQAN.equals(defaultMatchFQAN))
-    		retStr += "\t\t\tmatchFQAN='"+matchFQAN+"'\n";
+//        if (matchFQAN.equals(defaultMatchFQAN))
+//    		retStr += "\t\t\tmatchFQAN='"+matchFQAN+"'\n";
     	if (acceptProxyWithoutFQAN!=defaultAcceptProxyWithoutFQAN)
     		retStr += "\t\t\tacceptProxyWithoutFQAN='"+acceptProxyWithoutFQAN+"'\n"; 
     	if (retStr.charAt(retStr.length()-1)=='\n')

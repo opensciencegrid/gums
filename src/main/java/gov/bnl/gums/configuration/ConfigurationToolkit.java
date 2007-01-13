@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.configuration;
 
+import gov.bnl.gums.GUMS;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.CertificateHostToGroupMapping;
 import gov.bnl.gums.userGroup.VirtualOrganization;
@@ -26,26 +27,39 @@ import org.xml.sax.SAXException;
  */
 class ConfigurationToolkit {
     private static Log log = LogFactory.getLog(ConfigurationToolkit.class);
-    
-    static Configuration loadConfiguration(URL url) throws IOException, SAXException {
-        Digester digester = retrieveDigester();
-        Configuration conf = new Configuration();
-        digester.push(conf);
-        log.trace("Loading the configuration from url '" + url + "'");
-        return (Configuration) digester.parse(url.openStream());
-    }
-    
-    static Configuration loadConfiguration(String filename) throws IOException, SAXException {
-        Digester digester = retrieveDigester();
-        Configuration conf = new Configuration();
-        digester.push(conf);
-        log.trace("Loading the configuration from file '" + filename + "'");
-        return (Configuration) digester.parse(filename);
-    }
-    
-    static Digester retrieveDigester() {
+
+    static String getVersion(String filename) throws IOException, SAXException {
         Digester digester = new Digester();
         digester.setValidating(false);
+        digester.addSetProperties("gums");
+        digester.addRule("gums", new VersionRule());
+        digester.push(new String());
+        log.trace("Loading the version from configuration file '" + filename + "'");
+        String version = (String) digester.parse(filename);
+        return version;
+    }    
+    
+    static Configuration loadConfiguration(String configFile) throws IOException, SAXException {
+    	String schemaFile = configFile+".schema";
+    	String transformFile = configFile+".xls";
+        //if (getVersion(configFile).compareTo(GUMS.getVersion())<0)
+        //	ConfigurationTransform.doTransform(configFile, transformFile);
+    	Digester digester = retrieveDigester(schemaFile);
+        Configuration conf = new Configuration();
+        digester.push(conf);
+        log.trace("Loading the configuration from file '" + configFile + "' using schema '" + schemaFile);
+        return (Configuration) digester.parse(configFile);
+    }
+
+    static Digester retrieveDigester(String schemaFile) {
+        Digester digester = new Digester();
+//        if (schemaFile!=null) {
+//        	digester.setValidating(true);
+//        	digester.setSchema(schemaFile);
+//       }
+//        else
+        	digester.setValidating(false);
+       
         digester.addSetProperties("gums");
         
         digester.addObjectCreate("gums/persistenceFactories/persistenceFactory", "", "className");
@@ -201,5 +215,18 @@ class ConfigurationToolkit {
         }
         
     }
+    
+    // Rule for handling getting the version - only reads a bit of the entire file
+    private static class VersionRule extends Rule {
+    	public void begin(String str, String str1, org.xml.sax.Attributes attributes) throws java.lang.Exception {
+    		Object digestor = getDigester().peek();
+            for (int nAtt = 0; nAtt < attributes.getLength(); nAtt++) {
+            	String name = attributes.getQName(nAtt);
+                String value = attributes.getValue(nAtt);
+                if (name.equals("version"))
+                	MethodUtils.invokeMethod(digestor, "concat", new Object[] {value});
+            }
+    	}
+    };
     
 }

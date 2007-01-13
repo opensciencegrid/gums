@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.admin;
 
+import gov.bnl.gums.GUMS;
 import gov.bnl.gums.configuration.Configuration;
 
 /**
@@ -55,6 +56,10 @@ public class GUMSAPIMock implements GUMSAPI {
     }
     
     public void setConfiguration(Configuration configuration) throws Exception {
+    }
+    
+    public String getVersion() {
+    	return GUMS.getVersion();
     }
     
 }

@@ -141,7 +141,7 @@ public class FileConfigurationStore implements ConfigurationStore {
                 gumsSiteAdminLog.info("Configuration reloaded from '" + filename + "'");
             } else {
     			URL confURL = getConfURL();
-                conf = ConfigurationToolkit.loadConfiguration(confURL);
+                conf = ConfigurationToolkit.loadConfiguration(confURL.getPath());
                 log.trace("Configuration reloaded from classpath '" + confURL + "'");
                 gumsResourceAdminLog.info("Configuration reloaded '" + confURL + "'");
                 gumsSiteAdminLog.info("Configuration reloaded '" + confURL + "'");
