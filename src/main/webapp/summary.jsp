@@ -83,7 +83,7 @@ while (h2GMappingsIt.hasNext()) {
 %>
 
 	<tr>
-		<%= (!cH2GMapping.getName().equals(lastH2GMapping)?"<td bgcolor=\"#FFEE77\">"+cH2GMapping.getName()+"</td>":"<td></td>") %>
+		<%= (!cH2GMapping.getName().equals(lastH2GMapping)?"<td bgcolor=\"#FFEE77\">"+cH2GMapping.getName().replaceAll(",","<br>")+"</td>":"<td></td>") %>
 		<%= (!g2AMapping.getName().equals(lastG2AMapping)?"<td bgcolor=\"#FFEE77\">"+g2AMapping.getName()+"</td>":"<td></td>") %>
 		<%= (!userGroup.getName().equals(lastUserGroup)?userGroup.getSummary("#FFEE77"):"<td></td><td></td><td></td><td></td><td></td><td></td>") %>
 		<%= accountMapper.getSummary("#FFEE77") %>
