@@ -2,13 +2,14 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="gov.bnl.gums.*"%>
 <%@ page import="gov.bnl.gums.account.*" %>
+<%@ page import="gov.bnl.gums.configuration.*" %>
 <%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <title>Add Pool Account Range</title>
+  <title>GUMS</title>
   <link href="gums.css" type="text/css" rel="stylesheet">
 </head>
 <body>
@@ -19,10 +20,28 @@
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
-<p>
 <%-- <jsp:useBean id="beanInstanceName" scope="session" class="beanPackage.BeanClassName" /> --%>
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
+<%
+Configuration configuration = null;
+try {
+	configuration = gums.getConfiguration();
+}catch(Exception e){
+%>
+
+<p><div class="failure">Error getting configuration: <%= e.getMessage() %></div></p>
+</div>
+<%@include file="bottomNav.jspf"%>
+</body>
+</html>
+
+<%
+	return;
+}
+%>
+
+<p>
 Adds range of accounts to a pool.
 </p>
 
@@ -34,7 +53,7 @@ Adds range of accounts to a pool.
         <td style="text-align: left;">
 <%
 		ArrayList poolMappers = new ArrayList();
-		Iterator it = gums.getConfiguration().getAccountMappers().values().iterator();
+		Iterator it = configuration.getAccountMappers().values().iterator();
 		while(it.hasNext()) {
 			AccountMapper accountMapper = (AccountMapper)it.next();
 			if (accountMapper instanceof AccountPoolMapper)

@@ -4,7 +4,7 @@
     session="false" %>
 <html>
 <head>
-<title>System Fingerprint</title>
+<title>GUMS</title>
 </head>
 <body bgcolor=#ffffff>
 <%!

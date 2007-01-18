@@ -11,7 +11,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
- 	<title>Host To Group</title>
+ 	<title>GUMS</title>
  	<link href="gums.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
@@ -22,16 +22,32 @@
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
-<p>
 <%-- <jsp:useBean id="beanInstanceName" scope="session" class="beanPackage.BeanClassName" /> --%>
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
-Configure host to group mappings.
+<%
+Configuration configuration = null;
+try {
+	configuration = gums.getConfiguration();
+}catch(Exception e){
+%>
+
+<p><div class="failure">Error getting configuration: <%= e.getMessage() %></div></p>
+</div>
+<%@include file="bottomNav.jspf"%>
+</body>
+</html>
+
+<%
+	return;
+}
+%>
+
+<p>
+Configures host to group mappings.
 </p>
 
 <%
-
-Configuration configuration = gums.getConfiguration();
 String message = null;
 String movedName = null;
 Collection h2GMappings = configuration.getHostToGroupMappings();
@@ -224,7 +240,7 @@ else if ("edit".equals(request.getParameter("action"))
 	    		"i.e."+
 		    "</td>"+
 		    "<td nowrap>"+
-				"myHostToGroupMapping"+
+				"*.host1.com, *.host2.com"+
 		    "</td>"+
 		"</tr>");			    
 	else

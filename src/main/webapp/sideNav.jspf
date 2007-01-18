@@ -4,6 +4,7 @@
 <ul>
   <li><a href="index.jsp">Home</a></li>
   <li>Configuration</li>
+  <li>&nbsp;&nbsp;&nbsp;<a href="summary.jsp">Diagnostic Summary</a></li>
   <li>&nbsp;&nbsp;&nbsp;<a href="persistenceFactories.jsp">Persistence Factories</a></li>
   <li>&nbsp;&nbsp;&nbsp;<a href="virtualOrganizations.jsp">Virtual Organizations</a></li>
   <li>&nbsp;&nbsp;&nbsp;<a href="userGroups.jsp">User Groups</a></li>

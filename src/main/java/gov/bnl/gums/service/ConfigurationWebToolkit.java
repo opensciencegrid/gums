@@ -72,6 +72,12 @@ public class ConfigurationWebToolkit implements Remote {
 			counter++;
 		}
 		
+		if (request.getParameter("vo")!=null)
+			groupToAccountMapping.setAccountingVo(request.getParameter("vo"));
+		
+		if (request.getParameter("desc")!=null)
+			groupToAccountMapping.setAccountingDesc(request.getParameter("desc"));
+		
 		return groupToAccountMapping;
 	}		
 
@@ -145,10 +151,20 @@ public class ConfigurationWebToolkit implements Remote {
 				((VOMSUserGroup)userGroup).setRemainderUrl( request.getParameter("url") );
 			if (request.getParameter("nVOMS")!=null)
 				((VOMSUserGroup)userGroup).setAcceptProxyWithoutFQAN( request.getParameter("nVOMS").equals("allowed") );
+			if (request.getParameter("VOMS")!=null && request.getParameter("VOMS").equals("must match")) {
+				if (request.getParameter("vo")!=null && !request.getParameter("vo").equals(""))
+					((VOMSUserGroup)userGroup).setMatchFQAN( "exact" );
+				else if (request.getParameter("group")!=null && !request.getParameter("group").equals(""))
+					((VOMSUserGroup)userGroup).setMatchFQAN( "group" );
+				else
+					((VOMSUserGroup)userGroup).setMatchFQAN( "vo" );
+			}
+			else
+				((VOMSUserGroup)userGroup).setMatchFQAN( "ignore" );
 			if (request.getParameter("group")!=null)
 				((VOMSUserGroup)userGroup).setVoGroup( request.getParameter("group") );
 			if (request.getParameter("role")!=null)
-				((VOMSUserGroup)userGroup).setVoGroup( request.getParameter("role") );
+				((VOMSUserGroup)userGroup).setVoRole( request.getParameter("role") );
 		}
 		
 		return userGroup;

@@ -113,17 +113,6 @@
                <groupId>org.codehaus.cargo</groupId>
                <artifactId>cargo-maven2-plugin</artifactId>
                <version>0.3-SNAPSHOT</version>
-               <executions>
-                   <execution>
-                   <phase>install</phase>
-                   <goals>
-                       <goal>deployer-deploy</goal>
-                       <goal>deployer-undeploy</goal>
-                       <goal>deployer-deploy</goal>
-                       <goal>deployer-redeploy</goal>
-                   </goals>
-                   </execution>
-               </executions>
                <configuration>
                    <container>
                         <containerId>tomcat5x</containerId>

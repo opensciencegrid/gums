@@ -22,7 +22,7 @@
  */
 %>
 <head>
-<title>Axis Happiness Page</title>
+<title>GUMS</title>
 </head>
 <body bgcolor='#ffffff'>
 <%!

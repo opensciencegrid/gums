@@ -10,7 +10,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
- 	<title>Virtual Organizations</title>
+ 	<title>GUMS</title>
  	<link href="gums.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
@@ -21,16 +21,32 @@
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
-<p>
 <%-- <jsp:useBean id="beanInstanceName" scope="session" class="beanPackage.BeanClassName" /> --%>
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
+<%
+Configuration configuration = null;
+try {
+	configuration = gums.getConfiguration();
+}catch(Exception e){
+%>
+
+<p><div class="failure">Error getting configuration: <%= e.getMessage() %></div></p>
+</div>
+<%@include file="bottomNav.jspf"%>
+</body>
+</html>
+
+<%
+	return;
+}
+%>
+
+<p>
 Configures virtual organizations.
 </p>
 
 <%
-
-Configuration configuration = gums.getConfiguration();
 String message = null;
 Collection virtualOrganizations = configuration.getVirtualOrganizations().values();
 

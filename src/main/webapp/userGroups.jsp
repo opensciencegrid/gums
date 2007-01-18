@@ -11,7 +11,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
- 	<title>User Groups</title>
+ 	<title>GUMS</title>
  	<link href="gums.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
@@ -22,16 +22,32 @@
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
-<p>
 <%-- <jsp:useBean id="beanInstanceName" scope="session" class="beanPackage.BeanClassName" /> --%>
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
+<%
+Configuration configuration = null;
+try {
+	configuration = gums.getConfiguration();
+}catch(Exception e){
+%>
+
+<p><div class="failure">Error getting configuration: <%= e.getMessage() %></div></p>
+</div>
+<%@include file="bottomNav.jspf"%>
+</body>
+</html>
+
+<%
+	return;
+}
+%>
+
+<p>
 Configures user groups.
 </p>
 
 <%
-
-Configuration configuration = gums.getConfiguration();
 String message = null;
 Collection userGroups = configuration.getUserGroups().values();
 
@@ -112,16 +128,19 @@ if (request.getParameter("action")==null ||
 			if ( !((VOMSUserGroup)userGroup).getRemainderUrl().equals("") )
 				out.write(	" at URL <span style=\"font-style:italic\">{base URL}</span><span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getRemainderUrl() + "</span>");
 
-			if ( ((VOMSUserGroup)userGroup).getVoGroup().equals("") )
-				out.write(	" where non-VOMS certificates are " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "<span style=\"color:blue\">" : "<span style=\"color:blue\">not") + "accepted</span>");
-							
-			if ( !((VOMSUserGroup)userGroup).getVoGroup().equals("") )
-				out.write(	" where certificate matches group" + 
-							" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoGroup() + "</span>");
-	
-			if ( !((VOMSUserGroup)userGroup).getVoRole().equals("") )
-				out.write(	" and role" + 
-							" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoRole() + "</span>");
+			out.write(	" where non-VOMS certificates are " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "<span style=\"color:blue\">" : "<span style=\"color:blue\">not ") + "accepted</span>");
+
+			out.write(	" and VOMS certificate's VO " + (!((VOMSUserGroup)userGroup).isIgnoreFQAN() ? "<span style=\"color:blue\">must match" : "<span style=\"color:blue\">is ignored") + "</span>");
+
+			if( !((VOMSUserGroup)userGroup).isIgnoreFQAN() ) {
+				if ( !((VOMSUserGroup)userGroup).getVoGroup().equals("") )
+					out.write(	" and group must match " + 
+								" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoGroup() + "</span>");
+		
+				if ( !((VOMSUserGroup)userGroup).getVoRole().equals("") )
+					out.write(	" and role must match " + 
+								" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoRole() + "</span>");
+			}
 		}
 
 		out.write(			". Members have <span style=\"color:blue\">" + userGroup.getAccess() + "</span> access to GUMS.");
@@ -349,15 +368,26 @@ else if ("edit".equals(request.getParameter("action"))
 					"<select name=\"nVOMS\" onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\">"+
 						"<option " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"selected":"") + ">allowed</option>"+
 						"<option " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"":"selected") + ">not allowed</option>"+
-					"</select>" + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? " ." : "") +
+					"</select>" +
+				"</td>"+
+			"</tr>"+
+			"<tr>"+
+				"<td nowrap style=\"text-align: right;\">"+
+					"and VOMS certificate's VO "+((VOMSUserGroup)userGroup).isIgnoreFQAN()+
+				"</td>"+
+				"<td>"+ 
+					"<select name=\"VOMS\" onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\">"+
+						"<option " + (((VOMSUserGroup)userGroup).isIgnoreFQAN()?"selected":"") + ">is ignored</option>"+
+						"<option " + (((VOMSUserGroup)userGroup).isIgnoreFQAN()?"":"selected") + ">must match</option>"+
+					"</select>" + (((VOMSUserGroup)userGroup).isIgnoreFQAN() ? " ." : "") +
 				"</td>"+
 			"</tr>");
-			
-			if( !((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ) {
+
+			if( !((VOMSUserGroup)userGroup).isIgnoreFQAN() ) {
 				out.write(
 			"<tr>"+
 				"<td nowrap style=\"text-align: right;\">"+
-					"where certificate matches group (optional)"+
+					"and group must match (optional)"+
 				"</td>"+
 				"<td>"+ 
 					"<input name=\"group\" value=\"" + ((VOMSUserGroup)userGroup).getVoGroup() + "\"/>"+
@@ -365,7 +395,7 @@ else if ("edit".equals(request.getParameter("action"))
 			"</tr>"+
 			"<tr>"+
 				"<td nowrap style=\"text-align: right;\">"+
-					"and role (optional)"+
+					"and role must match (optional)"+
 				"</td>"+
 				"<td>"+ 
 					"<input name=\"role\" value=\"" + ((VOMSUserGroup)userGroup).getVoRole() + "\"/>."+
@@ -384,7 +414,7 @@ else if ("edit".equals(request.getParameter("action"))
 						"<option " + (userGroup.getAccess().equals("read self")?"selected":"") + ">read self</option>"+
 						"<option " + (userGroup.getAccess().equals("read all")?"selected":"") + ">read all</option>"+
 						"<option " + (userGroup.getAccess().equals("write")?"selected":"") + ">write</option>"+
-					"</select> access."+
+					"</select> access to GUMS."+
 				"</td>"+
 			"</tr>"+
 			"<tr>"+

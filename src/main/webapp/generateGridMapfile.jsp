@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <title>Generate Grid-Mapfile</title>
+  <title>GUMS</title>
   <link href="gums.css" type="text/css" rel="stylesheet">
 </head>
 <body>
@@ -42,7 +42,7 @@
 
 <%
 	} catch(Exception e) {
-		out.println("<BR><div class=\"failure\">Error generating grid-mapfile: " + e.getMessage() + "</div>");
+		out.println("<p><div class=\"failure\">Error generating grid-mapfile: " + e.getMessage() + "</div></p>");
 	}
 %>
 </div>

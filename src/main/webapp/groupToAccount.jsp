@@ -11,7 +11,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
- 	<title>Group To Account</title>
+ 	<title>GUMS</title>
  	<link href="gums.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
@@ -22,16 +22,32 @@
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
-<p>
 <%-- <jsp:useBean id="beanInstanceName" scope="session" class="beanPackage.BeanClassName" /> --%>
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
-Configures group to account mapper mappings.
+<%
+Configuration configuration = null;
+try {
+	configuration = gums.getConfiguration();
+}catch(Exception e){
+%>
+
+<p><div class="failure">Error getting configuration: <%= e.getMessage() %></div></p>
+</div>
+<%@include file="bottomNav.jspf"%>
+</body>
+</html>
+
+<%
+	return;
+}
+%>
+
+<p>
+Configures group to account mappings.
 </p>
 
 <%
-
-Configuration configuration = gums.getConfiguration();
 String message = null;
 Collection g2AMappings = configuration.getGroupToAccountMappings().values();
 
@@ -266,11 +282,19 @@ else if ("edit".equals(request.getParameter("action"))
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
 			true)+
-			"(try in order)");
+			"(try in order) .");
 
 	out.write(
 			"</td>"+
 		"</tr>"+
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">Accounting VO (optional - for Grid3-User-VO-Map only) </td>"+
+		    "<td nowrap><input maxlength=\"256\" size=\"32\" name=\"vo\" value=\"" + g2AMapping.getAccountingVo() + "\"/></td>" +
+		"</tr>"+		
+		"<tr>"+
+    		"<td nowrap style=\"text-align: right;\">Accounting Description (optional - for Grid3-User-VO-Map only) </td>"+
+		    "<td nowrap><input maxlength=\"256\" size=\"64\" name=\"desc\" value=\"" + g2AMapping.getAccountingDesc() + "\"/></td>" +
+		"</tr>"+		
 		"<tr>"+
 	        "<td colspan=2>"+
 	        	"<div style=\"text-align: center;\">"+
