@@ -42,4 +42,7 @@ public class MockAccountMapper extends AccountMapper {
         return null;
     }
     
+    public String getSummary(String bgColor) {
+    	return null;
+    }
 }

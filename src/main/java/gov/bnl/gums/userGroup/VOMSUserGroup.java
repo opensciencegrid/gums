@@ -33,16 +33,15 @@ import org.edg.security.voms.service.admin.*;
  * @author  Gabriele Carcassi
  */
 public class VOMSUserGroup extends UserGroup {
-//	private static final String defaultMatchFQAN = "exact";
 	private static final boolean defaultAcceptProxyWithoutFQAN = true;
+	private static final String defaultMatchFQAN = "ignore";
     private Log log = LogFactory.getLog(VOMSUserGroup.class);
     private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     private VirtualOrganization vo;
     private String voGroup = "";
     private String voRole = "";
     private String fqan = null; // null since it is optional
-    private List matchFQANValues = Arrays.asList(new String[] {"ignore", "vo", "group", "exact"});
-//    private String matchFQAN = defaultMatchFQAN;
+    private String matchFQAN = defaultMatchFQAN;
     private String remainderUrl = "";
     private boolean acceptProxyWithoutFQAN = defaultAcceptProxyWithoutFQAN;
 
@@ -245,14 +244,7 @@ public class VOMSUserGroup extends UserGroup {
      * @return One of the following:  "ignore", "vo", "group" or "exact".
      */
     public String getMatchFQAN() {
-    	if (!voRole.equals("") && !voGroup.equals("") && !acceptProxyWithoutFQAN)
-    		return (String)matchFQANValues.get(3);
-    	else if (!voGroup.equals("") && !acceptProxyWithoutFQAN)
-    		return (String)matchFQANValues.get(2);
-    	else if (!acceptProxyWithoutFQAN)
-    		return (String)matchFQANValues.get(1);
-    	else
-    		return (String)matchFQANValues.get(0);
+   		return matchFQAN;
     }
     
     /**
@@ -263,11 +255,10 @@ public class VOMSUserGroup extends UserGroup {
      * DN matches. Setting true makes the behaviour similar to the one of the
      * grid-mapfile.
      * @return False if FQAN is used during the match
-     * @deprecated As of GUMS 1.1, use matchFQAN and acceptProxyWithoutFQAN
      */
-/*    public boolean isIgnoreFQAN() {
+   public boolean isIgnoreFQAN() {
         return "ignore".equals(matchFQAN);
-    }*/
+    }
     
     /**
      * Changes the way FQAN is used to match.
@@ -290,13 +281,9 @@ public class VOMSUserGroup extends UserGroup {
      * getMatchFQAN for more details.
      * @param matchFQAN One of the following:  "ignore", "vo", "group" or "exact".
      */
-/*    public void setMatchFQAN(String matchFQAN) {
-        if (!matchFQANValues.contains(matchFQAN)) {
-            throw new IllegalArgumentException("The accepted values for matchFQAN in VOMSGroup are: " + matchFQANValues);
-        }
-
+    public void setMatchFQAN(String matchFQAN) {
         this.matchFQAN = matchFQAN;
-    }*/ 
+    }
     
     private void prepareFQAN() {
         if (voGroup == null) {
@@ -316,7 +303,6 @@ public class VOMSUserGroup extends UserGroup {
      * @return True if group will accept non-VOMS proxies
      */
     public boolean isAcceptProxyWithoutFQAN() {
-
         return this.acceptProxyWithoutFQAN;
     }
 
@@ -325,7 +311,6 @@ public class VOMSUserGroup extends UserGroup {
      * @param acceptProxyWithoutFQAN True if group will accept non-VOMS proxies
      */
     public void setAcceptProxyWithoutFQAN(boolean acceptProxyWithoutFQAN) {
-
         this.acceptProxyWithoutFQAN = acceptProxyWithoutFQAN;
     }
     
@@ -350,18 +335,19 @@ public class VOMSUserGroup extends UserGroup {
         "\t\t\tvirtualOrganization='"+vo.getName()+"'\n";
     	if (remainderUrl!=null)
     		retStr += "\t\t\tremainderUrl='"+remainderUrl+"'\n";
+   		retStr += "\t\t\tmatchFQAN='"+matchFQAN+"'\n";
+   		retStr += "\t\t\tacceptProxyWithoutFQAN='"+acceptProxyWithoutFQAN+"'\n"; 
     	if (voGroup!=null)
         	retStr += "\t\t\tvoGroup='"+voGroup+"'\n";
     	if (voRole!=null)
     		retStr += "\t\t\tvoRole='"+voRole+"'\n";
-//        if (matchFQAN.equals(defaultMatchFQAN))
-//    		retStr += "\t\t\tmatchFQAN='"+matchFQAN+"'\n";
-    	if (acceptProxyWithoutFQAN!=defaultAcceptProxyWithoutFQAN)
-    		retStr += "\t\t\tacceptProxyWithoutFQAN='"+acceptProxyWithoutFQAN+"'\n"; 
     	if (retStr.charAt(retStr.length()-1)=='\n')
     		retStr = retStr.substring(0, retStr.length()-1);
     	retStr += "/>\n\n";
     	return retStr;
     }
     
+    public String getSummary(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + matchFQAN + "</td><td bgcolor=\""+bgColor+"\">" + acceptProxyWithoutFQAN + "</td><td bgcolor=\""+bgColor+"\">" + voGroup + "</td><td bgcolor=\""+bgColor+"\">" + voRole + "</td><td bgcolor=\""+bgColor+"\">" + vo.getBaseUrl() + remainderUrl + "</td>";
+    }
 }

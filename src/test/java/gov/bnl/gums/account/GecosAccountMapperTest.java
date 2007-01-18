@@ -74,6 +74,10 @@ public class GecosAccountMapperTest extends TestCase {
         protected java.lang.String mapName() {
             return "testMap";
         }
+        
+        public String getSummary(String bgColor) {
+        	return null;
+        }
     }
 
     

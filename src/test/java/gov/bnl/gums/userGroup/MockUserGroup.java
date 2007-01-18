@@ -48,4 +48,8 @@ public class MockUserGroup extends UserGroup {
         return updated;
     }
     
+    public String getSummary(String bgColor) {
+    	return null;
+    }
+    
 }

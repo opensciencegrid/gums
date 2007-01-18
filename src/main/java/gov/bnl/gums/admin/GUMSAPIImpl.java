@@ -248,7 +248,13 @@ public class GUMSAPIImpl implements GUMSAPI {
     }
 
     public Configuration getConfiguration() {
-    	return gums().getConfiguration();
+    	if (hasWriteAccess(currentUser()))
+    		return gums().getConfiguration();
+    	else {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to get configuration because user doesn't have write access");
+    		siteLog.info(logUserAccess() + "Failed to get configuration because user doesn't have write access");
+    		throw new AuthorizationDeniedException();
+    	}
     }
     
     public void setConfiguration(Configuration configuration) throws Exception {

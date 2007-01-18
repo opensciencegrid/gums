@@ -109,4 +109,7 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
 			"\t\t\tjndiLdapUrl='"+jndiLdapUrl+"'/>\n\n";
     }    
     
+    public String getSummary(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">"+jndiLdapUrl+"</td>";
+    }
 }

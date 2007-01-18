@@ -54,4 +54,7 @@ public class GroupAccountMapper extends AccountMapper {
 			"\t\t\taccountName='"+accountName+"'/>\n\n";
     }      
     
+    public String getSummary(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td>";
+    }
 }

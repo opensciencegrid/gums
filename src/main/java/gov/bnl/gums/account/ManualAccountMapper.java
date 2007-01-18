@@ -57,4 +57,8 @@ public class ManualAccountMapper extends AccountMapper {
     	return super.toXML() +
 			"\t\t\tpersistenceFactory='"+persistenceFactory.getName()+"'/>\n\n";
     }      
+    
+    public String getSummary(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory.getName() + "</td>";
+    }
 }

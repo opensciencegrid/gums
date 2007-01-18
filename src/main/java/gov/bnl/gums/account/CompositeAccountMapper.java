@@ -77,4 +77,7 @@ public class CompositeAccountMapper extends AccountMapper {
         mappers.add(mapper);
     }
     
+    public String getSummary(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td>";    }
+    
 }

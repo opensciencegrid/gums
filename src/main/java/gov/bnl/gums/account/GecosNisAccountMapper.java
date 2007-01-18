@@ -110,4 +110,7 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
 			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
     }      
     
+    public String getSummary(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + jndiNisUrl + "</td>";
+    }
 }

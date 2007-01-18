@@ -139,6 +139,8 @@ public class GroupToAccountMapping {
     public String toXML() {
     	String retStr = "\t\t<groupToAccountMapping\n"+
 		"\t\t\tname='"+name+"'\n"+
+		"\t\t\taccountingVo='"+accountingVo+"'\n"+
+		"\t\t\taccountingDesc = '"+accountingDesc+"'\n"+
 		"\t\t\tuserGroups='";
 
 	    List userGroups = getUserGroups();

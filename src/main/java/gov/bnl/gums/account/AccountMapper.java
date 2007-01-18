@@ -46,4 +46,6 @@ public abstract class AccountMapper {
     		"\t\t\tclassName='"+getClass().getName()+"'\n"+
     		"\t\t\tname='"+name+"'\n";
     }
+    
+    public abstract String getSummary(String bgColor);
 }

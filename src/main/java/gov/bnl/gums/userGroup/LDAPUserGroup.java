@@ -259,4 +259,8 @@ public class LDAPUserGroup extends UserGroup {
 		"\t\t\tkeyStore='"+keyStore+"'\n" +
 		"\t\t\tkeyPassword='"+keyPassword+"'/>\n\n";
     }    
+    
+    public String getSummary(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + server + "</td>";
+    }
 }

@@ -98,4 +98,6 @@ public abstract class UserGroup {
 		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tname='"+name+"'\n";
     }
+    
+    public abstract String getSummary(String bgColor);
 }

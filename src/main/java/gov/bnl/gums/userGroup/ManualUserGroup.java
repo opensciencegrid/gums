@@ -69,4 +69,8 @@ public class ManualUserGroup extends UserGroup {
     	return super.toXML() +
 		"\t\t\tpersistenceFactory='"+persistanceFactory.getName()+"'/>\n\n";
     }    
+    
+    public String getSummary(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + persistanceFactory.getName() + "</td>";
+    }
 }

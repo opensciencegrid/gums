@@ -57,4 +57,8 @@ public class AccountPoolMapper extends AccountMapper {
 			"\t\t\tpersistenceFactory='"+persistenceFactory.getName()+"'\n" +
     		"\t\t\taccountPool='"+accountPool+"'/>\n\n";
     }
+    
+    public String getSummary(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory.getName() + "</td>";
+    }
 }
