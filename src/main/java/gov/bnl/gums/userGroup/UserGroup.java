@@ -7,6 +7,7 @@
 package gov.bnl.gums.userGroup;
 
 import gov.bnl.gums.GridUser;
+import gov.bnl.gums.configuration.Configuration;
 
 import java.util.*;
 
@@ -20,20 +21,39 @@ public abstract class UserGroup {
 	private String name = "";
 	private String[] accessTypes = {"write", "read all", "read self"};
 	private int accessIndex = 2;
+	private Configuration configuration = null;
 	
+	/**
+	 * This empty constructor needed by XML Digestor
+	 */
 	public UserGroup() {
 	}
-
-	public UserGroup(String name) {
+	
+	/**
+	 * Automatically adds itself to the configuration.
+	 * @param configuration
+	 * @param name
+	 */
+	public UserGroup(Configuration configuration, String name) {
+		this.configuration = configuration;
 		this.name = name;
+		configuration.addUserGroup(this);
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
 	}
 	
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public Configuration getConfiguration() {
+		return configuration;
 	}
 	
     /**
@@ -66,14 +86,14 @@ public abstract class UserGroup {
      */
     public abstract void updateMembers();
     
-    public void setAccess(String access) throws Exception {
+    public void setAccess(String access) {
     	for(int i=0; i<accessTypes.length; i++) {
     		if ( accessTypes[i].equalsIgnoreCase(access) ) {
     			accessIndex = i;
     			return;
     		}
     	}
-    	throw new Exception("Invalid access type: "+access);
+    	throw new RuntimeException("Invalid access type: "+access);
     }
 	
     public String getAccess() {
@@ -100,4 +120,6 @@ public abstract class UserGroup {
     }
     
     public abstract String getSummary(String bgColor);
+    
+    public abstract Object clone();
 }

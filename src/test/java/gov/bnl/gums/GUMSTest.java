@@ -45,11 +45,12 @@ public class GUMSTest extends TestCase {
 		assertEquals(3, conf.getGroupToAccountMappings().size());
 		GroupToAccountMapping groupToAccountMapping = (GroupToAccountMapping) conf.getGroupToAccountMappings().get("groupToAccountMappingA");
 		Collection userGroups = (Collection) groupToAccountMapping.getUserGroups();
-		assertEquals("persistenceFactoryA", ((ManualUserGroup)userGroups.iterator().next()).getPersistenceFactory());
-		assertEquals("admin", ((UserGroup)userGroups.iterator().next()).getName());
-		assertEquals("write", ((UserGroup)userGroups.iterator().next()).getAccess());
+		String userGroupName = (String)userGroups.iterator().next();
+		assertEquals("persistenceFactoryA", ((ManualUserGroup)conf.getUserGroup( userGroupName )).getPersistenceFactory() );
+		assertEquals("admin", (String)userGroups.iterator().next());
+		assertEquals("write", conf.getUserGroup( userGroupName ).getAccess() );
 		Collection accountMappers = (Collection) groupToAccountMapping.getAccountMappers();
-		assertEquals("accountMapperA", ((ManualAccountMapper)accountMappers.iterator().next()).getName());
+		assertEquals("accountMapperA", (String)accountMappers.iterator().next());
 		assertEquals(1, conf.getHostToGroupMappings().size());
     }
     

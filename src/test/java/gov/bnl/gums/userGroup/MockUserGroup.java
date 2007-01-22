@@ -9,6 +9,7 @@ package gov.bnl.gums.userGroup;
 import java.util.*;
 
 import gov.bnl.gums.*;
+import gov.bnl.gums.configuration.Configuration;
 
 /**
  *
@@ -19,7 +20,8 @@ public class MockUserGroup extends UserGroup {
     boolean updated;
     
     /** Creates a new instance of MockUserGroup */
-    public MockUserGroup() {
+    public MockUserGroup(Configuration configuration, String name) {
+    	super(configuration, name);
         members = new ArrayList();
         GridUser carcassi = new GridUser();
         carcassi.setCertificateDN("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi");
@@ -40,15 +42,15 @@ public class MockUserGroup extends UserGroup {
         updated = true;
     }
     
-    public String getName() {
-        return "mockUserGroup";
-    }
-    
     public boolean isUpdated() {
         return updated;
     }
     
     public String getSummary(String bgColor) {
+    	return null;
+    }
+    
+    public Object clone() {
     	return null;
     }
     

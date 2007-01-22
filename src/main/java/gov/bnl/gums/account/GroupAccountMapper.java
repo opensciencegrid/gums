@@ -8,6 +8,8 @@ package gov.bnl.gums.account;
 
 
 
+import gov.bnl.gums.configuration.Configuration;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -25,10 +27,11 @@ public class GroupAccountMapper extends AccountMapper {
     private String accountName = "";
     
     public GroupAccountMapper() {
+    	super();
     }
     
-    public GroupAccountMapper(String name) {
-    	super(name);
+    public GroupAccountMapper(Configuration configuration, String name) {
+    	super(configuration, name);
     }
 
     public void setAccountName(String accountName) {
@@ -56,5 +59,11 @@ public class GroupAccountMapper extends AccountMapper {
     
     public String getSummary(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td>";
+    }
+    
+    public Object clone() {
+    	GroupAccountMapper accountMapper = new GroupAccountMapper(getConfiguration(), getName());
+    	accountMapper.setAccountName(accountName);
+    	return accountMapper;
     }
 }

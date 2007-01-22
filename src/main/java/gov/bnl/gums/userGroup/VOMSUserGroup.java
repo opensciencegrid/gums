@@ -9,6 +9,8 @@ package gov.bnl.gums.userGroup;
 import gov.bnl.gums.FQAN;
 import gov.bnl.gums.GUMS;
 import gov.bnl.gums.GridUser;
+import gov.bnl.gums.configuration.Configuration;
+import gov.bnl.gums.db.UserGroupDB;
 
 import java.net.URL;
 import java.util.*;
@@ -37,7 +39,7 @@ public class VOMSUserGroup extends UserGroup {
 	private static final String defaultMatchFQAN = "ignore";
     private Log log = LogFactory.getLog(VOMSUserGroup.class);
     private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-    private VirtualOrganization vo;
+    private String vo = "";
     private String voGroup = "";
     private String voRole = "";
     private String fqan = null; // null since it is optional
@@ -46,14 +48,23 @@ public class VOMSUserGroup extends UserGroup {
     private boolean acceptProxyWithoutFQAN = defaultAcceptProxyWithoutFQAN;
 
     public VOMSUserGroup() {
+    	super();
     }    
     
-	public VOMSUserGroup(String name) {
-		super(name);
+	public VOMSUserGroup(Configuration configuration, String name) {
+		super(configuration, name);
 	}
     
     public java.util.List getMemberList() {
-        return vo.getDB().retrieveMembers();
+        return getVoDB().retrieveMembers();
+    }
+    
+    private VirtualOrganization getVoObject() {
+    	return getConfiguration().getVirtualOrganization(vo);
+    }
+    
+    private UserGroupDB getVoDB() {
+    	return getVoObject().getDB();
     }
     
     public boolean isInGroup(GridUser user) {
@@ -66,7 +77,7 @@ public class VOMSUserGroup extends UserGroup {
             // we still allow him in.
             // We should remove this in versions after 1.1
             if ((voGroup == null) && (voRole == null)) {
-                return vo.getDB().isMemberInGroup(user);
+                return getVoDB().isMemberInGroup(user);
             }
             return false;
         }
@@ -74,7 +85,7 @@ public class VOMSUserGroup extends UserGroup {
         // If the user comes in wihout FQAN, but we accept proxies without it,
         // we simply check whether the DN is in the database
         if ((user.getVoFQAN() == null) && isAcceptProxyWithoutFQAN()) {
-            if (vo.getDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan)))
+            if (getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan)))
                 return true;
             return false;
         }
@@ -103,12 +114,12 @@ public class VOMSUserGroup extends UserGroup {
 
         // FQAN matches, let's look up if the DN is in the db
         // If not, he's kicked out
-        return vo.getDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan));
+        return getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan));
     }
     
     public void updateMembers() {
     	if(vo!=null)	
-    		vo.getDB().loadUpdatedList(retrieveMembers());
+    		getVoDB().loadUpdatedList(retrieveMembers());
     }
     
     private List retrieveMembers() {
@@ -144,11 +155,11 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     public String toString() {
-        return "VOMSGroup: " + getUrl() + " - voGroup='" + getVoGroup() + "' - voRole='" + getVoRole() + "' - sslCAFiles='" + vo.getSslCAFiles() +"' sslCertfile='" + vo.getSslCertfile() +"' sslKey='" + vo.getSslKey() + "' sslKeyPasswd=" + ((vo.getSslKeyPasswd()!= null) ? "[set]" : "[not set]");
+        return "VOMSGroup: " + getUrl() + " - voGroup='" + getVoGroup() + "' - voRole='" + getVoRole() + "' - sslCAFiles='" + getVoObject().getSslCAFiles() +"' sslCertfile='" + getVoObject().getSslCertfile() +"' sslKey='" + getVoObject().getSslKey() + "' sslKeyPasswd=" + ((getVoObject().getSslKeyPasswd()!= null) ? "[set]" : "[not set]");
     }
 
     public String getUrl() {
-    	return (vo!=null ? vo.getBaseUrl() + remainderUrl : "");
+    	return (getVoObject()!=null ? getVoObject().getBaseUrl() + remainderUrl : "");
     }
     
     public VOMSAdmin getVOMSAdmin() {
@@ -218,7 +229,7 @@ public class VOMSUserGroup extends UserGroup {
     /**
      * @param vo
      */
-    public void setVirtualOrganization(VirtualOrganization vo) {
+    public void setVirtualOrganization(String vo) {
     	this.vo = vo;
     }
 
@@ -226,7 +237,7 @@ public class VOMSUserGroup extends UserGroup {
      * @return
      */
     public String getVirtualOrganization() {
-    	return (vo!=null ? vo.getName() : "");
+    	return vo;
     }
     
     /**
@@ -315,24 +326,25 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     private void setProperties() {
-        log.debug("SSL properties: sslCAFiles='" + vo.getSslCAFiles() +"' sslCertfile='" + vo.getSslCertfile() +"' sslKey='" + vo.getSslKey() + "' sslKeyPasswd set:" + (vo.getSslKeyPasswd()!= null) +"'"); 
-        if (vo.getSslCAFiles() != null) {
-            System.setProperty("sslCAFiles", vo.getSslCAFiles());
+    	VirtualOrganization voObject = getVoObject();
+        log.debug("SSL properties: sslCAFiles='" + voObject.getSslCAFiles() +"' sslCertfile='" + voObject.getSslCertfile() +"' sslKey='" + voObject.getSslKey() + "' sslKeyPasswd set:" + (voObject.getSslKeyPasswd()!= null) +"'"); 
+        if (voObject.getSslCAFiles() != null) {
+            System.setProperty("sslCAFiles", voObject.getSslCAFiles());
         }
-        if (vo.getSslCertfile() != null) {
-            System.setProperty("sslCertfile", vo.getSslCertfile());
+        if (voObject.getSslCertfile() != null) {
+            System.setProperty("sslCertfile", voObject.getSslCertfile());
         }
-        if (vo.getSslKey() != null) {
-            System.setProperty("sslKey", vo.getSslKey());
+        if (voObject.getSslKey() != null) {
+            System.setProperty("sslKey", voObject.getSslKey());
         }
-        if (vo.getSslKeyPasswd() != null) {
-            System.setProperty("sslKeyPasswd", vo.getSslKeyPasswd());
+        if (voObject.getSslKeyPasswd() != null) {
+            System.setProperty("sslKeyPasswd", voObject.getSslKeyPasswd());
         }
     }
     
     public String toXML() {
     	String retStr = super.toXML() +
-        "\t\t\tvirtualOrganization='"+vo.getName()+"'\n";
+        "\t\t\tvirtualOrganization='"+vo+"'\n";
     	if (remainderUrl!=null)
     		retStr += "\t\t\tremainderUrl='"+remainderUrl+"'\n";
    		retStr += "\t\t\tmatchFQAN='"+matchFQAN+"'\n";
@@ -348,6 +360,18 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + matchFQAN + "</td><td bgcolor=\""+bgColor+"\">" + acceptProxyWithoutFQAN + "</td><td bgcolor=\""+bgColor+"\">" + voGroup + "</td><td bgcolor=\""+bgColor+"\">" + voRole + "</td><td bgcolor=\""+bgColor+"\">" + vo.getBaseUrl() + remainderUrl + "</td>";
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + matchFQAN + "</td><td bgcolor=\""+bgColor+"\">" + acceptProxyWithoutFQAN + "</td><td bgcolor=\""+bgColor+"\">" + voGroup + "</td><td bgcolor=\""+bgColor+"\">" + voRole + "</td><td bgcolor=\""+bgColor+"\">" + getVoObject().getBaseUrl() + remainderUrl + "</td>";
+    }
+    
+    public Object clone() {
+    	VOMSUserGroup userGroup = new VOMSUserGroup(getConfiguration(), getName());
+    	userGroup.setAccess(getAccess());
+    	userGroup.setVirtualOrganization(getVirtualOrganization());
+    	userGroup.setVoRole(getVoRole());
+    	userGroup.setVoGroup(getVoGroup());
+    	userGroup.setMatchFQAN(getMatchFQAN());
+    	userGroup.setRemainderUrl(getRemainderUrl());
+    	userGroup.setAcceptProxyWithoutFQAN(acceptProxyWithoutFQAN);
+    	return userGroup;
     }
 }

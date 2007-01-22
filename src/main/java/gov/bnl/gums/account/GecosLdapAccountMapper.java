@@ -8,6 +8,8 @@ package gov.bnl.gums.account;
 
 
 
+import gov.bnl.gums.configuration.Configuration;
+
 import java.util.Properties;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attribute;
@@ -27,6 +29,14 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     
     private String jndiLdapUrl = "";
 
+    public GecosLdapAccountMapper() {
+    	super();
+    }
+    
+    public GecosLdapAccountMapper(Configuration configuration, String name) {
+    	super(configuration, name);
+    }
+    
     /**
      * Returns the URL used to describe the LDAP server.
      * @return LDAP url according to JNDI LDAP driver.
@@ -111,5 +121,11 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     
     public String getSummary(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">"+jndiLdapUrl+"</td>";
+    }
+    
+    public Object clone() {
+    	GecosLdapAccountMapper accountMapper = new GecosLdapAccountMapper(getConfiguration(), getName());
+    	accountMapper.setJndiLdapUrl(jndiLdapUrl);
+    	return accountMapper;
     }
 }

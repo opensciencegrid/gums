@@ -31,6 +31,7 @@ import javax.naming.ldap.InitialLdapContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 import gov.bnl.gums.db.LDAPGroupIDAssigner;
 import gov.bnl.gums.db.LDAPMappingDB;
@@ -56,10 +57,11 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     private List contexts = Collections.synchronizedList(new LinkedList());// *** LDAP connection pool management
 
     public LDAPPersistenceFactory() {
+    	super();
     }    
     
-    public LDAPPersistenceFactory(String name) {
-    	super(name);
+    public LDAPPersistenceFactory(Configuration configuration, String name) {
+    	super(configuration, name);
     }
     
     /** Create a new LDAP DirContext based on the configuration.
@@ -631,6 +633,13 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         } finally {
             releaseContext(context);
         }
+    }
+    
+    public Object clone() {
+    	LDAPPersistenceFactory persistenceFactory = new LDAPPersistenceFactory(getConfiguration(), getName());
+    	persistenceFactory.setProperties((Properties)getProperties().clone());
+    	persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
+    	return persistenceFactory;
     }
     
     private DirContext getDomainContext(DirContext context, String domain) throws Exception {

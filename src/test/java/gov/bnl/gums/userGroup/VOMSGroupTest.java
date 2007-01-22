@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.userGroup;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.MockPersistenceFactory;
 import gov.bnl.gums.userGroup.*;
 import java.util.*;
@@ -20,6 +21,7 @@ import junit.framework.*;
 public class VOMSGroupTest extends TestCase {
     
 	UserGroup group;
+	Configuration configuration = new Configuration();
        
     public VOMSGroupTest(java.lang.String testName) {
         super(testName);
@@ -31,18 +33,18 @@ public class VOMSGroupTest extends TestCase {
     }
     
     public void setUp() {
-        VirtualOrganization vo = new VirtualOrganization();
+        VirtualOrganization vo = new VirtualOrganization(configuration, "vo");
         vo.setBaseUrl("https://vo.racf.bnl.gov:8443/edg-voms-admin");
         vo.setSslCertfile(System.getProperty("user.home") + "/etc/grid-security/hostcert.pem");
         vo.setSslKey(System.getProperty("user.home") + "/etc/grid-security/hostkey.pem");
-        vo.setPersistenceFactory(new MockPersistenceFactory("star"));
+        vo.setPersistenceFactory(new MockPersistenceFactory(configuration, "star").getName());
         
-        VOMSUserGroup vomsGroup = new VOMSUserGroup("group1");
+        VOMSUserGroup vomsGroup = new VOMSUserGroup(configuration, "group1");
         group = vomsGroup;
         vomsGroup.setRemainderUrl("/star/services/VOMSAdmin");
-        vomsGroup.setVirtualOrganization(vo);
+        vomsGroup.setVirtualOrganization(vo.getName());
 //        vomsGroup.setIgnoreFQAN(true);
-        vomsGroup.setVirtualOrganization(vo);
+        vomsGroup.setVirtualOrganization(vo.getName());
     }
 
     public void testDummyTest() {

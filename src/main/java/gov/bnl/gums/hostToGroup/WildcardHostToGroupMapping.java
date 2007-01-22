@@ -7,6 +7,8 @@
 package gov.bnl.gums.hostToGroup;
 
 import gov.bnl.gums.GUMS;
+import gov.bnl.gums.configuration.Configuration;
+import gov.bnl.gums.userGroup.ManualUserGroup;
 
 import java.util.*;
 import java.util.regex.*;
@@ -27,9 +29,15 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
     
     private String wildcard;
     private List regexs;
-    
+  
     /** Creates a new wildcard mapping, which needs to be properly configured. */
     public WildcardHostToGroupMapping() {
+        adminLog.warn("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
+    }
+    
+    /** Creates a new wildcard mapping, which needs to be properly configured. */
+    public WildcardHostToGroupMapping(Configuration configuration) {
+    	super(configuration);
         adminLog.warn("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
     }
     
@@ -73,5 +81,16 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
     	return super.toXML() +
 			"\t\t\twildcard='"+wildcard+"'/>\n\n";
     }        
+    
+    public Object clone() {
+    	WildcardHostToGroupMapping hostToGroupMapping = new WildcardHostToGroupMapping(getConfiguration());
+    	hostToGroupMapping.setWildcard(getWildcard());
+    	Iterator it = getGroupToAccountMappings().iterator();
+    	while (it.hasNext()) {
+    		String groupToAccountMapping = (String)it.next();
+    		hostToGroupMapping.addGroupToAccountMapping(groupToAccountMapping);
+    	}
+    	return hostToGroupMapping;
+    }
     
 }

@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.hostToGroup;
 
+import gov.bnl.gums.configuration.Configuration;
 import junit.framework.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,7 +26,7 @@ public class CertificateHostToGroupMappingTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        group = new CertificateHostToGroupMapping();
+        group = new CertificateHostToGroupMapping(new Configuration());
     }
 
     protected void tearDown() throws Exception {

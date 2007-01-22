@@ -8,6 +8,7 @@ package gov.bnl.gums.persistence;
 
 import java.util.Properties;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.*;
 
 /**
@@ -15,14 +16,9 @@ import gov.bnl.gums.db.*;
  * @author  carcassi
  */
 public class MockPersistenceFactory extends PersistenceFactory {
-	
-	public MockPersistenceFactory(String name) {
-		super(name);
+	public MockPersistenceFactory(Configuration configuration, String name) {
+		super(configuration, name);
 	}
-	
-    public String getName() {
-        return "mock";
-    }    
     
     public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
         return new MockManualAccountMapperDB();
@@ -42,6 +38,10 @@ public class MockPersistenceFactory extends PersistenceFactory {
     
     public void setProperties(Properties properties) {
     	
+    }
+    
+    public Object clone() {
+    	return null;
     }
     
 }

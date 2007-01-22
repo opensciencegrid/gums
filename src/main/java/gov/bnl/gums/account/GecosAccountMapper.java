@@ -8,6 +8,8 @@ package gov.bnl.gums.account;
 
 
 
+import gov.bnl.gums.configuration.Configuration;
+
 import java.util.*;
 
 import org.apache.commons.logging.*;
@@ -28,6 +30,14 @@ import org.apache.commons.logging.*;
  */
 public abstract class GecosAccountMapper extends AccountMapper {
     static private Log log = LogFactory.getLog(GecosAccountMapper.class);
+    
+    public GecosAccountMapper() {
+    	super();
+    }
+    
+    public GecosAccountMapper(Configuration configuration, String name) {
+    	super(configuration, name);
+    }
     
     public String mapUser(String userDN) {
         String[] nameSurname = parseNameAndSurname(userDN);

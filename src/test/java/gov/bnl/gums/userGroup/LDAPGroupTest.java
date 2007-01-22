@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.userGroup;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.MockPersistenceFactory;
 import gov.bnl.gums.GridUser;
 
@@ -23,6 +24,7 @@ import junit.framework.*;
 public class LDAPGroupTest extends TestCase {
     
     UserGroup group;
+    Configuration configuration = new Configuration();
     
     public LDAPGroupTest(java.lang.String testName) {
         super(testName);
@@ -34,9 +36,9 @@ public class LDAPGroupTest extends TestCase {
     }
     
     public void setUp() {
-        LDAPUserGroup ldapGroup = new LDAPUserGroup("group1");
+        LDAPUserGroup ldapGroup = new LDAPUserGroup(configuration, "group1");
         group = ldapGroup;
-        ldapGroup.setPersistenceFactory(new MockPersistenceFactory("mock"));
+        ldapGroup.setPersistenceFactory(new MockPersistenceFactory(configuration, "mock").getName());
         ldapGroup.setServer("grid-vo.nikhef.nl");
         ldapGroup.setQuery("ou=People,o=atlas,dc=eu-datagrid,dc=org");
     }
@@ -76,12 +78,12 @@ public class LDAPGroupTest extends TestCase {
     }
     
     public void testEquals() {
-        MockPersistenceFactory factory = new MockPersistenceFactory("test");
-        LDAPUserGroup group1 = new LDAPUserGroup("group1");
-        LDAPUserGroup group2 = new LDAPUserGroup("group2");
+        MockPersistenceFactory factory = new MockPersistenceFactory(configuration, "test");
+        LDAPUserGroup group1 = new LDAPUserGroup(configuration, "group1");
+        LDAPUserGroup group2 = new LDAPUserGroup(configuration, "group2");
         assertEquals(group1, group2);
-        group1.setPersistenceFactory(factory);
-        group2.setPersistenceFactory(factory);
+        group1.setPersistenceFactory(factory.getName());
+        group2.setPersistenceFactory(factory.getName());
         assertEquals(group1, group2);
         group1.setServer("testServer");
         assertFalse(group1.equals(group2));
@@ -106,7 +108,7 @@ public class LDAPGroupTest extends TestCase {
 
         // The group has a member attribute with a list of people of the LDAP present in the VO Group
         DirContext ctx = (DirContext) jndiCtx.lookup("o=dteam,dc=lcg,dc=org");
-        LDAPUserGroup group = new LDAPUserGroup("group1");
+        LDAPUserGroup group = new LDAPUserGroup(configuration, "group1");
         Map map = group.retrievePeopleMap(ctx);
         assertEquals("/DC=org/DC=doegrids/OU=People/CN=Dantong Yu 127718", map.get("cn=Dantong Yu 127718,ou=People,o=dteam,dc=lcg,dc=org"));
     }

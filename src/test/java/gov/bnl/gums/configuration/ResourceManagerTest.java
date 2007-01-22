@@ -75,24 +75,20 @@ public class ResourceManagerTest extends TestCase {
     }
     
     public void testGenerateGridMapfileOrder() {
-        ManualUserGroup userGroup = new ManualUserGroup("testUserGroup");
-        userGroup.setPersistenceFactory(new MockPersistenceFactory("testUserGroup"));
+        ManualUserGroup userGroup = new ManualUserGroup(conf, "testUserGroup");
+        userGroup.setPersistenceFactory(new MockPersistenceFactory(conf, "testUserGroup").getName());
         userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
         userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Dantong Yu", null));
         userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Jason Smith", null));
 
-        GroupAccountMapper groupAccountMapper = new GroupAccountMapper("test");
-        groupAccountMapper.setAccountName("test");
+        GroupAccountMapper groupAccountMapper = new GroupAccountMapper(conf, "test");
+        groupAccountMapper.setAccountName(groupAccountMapper.getName());
         
-        GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping("mockGroup2");
-        groupToAccountMapping.addUserGroup(userGroup);
-        groupToAccountMapping.addAccountMapper(groupAccountMapper);
+        GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping(conf, "mockGroup2");
+        groupToAccountMapping.addUserGroup(userGroup.getName());
+        groupToAccountMapping.addAccountMapper(groupAccountMapper.getName());
 
-        ((HostToGroupMapping)conf.getHostToGroupMappings().get(0)).addGroupToAccountMapping(groupToAccountMapping);
-        
-        conf.addUserGroup((UserGroup)groupToAccountMapping.getUserGroups().get(0));
-        conf.addAccountMapper((AccountMapper)groupToAccountMapping.getAccountMappers().get(0));
-        conf.addGroupToAccountMapping(groupToAccountMapping);
+        ((HostToGroupMapping)conf.getHostToGroupMappings().get(0)).addGroupToAccountMapping(groupToAccountMapping.getName());
 
         String mapfile = man.generateGridMapfile("vo.racf.bnl.gov");
         String expectedGridmap = "#---- members of vo: mockUserGroup ----#\n" +
@@ -111,7 +107,7 @@ public class ResourceManagerTest extends TestCase {
         Iterator iter = groups.iterator();
         while (iter.hasNext()) {
             GroupToAccountMapping gMap = (GroupToAccountMapping) iter.next();
-            MockUserGroup group = (MockUserGroup) gMap.getUserGroups().get(0);
+            MockUserGroup group = (MockUserGroup) conf.getUserGroup( (String)gMap.getUserGroups().get(0) );
             group.updateMembers();
             assertTrue(group.isUpdated());
         }

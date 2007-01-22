@@ -9,6 +9,7 @@ package gov.bnl.gums.persistence;
 import java.util.Iterator;
 import java.util.Properties;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
@@ -30,22 +31,41 @@ import gov.bnl.gums.db.UserGroupDB;
 public abstract class PersistenceFactory {
 	private String name;
     private Properties properties;
-
+    private Configuration configuration;
+ 
+	/**
+	 * This empty constructor needed by XML Digestor
+	 */
 	public PersistenceFactory() {
 	}	
-	
-	public PersistenceFactory(String name) {
+    
+	/**
+	 * Automatically adds itself to the configuration.
+	 * @param configuration
+	 * @param name
+	 */
+	public PersistenceFactory(Configuration configuration, String name) {
 		this.name = name;
+		this.configuration = configuration;
+		configuration.addPersistenceFactory(this);
 	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
 	
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}
@@ -76,4 +96,5 @@ public abstract class PersistenceFactory {
     	
     	return retStr;
 	}
+	public abstract Object clone();
 }

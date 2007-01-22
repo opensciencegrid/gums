@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.configuration.Configuration;
 import junit.framework.*;
 import java.util.*;
 import org.apache.commons.logging.*;
@@ -23,7 +24,7 @@ public class GecosAccountMapperTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-         mapper = new GecosAccountMapperImpl();
+         mapper = new GecosAccountMapperImpl(new Configuration(), "accountMapper");
     }
 
     protected void tearDown() throws Exception {
@@ -65,6 +66,10 @@ public class GecosAccountMapperTest extends TestCase {
             super();
         }
 
+        GecosAccountMapperImpl(Configuration configuration, String name) {
+            super(configuration, name);
+        }
+        
         protected gov.bnl.gums.account.GecosMap createMap() {
             GecosMap map = new GecosMap();
             map.addEntry("carcassi", "Gabriele Carcassi");
@@ -76,6 +81,10 @@ public class GecosAccountMapperTest extends TestCase {
         }
         
         public String getSummary(String bgColor) {
+        	return null;
+        }
+        
+        public Object clone() {
         	return null;
         }
     }

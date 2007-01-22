@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.configuration.Configuration;
 import junit.framework.*;
 import java.util.Properties;
 import javax.naming.NamingEnumeration;
@@ -28,7 +29,7 @@ public class GecosNisAccountMapperTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        mapper = new GecosNisAccountMapper();
+        mapper = new GecosNisAccountMapper(new Configuration(), "gecosNisAccountMapper");
         mapper.setJndiNisUrl("nis://130.199.48.26/usatlas.bnl.gov");
     }
 

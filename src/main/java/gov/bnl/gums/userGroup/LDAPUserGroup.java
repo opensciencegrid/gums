@@ -16,6 +16,7 @@ import javax.naming.*;
 import javax.naming.directory.*;
 import org.apache.commons.logging.*;
 
+import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
 
 import gov.bnl.gums.persistence.PersistenceFactory;
@@ -41,7 +42,7 @@ public class LDAPUserGroup extends UserGroup {
     private Log log = LogFactory.getLog(LDAPUserGroup.class);
     private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     private UserGroupDB db;
-    private PersistenceFactory persistenceFactory;    
+    private String persistenceFactory = "";    
     private Configuration conf;
     protected ConfigurationStore confStore;
     private String server = "";
@@ -50,22 +51,23 @@ public class LDAPUserGroup extends UserGroup {
 	private String keyPassword = "";
     
     public LDAPUserGroup() {
+    	super();
     }
     
-	public LDAPUserGroup(String name) {
-		super(name);
+	public LDAPUserGroup(Configuration configuration, String name) {
+		super(configuration, name);
 	}
     
     public java.util.List getMemberList() {
-        return db.retrieveMembers();
+        return getDB().retrieveMembers();
     }
     
     public boolean isInGroup(GridUser user) {
-        return db.isMemberInGroup(user);
+        return getDB().isMemberInGroup(user);
     }
     
     public void updateMembers() {
-        db.loadUpdatedList(retrieveMembers());
+    	getDB().loadUpdatedList(retrieveMembers());
     }
     
     public void setKeyStore(String keyStore) {
@@ -189,6 +191,12 @@ public class LDAPUserGroup extends UserGroup {
         return map;
     }
     
+    private UserGroupDB getDB() {
+    	if (db==null)
+            db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( getName() );
+    	return db;
+    }
+    
     /**
      * Returns the name of the LDAP server used to retrieve the list of users.
      * @return The name of the server server. i.e. "grid-vo.nikhef.nl"
@@ -222,12 +230,11 @@ public class LDAPUserGroup extends UserGroup {
     }
     
     public String getPersistenceFactory() {
-        return (persistenceFactory!=null ? persistenceFactory.getName() : "");
+        return persistenceFactory;
     }
     
-    public void setPersistenceFactory(PersistenceFactory factory) {
-        this.persistenceFactory = factory;
-        db = factory.retrieveUserGroupDB( getName() );
+    public void setPersistenceFactory(String persistenceFactory) {
+        this.persistenceFactory = persistenceFactory;
     }
     
     public int hashCode() {
@@ -244,7 +251,7 @@ public class LDAPUserGroup extends UserGroup {
             if ((server == null ? group.server == null : server.equals(group.server)) &&
                (query == null ? group.query == null : query.equals(group.query)) && 
                (getName() == null ? group.getName() == null : getName().equals(group.getName())) && 
-               (persistenceFactory == null ? group.persistenceFactory == null : persistenceFactory.getName().equals(group.persistenceFactory.getName()))) {
+               (persistenceFactory == null ? group.persistenceFactory == null : persistenceFactory.equals(group.persistenceFactory))) {
                 return true;
             }
         }
@@ -255,12 +262,23 @@ public class LDAPUserGroup extends UserGroup {
     	return super.toXML() +
     	"\t\t\tserver='"+server+"'\n" +
 		"\t\t\tquery='"+query+"'\n" +
-		"\t\t\tpersistenceFactory='"+persistenceFactory.getName()+"'\n" +
+		"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
 		"\t\t\tkeyStore='"+keyStore+"'\n" +
 		"\t\t\tkeyPassword='"+keyPassword+"'/>\n\n";
     }    
     
     public String getSummary(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + server + "</td>";
+    }
+    
+    public Object clone() {
+    	LDAPUserGroup userGroup = new LDAPUserGroup(getConfiguration(), getName());
+    	userGroup.setPersistenceFactory(persistenceFactory);
+    	userGroup.setAccess(getAccess());
+    	userGroup.setKeyPassword(getKeyPassword());
+    	userGroup.setKeyStore(getKeyStore());
+    	userGroup.setQuery(getQuery());
+    	userGroup.setServer(getServer());
+    	return userGroup;
     }
 }

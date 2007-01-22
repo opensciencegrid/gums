@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.db;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.MySQLPersistenceFactory;
 
 import java.sql.*;
@@ -30,7 +31,7 @@ public class MySQLAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
     }
     
     public void setUp() throws SQLException {
-        MySQLPersistenceFactory mysql = new MySQLPersistenceFactory("mysqlPers1");
+        MySQLPersistenceFactory mysql = new MySQLPersistenceFactory(new Configuration(), "mysqlPers1");
         mysql.setConnectionFromDbProperties();
         db = mysql.retrieveAccountPoolMapperDB("userGroup");
         Connection conn = mysql.getConnection();

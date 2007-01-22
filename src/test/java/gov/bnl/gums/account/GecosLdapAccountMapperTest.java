@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.configuration.Configuration;
 import junit.framework.*;
 import java.util.Properties;
 import javax.naming.NamingEnumeration;
@@ -28,7 +29,7 @@ public class GecosLdapAccountMapperTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        mapper = new GecosLdapAccountMapper();
+        mapper = new GecosLdapAccountMapper(new Configuration(), "ldapAccountMapper");
         mapper.setJndiLdapUrl("ldap://rldap01.rcf.bnl.gov/dc=usatlas,dc=bnl,dc=gov");
     }
 

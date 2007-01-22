@@ -10,8 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.HibernateMapping;
 import gov.bnl.gums.db.AccountPoolMapperDB;
+import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.persistence.PersistenceFactory;
 
 /** Provides the mapping by assigning user accounts from a pool provided by
@@ -26,8 +28,16 @@ import gov.bnl.gums.persistence.PersistenceFactory;
 public class AccountPoolMapper extends AccountMapper {
     
     private AccountPoolMapperDB db;
-    private PersistenceFactory persistenceFactory;
+    private String persistenceFactory = "";
     private String accountPool = "";
+    
+    public AccountPoolMapper() {
+    	super();
+    }
+    
+    public AccountPoolMapper(Configuration configuration, String name) {
+    	super(configuration, name);
+    }
     
     public String getAccountPool() {
     	return accountPool;
@@ -38,27 +48,39 @@ public class AccountPoolMapper extends AccountMapper {
     }
 
     public String mapUser(String userDN) {
-        String account = db.retrieveAccount(userDN);
+        String account = getDB().retrieveAccount(userDN);
         if (account != null) return account;
-        return db.assignAccount(userDN);
+        return getDB().assignAccount(userDN);
     }    
     
-    public String getPersistenceFactory() {
-       return (persistenceFactory!=null ? persistenceFactory.getName() : "");
+    private AccountPoolMapperDB getDB() {
+    	if (db==null)
+    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveAccountPoolMapperDB( accountPool );
+    	return db;
     }
     
-    public void setPersistenceFactory(PersistenceFactory setPersistenceFactory) {
-        this.persistenceFactory = setPersistenceFactory;
-        db = persistenceFactory.retrieveAccountPoolMapperDB( accountPool );
+    public String getPersistenceFactory() {
+       return persistenceFactory;
+    }
+    
+    public void setPersistenceFactory(String persistenceFactory) {
+        this.persistenceFactory = persistenceFactory;
     }
     
     public String toXML() {
     	return super.toXML() +
-			"\t\t\tpersistenceFactory='"+persistenceFactory.getName()+"'\n" +
+			"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
     		"\t\t\taccountPool='"+accountPool+"'/>\n\n";
     }
     
     public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory.getName() + "</td>";
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
+    }
+    
+    public Object clone() {
+    	AccountPoolMapper accountMapper = new AccountPoolMapper(getConfiguration(), getName());
+    	accountMapper.setAccountPool(accountPool);
+    	accountMapper.setPersistenceFactory(persistenceFactory);
+    	return accountMapper;
     }
 }

@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.configuration.Configuration;
 import junit.framework.*;
 
 /**
@@ -28,7 +29,7 @@ public class NISAccountMapperTest extends TestCase {
     
     
     public void setUp() {
-        NISAccountMapper gMapper = new NISAccountMapper();
+        NISAccountMapper gMapper = new NISAccountMapper(new Configuration(), "NisAccountMapper");
         mapper = gMapper;
         gMapper.setJndiNisUrl("nis://130.199.48.26/usatlas.bnl.gov");
     }

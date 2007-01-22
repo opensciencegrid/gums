@@ -7,7 +7,9 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.MockPersistenceFactory;
+import gov.bnl.gums.persistence.PersistenceFactory;
 
 import java.util.*;
 
@@ -31,8 +33,10 @@ public class ManualAccountMapperTest extends TestCase {
     }
     
     public void setUp() {
-        ManualAccountMapper mMapper = new ManualAccountMapper();
-        mMapper.setPersistenceFactory( new MockPersistenceFactory("mock") );
+    	Configuration configuration = new Configuration();
+        ManualAccountMapper mMapper = new ManualAccountMapper(configuration, "manualAccountMapper");
+        PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "mock");
+        mMapper.setPersistenceFactory( persistenceFactory.getName() );
         mapper = mMapper;
     }
     

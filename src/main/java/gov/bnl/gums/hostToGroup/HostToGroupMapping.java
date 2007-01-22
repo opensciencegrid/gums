@@ -10,7 +10,7 @@
 
 package gov.bnl.gums.hostToGroup;
 
-import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
+import gov.bnl.gums.configuration.Configuration;
 
 import java.util.*;
 
@@ -26,13 +26,36 @@ import java.util.*;
  * @author  Gabriele Carcassi
  */
 public abstract class HostToGroupMapping {
-
     private List groupToAccountMappers = new ArrayList();
+    private Configuration configuration = null;
+    
+	/**
+	 * This empty constructor needed by XML Digestor
+	 */
+    public HostToGroupMapping() {
+    }
+    
+	/**
+	 * Automatically adds itself to the configuration.
+	 * @param configuration
+	 */
+    public HostToGroupMapping(Configuration configuration) {
+    	this.configuration = configuration;
+   		configuration.addHostToGroupMapping(this);
+    }
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
     
     /** Returns name.
      * @return name or unique identifier.
      */
     public abstract String getName();
+    
+    public Configuration getConfiguration() {
+    	return configuration;
+    }
     
     /** Returns the list of group mapping associated with this mapping.
      * @return A list of GroupMapper objects.
@@ -45,18 +68,18 @@ public abstract class HostToGroupMapping {
      *
      * @param groupMapper A list of GroupMapper objects.
      */
-    public void addGroupToAccountMapping(GroupToAccountMapping groupToAccountMapping) {
+    public void addGroupToAccountMapping(String groupToAccountMapping) {
         this.groupToAccountMappers.add(groupToAccountMapping);
     }
     
     /**
      * @return returns true if group2AccountMapperName is matched.
      */
-    public boolean containsGroupToAccountMapping(String group2AccountMapperName) {
+    public boolean containsGroupToAccountMapping(String groupToAccountMappingQuery) {
     	Iterator groupMapperIt = groupToAccountMappers.iterator();
     	while(groupMapperIt.hasNext()) {
-    		GroupToAccountMapping groupMapper = (GroupToAccountMapping)groupMapperIt.next();
-    		if(groupMapper.getName().equals(group2AccountMapperName))
+    		String groupToAccountMapping = (String)groupMapperIt.next();
+    		if(groupToAccountMapping.equals(groupToAccountMappingQuery))
     			return true;
     	}
     	return false;
@@ -67,14 +90,15 @@ public abstract class HostToGroupMapping {
     public String toXML() {
     	String retStr = "\t\t<hostToGroupMapping\n"+
     		"\t\t\tgroupToAccountMappings='";
-    	List groups = getGroupToAccountMappings();
-    	Iterator it = groups.iterator();
+    	Iterator it = getGroupToAccountMappings().iterator();
     	while(it.hasNext()) {
-    		GroupToAccountMapping groupToAccountMapping = (GroupToAccountMapping)it.next();
-    		retStr += groupToAccountMapping.getName() + (it.hasNext()?", ":"");
+    		String groupToAccountMapping = (String)it.next();
+    		retStr += groupToAccountMapping + (it.hasNext()?", ":"");
     	}
     	retStr += "'\n";
     	
     	return retStr;
     }
+    
+    public abstract Object clone();
 }

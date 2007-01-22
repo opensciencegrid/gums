@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.userGroup;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.MockPersistenceFactory;
 import gov.bnl.gums.GridUser;
 
@@ -21,6 +22,7 @@ import junit.framework.*;
 public class ManualUserGroupTest extends TestCase {
     
     UserGroup group;
+    Configuration configuration = new Configuration();
     
     public ManualUserGroupTest(java.lang.String testName) {
         super(testName);
@@ -32,8 +34,8 @@ public class ManualUserGroupTest extends TestCase {
     }
     
     public void setUp() {
-        ManualUserGroup manualGroup = new ManualUserGroup("mock");
-        manualGroup.setPersistenceFactory(new MockPersistenceFactory("mockPers"));
+        ManualUserGroup manualGroup = new ManualUserGroup(configuration, "mockUserGroup");
+        manualGroup.setPersistenceFactory(new MockPersistenceFactory(configuration, "mockPers").getName());
         group = manualGroup;
     }
     
@@ -42,7 +44,7 @@ public class ManualUserGroupTest extends TestCase {
     }
 
     public void testToString() {
-        assertEquals("ManualUserGroup: persistenceFactory='mock' - group='mock'", group.toString());
+        assertEquals("ManualUserGroup: persistenceFactory='mockPers' - group='mockUserGroup'", group.toString());
     }
     
     public void testAddMember() {

@@ -1,5 +1,6 @@
 package gov.bnl.gums.userGroup;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.UserGroupDB;
 import gov.bnl.gums.persistence.PersistenceFactory;
 
@@ -19,23 +20,37 @@ public class VirtualOrganization {
     private String sslCertfile = "";
     private String sslCAFiles = "";
     private String sslKeyPasswd = "";
-    private UserGroupDB db;
-	private PersistenceFactory persistanceFactory;
+    private UserGroupDB db = null;
+	private String persistenceFactory;
+	private Configuration configuration = null;
     
+	/**
+	 * This empty constructor needed by XML Digestor
+	 */
 	public VirtualOrganization() {
-		
 	}
 	
-	public VirtualOrganization(String name) {
+	/**
+	 * Automatically adds itself to the configuration.
+	 * @param configuration
+	 * @param name
+	 */
+	public VirtualOrganization(Configuration configuration, String name) {
+		this.configuration = configuration;
 		this.name = name;
+		configuration.addVirtualOrganization(this);
 	}
 	 
-	public String getName() {
-		return name;
-	}
-	
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
     /**
@@ -121,22 +136,23 @@ public class VirtualOrganization {
     }
     
     public String getPersistenceFactory() {
-        return (persistanceFactory!=null ? persistanceFactory.getName() : "");
+        return persistenceFactory;
     }
     
-    public void setPersistenceFactory(PersistenceFactory factory) {
-        this.persistanceFactory = factory;
-        db = factory.retrieveUserGroupDB( getName() );
+    public void setPersistenceFactory(String persistenceFactory) {
+        this.persistenceFactory = persistenceFactory;
     }
     
     public UserGroupDB getDB() {
+    	if (db==null)
+            db = configuration.getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( getName() );
     	return db;
     }
     
     public String toXML() {
     	String retStr = "\t\t<virtualOrganization\n"+
 		"\t\t\tname='"+name+"'\n"+
-		"\t\t\tpersistenceFactory='"+persistanceFactory.getName()+"'\n"+
+		"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n"+
 		"\t\t\tbaseUrl='"+baseUrl+"'\n";
     	if (sslKey != null)
     		retStr += "\t\t\tsslKey='"+sslKey+"'\n";
@@ -153,6 +169,17 @@ public class VirtualOrganization {
     	retStr += "/>\n\n";    	
     	
     	return retStr;
+    }
+    
+    public Object clone() {
+    	VirtualOrganization virtualOrganization = new VirtualOrganization(configuration, name);
+    	virtualOrganization.setBaseUrl(baseUrl);
+    	virtualOrganization.setSslKey(sslKey);
+    	virtualOrganization.setSslCertfile(sslCertfile);
+    	virtualOrganization.setSslCAFiles(sslCAFiles);
+    	virtualOrganization.setSslKeyPasswd(sslKeyPasswd);
+    	virtualOrganization.setPersistenceFactory(persistenceFactory);
+    	return virtualOrganization;
     }
     
 }

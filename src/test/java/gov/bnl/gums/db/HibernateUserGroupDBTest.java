@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Random;
 import junit.framework.*;
 import gov.bnl.gums.*;
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
 import net.sf.hibernate.*;
 import org.apache.commons.logging.*;
@@ -29,7 +30,7 @@ public class HibernateUserGroupDBTest extends UserGroupDBTest {
     }
 
     public void setUp() throws Exception {
-    	HibernatePersistenceFactory hibernate = new HibernatePersistenceFactory("hibPers1");
+    	HibernatePersistenceFactory hibernate = new HibernatePersistenceFactory(new Configuration(), "hibPers1");
         hibernate.setConnectionFromHibernateProperties();
         db = hibernate.retrieveUserGroupDB("test");
         sessions = hibernate.retrieveSessionFactory();

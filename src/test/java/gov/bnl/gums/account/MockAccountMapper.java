@@ -7,6 +7,7 @@
 package gov.bnl.gums.account;
 
 import gov.bnl.gums.GridUser;
+import gov.bnl.gums.configuration.Configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,6 +20,11 @@ import java.util.List;
 public class MockAccountMapper extends AccountMapper {
     
     public MockAccountMapper() {
+    	super();
+    }
+	
+	public MockAccountMapper(Configuration configuration, String name) {
+    	super(configuration, name);
     }
     
     public String mapUser(String userDN) {
@@ -43,6 +49,10 @@ public class MockAccountMapper extends AccountMapper {
     }
     
     public String getSummary(String bgColor) {
+    	return null;
+    }
+    
+    public Object clone() {
     	return null;
     }
 }

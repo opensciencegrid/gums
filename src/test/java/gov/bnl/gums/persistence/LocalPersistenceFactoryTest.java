@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.persistence;
 
+import gov.bnl.gums.configuration.Configuration;
 import junit.framework.*;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -18,13 +19,15 @@ import java.util.Properties;
 public class LocalPersistenceFactoryTest extends TestCase {
     
     LocalPersistenceFactory factory;
+    Configuration configuration;
     
-    public LocalPersistenceFactoryTest(String testName) {
-        super(testName);
+    public LocalPersistenceFactoryTest() {
+        super("test");
+        this.configuration = new Configuration();
     }
 
     protected void setUp() throws java.lang.Exception {
-        factory = new LocalPersistenceFactory(getName());
+        factory = new LocalPersistenceFactory(configuration, "test");
     }
 
     protected void tearDown() throws java.lang.Exception {

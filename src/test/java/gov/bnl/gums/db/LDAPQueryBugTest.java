@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Random;
 import junit.framework.*;
 import gov.bnl.gums.*;
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 import net.sf.hibernate.*;
 import org.apache.commons.logging.*;
@@ -34,7 +35,7 @@ public class LDAPQueryBugTest extends TestCase {
     }
     
     public void testAdmins() {
-        LDAPPersistenceFactory factory = new LDAPPersistenceFactory("ldapPers1");
+        LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setConnectionFromLdapProperties();
         factory.setDefaultGumsOU("ou=GUMS,dc=test");
         UserGroupDB db2 = factory.retrieveUserGroupDB("admins");

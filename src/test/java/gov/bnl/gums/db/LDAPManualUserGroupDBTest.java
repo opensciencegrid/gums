@@ -11,6 +11,7 @@ import java.sql.*;
 import java.util.*;
 import junit.framework.*;
 import gov.bnl.gums.*;
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 
 /**
@@ -29,7 +30,7 @@ public class LDAPManualUserGroupDBTest extends ManualUserGroupDBTest {
     }
      
     public void setUp() throws Exception {
-        LDAPPersistenceFactory factory = new LDAPPersistenceFactory("ldapPers1");
+        LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setConnectionFromLdapProperties();
         factory.setDefaultGumsOU("ou=GUMS,dc=test");
         try {

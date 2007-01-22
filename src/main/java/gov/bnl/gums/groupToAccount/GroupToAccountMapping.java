@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import gov.bnl.gums.account.AccountMapper;
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.userGroup.UserGroup;
 
 /** This class defines which mapping policy should be used for the given group.
@@ -31,20 +32,31 @@ public class GroupToAccountMapping {
     private String name = "";
     private String accountingVo = "";
     private String accountingDesc = "";
+    private Configuration configuration = null;
 
+	/**
+	 * This empty constructor needed by XML Digestor
+	 */
 	public GroupToAccountMapping() {
 	}    
     
-	public GroupToAccountMapping(String name) {
+	/**
+	 * Automatically adds itself to the configuration.
+	 * @param configuration
+	 * @param name
+	 */
+	public GroupToAccountMapping(Configuration configuration, String name) {
+		this.configuration = configuration;
+		this.name = name;
+		configuration.addGroupToAccountMapping(this);
+	}
+
+	public void setName(String name) {
 		this.name = name;
 	}
 	
-    /**
-     * Setter for property name.
-     * @return Value of property name.
-     */	
-	public void setName(String name) {
-		this.name = name;
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
 	}
 	
     /**
@@ -67,18 +79,18 @@ public class GroupToAccountMapping {
      * Setter for property group.
      * @param group New value of property group.
      */
-    public void addUserGroup(UserGroup userGroup) {
+    public void addUserGroup(String userGroup) {
     	userGroups.add(userGroup);
     }    
     
     /**
      * @return returns true if userGroup is matched.
      */
-    public boolean containsUserGroup(String userGroupName) {
+    public boolean containsUserGroup(String userGroupQuery) {
     	Iterator userGroupIt = userGroups.iterator();
     	while(userGroupIt.hasNext()) {
-    		UserGroup userGroup = (UserGroup)userGroupIt.next();
-    		if(userGroup.getName().equals(userGroupName))
+    		String userGroup = (String)userGroupIt.next();
+    		if(userGroup.equals(userGroupQuery))
     			return true;
     	}
     	return false;
@@ -96,7 +108,7 @@ public class GroupToAccountMapping {
      * Setter for property mapper.
      * @param mapper New value of property mapper.
      */
-    public void addAccountMapper(AccountMapper accountMapper) {
+    public void addAccountMapper(String accountMapper) {
         accountMappers.add(accountMapper);
     }
     
@@ -146,8 +158,8 @@ public class GroupToAccountMapping {
 	    List userGroups = getUserGroups();
 		Iterator it = (Iterator)userGroups.iterator();
 		while(it.hasNext()) {
-			UserGroup userGroup = (UserGroup)it.next();
-			retStr += userGroup.getName() + (it.hasNext()?", ":"");
+			String userGroup = (String)it.next();
+			retStr += userGroup + (it.hasNext()?", ":"");
 		}
 		
 		retStr += "'\n";
@@ -157,13 +169,26 @@ public class GroupToAccountMapping {
 		List accountMappers = getAccountMappers();
 		it = (Iterator)accountMappers.iterator();
 		while(it.hasNext()) {
-			AccountMapper accountMapper = (AccountMapper)it.next();
-			retStr += accountMapper.getName() + (it.hasNext()?", ":"");
+			String accountMapper = (String)it.next();
+			retStr += accountMapper + (it.hasNext()?", ":"");
 		}
 		
 		retStr += "'/>\n\n";
 		
 		return retStr;
+    }
+    
+    public Object clone() {
+    	GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping(configuration, name);
+    	groupToAccountMapping.setAccountingVo(accountingVo);
+    	groupToAccountMapping.setAccountingDesc(accountingDesc);
+    	Iterator it = getUserGroups().iterator();
+    	while (it.hasNext())
+    		groupToAccountMapping.addUserGroup( (String)it.next() );
+    	it = getAccountMappers().iterator();
+    	while (it.hasNext())
+    		groupToAccountMapping.addUserGroup( (String)it.next() );
+    	return groupToAccountMapping;
     }
     
 }

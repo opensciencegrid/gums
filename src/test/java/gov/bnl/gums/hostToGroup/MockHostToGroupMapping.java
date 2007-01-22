@@ -7,6 +7,8 @@
 package gov.bnl.gums.hostToGroup;
 
 
+import gov.bnl.gums.configuration.Configuration;
+
 import java.util.*;
 
 /**
@@ -21,7 +23,8 @@ public class MockHostToGroupMapping extends HostToGroupMapping {
     private List groupMappers;
     
     /** Creates a new instance of MockHostnameMapping */
-    public MockHostToGroupMapping() {
+    public MockHostToGroupMapping(Configuration configuration) {
+    	super(configuration);
     }
     
     public String getName() {
@@ -42,6 +45,10 @@ public class MockHostToGroupMapping extends HostToGroupMapping {
     
     public boolean isInGroup(String hostname) {
         return hostname.equals("vo.racf.bnl.gov");
+    }
+    
+    public Object clone() {
+    	return null;
     }
     
 }

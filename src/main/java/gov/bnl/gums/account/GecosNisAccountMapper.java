@@ -8,6 +8,8 @@ package gov.bnl.gums.account;
 
 
 
+import gov.bnl.gums.configuration.Configuration;
+
 import java.util.Properties;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attribute;
@@ -25,6 +27,14 @@ import org.apache.commons.logging.LogFactory;
 public class GecosNisAccountMapper extends GecosAccountMapper {
     static private Log log = LogFactory.getLog(GecosNisAccountMapper.class);
     private String jndiNisUrl = "";
+    
+    public GecosNisAccountMapper() {
+    	super();
+    }
+    
+    public GecosNisAccountMapper(Configuration configuration, String name) {
+    	super(configuration, name);
+    }
     
     /**
      * Returns the URL used to describe the NIS server.
@@ -112,5 +122,11 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     
     public String getSummary(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + jndiNisUrl + "</td>";
+    }
+    
+    public Object clone() {
+    	GecosNisAccountMapper accountMapper = new GecosNisAccountMapper(getConfiguration(), getName());
+    	accountMapper.setJndiNisUrl(jndiNisUrl);
+    	return accountMapper;
     }
 }

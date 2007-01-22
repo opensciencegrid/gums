@@ -6,7 +6,11 @@
 
 package gov.bnl.gums.userGroup;
 
+import java.util.Properties;
+
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.ManualUserGroupDB;
+import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.GridUser;
 
@@ -20,57 +24,70 @@ import gov.bnl.gums.GridUser;
  */
 public class ManualUserGroup extends UserGroup {
     private ManualUserGroupDB db;
-    private PersistenceFactory persistanceFactory;
+    private String persistenceFactory = "";
     
     public ManualUserGroup() {
+    	super();
     }
     
-	public ManualUserGroup(String name) {
-		super(name);
+	public ManualUserGroup(Configuration configuration, String name) {
+		super(configuration, name);
 	}
     
     public java.util.List getMemberList() {
-        return db.retrieveMembers();
+        return getDB().retrieveMembers();
     }
     
     public boolean isInGroup(GridUser user) {
-        return db.isMemberInGroup(user);
+        return getDB().isMemberInGroup(user);
     }
     
     public void updateMembers() {
     }
     
+    private ManualUserGroupDB getDB() {
+    	if (db==null)
+    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualUserGroupDB( getName() );
+    	return db;
+    }
+    
     public void addMember(GridUser user) {
-        db.addMember(user);
+        getDB().addMember(user);
     }
     
     public boolean removeMember(GridUser user) {
-        return db.removeMember(user);
+        return getDB().removeMember(user);
     }
     
     public String getPersistenceFactory() {
-        return (persistanceFactory!=null ? persistanceFactory.getName() : "");
+        return persistenceFactory;
     }
     
-    public void setPersistenceFactory(PersistenceFactory persistenceFactory) {
-        this.persistanceFactory = persistenceFactory;
-        db = persistenceFactory.retrieveManualUserGroupDB( getName() );
+    public void setPersistenceFactory(String persistenceFactory) {
+        this.persistenceFactory = persistenceFactory;
     }
 
     public String toString() {
-        if (persistanceFactory == null) {
+        if (persistenceFactory == null) {
             return "ManualUserGroup: persistenceFactory=null - group='" + getName() + "'";
         } else {
-            return "ManualUserGroup: persistenceFactory='" + persistanceFactory.getName() + "' - group='" + getName() + "'";
+            return "ManualUserGroup: persistenceFactory='" + persistenceFactory + "' - group='" + getName() + "'";
         }
     }
     
     public String toXML() {
     	return super.toXML() +
-		"\t\t\tpersistenceFactory='"+persistanceFactory.getName()+"'/>\n\n";
+		"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }    
     
     public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + persistanceFactory.getName() + "</td>";
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
+    }
+    
+    public Object clone() {
+    	ManualUserGroup userGroup = new ManualUserGroup(getConfiguration(), getName());
+    	userGroup.setAccess(getAccess());
+    	userGroup.setPersistenceFactory(persistenceFactory);
+    	return userGroup;
     }
 }

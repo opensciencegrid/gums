@@ -8,6 +8,8 @@ package gov.bnl.gums.account;
 
 
 
+import gov.bnl.gums.configuration.Configuration;
+
 import java.util.*;
 
 /** Maps a user to an account by using the first of a list of policies that
@@ -33,6 +35,14 @@ import java.util.*;
 public class CompositeAccountMapper extends AccountMapper {
     
     private List mappers = new ArrayList();
+    
+    public CompositeAccountMapper() {
+    	super();
+    }
+    
+    public CompositeAccountMapper(Configuration configuration, String name) {
+    	super(configuration, name);
+    }
     
     /**
      * Assigns the list of mappers. The list must contain
@@ -78,6 +88,11 @@ public class CompositeAccountMapper extends AccountMapper {
     }
     
     public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td>";    }
+    	return ""; 
+    }
+    
+    public Object clone() {
+    	return null;
+    }
     
 }

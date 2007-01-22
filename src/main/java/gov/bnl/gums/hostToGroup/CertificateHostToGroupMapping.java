@@ -12,6 +12,8 @@ package gov.bnl.gums.hostToGroup;
 
 
 
+import gov.bnl.gums.configuration.Configuration;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +31,11 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     private List regexs;
     
     public CertificateHostToGroupMapping() {
-    	
+    	super();
+    }
+    
+    public CertificateHostToGroupMapping(Configuration configuration) {
+    	super(configuration);
     }
 
     public boolean isInGroup(String hostname) {
@@ -112,5 +118,19 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     		retStr += "\t\t\tdn='"+dn+"'";
     	retStr += "/>\n\n";
     	return retStr;
-    }       
+    }      
+    
+    public Object clone() {
+    	CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping(getConfiguration());
+    	if (hostToGroupMapping.getCn()!=null)
+    		hostToGroupMapping.setCn(getCn());
+    	if (hostToGroupMapping.getDn()!=null)
+    		hostToGroupMapping.setDn(getDn());
+    	Iterator it = getGroupToAccountMappings().iterator();
+    	while (it.hasNext()) {
+    		String groupToAccountMapping = (String)it.next();
+    		hostToGroupMapping.addGroupToAccountMapping(groupToAccountMapping);
+    	}
+    	return hostToGroupMapping;
+    }
 }

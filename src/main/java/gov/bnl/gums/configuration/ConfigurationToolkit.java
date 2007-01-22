@@ -45,8 +45,8 @@ class ConfigurationToolkit {
         //if (getVersion(configFile).compareTo(GUMS.getVersion())<0)
         //	ConfigurationTransform.doTransform(configFile, transformFile);
     	Digester digester = retrieveDigester(schemaFile);
-        Configuration conf = new Configuration();
-        digester.push(conf);
+    	Configuration configuration = new Configuration();
+        digester.push(configuration);
         log.trace("Loading the configuration from file '" + configFile + "' using schema '" + schemaFile);
         return (Configuration) digester.parse(configFile);
     }
@@ -62,7 +62,7 @@ class ConfigurationToolkit {
        
         digester.addSetProperties("gums");
         
-        digester.addObjectCreate("gums/persistenceFactories/persistenceFactory", "", "className");
+        digester.addObjectCreate("gums/persistenceFactories/persistenceFactory", null, "className");
         digester.addSetProperties("gums/persistenceFactories/persistenceFactory");
         digester.addRule("gums/persistenceFactories/persistenceFactory", new PropertiesRule());
         digester.addSetNext("gums/persistenceFactories/persistenceFactory", "addPersistenceFactory", "gov.bnl.gums.persistence.PersistenceFactory");
@@ -73,15 +73,15 @@ class ConfigurationToolkit {
         digester.addRule("gums/virtualOrganizations/virtualOrganization", new PersistenceFactoryRule());
         digester.addSetNext("gums/virtualOrganizations/virtualOrganization", "addVirtualOrganization", "gov.bnl.gums.userGroup.VirtualOrganization");
         
-        digester.addObjectCreate("gums/userGroups/userGroup", "", "className");
+        digester.addObjectCreate("gums/userGroups/userGroup", null, "className");
         digester.addRule("gums/userGroups/userGroup", new PassRule(new String[] {"className", "persistenceFactory", "virtualOrganization"}));
         digester.addRule("gums/userGroups/userGroup", new PersistenceFactoryRule());
         digester.addRule("gums/userGroups/userGroup", new VirtualOrganizationRule());
         digester.addSetNext("gums/userGroups/userGroup", "addUserGroup", "gov.bnl.gums.userGroup.UserGroup");
 
-        digester.addObjectCreate("gums/accountMappers/accountMapper", "", "className");
+        digester.addObjectCreate("gums/accountMappers/accountMapper", null, "className");
         digester.addSetProperties("gums/accountMappers/accountMapper");
-        digester.addRule("gums/accountMappers/accountMapper", new PassRule(new String[] {"className", "persistenceFactory"}));
+        digester.addRule("gums/accountMappers/accountMapper", new PassRule(new String[] {"className"}));
         digester.addRule("gums/accountMappers/accountMapper", new PersistenceFactoryRule());
         digester.addSetNext("gums/accountMappers/accountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
         
@@ -97,7 +97,7 @@ class ConfigurationToolkit {
         digester.addRule("gums/hostToGroupMappings/hostToGroupMapping", new PassRule(new String[] {"groupToAccountMappings"}));
         digester.addRule("gums/hostToGroupMappings/hostToGroupMapping", new GroupListRule());
         digester.addSetNext("gums/hostToGroupMappings/hostToGroupMapping", "addHostToGroupMapping", "gov.bnl.gums.hostToGroup.HostToGroupMapping");
-        
+       
         return digester;
     }
     
@@ -134,7 +134,12 @@ class ConfigurationToolkit {
             if (attributes.getValue("persistenceFactory") != null) {
                 Configuration conf = (Configuration) getDigester().getRoot();
                 Object mapper = getDigester().peek();
-                MethodUtils.invokeMethod(mapper, "setPersistenceFactory", new Object[] {conf.getPersistenceFactories().get(attributes.getValue("persistenceFactory"))});
+                String persistenceFactoryName = attributes.getValue("persistenceFactory").trim();
+                Object persistenceFactory = conf.getPersistenceFactories().get(persistenceFactoryName);
+                if (persistenceFactory == null) {
+                    throw new IllegalArgumentException("The persistence factory '" + persistenceFactoryName + "' is used, but it was not defined.");
+                }
+                MethodUtils.invokeMethod(mapper, "setPersistenceFactory", new Object[] {persistenceFactoryName});
             }
         }
         
@@ -147,7 +152,12 @@ class ConfigurationToolkit {
             if (attributes.getValue("virtualOrganization") != null) {
                 Configuration conf = (Configuration) getDigester().getRoot();
                 Object mapper = getDigester().peek();
-                MethodUtils.invokeMethod(mapper, "setVirtualOrganization", new Object[] {conf.getVirtualOrganizations().get(attributes.getValue("virtualOrganization"))});
+                String virtualOrganizationName = attributes.getValue("virtualOrganization").trim();
+                Object virtualOrganization = conf.getVirtualOrganizations().get(virtualOrganizationName);
+                if (virtualOrganization == null) {
+                    throw new IllegalArgumentException("The virtual organization '" + virtualOrganizationName + "' is used, but it was not defined.");
+                }
+                MethodUtils.invokeMethod(mapper, "setVirtualOrganization", new Object[] {virtualOrganizationName});
             }
         }
         
@@ -167,7 +177,7 @@ class ConfigurationToolkit {
                     if (userGroup == null) {
                         throw new IllegalArgumentException("The userGroup '" + userGroupName + "' is used within a groupToAccountMapping, but it was not defined.");
                     }
-                    MethodUtils.invokeMethod(mapping, "addUserGroup", userGroup);
+                    MethodUtils.invokeMethod(mapping, "addUserGroup", userGroupName);
                 }
             }
         }
@@ -188,7 +198,7 @@ class ConfigurationToolkit {
                     if (accountMapper == null) {
                         throw new IllegalArgumentException("The accountMapper '" + accountMapperName + "' is used within a groupToAccountMapping, but it was not defined.");
                     }
-                    MethodUtils.invokeMethod(mapping, "addAccountMapper", accountMapper);
+                    MethodUtils.invokeMethod(mapping, "addAccountMapper", accountMapperName);
                 }
             }
         }
@@ -209,7 +219,7 @@ class ConfigurationToolkit {
                     if (groupToAccountMapping == null) {
                         throw new IllegalArgumentException("The groupToAccountMapping '" + groupToAccountMappingName + "' is used within a hostToGroupMapping, but it was not defined.");
                     }
-                    MethodUtils.invokeMethod(mapping, "addGroupToAccountMapping", groupToAccountMapping);
+                    MethodUtils.invokeMethod(mapping, "addGroupToAccountMapping", groupToAccountMappingName);
                 }
             }
         }

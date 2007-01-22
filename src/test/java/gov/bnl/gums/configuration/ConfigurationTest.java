@@ -40,50 +40,49 @@ public class ConfigurationTest extends TestCase {
         List groupToAccountMappings = host2GroupMapping.getGroupToAccountMappings();
         assertNotNull(groupToAccountMappings);
         assertEquals(1, groupToAccountMappings.size());
-        GroupToAccountMapping gMap = (GroupToAccountMapping) groupToAccountMappings.get(0);
-        assertTrue(((UserGroup)gMap.getUserGroups().get(0)).isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
-        assertEquals("carcassi", ((AccountMapper)gMap.getAccountMappers().get(0)).mapUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
+        GroupToAccountMapping gMap = conf.getGroupToAccountMapping( (String)groupToAccountMappings.get(0) );
+        assertTrue((conf.getUserGroup( (String)gMap.getUserGroups().get(0)) ).isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
+        assertEquals("carcassi", conf.getAccountMapper( (String)gMap.getAccountMappers().get(0) ).mapUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
     }
     
     static Configuration createSimpleConfiguration() {
         Configuration conf = new Configuration();
 
-        GroupToAccountMapping gMap = new GroupToAccountMapping("mockGroup");
+        GroupToAccountMapping gMap = new GroupToAccountMapping(conf, "mockGroup");
         gMap.setAccountingVo("mock");
         gMap.setAccountingDesc("mock");
-        gMap.addUserGroup(new MockUserGroup());
-        gMap.addAccountMapper(new MockAccountMapper());
+        UserGroup userGroup = new MockUserGroup(conf, "mockUserGroup");
+        gMap.addUserGroup(userGroup.getName());
+        AccountMapper accountMapper = new MockAccountMapper(conf, "mockAccountMapper");
+        gMap.addAccountMapper(accountMapper.getName());
 
-        MockHostToGroupMapping hMap = new MockHostToGroupMapping();
-        hMap.addGroupToAccountMapping(gMap);
+        MockHostToGroupMapping hMap = new MockHostToGroupMapping(conf);
+        hMap.addGroupToAccountMapping(gMap.getName());
         
-        conf.addPersistenceFactory(new MockPersistenceFactory("mockPers"));
-        conf.addGroupToAccountMapping(gMap);
-        conf.addHostToGroupMapping(hMap);
+        new MockPersistenceFactory(conf, "mockPers");
         
         return conf;
     }
     
     public void testSingleUserGroupCopy() {
         Configuration conf = new Configuration();
-        MySQLPersistenceFactory factory = new MySQLPersistenceFactory("mysql");
-        conf.addPersistenceFactory(factory);
-        GroupToAccountMapping gMap = new GroupToAccountMapping("group1");
-        LDAPUserGroup userGroup = new LDAPUserGroup("userGroup1");
-        userGroup.setPersistenceFactory(factory);
+        MySQLPersistenceFactory factory = new MySQLPersistenceFactory(conf, "mysql");
+        GroupToAccountMapping gMap = new GroupToAccountMapping(conf, "group1");
+        LDAPUserGroup userGroup = new LDAPUserGroup(conf, "userGroup1");
+        userGroup.setPersistenceFactory(factory.getName());
         userGroup.setQuery("query");
         userGroup.setServer("server");
-        gMap.addUserGroup(userGroup);
-        gMap.addAccountMapper(new MockAccountMapper());
-        conf.addGroupToAccountMapping(gMap);
-        gMap = new GroupToAccountMapping("group2");
-        userGroup = new LDAPUserGroup("userGroup2");
-        userGroup.setPersistenceFactory(factory);
+        gMap.addUserGroup(userGroup.getName());
+        MockAccountMapper accountMapper = new MockAccountMapper(conf, "mockAccountMapper");
+        gMap.addAccountMapper(accountMapper.getName());
+        gMap = new GroupToAccountMapping(conf, "group2");
+        userGroup = new LDAPUserGroup(conf, "userGroup2");
+        userGroup.setPersistenceFactory(factory.getName());
         userGroup.setQuery("query");
         userGroup.setServer("server");
-        gMap.addUserGroup(userGroup);
-        gMap.addAccountMapper(new MockAccountMapper());
-        conf.addGroupToAccountMapping(gMap);
+        gMap.addUserGroup(userGroup.getName());
+        accountMapper = new MockAccountMapper(conf, "mockAccountMapper");
+        gMap.addAccountMapper(accountMapper.getName());
         assertEquals(2, conf.getGroupToAccountMappings().values().size());
         assertEquals(1, gMap.getUserGroups().size());
     }

@@ -15,6 +15,7 @@ import java.util.Properties;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import gov.bnl.gums.*;
+import gov.bnl.gums.configuration.Configuration;
 
 /**
  *
@@ -23,13 +24,15 @@ import gov.bnl.gums.*;
 public class LDAPPersistenceFactoryTest extends TestCase {
     
     LDAPPersistenceFactory factory;
+    Configuration configuration;
     
-    public LDAPPersistenceFactoryTest(String testName) {
+    public LDAPPersistenceFactoryTest(Configuration configuration, String testName) {
         super(testName);
+        this.configuration = configuration;
     }
 
     protected void setUp() throws java.lang.Exception {
-        factory = new LDAPPersistenceFactory(getName());
+        factory = new LDAPPersistenceFactory(configuration, getName());
         factory.setConnectionFromLdapProperties();
         factory.setDefaultGumsOU("ou=GUMS,dc=test");
         try {

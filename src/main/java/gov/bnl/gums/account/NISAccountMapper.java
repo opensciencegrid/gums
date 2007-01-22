@@ -8,6 +8,7 @@ package gov.bnl.gums.account;
 
 import gov.bnl.gums.GUMS;
 import gov.bnl.gums.NISClient;
+import gov.bnl.gums.configuration.Configuration;
 
 import java.util.*;
 
@@ -27,17 +28,17 @@ import org.apache.commons.logging.*;
 public class NISAccountMapper extends AccountMapper {
     static Log log = LogFactory.getLog(NISAccountMapper.class);
     static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-    
-    /**
-     * Holds value of property jndiNisUrl.
-     */
     private String jndiNisUrl = "";
     
-    /** Creates a new instance of NISAccountMapper */
     public NISAccountMapper() {
+    	super();
         adminLog.warn("The use of gov.bnl.gums.NISAccountMapper is deprecated. Please use gov.bnl.gums.GecosNisAccoutMapper: it provides the same functionalities.");
     }
     
+    public NISAccountMapper(Configuration configuration, String name) {
+    	super(configuration, name);
+    }
+   
     public String mapUser(String userDN) {
         String[] nameSurname = parseNameAndSurname(userDN);
         return nisClient(jndiNisUrl).findAccount(nameSurname[0], nameSurname[1]);
@@ -112,5 +113,11 @@ public class NISAccountMapper extends AccountMapper {
     
     public String getSummary(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + jndiNisUrl + "</td>";
+    }
+    
+    public Object clone() {
+    	NISAccountMapper accountMapper = new NISAccountMapper(getConfiguration(), getName());
+    	accountMapper.setJndiNisUrl(jndiNisUrl);
+    	return accountMapper;
     }
 }

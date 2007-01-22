@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.HibernateMapping;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.persistence.PersistenceFactory;
@@ -26,39 +27,58 @@ import gov.bnl.gums.persistence.PersistenceFactory;
 public class ManualAccountMapper extends AccountMapper {
     
     private ManualAccountMapperDB db;
-    private PersistenceFactory persistenceFactory;
+    private String persistenceFactory = "";
+    
+    public ManualAccountMapper() {
+    	super();
+    }
+    
+    public ManualAccountMapper(Configuration configuration, String name) {
+    	super(configuration, name);
+    }
     
     public String mapUser(String userDN) {
-        return db.retrieveMapping(userDN);
+        return getDB().retrieveMapping(userDN);
     }
     
     public void createMapping(String userDN, String account) {
-        db.createMapping(userDN, account);
+    	getDB().createMapping(userDN, account);
     }
     
     public boolean removeMapping(String userDN) {
-        return db.removeMapping(userDN);
+        return getDB().removeMapping(userDN);
     }
     
     public java.util.List getMappings() {
-    	return db.retrieveMappings();
+    	return getDB().retrieveMappings();
     }
     
     public String getPersistenceFactory() {
-        return (persistenceFactory!=null ? persistenceFactory.getName() : "");
+        return persistenceFactory;
     }
     
-    public void setPersistenceFactory(PersistenceFactory persistanceFactory) {
+    private ManualAccountMapperDB getDB() {
+    	if (db==null)
+    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualAccountMapperDB( getName() );
+    	return db;
+    }
+    
+    public void setPersistenceFactory(String persistanceFactory) {
         this.persistenceFactory = persistanceFactory;
-        db = persistanceFactory.retrieveManualAccountMapperDB( getName() );
     }  
     
     public String toXML() {
     	return super.toXML() +
-			"\t\t\tpersistenceFactory='"+persistenceFactory.getName()+"'/>\n\n";
+			"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }      
     
     public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory.getName() + "</td>";
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
+    }
+    
+    public Object clone() {
+    	ManualAccountMapper accountMapper = new ManualAccountMapper(getConfiguration(), getName());
+    	accountMapper.setPersistenceFactory(persistenceFactory);
+    	return accountMapper;
     }
 }

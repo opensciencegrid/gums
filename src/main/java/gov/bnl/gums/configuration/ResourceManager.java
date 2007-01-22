@@ -107,17 +107,18 @@ public class ResourceManager {
      * @todo usersInMap should be a sorted list to make things faster, but
      * no ready made implementation was found.
      */
-    private String generateGridMapfile(HostToGroupMapping group) {
-        Iterator iter = group.getGroupToAccountMappings().iterator();
+    private String generateGridMapfile(HostToGroupMapping h2GMapping) {
+    	Configuration conf = h2GMapping.getConfiguration();
+        Iterator iter = h2GMapping.getGroupToAccountMappings().iterator();
         List usersInMap = new ArrayList();
         
         StringBuffer gridMapfileBuffer = new StringBuffer("");
         while (iter.hasNext()) {
-            GroupToAccountMapping gMap = (GroupToAccountMapping) iter.next();
+            GroupToAccountMapping gMap = (GroupToAccountMapping) conf.getGroupToAccountMapping( (String)iter.next() );
             Collection userGroups = gMap.getUserGroups();
             Iterator userGroupIt = userGroups.iterator();
             while (userGroupIt.hasNext()) {
-            	UserGroup userGroup = (UserGroup)userGroupIt.next();
+            	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupIt.next() );
 	            List members = userGroup.getMemberList();
 	            members = new ArrayList(members);
 	            Collections.sort(members, retrieveUserComparatorByDN());
@@ -128,9 +129,9 @@ public class ResourceManager {
 	                GridUser user = (GridUser) memberIter.next();
 	                if ((!usersInMap.contains(user.getCertificateDN())) && (userGroup.isInGroup(new GridUser(user.getCertificateDN(), null)))) {
 	                	Collection accountMappers = gMap.getAccountMappers();
-	                    Iterator accountMapperIt = accountMappers.iterator();
-	                    while (accountMapperIt.hasNext()) {
-	                    	AccountMapper accountMapper = (AccountMapper)accountMapperIt.next();
+	                    Iterator accountMappersIt = accountMappers.iterator();
+	                    while (accountMappersIt.hasNext()) {
+	                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
 		                	String username = accountMapper.mapUser(user.getCertificateDN());
 		                    if (username != null) {
 		                        gridMapfileBuffer.append('"');
@@ -177,11 +178,11 @@ public class ResourceManager {
         String voi = "#voi";
         String voc = "#VOc";
         while (iter.hasNext()) {
-            GroupToAccountMapping gMap = (GroupToAccountMapping) iter.next();
+            GroupToAccountMapping gMap = (GroupToAccountMapping) conf.getGroupToAccountMapping( (String)iter.next() );
             Collection userGroups = gMap.getUserGroups();
             Iterator userGroupIt = userGroups.iterator();
             while (userGroupIt.hasNext()) {
-            	UserGroup userGroup = (UserGroup)userGroupIt.next();
+            	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupIt.next() );
 	            if (gMap.getAccountingVo() != null && gMap.getAccountingDesc() != null && userGroup.getMemberList().size() != 0) {
 	                voi = voi + " " + gMap.getAccountingVo();
 	                voc = voc + " " + gMap.getAccountingDesc();
@@ -199,11 +200,11 @@ public class ResourceManager {
         List accountsInMap = new ArrayList();
         
         while (iter.hasNext()) {
-            GroupToAccountMapping gMap = (GroupToAccountMapping) iter.next();
+            GroupToAccountMapping gMap = (GroupToAccountMapping) conf.getGroupToAccountMapping( (String)iter.next() );
             Collection userGroups = gMap.getUserGroups();
             Iterator userGroupIt = userGroups.iterator();
             while (userGroupIt.hasNext()) {
-            	UserGroup userGroup = (UserGroup)userGroupIt.next();
+            	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupIt.next() );
 	            List members = userGroup.getMemberList();
 	            members = new ArrayList(members);
 	            Collections.sort(members, retrieveUserComparatorByDN());
@@ -214,7 +215,7 @@ public class ResourceManager {
 	                Collection accountMappers = gMap.getAccountMappers();
                     Iterator accountMapperIt = accountMappers.iterator();
                     while (accountMapperIt.hasNext()) {
-                    	AccountMapper accountMapper = (AccountMapper)accountMapperIt.next();
+                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
 		                String username = accountMapper.mapUser(user.getCertificateDN());
 		                if ((username != null) && !accountsInMap.contains(username) && (gMap.getAccountingVo() != null)) {
 		                    grid3MapBuffer.append(username);
@@ -245,16 +246,16 @@ public class ResourceManager {
         if (group == null) return null;
         Iterator g2AMappingsIt = group.getGroupToAccountMappings().iterator();
         while (g2AMappingsIt.hasNext()) {
-            GroupToAccountMapping g2AMapping = (GroupToAccountMapping) g2AMappingsIt.next();
+            GroupToAccountMapping g2AMapping = (GroupToAccountMapping) conf.getGroupToAccountMapping( (String)g2AMappingsIt.next() );
             Collection userGroups = g2AMapping.getUserGroups();
             Iterator userGroupsIt = userGroups.iterator();
             while (userGroupsIt.hasNext()) {
-            	UserGroup userGroup = (UserGroup)userGroupsIt.next();
+            	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupsIt.next() );
                 if (userGroup.isInGroup(user)) {
                 	Collection accountMappers = g2AMapping.getAccountMappers();
                     Iterator accountMappersIt = accountMappers.iterator();
                     while (accountMappersIt.hasNext()) {
-                    	AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();
+                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
                         String localUser = accountMapper.mapUser(user.getCertificateDN());
                         if (user != null) {
                             return localUser;
@@ -275,11 +276,11 @@ public class ResourceManager {
         Configuration conf = gums.getConfiguration();
         Iterator g2AMappingsIt = conf.getGroupToAccountMappings().values().iterator();
         while (g2AMappingsIt.hasNext()) {
-            GroupToAccountMapping g2AMapping = (GroupToAccountMapping) g2AMappingsIt.next();
+            GroupToAccountMapping g2AMapping = (GroupToAccountMapping) conf.getGroupToAccountMapping( (String)g2AMappingsIt.next() );
             Collection userGroups = g2AMapping.getUserGroups();
             Iterator userGroupsIt = userGroups.iterator();
             while (userGroupsIt.hasNext()) {
-            	UserGroup userGroup = (UserGroup)userGroupsIt.next();
+            	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupsIt.next() );
             	List users = userGroup.getMemberList();
             	Iterator usersIt = users.iterator();
             	while (usersIt.hasNext()) {
@@ -287,7 +288,7 @@ public class ResourceManager {
                 	Collection accountMappers = g2AMapping.getAccountMappers();
                     Iterator accountMappersIt = accountMappers.iterator();
                     while (accountMappersIt.hasNext()) {
-                    	AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();
+                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
                         if (accountName.equals(accountMapper.mapUser(user.getCertificateDN()))) {
                         	if (allDNs==null)
                         		allDNs = new String();

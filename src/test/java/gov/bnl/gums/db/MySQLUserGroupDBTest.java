@@ -8,6 +8,7 @@
 package gov.bnl.gums.db;
 
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.MySQLPersistenceFactory;
 
 import java.sql.*;
@@ -30,7 +31,7 @@ public class MySQLUserGroupDBTest extends UserGroupDBTest {
     }
     
     public void setUp() throws SQLException {
-        MySQLPersistenceFactory mysql = new MySQLPersistenceFactory("mysqlPers1");
+        MySQLPersistenceFactory mysql = new MySQLPersistenceFactory(new Configuration(), "mysqlPers1");
         mysql.setConnectionFromDbProperties();
         db = mysql.retrieveUserGroupDB("test");
         Connection conn = mysql.getConnection();

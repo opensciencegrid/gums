@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.hostToGroup;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 
 import java.util.*;
@@ -28,8 +29,9 @@ public class WildcardHostToGroupMappingTest extends TestCase {
     }
     
     public void testRetrieveGroupMappers() {
-        WildcardHostToGroupMapping wMapping = new WildcardHostToGroupMapping();
-        wMapping.addGroupToAccountMapping(new GroupToAccountMapping("group1"));
+    	Configuration configuration = new Configuration();
+        WildcardHostToGroupMapping wMapping = new WildcardHostToGroupMapping(configuration);
+        wMapping.addGroupToAccountMapping(new GroupToAccountMapping(configuration, "group1").getName());
         wMapping.setWildcard("star*.bnl.gov");
         assertTrue(wMapping.isInGroup("stargrid01.bnl.gov"));
         assertTrue(wMapping.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=stargrid01.bnl.gov"));

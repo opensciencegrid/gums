@@ -7,7 +7,9 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.MockPersistenceFactory;
+import gov.bnl.gums.persistence.PersistenceFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,9 +34,11 @@ public class AccountPoolMapperTest extends TestCase {
     }
     
     public void setUp() {
-        AccountPoolMapper gMapper = new AccountPoolMapper();
+    	Configuration configuration = new Configuration();
+        AccountPoolMapper gMapper = new AccountPoolMapper(configuration, "accountPoolMapper");
+        PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "myGroup");
         mapper = gMapper;
-        gMapper.setPersistenceFactory(new MockPersistenceFactory("myGroup"));
+        gMapper.setPersistenceFactory(persistenceFactory.getName());
     }
     
     public void testMapUser() {

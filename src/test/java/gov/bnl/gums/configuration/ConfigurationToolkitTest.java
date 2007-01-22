@@ -63,8 +63,7 @@ public class ConfigurationToolkitTest extends TestCase {
         "</gums>";
         Digester digester = toolkit.retrieveDigester(getSchemaFile());
         Configuration conf = new Configuration();
-        MySQLPersistenceFactory factory = new MySQLPersistenceFactory("mysql");
-        conf.addPersistenceFactory(factory);
+        new MySQLPersistenceFactory(conf, "mysql").getName();
         digester.push(conf);
         Configuration acc = (Configuration) digester.parse(new StringReader(xml));
         assertSame(conf, acc);
@@ -89,8 +88,7 @@ public class ConfigurationToolkitTest extends TestCase {
         "</gums>";
         Digester digester = toolkit.retrieveDigester(getSchemaFile());
         Configuration conf = new Configuration();
-        MySQLPersistenceFactory factory = new MySQLPersistenceFactory("mysql");
-        conf.addPersistenceFactory(factory);
+        MySQLPersistenceFactory factory = new MySQLPersistenceFactory(conf, "mysql");
         digester.push(conf);
         try {
             Configuration acc = (Configuration) digester.parse(new StringReader(xml));
@@ -111,8 +109,7 @@ public class ConfigurationToolkitTest extends TestCase {
         "</gums>";
         Digester digester = toolkit.retrieveDigester(getSchemaFile());
         Configuration conf = new Configuration();
-        MySQLPersistenceFactory factory = new MySQLPersistenceFactory("mysql");
-        conf.addPersistenceFactory(factory);
+        MySQLPersistenceFactory factory = new MySQLPersistenceFactory(conf, "mysql");
         digester.push(conf);
         try {
             Configuration acc = (Configuration) digester.parse(new StringReader(xml));
@@ -187,7 +184,7 @@ public class ConfigurationToolkitTest extends TestCase {
 	        "</userGroups>" +
 	        "<accountMappers>" +
 	        	"<accountMapper className='gov.bnl.gums.account.ManualAccountMapper' name='myAccountMapper1' persistenceFactory='mysql'/>" +
-	        	"<accountMapper className='gov.bnl.gums.account.ManualAccountMapper' name='myAccountMapper2' persistenceFactory='mysql'/>" +
+	        	"<accountMapper className='gov.bnl.gums.account.AccountPoolMapper' name='myAccountMapper2' accountPool='myPool' persistenceFactory='mysql'/>" +
 	        "</accountMappers>" +        
 	        "<groupToAccountMappings>" +
 	        	"<groupToAccountMapping name='myMapping' userGroups='myUserGroup' accountMappers='myAccountMapper1, myAccountMapper2'/>" +
@@ -200,15 +197,15 @@ public class ConfigurationToolkitTest extends TestCase {
         assertSame(conf, acc);
         GroupToAccountMapping gMap = (GroupToAccountMapping) conf.getGroupToAccountMappings().get("myMapping");
         assertNotNull(gMap);
-        ManualUserGroup group = (ManualUserGroup) gMap.getUserGroups().get(0);
+        ManualUserGroup group = (ManualUserGroup) conf.getUserGroup( (String)gMap.getUserGroups().get(0) );
         assertEquals("myUserGroup", group.getName());
         assertEquals("mysql", group.getPersistenceFactory());
-        ManualAccountMapper accounts = (ManualAccountMapper) gMap.getAccountMappers().get(0);
+        AccountMapper accounts = (ManualAccountMapper) conf.getAccountMapper( (String)gMap.getAccountMappers().get(0) );
         assertEquals("myAccountMapper1", accounts.getName());
-        assertEquals("mysql", accounts.getPersistenceFactory());
-        accounts = (ManualAccountMapper) gMap.getAccountMappers().get(1);
+        assertEquals("mysql", ((ManualAccountMapper)accounts).getPersistenceFactory());
+        accounts = (AccountPoolMapper) conf.getAccountMapper( (String)gMap.getAccountMappers().get(1) );
         assertEquals("myAccountMapper2", accounts.getName());
-        assertEquals("mysql", accounts.getPersistenceFactory());
+        assertEquals("mysql", ((AccountPoolMapper)accounts).getPersistenceFactory());
     }
     
     public void testHostGroup() throws Exception {
@@ -246,12 +243,12 @@ public class ConfigurationToolkitTest extends TestCase {
         assertTrue(hostToGroupMapping.isInGroup("atlasgrid01.usatlas.bnl.gov"));
         assertFalse(hostToGroupMapping.isInGroup("stargrid01.rhic.bnl.gov"));
         assertEquals(1, hostToGroupMapping.getGroupToAccountMappings().size());
-        assertEquals("atlas",((GroupToAccountMapping) hostToGroupMapping.getGroupToAccountMappings().get(0)).getName());
+        assertEquals("atlas", (String)hostToGroupMapping.getGroupToAccountMappings().get(0));
         CertificateHostToGroupMapping certificateHostToGroupMapping = (CertificateHostToGroupMapping) hostToGroupMappings.get(1);
         assertTrue(certificateHostToGroupMapping.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=stargrid01.rhic.bnl.gov"));
         assertFalse(certificateHostToGroupMapping.isInGroup("atlasgrid01.usatlas.bnl.gov"));
         assertEquals(2, certificateHostToGroupMapping.getGroupToAccountMappings().size());
-        assertEquals("rhic",((GroupToAccountMapping) certificateHostToGroupMapping.getGroupToAccountMappings().get(0)).getName());
+        assertEquals("rhic", (String)certificateHostToGroupMapping.getGroupToAccountMappings().get(0));
     }
 
     public void testHibernateWithPool() throws Exception {

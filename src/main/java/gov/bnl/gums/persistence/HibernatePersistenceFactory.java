@@ -19,6 +19,7 @@ import net.sf.hibernate.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 import gov.bnl.gums.db.HibernateMappingDB;
 import gov.bnl.gums.db.HibernateUserGroupDB;
@@ -38,8 +39,8 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     	log.trace("HibernatePersistenceFactory instanciated");
     }    
     
-    public HibernatePersistenceFactory(String name) {
-    	super(name);
+    public HibernatePersistenceFactory(Configuration configuration, String name) {
+    	super(configuration, name);
     	log.trace("HibernatePersistenceFactory instanciated");
     }
     
@@ -83,6 +84,12 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
         if (sessions != null) return sessions;
         sessions = buildSessionFactory();
         return sessions;
+    }
+    
+    public Object clone() {
+    	HibernatePersistenceFactory persistenceFactory = new HibernatePersistenceFactory(getConfiguration(), getName());
+    	persistenceFactory.setProperties((Properties)getProperties().clone());
+    	return persistenceFactory;
     }
     
     private SessionFactory buildSessionFactory() {

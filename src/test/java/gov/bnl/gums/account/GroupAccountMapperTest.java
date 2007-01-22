@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.configuration.Configuration;
 import junit.framework.*;
 
 /**
@@ -27,7 +28,7 @@ public class GroupAccountMapperTest extends TestCase {
     }
     
     public void setUp() {
-        GroupAccountMapper gMapper = new GroupAccountMapper();
+        GroupAccountMapper gMapper = new GroupAccountMapper(new Configuration(), "groupAccountMapper");
         mapper = gMapper;
         gMapper.setAccountName("myGroup");
     }

@@ -16,6 +16,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
@@ -33,20 +34,31 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     private LDAPPersistenceFactory ldap;
 
     public LocalPersistenceFactory() {
+    	super();
     	log.trace("HibernatePersistenceFactory instanciated");
     }    
     
-    public LocalPersistenceFactory(String name) {
-    	super(name);
-        mysql = new HibernatePersistenceFactory(name+"_hib");
-        ldap = new LDAPPersistenceFactory(name+"_mysql");
+    public LocalPersistenceFactory(Configuration configuration, String name) {
+    	super(configuration, name);
+        mysql = new HibernatePersistenceFactory(configuration, name+"_hib");
+        ldap = new LDAPPersistenceFactory(configuration, name+"_mysql");
     	log.trace("HibernatePersistenceFactory instanciated");
     }
     
     public void setName(String name) {
-    	super.setName(name);
-        mysql = new HibernatePersistenceFactory(name+"_hib");
-        ldap = new LDAPPersistenceFactory(name+"_mysql");
+    	setName(name);
+    	if (getConfiguration()!=null) {
+	        mysql = new HibernatePersistenceFactory(getConfiguration(), name+"_hib");
+	        ldap = new LDAPPersistenceFactory(getConfiguration(), name+"_mysql");   	
+    	}
+    }
+ 
+    public void setConfiguration(Configuration configuration) {
+    	setConfiguration(configuration);
+    	if (getName()!=null) {
+	        mysql = new HibernatePersistenceFactory(getConfiguration(), getName()+"_hib");
+	        ldap = new LDAPPersistenceFactory(getConfiguration(), getName()+"_mysql");   	
+    	}
     }
     
     /**
@@ -188,6 +200,12 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     public void setSynchGroups(boolean synchGroups) {
 
         this.synchGroups = synchGroups;
+    }
+    
+    public Object clone() {
+    	LocalPersistenceFactory persistenceFactory = new LocalPersistenceFactory(getConfiguration(), getName());
+    	persistenceFactory.setProperties((Properties)getProperties().clone());
+    	return persistenceFactory;
     }
    
 }

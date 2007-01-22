@@ -10,6 +10,7 @@ package gov.bnl.gums.db;
 import java.util.Arrays;
 import junit.framework.*;
 import gov.bnl.gums.GUMS;
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 
 import java.util.Iterator;
@@ -31,7 +32,7 @@ public class LDAPGroupIDAssignerTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        factory = new LDAPPersistenceFactory("ldapPers1");
+        factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setConnectionFromLdapProperties();
         factory.setUpdateGIDdomains("dc=test");
         assigner = factory.retrieveAssigner();

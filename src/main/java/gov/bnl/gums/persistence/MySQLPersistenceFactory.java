@@ -11,9 +11,11 @@ import gov.bnl.gums.GridUser;
 import java.sql.*;
 import java.util.Date;
 import java.util.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
@@ -33,10 +35,11 @@ public class MySQLPersistenceFactory extends PersistenceFactory {
     private List connections = Collections.synchronizedList(new LinkedList());
     
     public MySQLPersistenceFactory() {
+    	super();
     }
     
-    public MySQLPersistenceFactory(String name) {
-    	super(name);
+    public MySQLPersistenceFactory(Configuration configuration, String name) {
+    	super(configuration, name);
     }
     
     private Connection retrieveConnection() {
@@ -135,6 +138,12 @@ public class MySQLPersistenceFactory extends PersistenceFactory {
             log.trace("Created newstatement for: '" + sql + "'");
         }
         return stmt;
+    }
+    
+    public Object clone() {
+    	MySQLPersistenceFactory persistenceFactory = new MySQLPersistenceFactory(getConfiguration(), getName());
+    	persistenceFactory.setProperties((Properties)getProperties().clone());
+    	return persistenceFactory;
     }
     
     private void addUser(String userDN, String groupName) {

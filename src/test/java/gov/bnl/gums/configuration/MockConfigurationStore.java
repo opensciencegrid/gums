@@ -6,11 +6,13 @@
 
 package gov.bnl.gums.configuration;
 
+import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.account.MockAccountMapper;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.MockHostToGroupMapping;
 import gov.bnl.gums.persistence.MockPersistenceFactory;
 import gov.bnl.gums.userGroup.MockUserGroup;
+import gov.bnl.gums.userGroup.UserGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,17 +28,17 @@ public class MockConfigurationStore implements ConfigurationStore {
     /** Creates a new instance of MockConfigurationStore */
     public MockConfigurationStore() {
         conf = new Configuration();
-        MockHostToGroupMapping hMap = new MockHostToGroupMapping();
+        MockHostToGroupMapping hMap = new MockHostToGroupMapping(conf);
         List groupMappers = new ArrayList();
-        GroupToAccountMapping gMap = new GroupToAccountMapping("mockGroup");
-        gMap.addUserGroup(new MockUserGroup());
-        gMap.addAccountMapper(new MockAccountMapper());
+        GroupToAccountMapping gMap = new GroupToAccountMapping(conf, "mockGroup");
+        UserGroup userGroup = new MockUserGroup(conf, "mockUserGroup");
+        gMap.addUserGroup(userGroup.getName());
+        AccountMapper accountMapper = new MockAccountMapper(conf, "mockAccountMapper");
+        gMap.addAccountMapper(accountMapper.getName());
         groupMappers.add(gMap);
         hMap.setGroupMappers(groupMappers);
         try {
-			conf.addPersistenceFactory(new MockPersistenceFactory("mockPers"));
-			conf.addGroupToAccountMapping(gMap);
-			conf.addHostToGroupMapping(hMap);
+			new MockPersistenceFactory(conf, "mockPers");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

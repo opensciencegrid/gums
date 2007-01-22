@@ -9,6 +9,7 @@ package gov.bnl.gums.db;
 
 import java.sql.*;
 import junit.framework.*;
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
 import net.sf.hibernate.*;
 
@@ -23,7 +24,7 @@ public class HibernateAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
     }
 
     public void setUp() throws Exception {
-        HibernatePersistenceFactory hibernate = new HibernatePersistenceFactory("hibPers1");
+        HibernatePersistenceFactory hibernate = new HibernatePersistenceFactory(new Configuration(), "hibPers1");
         hibernate.setConnectionFromHibernateProperties();
         db = hibernate.retrieveAccountPoolMapperDB("test");
         SessionFactory sessions = hibernate.retrieveSessionFactory();
