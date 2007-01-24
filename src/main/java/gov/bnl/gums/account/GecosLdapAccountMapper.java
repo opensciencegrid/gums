@@ -32,6 +32,10 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     public GecosLdapAccountMapper() {
     	super();
     }
+ 
+    public GecosLdapAccountMapper(Configuration configuration) {
+    	super(configuration);
+    }
     
     public GecosLdapAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
@@ -123,8 +127,8 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">"+jndiLdapUrl+"</td>";
     }
     
-    public Object clone() {
-    	GecosLdapAccountMapper accountMapper = new GecosLdapAccountMapper(getConfiguration(), getName());
+    public AccountMapper clone(Configuration configuration) {
+    	GecosLdapAccountMapper accountMapper = new GecosLdapAccountMapper(configuration, getName());
     	accountMapper.setJndiLdapUrl(jndiLdapUrl);
     	return accountMapper;
     }

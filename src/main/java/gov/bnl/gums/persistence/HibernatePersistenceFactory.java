@@ -38,6 +38,11 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     public HibernatePersistenceFactory() {
     	log.trace("HibernatePersistenceFactory instanciated");
     }    
+
+    public HibernatePersistenceFactory(Configuration configuration) {
+    	super(configuration);
+    	log.trace("HibernatePersistenceFactory instanciated");
+    }
     
     public HibernatePersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
@@ -86,8 +91,8 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
         return sessions;
     }
     
-    public Object clone() {
-    	HibernatePersistenceFactory persistenceFactory = new HibernatePersistenceFactory(getConfiguration(), getName());
+    public PersistenceFactory clone(Configuration configuration) {
+    	HibernatePersistenceFactory persistenceFactory = new HibernatePersistenceFactory(configuration, getName());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	return persistenceFactory;
     }

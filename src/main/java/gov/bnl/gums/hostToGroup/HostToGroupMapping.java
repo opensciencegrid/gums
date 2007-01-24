@@ -100,5 +100,5 @@ public abstract class HostToGroupMapping {
     	return retStr;
     }
     
-    public abstract Object clone();
+    public abstract HostToGroupMapping clone(Configuration configuration);
 }

@@ -50,6 +50,10 @@ public class VOMSUserGroup extends UserGroup {
     public VOMSUserGroup() {
     	super();
     }    
+ 
+	public VOMSUserGroup(Configuration configuration) {
+		super(configuration);
+	}
     
 	public VOMSUserGroup(Configuration configuration, String name) {
 		super(configuration, name);
@@ -60,10 +64,14 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     private VirtualOrganization getVoObject() {
+    	if (getConfiguration()==null)
+    		throw new RuntimeException("Configuration has not yet been set for this class");    	
     	return getConfiguration().getVirtualOrganization(vo);
     }
     
     private UserGroupDB getVoDB() {
+    	if (getConfiguration()==null)
+    		throw new RuntimeException("Configuration has not yet been set for this class");    	
     	return getVoObject().getDB();
     }
     
@@ -155,6 +163,8 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     public String toString() {
+    	if (getConfiguration()==null)
+    		throw new RuntimeException("Configuration has not yet been set for this class");    	
         return "VOMSGroup: " + getUrl() + " - voGroup='" + getVoGroup() + "' - voRole='" + getVoRole() + "' - sslCAFiles='" + getVoObject().getSslCAFiles() +"' sslCertfile='" + getVoObject().getSslCertfile() +"' sslKey='" + getVoObject().getSslKey() + "' sslKeyPasswd=" + ((getVoObject().getSslKeyPasswd()!= null) ? "[set]" : "[not set]");
     }
 
@@ -363,8 +373,8 @@ public class VOMSUserGroup extends UserGroup {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + matchFQAN + "</td><td bgcolor=\""+bgColor+"\">" + acceptProxyWithoutFQAN + "</td><td bgcolor=\""+bgColor+"\">" + voGroup + "</td><td bgcolor=\""+bgColor+"\">" + voRole + "</td><td bgcolor=\""+bgColor+"\">" + getVoObject().getBaseUrl() + remainderUrl + "</td>";
     }
     
-    public Object clone() {
-    	VOMSUserGroup userGroup = new VOMSUserGroup(getConfiguration(), getName());
+    public UserGroup clone(Configuration configuration) {
+    	VOMSUserGroup userGroup = new VOMSUserGroup(configuration, getName());
     	userGroup.setAccess(getAccess());
     	userGroup.setVirtualOrganization(getVirtualOrganization());
     	userGroup.setVoRole(getVoRole());

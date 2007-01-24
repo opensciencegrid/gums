@@ -29,6 +29,13 @@ public class VirtualOrganization {
 	 */
 	public VirtualOrganization() {
 	}
+
+	/**
+	 * @param configuration
+	 */
+	public VirtualOrganization(Configuration configuration) {
+		this.configuration = configuration;
+	}
 	
 	/**
 	 * Automatically adds itself to the configuration.
@@ -51,6 +58,10 @@ public class VirtualOrganization {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public Configuration getConfiguration() {
+		return configuration;
 	}
 	
     /**
@@ -171,7 +182,7 @@ public class VirtualOrganization {
     	return retStr;
     }
     
-    public Object clone() {
+    public Object clone(Configuration configuration) {
     	VirtualOrganization virtualOrganization = new VirtualOrganization(configuration, name);
     	virtualOrganization.setBaseUrl(baseUrl);
     	virtualOrganization.setSslKey(sslKey);

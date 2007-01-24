@@ -47,7 +47,7 @@ public class MockHostToGroupMapping extends HostToGroupMapping {
         return hostname.equals("vo.racf.bnl.gov");
     }
     
-    public Object clone() {
+    public HostToGroupMapping clone(Configuration configuration) {
     	return null;
     }
     

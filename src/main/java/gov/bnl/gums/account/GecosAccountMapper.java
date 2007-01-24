@@ -34,6 +34,10 @@ public abstract class GecosAccountMapper extends AccountMapper {
     public GecosAccountMapper() {
     	super();
     }
+
+    public GecosAccountMapper(Configuration configuration) {
+    	super(configuration);
+    }
     
     public GecosAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);

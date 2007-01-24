@@ -50,7 +50,7 @@ public class MockUserGroup extends UserGroup {
     	return null;
     }
     
-    public Object clone() {
+    public UserGroup clone(Configuration configuration) {
     	return null;
     }
     

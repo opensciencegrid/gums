@@ -29,6 +29,10 @@ public class GroupAccountMapper extends AccountMapper {
     public GroupAccountMapper() {
     	super();
     }
+
+    public GroupAccountMapper(Configuration configuration) {
+    	super(configuration);
+    }
     
     public GroupAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
@@ -61,8 +65,8 @@ public class GroupAccountMapper extends AccountMapper {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td>";
     }
     
-    public Object clone() {
-    	GroupAccountMapper accountMapper = new GroupAccountMapper(getConfiguration(), getName());
+    public AccountMapper clone(Configuration configuration) {
+    	GroupAccountMapper accountMapper = new GroupAccountMapper(configuration, getName());
     	accountMapper.setAccountName(accountName);
     	return accountMapper;
     }

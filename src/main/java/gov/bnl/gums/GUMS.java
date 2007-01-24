@@ -123,11 +123,11 @@ public class GUMS {
      * @todo should this method actually save the configuration?
      * @param conf the new configuration
      */
-    public void setConfiguration(Configuration conf) {
+    public void setConfiguration(Configuration conf, boolean backup) {
     	try {
 	        this.conf = conf;
 	        if (!confStore.isReadOnly()) {
-	            confStore.setConfiguration(conf);
+	            confStore.setConfiguration(conf, backup);
 	        }
 	        else
 	        	throw new RuntimeException("cannot write configuration because it is read-only");

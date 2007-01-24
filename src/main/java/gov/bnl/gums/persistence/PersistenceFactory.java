@@ -40,6 +40,13 @@ public abstract class PersistenceFactory {
 	}	
     
 	/**
+	 * @param configuration
+	 */
+	public PersistenceFactory(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	
+	/**
 	 * Automatically adds itself to the configuration.
 	 * @param configuration
 	 * @param name
@@ -96,5 +103,5 @@ public abstract class PersistenceFactory {
     	
     	return retStr;
 	}
-	public abstract Object clone();
+	public abstract PersistenceFactory clone(Configuration configuration);
 }

@@ -39,6 +39,10 @@ public class CompositeAccountMapper extends AccountMapper {
     public CompositeAccountMapper() {
     	super();
     }
+
+    public CompositeAccountMapper(Configuration configuration) {
+    	super(configuration);
+    }
     
     public CompositeAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
@@ -91,7 +95,7 @@ public class CompositeAccountMapper extends AccountMapper {
     	return ""; 
     }
     
-    public Object clone() {
+    public AccountMapper clone(Configuration configuration) {
     	return null;
     }
     

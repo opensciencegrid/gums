@@ -12,6 +12,7 @@ import java.util.List;
 
 import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.configuration.Configuration;
+import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.userGroup.UserGroup;
 
 /** This class defines which mapping policy should be used for the given group.
@@ -41,6 +42,13 @@ public class GroupToAccountMapping {
 	}    
     
 	/**
+	 * @param configuration
+	 */
+	public GroupToAccountMapping(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	
+	/**
 	 * Automatically adds itself to the configuration.
 	 * @param configuration
 	 * @param name
@@ -66,6 +74,10 @@ public class GroupToAccountMapping {
     public String getName() {
         return (name!=null ? name : "");
     }
+    
+	public Configuration getConfiguration() {
+		return configuration;
+	}
     
     /**
      * Getter for property group.
@@ -152,7 +164,7 @@ public class GroupToAccountMapping {
     	String retStr = "\t\t<groupToAccountMapping\n"+
 		"\t\t\tname='"+name+"'\n"+
 		"\t\t\taccountingVo='"+accountingVo+"'\n"+
-		"\t\t\taccountingDesc = '"+accountingDesc+"'\n"+
+		"\t\t\taccountingDesc='"+accountingDesc+"'\n"+
 		"\t\t\tuserGroups='";
 
 	    List userGroups = getUserGroups();
@@ -178,7 +190,7 @@ public class GroupToAccountMapping {
 		return retStr;
     }
     
-    public Object clone() {
+    public GroupToAccountMapping clone(Configuration configuration) {
     	GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping(configuration, name);
     	groupToAccountMapping.setAccountingVo(accountingVo);
     	groupToAccountMapping.setAccountingDesc(accountingDesc);
@@ -187,7 +199,7 @@ public class GroupToAccountMapping {
     		groupToAccountMapping.addUserGroup( (String)it.next() );
     	it = getAccountMappers().iterator();
     	while (it.hasNext())
-    		groupToAccountMapping.addUserGroup( (String)it.next() );
+    		groupToAccountMapping.addAccountMapper( (String)it.next() );
     	return groupToAccountMapping;
     }
     

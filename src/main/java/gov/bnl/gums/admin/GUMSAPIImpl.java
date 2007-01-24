@@ -259,7 +259,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     public void setConfiguration(Configuration configuration) throws Exception {
     	if (hasWriteAccess(currentUser()))
-    		gums().setConfiguration(configuration);
+    		gums().setConfiguration(configuration, false);
     	else {
             gumsResourceAdminLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
     		siteLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
@@ -267,7 +267,21 @@ public class GUMSAPIImpl implements GUMSAPI {
     	}
     }
     
-    String logUserAccess() {
+    public String getVersion() {
+    	return GUMS.getVersion();
+    }
+    
+    public void backupConfiguration() {
+    	if (hasWriteAccess(currentUser()))
+    		gums().setConfiguration(gums().getConfiguration(), true);
+    	else {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to backup configuration because user doesn't have write access");
+    		siteLog.info(logUserAccess() + "Failed to backup configuration because user doesn't have write access");
+    		throw new AuthorizationDeniedException();
+    	}
+    }
+    
+    private String logUserAccess() {
         if (currentUser() == null) {
             return "No AuthN - ";
         } else {
@@ -359,10 +373,6 @@ public class GUMSAPIImpl implements GUMSAPI {
             addPoolAccount(persistenceManager, groupName, buf.toString());
             System.out.println(buf.toString() + " added");
         }
-    }
-    
-    public String getVersion() {
-    	return GUMS.getVersion();
     }
     
     private void addPoolAccount(String persistanceManager, String group, String username) {

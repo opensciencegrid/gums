@@ -42,6 +42,6 @@ public interface ConfigurationStore {
      * Set and store the configuration.
      * @param conf 
      */
-    void setConfiguration(Configuration conf) throws IOException;
+    void setConfiguration(Configuration conf, boolean backup) throws IOException;
     
 }

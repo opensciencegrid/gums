@@ -32,6 +32,10 @@ public class ManualAccountMapper extends AccountMapper {
     public ManualAccountMapper() {
     	super();
     }
+ 
+    public ManualAccountMapper(Configuration configuration) {
+    	super(configuration);
+    }
     
     public ManualAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
@@ -76,8 +80,8 @@ public class ManualAccountMapper extends AccountMapper {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
     }
     
-    public Object clone() {
-    	ManualAccountMapper accountMapper = new ManualAccountMapper(getConfiguration(), getName());
+    public AccountMapper clone(Configuration configuration) {
+    	ManualAccountMapper accountMapper = new ManualAccountMapper(configuration, getName());
     	accountMapper.setPersistenceFactory(persistenceFactory);
     	return accountMapper;
     }

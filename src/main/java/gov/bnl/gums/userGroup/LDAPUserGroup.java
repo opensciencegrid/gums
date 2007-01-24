@@ -53,6 +53,10 @@ public class LDAPUserGroup extends UserGroup {
     public LDAPUserGroup() {
     	super();
     }
+ 
+	public LDAPUserGroup(Configuration configuration) {
+		super(configuration);
+	}
     
 	public LDAPUserGroup(Configuration configuration, String name) {
 		super(configuration, name);
@@ -271,8 +275,8 @@ public class LDAPUserGroup extends UserGroup {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + server + "</td>";
     }
     
-    public Object clone() {
-    	LDAPUserGroup userGroup = new LDAPUserGroup(getConfiguration(), getName());
+    public UserGroup clone(Configuration configuration) {
+    	LDAPUserGroup userGroup = new LDAPUserGroup(configuration, getName());
     	userGroup.setPersistenceFactory(persistenceFactory);
     	userGroup.setAccess(getAccess());
     	userGroup.setKeyPassword(getKeyPassword());

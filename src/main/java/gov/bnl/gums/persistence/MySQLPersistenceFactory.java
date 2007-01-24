@@ -37,6 +37,10 @@ public class MySQLPersistenceFactory extends PersistenceFactory {
     public MySQLPersistenceFactory() {
     	super();
     }
+
+    public MySQLPersistenceFactory(Configuration configuration) {
+    	super(configuration);
+    }
     
     public MySQLPersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
@@ -124,6 +128,12 @@ public class MySQLPersistenceFactory extends PersistenceFactory {
         return new MySQLAccountPoolMapperDB(name);
     }
     
+    public PersistenceFactory clone(Configuration configuration) {
+    	MySQLPersistenceFactory persistenceFactory = new MySQLPersistenceFactory(configuration, getName());
+    	persistenceFactory.setProperties((Properties)getProperties().clone());
+    	return persistenceFactory;
+    }    
+    
     private Map statementCache = new Hashtable();
     private PreparedStatement prepareStatement(Connection conn, String sql) throws SQLException {
         Map statementsPerConnection = (Map) statementCache.get(conn);
@@ -138,12 +148,6 @@ public class MySQLPersistenceFactory extends PersistenceFactory {
             log.trace("Created newstatement for: '" + sql + "'");
         }
         return stmt;
-    }
-    
-    public Object clone() {
-    	MySQLPersistenceFactory persistenceFactory = new MySQLPersistenceFactory(getConfiguration(), getName());
-    	persistenceFactory.setProperties((Properties)getProperties().clone());
-    	return persistenceFactory;
     }
     
     private void addUser(String userDN, String groupName) {

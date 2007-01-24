@@ -40,7 +40,7 @@ public class MockPersistenceFactory extends PersistenceFactory {
     	
     }
     
-    public Object clone() {
+    public PersistenceFactory clone(Configuration configuration) {
     	return null;
     }
     

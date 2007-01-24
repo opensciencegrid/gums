@@ -34,6 +34,11 @@ public class NISAccountMapper extends AccountMapper {
     	super();
         adminLog.warn("The use of gov.bnl.gums.NISAccountMapper is deprecated. Please use gov.bnl.gums.GecosNisAccoutMapper: it provides the same functionalities.");
     }
+
+    public NISAccountMapper(Configuration configuration) {
+    	super(configuration);
+        adminLog.warn("The use of gov.bnl.gums.NISAccountMapper is deprecated. Please use gov.bnl.gums.GecosNisAccoutMapper: it provides the same functionalities.");
+    }
     
     public NISAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
@@ -115,8 +120,8 @@ public class NISAccountMapper extends AccountMapper {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + jndiNisUrl + "</td>";
     }
     
-    public Object clone() {
-    	NISAccountMapper accountMapper = new NISAccountMapper(getConfiguration(), getName());
+    public AccountMapper clone(Configuration configuration) {
+    	NISAccountMapper accountMapper = new NISAccountMapper(configuration, getName());
     	accountMapper.setJndiNisUrl(jndiNisUrl);
     	return accountMapper;
     }

@@ -59,6 +59,10 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public LDAPPersistenceFactory() {
     	super();
     }    
+
+    public LDAPPersistenceFactory(Configuration configuration) {
+    	super(configuration);
+    }
     
     public LDAPPersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
@@ -635,8 +639,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
     
-    public Object clone() {
-    	LDAPPersistenceFactory persistenceFactory = new LDAPPersistenceFactory(getConfiguration(), getName());
+    public PersistenceFactory clone(Configuration configuration) {
+    	LDAPPersistenceFactory persistenceFactory = new LDAPPersistenceFactory(configuration, getName());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
     	return persistenceFactory;

@@ -28,6 +28,14 @@ public abstract class UserGroup {
 	 */
 	public UserGroup() {
 	}
+
+	/**
+	 * @param configuration
+	 * @param name
+	 */
+	public UserGroup(Configuration configuration) {
+		this.configuration = configuration;
+	}
 	
 	/**
 	 * Automatically adds itself to the configuration.
@@ -121,5 +129,5 @@ public abstract class UserGroup {
     
     public abstract String getSummary(String bgColor);
     
-    public abstract Object clone();
+    public abstract UserGroup clone(Configuration configuration);
 }

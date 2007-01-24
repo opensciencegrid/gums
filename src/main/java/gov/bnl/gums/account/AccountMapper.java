@@ -27,7 +27,14 @@ public abstract class AccountMapper {
 	 */
 	public AccountMapper() {
     }
-    
+ 
+	/**
+	 * @param configuration
+	 */
+	public AccountMapper(Configuration configuration) {
+    	this.configuration = configuration;
+    }
+	
 	/**
 	 * Automatically adds itself to the configuration.
 	 * @param configuration
@@ -70,5 +77,5 @@ public abstract class AccountMapper {
     
     public abstract String getSummary(String bgColor);
     
-    public abstract Object clone();
+    public abstract AccountMapper clone(Configuration configuration);
 }

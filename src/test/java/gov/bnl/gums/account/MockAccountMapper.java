@@ -52,7 +52,7 @@ public class MockAccountMapper extends AccountMapper {
     	return null;
     }
     
-    public Object clone() {
+    public AccountMapper clone(Configuration configuration) {
     	return null;
     }
 }

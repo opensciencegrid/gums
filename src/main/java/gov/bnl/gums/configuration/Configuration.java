@@ -37,51 +37,36 @@ public class Configuration {
     private TreeMap userGroups = new TreeMap();
     private boolean errorOnMissedMapping;
 
-    /**
-     * Returns all the group mappings defined in the configuration,
-     * indexed by their name property.
-     * @return a List of Group2AccountMapper objects.
-     */
-    public Map getGroupToAccountMappings() {
-        return groupToAccountMappings;
+    public List getHostToGroupMappings() {
+        return Collections.unmodifiableList(hostToGroupMappings);
     }
     
-    /**
-     * Returns the list of all the hostGroups defined in the configuration.
-     * @return a List of Host2GroupMapper objects.
-     */
-    public ArrayList getHostToGroupMappings() {
-        return hostToGroupMappings;
+    public Map getGroupToAccountMappings() {
+        return Collections.unmodifiableMap(groupToAccountMappings);
     }
 
-    /**
-     * Returns a hostToGroupMapping.
-     * @param hostToGroupMapping name.
-     * @return a HostToGroupMapping object.
-     */
+    public Map getPersistenceFactories()  {
+        return Collections.unmodifiableMap(persistenceFactories);
+    }
+
+    public Map getAccountMappers()  {
+        return Collections.unmodifiableMap(accountMappers);
+    }
+ 
+    public Map getUserGroups() {
+        return Collections.unmodifiableMap(userGroups);
+    }    
+
+    public Map getVirtualOrganizations() {
+        return virtualOrganizations;
+    }      
+    
     public HostToGroupMapping getHostToGroupMapping(String name) {
         Iterator it = hostToGroupMappings.iterator();
         while(it.hasNext()) {
         	HostToGroupMapping hostToGroupMapping = (HostToGroupMapping)it.next();
         	if(hostToGroupMapping.getName().equals(name))
         		return hostToGroupMapping;
-        }
-        return null;
-    }
-    
-    /**
-     * Removes hostToGroupMapping.
-     * @param hostToGroupMapping name.
-     * @return HostToGroupMapping object removed.
-     */
-    public HostToGroupMapping removeHostToGroupMapping(String name) {
-        Iterator it = hostToGroupMappings.iterator();
-        while(it.hasNext()) {
-        	HostToGroupMapping hostToGroupMapping = (HostToGroupMapping)it.next();
-        	if(hostToGroupMapping.getName().equals(name)) {
-        		hostToGroupMappings.remove( hostToGroupMapping );
-        		return hostToGroupMapping;
-        	}
         }
         return null;
     }
@@ -101,49 +86,105 @@ public class Configuration {
     public UserGroup getUserGroup(String userGroup) {
         return (UserGroup)userGroups.get(userGroup);
     }    
-
     
     public VirtualOrganization getVirtualOrganization(String virtualOrganization) {
         return (VirtualOrganization)virtualOrganizations.get(virtualOrganization);
     }      
     
-    /**
-     * Returns all the persistence managers defined in the configuration,
-     * indexed by their name property.
-     * @return a List of PersistentManager objects.
-     */
-    public Map getPersistenceFactories()  {
-        return persistenceFactories;
+    public void addHostToGroupMapping(HostToGroupMapping h2GMapping) {
+        log.trace("Adding HostToGroupMapper to the configuration: " + h2GMapping.getName());
+        if (hostToGroupMappings.contains(h2GMapping.getName()))
+    		log.error("Host to group mapping " + h2GMapping.getName() + " already exists");
+        hostToGroupMappings.add(h2GMapping);
+        if (h2GMapping.getConfiguration()==null)
+        	h2GMapping.setConfiguration(this);
     }
     
-    /**
-     * Returns all the account mappers defined in the configuration,
-     * indexed by their name property.
-     * @return a List of AccountManager objects.
-     */
-    public Map getAccountMappers()  {
-        return accountMappers;
+    public void addHostToGroupMapping(int index, HostToGroupMapping h2GMapping) {
+        log.trace("Adding HostToGroupMapper to the configuration: " + h2GMapping.getName());
+        if (hostToGroupMappings.contains(h2GMapping.getName()))
+    		log.error("Host to group mapping " + h2GMapping.getName() + " already exists");
+        hostToGroupMappings.add(index, h2GMapping);
+        if (h2GMapping.getConfiguration()==null)
+        	h2GMapping.setConfiguration(this);
+    }
+    
+    public void addGroupToAccountMapping(GroupToAccountMapping g2AMapping) {
+        log.trace("Adding GroupToAccountMapper to the configuration: " + g2AMapping.getName());
+        if (groupToAccountMappings.get(g2AMapping.getName())!=null)
+        		log.error("Group to account mapping " + g2AMapping.getName() + " already exists");
+       	groupToAccountMappings.put(g2AMapping.getName(), g2AMapping);
+        if (g2AMapping.getConfiguration()==null)
+        	g2AMapping.setConfiguration(this);
+    }    
+    
+    public void addPersistenceFactory(PersistenceFactory peristenceFactory) {
+        log.trace("Adding PersistenceManager to the configuration: " + peristenceFactory.getName());
+        if (persistenceFactories.get(peristenceFactory.getName())!=null)
+        	log.error("PersistenceFactory " + peristenceFactory.getName() + " already exists");
+        persistenceFactories.put(peristenceFactory.getName(), peristenceFactory);
+        if (peristenceFactory.getConfiguration()==null)
+        	peristenceFactory.setConfiguration(this);
+    }    
+    
+    public void addAccountMapper(AccountMapper accountMapper) {
+        log.trace("Adding AccountManager to the configuration: " + accountMapper.getName());
+        if (accountMappers.get(accountMapper.getName())!=null)
+        	log.error("Account mapper " + accountMapper.getName() + " already exists");
+        accountMappers.put(accountMapper.getName(), accountMapper);
+        if (accountMapper.getConfiguration()==null)
+        	accountMapper.setConfiguration(this);
+    }    
+    
+    public void addUserGroup(UserGroup userGroup) {
+        log.trace("Adding UserGroupManager to the configuration: " + userGroup.getName());
+        if (userGroups.get(userGroup.getName())!=null)
+        	log.error("User group " + userGroup.getName() + " already exists");
+        userGroups.put(userGroup.getName(), userGroup);
+        if (userGroup.getConfiguration()==null)
+        	userGroup.setConfiguration(this);
+    }   
+
+    public void addVirtualOrganization(VirtualOrganization virtualOrganization) {
+        log.trace("Adding VO to the configuration: " + virtualOrganization.getName());
+        if (virtualOrganizations.get(virtualOrganization.getName())!=null)
+        	log.error("Virtual organization " + virtualOrganization.getName() + " already exists");
+        virtualOrganizations.put(virtualOrganization.getName(), virtualOrganization);
+        if (virtualOrganization.getConfiguration()==null)
+        	virtualOrganization.setConfiguration(this);
+    }
+    
+    public HostToGroupMapping removeHostToGroupMapping(String name) {
+        Iterator it = hostToGroupMappings.iterator();
+        while(it.hasNext()) {
+        	HostToGroupMapping hostToGroupMapping = (HostToGroupMapping)it.next();
+        	if(hostToGroupMapping.getName().equals(name)) {
+        		hostToGroupMappings.remove( hostToGroupMapping );
+        		return hostToGroupMapping;
+        	}
+        }
+        return null;
+    }
+
+    public GroupToAccountMapping removeGroupToAccountMapping(String name) {
+    	return (GroupToAccountMapping)groupToAccountMappings.remove(name);
     }
  
-    /**
-     * Returns a list of all the user groups defined in the configuration file.
-     * <p>
-     * @return a list of UserGroupManager objects.
-     */
-    public Map getUserGroups() {
-        return userGroups;
-    }    
+    public UserGroup removeUserGroup(String name) {
+    	return (UserGroup)userGroups.remove(name);
+    }
 
+    public AccountMapper removeAccountMapper(String name) {
+    	return (AccountMapper)accountMappers.remove(name);
+    }
+
+    public PersistenceFactory removePersistenceFactory(String name) {
+    	return (PersistenceFactory)persistenceFactories.remove(name);
+    }
     
-    /**
-     * Returns a list of all the virtual organizations defined in the configuration file.
-     * <p>
-     * @return a list of VO objects.
-     */
-    public Map getVirtualOrganizations() {
-        return virtualOrganizations;
-    }      
-    
+    public VirtualOrganization removeVirtualOrganization(String name) {
+    	return (VirtualOrganization)virtualOrganizations.remove(name);
+    }
     
     /**
      * Returns a list of all the self readers defined in the configuration file.
@@ -197,72 +238,6 @@ public class Configuration {
     }   
     
     /**
-     * Adds a group mapping to the configuration.
-     * @param mapper a GroupMapper object.
-     */
-    public void addGroupToAccountMapping(GroupToAccountMapping g2AMapping) {
-        log.trace("Adding GroupToAccountMapper to the configuration: " + g2AMapping.getName());
-        if (groupToAccountMappings.get(g2AMapping.getName())!=null)
-        		log.error("Group to account mapping " + g2AMapping.getName() + " already exists");
-        groupToAccountMappings.put(g2AMapping.getName(), g2AMapping);
-    }    
-    
-    /**
-     * Addes a host group to the configuation.
-     * @param mapper a Host2GroupMapper object
-     */
-    public void addHostToGroupMapping(HostToGroupMapping h2GMapping) {
-        log.trace("Adding HostToGroupMapper to the configuration: " + h2GMapping.getName());
-        if (hostToGroupMappings.contains(h2GMapping.getName()))
-    		log.error("Host to group mapping " + h2GMapping.getName() + " already exists");
-        hostToGroupMappings.add(h2GMapping);
-    }
-
-    /**
-     * Adds a persistence factory to the configuration.
-     * @param persistenceFactory a persistenceFactory object.
-     */
-    public void addPersistenceFactory(PersistenceFactory peristenceFactory) {
-        log.trace("Adding PersistenceManager to the configuration: " + peristenceFactory.getName());
-        if (persistenceFactories.get(peristenceFactory.getName())!=null)
-        	log.error("PersistenceFactory " + peristenceFactory.getName() + " already exists");
-        persistenceFactories.put(peristenceFactory.getName(), peristenceFactory);
-    }    
-    
-    /**
-     * Adds an account mapper to the configuration.
-     * @param accountMapper an AccountMapper object.
-     */
-    public void addAccountMapper(AccountMapper accountMapper) {
-        log.trace("Adding AccountManager to the configuration: " + accountMapper.getName());
-        if (accountMappers.get(accountMapper.getName())!=null)
-        	log.error("Account mapper " + accountMapper.getName() + " already exists");
-        accountMappers.put(accountMapper.getName(), accountMapper);
-    }    
-    
-    /**
-     * Adds an account manager to the configuration.
-     * @param accountManager an AccountManager object.
-     */
-    public void addUserGroup(UserGroup userGroup) {
-        log.trace("Adding UserGroupManager to the configuration: " + userGroup.getName());
-        if (userGroups.get(userGroup.getName())!=null)
-        	log.error("User group " + userGroup.getName() + " already exists");
-        userGroups.put(userGroup.getName(), userGroup);
-    }   
-
-    /**
-     * Adds a virtual organization to the configuration.
-     * @param vO a VO object.
-     */
-    public void addVirtualOrganization(VirtualOrganization virtualOrganization) {
-        log.trace("Adding VO to the configuration: " + virtualOrganization.getName());
-        if (virtualOrganizations.get(virtualOrganization.getName())!=null)
-        	log.error("Virtual organization " + virtualOrganization.getName() + " already exists");
-        virtualOrganizations.put(virtualOrganization.getName(), virtualOrganization);
-    }     
-    
-    /**
      * Getter for property errorOnMissedMapping.
      * @return Value of property errorOnMissedMapping.
      */
@@ -283,27 +258,27 @@ public class Configuration {
     	
     	Iterator it = persistenceFactories.values().iterator();
     	while (it.hasNext() )
-    		newConf.addPersistenceFactory( (PersistenceFactory)((PersistenceFactory)it.next()).clone() );
+    		newConf.addPersistenceFactory( (PersistenceFactory)((PersistenceFactory)it.next()).clone(newConf) );
     	
     	it = virtualOrganizations.values().iterator();
     	while (it.hasNext() )
-    		newConf.addVirtualOrganization( (VirtualOrganization)((VirtualOrganization)it.next()).clone() );
+    		newConf.addVirtualOrganization( (VirtualOrganization)((VirtualOrganization)it.next()).clone(newConf) );
     	
     	it = accountMappers.values().iterator();
     	while (it.hasNext() )
-    		newConf.addAccountMapper( (AccountMapper)((AccountMapper)it.next()).clone() );    
+    		newConf.addAccountMapper( (AccountMapper)((AccountMapper)it.next()).clone(newConf) );    
     	
     	it = userGroups.values().iterator();
     	while (it.hasNext() )
-    		newConf.addUserGroup( (UserGroup)((UserGroup)it.next()).clone() );  
+    		newConf.addUserGroup( (UserGroup)((UserGroup)it.next()).clone(newConf) );  
     	
     	it = groupToAccountMappings.values().iterator();
     	while (it.hasNext() )
-    		newConf.addGroupToAccountMapping( (GroupToAccountMapping)((GroupToAccountMapping)it.next()).clone() );  
+    		newConf.addGroupToAccountMapping( (GroupToAccountMapping)((GroupToAccountMapping)it.next()).clone(newConf) );  
     	
     	it = hostToGroupMappings.iterator();
     	while (it.hasNext() )
-    		newConf.addHostToGroupMapping( (HostToGroupMapping)((HostToGroupMapping)it.next()).clone() );  	
+    		newConf.addHostToGroupMapping( (HostToGroupMapping)((HostToGroupMapping)it.next()).clone(newConf) );  	
     	
     	return newConf;
     }

@@ -30,6 +30,10 @@ public class ManualUserGroup extends UserGroup {
     	super();
     }
     
+    public ManualUserGroup(Configuration configuration) {
+    	super(configuration);
+    }
+    
 	public ManualUserGroup(Configuration configuration, String name) {
 		super(configuration, name);
 	}
@@ -84,8 +88,8 @@ public class ManualUserGroup extends UserGroup {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
     }
     
-    public Object clone() {
-    	ManualUserGroup userGroup = new ManualUserGroup(getConfiguration(), getName());
+    public UserGroup clone(Configuration configuration) {
+    	ManualUserGroup userGroup = new ManualUserGroup(configuration, getName());
     	userGroup.setAccess(getAccess());
     	userGroup.setPersistenceFactory(persistenceFactory);
     	return userGroup;

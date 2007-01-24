@@ -31,6 +31,10 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     public GecosNisAccountMapper() {
     	super();
     }
+ 
+    public GecosNisAccountMapper(Configuration configuration) {
+    	super(configuration);
+    }
     
     public GecosNisAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
@@ -124,8 +128,8 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + jndiNisUrl + "</td>";
     }
     
-    public Object clone() {
-    	GecosNisAccountMapper accountMapper = new GecosNisAccountMapper(getConfiguration(), getName());
+    public AccountMapper clone(Configuration configuration) {
+    	GecosNisAccountMapper accountMapper = new GecosNisAccountMapper(configuration, getName());
     	accountMapper.setJndiNisUrl(jndiNisUrl);
     	return accountMapper;
     }

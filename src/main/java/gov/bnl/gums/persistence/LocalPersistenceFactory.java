@@ -37,6 +37,10 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     	super();
     	log.trace("HibernatePersistenceFactory instanciated");
     }    
+ 
+    public LocalPersistenceFactory(Configuration configuration) {
+    	super(configuration);
+    }
     
     public LocalPersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
@@ -202,8 +206,8 @@ public class LocalPersistenceFactory extends PersistenceFactory {
         this.synchGroups = synchGroups;
     }
     
-    public Object clone() {
-    	LocalPersistenceFactory persistenceFactory = new LocalPersistenceFactory(getConfiguration(), getName());
+    public PersistenceFactory clone(Configuration configuration) {
+    	LocalPersistenceFactory persistenceFactory = new LocalPersistenceFactory(configuration, getName());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	return persistenceFactory;
     }

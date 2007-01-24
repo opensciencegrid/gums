@@ -34,6 +34,10 @@ public class AccountPoolMapper extends AccountMapper {
     public AccountPoolMapper() {
     	super();
     }
+ 
+    public AccountPoolMapper(Configuration configuration) {
+    	super(configuration);
+    }
     
     public AccountPoolMapper(Configuration configuration, String name) {
     	super(configuration, name);
@@ -77,8 +81,8 @@ public class AccountPoolMapper extends AccountMapper {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
     }
     
-    public Object clone() {
-    	AccountPoolMapper accountMapper = new AccountPoolMapper(getConfiguration(), getName());
+    public AccountMapper clone(Configuration configuration) {
+    	AccountPoolMapper accountMapper = new AccountPoolMapper(configuration, getName());
     	accountMapper.setAccountPool(accountPool);
     	accountMapper.setPersistenceFactory(persistenceFactory);
     	return accountMapper;

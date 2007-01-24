@@ -62,4 +62,7 @@ public class GUMSAPIMock implements GUMSAPI {
     	return GUMS.getVersion();
     }
     
+    public void backupConfiguration() {
+    }
+    
 }

@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -58,27 +60,27 @@ public class FileConfigurationStore implements ConfigurationStore {
     			BufferedWriter out = new BufferedWriter(new FileWriter(filename));
     			out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n"+
 	    			"<gums>\n\n"+
-	    				"\t<persistenceFactories>"+
-	    					"\t<persistenceFactory"+
-				    			"\t\tclassName='gov.bnl.gums.persistence.HibernatePersistenceFactory'"+
-				    			"\t\tname='mysql'"+
-				    			"\t\thibernate.connection.driver_class='com.mysql.jdbc.Driver'"+
-				    			"\t\thibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'"+
-				    			"\t\thibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_1'"+
-				    			"\t\thibernate.connection.username='gums'"+
-				    			"\t\thibernate.connection.password=''"+
-				    			"\t\thibernate.connection.autoReconnect='true'"+
-				    			"\t\thibernate.c3p0.min_size='3'"+
-				    			"\t\thibernate.c3p0.max_size='20'"+
-				    			"\t\thibernate.c3p0.timeout='180' />"+
-				    	"\t</persistenceFactories>"+
-	    				"\t<userGroups>"+
-				    		"\t<userGroup"+
-				    			"\t\tclassName='gov.bnl.gums.userGroup.ManualUserGroup'"+
-				    			"\t\tname='admin'"+
-				    			"\t\tpersistenceFactory='mysql'"+
-				    			"\t\taccess='write'/>"+
-	    				"\t</userGroups>"+
+	    				"\t<persistenceFactories>\n\n"+
+	    					"\t\t<persistenceFactory\n"+
+				    			"\t\t\tclassName='gov.bnl.gums.persistence.HibernatePersistenceFactory'\n"+
+				    			"\t\t\tname='mysql'\n"+
+				    			"\t\t\thibernate.connection.driver_class='com.mysql.jdbc.Driver'\n"+
+				    			"\t\t\thibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'\n"+
+				    			"\t\t\thibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_1'\n"+
+				    			"\t\t\thibernate.connection.username='gums'\n"+
+				    			"\t\t\thibernate.connection.password=''\n"+
+				    			"\t\t\thibernate.connection.autoReconnect='true'\n"+
+				    			"\t\t\thibernate.c3p0.min_size='3'\n"+
+				    			"\t\t\thibernate.c3p0.max_size='20'\n"+
+				    			"\t\t\thibernate.c3p0.timeout='180' />\n\n"+
+				    	"\t</persistenceFactories>\n\n"+
+	    				"\t<userGroups>\n\n"+
+				    		"\t\t<userGroup\n"+
+				    			"\t\t\tclassName='gov.bnl.gums.userGroup.ManualUserGroup'\n"+
+				    			"\t\t\tname='admin'\n"+
+				    			"\t\t\tpersistenceFactory='mysql'\n"+
+				    			"\t\t\taccess='write'/>\n\n"+
+	    				"\t</userGroups>\n\n"+
 	    			"</gums>");
     			out.close();
     		} catch (IOException e1) {
@@ -154,7 +156,7 @@ public class FileConfigurationStore implements ConfigurationStore {
         }
     }
     
-    public void setConfiguration(Configuration conf) throws IOException {
+    public synchronized void setConfiguration(Configuration conf, boolean backup) throws IOException {
         this.conf = conf;
         log.trace("Configuration set programically");
         gumsResourceAdminLog.info("configuration set programically");
@@ -250,8 +252,10 @@ public class FileConfigurationStore implements ConfigurationStore {
         	copyFile(confURL.getPath(), confURL.getPath()+"_old");
         
         // copy temp file to gums.config
-        if (filename != null)
-        	copyFile(tempGumsConfigFile, filename);
+        if (filename != null) {
+        	DateFormat format = new SimpleDateFormat("yyyyMMdd_HHmm");
+        	copyFile(tempGumsConfigFile, filename + (backup?"."+format.format(new Date()):""));
+        }
         else 
         	copyFile(tempGumsConfigFile, confURL.getPath());
         

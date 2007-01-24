@@ -82,8 +82,8 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
 			"\t\t\twildcard='"+wildcard+"'/>\n\n";
     }        
     
-    public Object clone() {
-    	WildcardHostToGroupMapping hostToGroupMapping = new WildcardHostToGroupMapping(getConfiguration());
+    public HostToGroupMapping clone(Configuration configuration) {
+    	WildcardHostToGroupMapping hostToGroupMapping = new WildcardHostToGroupMapping(configuration);
     	hostToGroupMapping.setWildcard(getWildcard());
     	Iterator it = getGroupToAccountMappings().iterator();
     	while (it.hasNext()) {

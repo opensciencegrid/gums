@@ -120,8 +120,8 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     	return retStr;
     }      
     
-    public Object clone() {
-    	CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping(getConfiguration());
+    public HostToGroupMapping clone(Configuration configuration) {
+    	CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping(configuration);
     	if (hostToGroupMapping.getCn()!=null)
     		hostToGroupMapping.setCn(getCn());
     	if (hostToGroupMapping.getDn()!=null)
