@@ -55,24 +55,26 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
-		Map origVirtualOrganizations = new TreeMap();
-		origVirtualOrganizations.putAll(configuration.getVirtualOrganizations());
+		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			configuration.getVirtualOrganizations().put(request.getParameter("name"), ConfigurationWebToolkit.parseVirtualOrganization(configuration, request));
-			gums.setConfiguration(configuration);
+			newConfiguration.removeVirtualOrganization( request.getParameter("name") );
+			newConfiguration.addVirtualOrganization( ConfigurationWebToolkit.parseVirtualOrganization(request) );
+			gums.setConfiguration(newConfiguration);
+			configuration = newConfiguration;
 			message = "<div class=\"success\">Virtual organization has been saved.</div>";
 		}catch(Exception e){
-			configuration.setVirtualOrganizations(origVirtualOrganizations);
 			message = "<div class=\"failure\">Error saving virtual organization: " + e.getMessage() + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("action"))) {
+		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			String references = ConfigurationWebToolkit.getVOMSUserGroupReferences(configuration, request.getParameter("name"));
+			String references = ConfigurationWebToolkit.getVOMSUserGroupReferences(newConfiguration, request.getParameter("name"));
 			if( references==null ) {
-				if (configuration.getVirtualOrganizations().remove( request.getParameter("name") )!=null) {
-					gums.setConfiguration(configuration);
+				if (newConfiguration.removeVirtualOrganization( request.getParameter("name") )!=null) {
+					gums.setConfiguration(newConfiguration);
+					configuration = newConfiguration;
 					message = "<div class=\"success\">Virtual organization has been deleted.</div>";
 				}
 				else
@@ -111,10 +113,12 @@ if (request.getParameter("action")==null ||
 				    		"Check if member of virtual organization"+
 				    		" <span style=\"color:blue\">" + virtualOrganization.getName() + "</span>");
 				    		
-		out.write(		" by querying VOMS server at base URL " + "<span style=\"color:blue\">" + virtualOrganization.getBaseUrl() + "</span> (additional path specified in user group)");
-
+		out.write(		" by querying VOMS server at base URL " + "<span style=\"color:blue\">" + virtualOrganization.getBaseUrl() + "</span> (additional path specified in user group)"+
+						" and caching results in persistence factory "+ 
+						" <span style=\"color:blue\">" + virtualOrganization.getPersistenceFactory() + "</span>.");
+	
 		if ( !virtualOrganization.getSslKey().equals("") ) {
-			out.write(	" SSL key <span style=\"color:blue\">" + virtualOrganization.getSslKey() + "</span>");
+			out.write(	" using SSL key <span style=\"color:blue\">" + virtualOrganization.getSslKey() + "</span>");
 			if ( !virtualOrganization.getSslCertfile().equals("") && !virtualOrganization.getSslCAFiles().equals("") )
 				out.write(	
 						"," );
@@ -171,7 +175,7 @@ else if ("edit".equals(request.getParameter("action"))
 
 	if ("reload".equals(request.getParameter("action"))) {
 		try{
-			virtualOrganization = ConfigurationWebToolkit.parseVirtualOrganization(configuration, request);
+			virtualOrganization = ConfigurationWebToolkit.parseVirtualOrganization(request);
 		} catch(Exception e) {
 			out.write( "<div class=\"failure\">Error reloading virtual organization: " + e.getMessage() + "</div>" );
 			return;
@@ -179,7 +183,7 @@ else if ("edit".equals(request.getParameter("action"))
 	}
 		
 	else if ("add".equals(request.getParameter("action"))) {
-		virtualOrganization = new VirtualOrganization();
+		virtualOrganization = new VirtualOrganization(configuration);
 	}		
 		
 	out.write(
@@ -223,6 +227,18 @@ else if ("edit".equals(request.getParameter("action"))
 			"<td>"+ 
 				"<input maxlength=\"256\" size=\"32\" name=\"baseURL\" value=\"" + virtualOrganization.getBaseUrl() + "\"/>(additional path in user group)"+
 			"</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"and caching results in persistence factory"+
+			"</td>"+
+			"<td>"+ 
+				ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
+						configuration.getPersistenceFactories().values(), 
+						virtualOrganization.getPersistenceFactory(),
+						null,
+						configuration.getPersistenceFactories().values().size()>1)+
+			".</td>"+
 		"</tr>"+
 	    "<tr>"+
     		"<td nowrap style=\"text-align: right;\">"+

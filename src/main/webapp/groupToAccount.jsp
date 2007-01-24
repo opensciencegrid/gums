@@ -56,24 +56,26 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
-		Map origGroupToAccountMappings = new TreeMap();
-		origGroupToAccountMappings.putAll(configuration.getGroupToAccountMappings());	
+		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			configuration.getGroupToAccountMappings().put(request.getParameter("name"), ConfigurationWebToolkit.parseGroupToAccountMapping(configuration, request));
-			gums.setConfiguration(configuration);
+			newConfiguration.removeGroupToAccountMapping( request.getParameter("name") );
+			newConfiguration.addGroupToAccountMapping( ConfigurationWebToolkit.parseGroupToAccountMapping(request) );
+			gums.setConfiguration(newConfiguration);
+			configuration = newConfiguration;
 			message = "<div class=\"success\">Group to account mapping has been saved.</div>";
 		}catch(Exception e){
-			configuration.setGroupToAccountMappings(origGroupToAccountMappings);
 			message = "<div class=\"failure\">Error saving group to account mapping: " + e.getMessage() + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("action"))) {
+		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			String references = ConfigurationWebToolkit.getHostToGroupReferences(configuration, request.getParameter("name"));
+			String references = ConfigurationWebToolkit.getHostToGroupReferences(newConfiguration, request.getParameter("name"));
 			if( references==null ) {
-				if (configuration.getGroupToAccountMappings().remove( request.getParameter("name") )!=null) {
-					gums.setConfiguration(configuration);
+				if (newConfiguration.removeGroupToAccountMapping( request.getParameter("name") )!=null) {
+					gums.setConfiguration(newConfiguration);
+					configuration = newConfiguration;
 					message = "<div class=\"success\">Group to account mapping has been deleted.</div>";
 				}
 				else
@@ -178,7 +180,7 @@ else if ("edit".equals(request.getParameter("action"))
 
 	if ("reload".equals(request.getParameter("action"))) {
 		try{
-			g2AMapping = ConfigurationWebToolkit.parseGroupToAccountMapping(configuration, request);
+			g2AMapping = ConfigurationWebToolkit.parseGroupToAccountMapping(request);
 		} catch(Exception e) {
 			out.write( "<div class=\"failure\">Error reloading group to account mapping: " + e.getMessage() + "</div>" );
 			return;
@@ -186,7 +188,7 @@ else if ("edit".equals(request.getParameter("action"))
 	}
 		
 	else if ("add".equals(request.getParameter("action"))) {
-		g2AMapping = new GroupToAccountMapping();
+		g2AMapping = new GroupToAccountMapping(configuration);
 	}		
 		
 	out.write(
@@ -234,11 +236,10 @@ else if ("edit".equals(request.getParameter("action"))
 		Iterator userGroupsIt = userGroups.iterator();
 		while(userGroupsIt.hasNext())
 		{
-			UserGroup userGroup = (UserGroup)userGroupsIt.next();
 			out.write( 
 				ConfigurationWebToolkit.createSelectBox("uG"+counter, 
 					configuration.getUserGroups().values(), 
-					userGroup.getName(),
+					(String)userGroupsIt.next(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
 					true) );
 			counter++;
@@ -266,11 +267,10 @@ else if ("edit".equals(request.getParameter("action"))
 		Iterator accountMappersIt = accountMappers.iterator();
 		while(accountMappersIt.hasNext())
 		{
-			AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();
 			out.write( 
 				ConfigurationWebToolkit.createSelectBox("aM"+counter, 
 					configuration.getAccountMappers().values(), 
-					accountMapper.getName(),
+					(String)accountMappersIt.next(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
 					true) );
 			counter++;

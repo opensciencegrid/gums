@@ -59,29 +59,24 @@ if (request.getParameter("action")==null ||
 	"down".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
-		ArrayList origHostToGroupMappings = new ArrayList();
-		origHostToGroupMappings.addAll(configuration.getHostToGroupMappings());	
+		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
-			int index = configuration.getHostToGroupMappings().indexOf(h2GMapping);
-			if (index!=-1) {
-				configuration.getHostToGroupMappings().remove(index);
-				configuration.getHostToGroupMappings().add(index, ConfigurationWebToolkit.parseHostToGroupMapping(configuration, request));
-			}
-			else
-				configuration.getHostToGroupMappings().add( ConfigurationWebToolkit.parseHostToGroupMapping(configuration, request) );
+			newConfiguration.removeHostToGroupMapping( request.getParameter("name") );
+			newConfiguration.addHostToGroupMapping( index, ConfigurationWebToolkit.parseHostToGroupMapping(request) );
 			gums.setConfiguration(configuration);
+			configuration = newConfiguration;
 			message = "<div class=\"success\">Host to group mapping has been saved.</div>";
 		}catch(Exception e){
-			configuration.setHostToGroupMappings(origHostToGroupMappings);
 			message = "<div class=\"failure\">Error saving host to group mapping: " + e.getMessage() + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("action"))) {
+		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			if( configuration.removeHostToGroupMapping( request.getParameter("name") )!=null ) {
-				gums.setConfiguration(configuration);
+			if( newConfiguration.removeHostToGroupMapping( request.getParameter("name") )!=null ) {
+				gums.setConfiguration(newConfiguration);
+				configuration = newConfiguration;
 				message = "<div class=\"success\">Host to group mapping has been deleted.</div>";
 			}
 			else
@@ -202,7 +197,7 @@ else if ("edit".equals(request.getParameter("action"))
 
 	if ("reload".equals(request.getParameter("action"))) {
 		try{
-			h2GMapping = ConfigurationWebToolkit.parseHostToGroupMapping(configuration, request);
+			h2GMapping = ConfigurationWebToolkit.parseHostToGroupMapping(request);
 		} catch(Exception e) {
 			out.write( "<div class=\"failure\">Error reloading host to group mapping: " + e.getMessage() + "</div>" );
 			return;
@@ -210,7 +205,7 @@ else if ("edit".equals(request.getParameter("action"))
 	}
 	
 	else if ("add".equals(request.getParameter("action"))) {
-		h2GMapping = new CertificateHostToGroupMapping();
+		h2GMapping = new CertificateHostToGroupMapping(configuration);
 	}
 	
 	CertificateHostToGroupMapping cH2GMapping = (CertificateHostToGroupMapping)h2GMapping;
@@ -263,11 +258,10 @@ else if ("edit".equals(request.getParameter("action"))
 		Iterator g2AMappingsIt = g2AMappings.iterator();
 		while(g2AMappingsIt.hasNext())
 		{
-			GroupToAccountMapping g2AMapping = (GroupToAccountMapping)g2AMappingsIt.next();
 			out.write( 
 				ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
 					configuration.getGroupToAccountMappings().values(), 
-					g2AMapping.getName(),
+					(String)g2AMappingsIt.next(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
 					true) );
 			counter++;

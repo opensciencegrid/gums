@@ -71,15 +71,15 @@ while (h2GMappingsIt.hasNext()) {
 	String lastG2AMapping = null;
 	String lastUserGroup = null;
 	while (g2AMappingsIt.hasNext()) {
-		GroupToAccountMapping g2AMapping = (GroupToAccountMapping)g2AMappingsIt.next();
+		GroupToAccountMapping g2AMapping = (GroupToAccountMapping)configuration.getGroupToAccountMapping( (String)g2AMappingsIt.next() );
 		Collection userGroups = g2AMapping.getUserGroups();
 		Iterator userGroupsIt = userGroups.iterator();
 		while (userGroupsIt.hasNext()) {
-			UserGroup userGroup = (UserGroup)userGroupsIt.next();
+			UserGroup userGroup = (UserGroup)configuration.getUserGroup( (String)userGroupsIt.next() );
 			Collection accountMappers = g2AMapping.getAccountMappers();
 			Iterator accountMappersIt = accountMappers.iterator();
 			while (accountMappersIt.hasNext()) {
-				AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();
+				AccountMapper accountMapper = (AccountMapper)configuration.getAccountMapper( (String)accountMappersIt.next() );
 %>
 
 	<tr>

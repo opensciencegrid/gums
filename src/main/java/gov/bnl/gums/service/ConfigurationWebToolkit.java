@@ -23,11 +23,7 @@ import java.util.Iterator;
 import java.util.Properties;
 
 public class ConfigurationWebToolkit implements Remote {
-	static public GroupToAccountMapping parseGroupToAccountMapping(HttpServletRequest request) {
-		return null;
-	}
-	
-	static public CertificateHostToGroupMapping parseHostToGroupMapping(Configuration configuration, HttpServletRequest request) throws Exception {
+	static public CertificateHostToGroupMapping parseHostToGroupMapping(HttpServletRequest request) throws Exception {
 		CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping();
 		String type = request.getParameter("type");
 		if(type.equals("cn"))
@@ -37,17 +33,15 @@ public class ConfigurationWebToolkit implements Remote {
 		int counter = 0;
 		while(request.getParameter("g2AM" + counter)!=null) {
 			String g2AMName = request.getParameter("g2AM" + counter);
-			if (!g2AMName.equals("")) {
-				GroupToAccountMapping g2AM = (GroupToAccountMapping)configuration.getGroupToAccountMappings().get( g2AMName );
-				hostToGroupMapping.addGroupToAccountMapping(g2AM);
-			}
+			if (!g2AMName.equals(""))
+				hostToGroupMapping.addGroupToAccountMapping(g2AMName);
 			counter++;
 		}
 		
 		return hostToGroupMapping;
 	}	
 	
-	static public GroupToAccountMapping parseGroupToAccountMapping(Configuration configuration, HttpServletRequest request) throws Exception {
+	static public GroupToAccountMapping parseGroupToAccountMapping(HttpServletRequest request) throws Exception {
 		GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping();
 
 		groupToAccountMapping.setName( request.getParameter("name") );
@@ -55,20 +49,16 @@ public class ConfigurationWebToolkit implements Remote {
 		int counter = 0;
 		while(request.getParameter("aM" + counter)!=null) {
 			String accountMapperName = request.getParameter("aM" + counter);
-			if (!accountMapperName.equals("")) {
-				AccountMapper accountMapper = (AccountMapper)configuration.getAccountMappers().get( accountMapperName );
-				groupToAccountMapping.addAccountMapper(accountMapper);
-			}
+			if (!accountMapperName.equals(""))
+				groupToAccountMapping.addAccountMapper(accountMapperName);
 			counter++;
 		}
 		
 		counter = 0;
 		while(request.getParameter("uG" + counter)!=null) {
 			String userGroupName = request.getParameter("uG" + counter);
-			if (!userGroupName.equals("")) {
-				UserGroup userGroup = (UserGroup)configuration.getUserGroups().get( userGroupName );
-				groupToAccountMapping.addUserGroup(userGroup);
-			}
+			if (!userGroupName.equals(""))
+				groupToAccountMapping.addUserGroup(userGroupName);
 			counter++;
 		}
 		
@@ -81,7 +71,7 @@ public class ConfigurationWebToolkit implements Remote {
 		return groupToAccountMapping;
 	}		
 
-	static public AccountMapper parseAccountMapper(Configuration configuration, HttpServletRequest request) throws Exception {
+	static public AccountMapper parseAccountMapper(HttpServletRequest request) throws Exception {
 		AccountMapper accountMapper = null;
 		
 		String className = request.getParameter("className");
@@ -96,7 +86,7 @@ public class ConfigurationWebToolkit implements Remote {
 			accountMapper = new ManualAccountMapper();
 			accountMapper.setName( request.getParameter("name") );
 			if (request.getParameter("persistenceFactory")!=null)
-				((ManualAccountMapper)accountMapper).setPersistenceFactory( (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("persistenceFactory") ) );
+				((ManualAccountMapper)accountMapper).setPersistenceFactory( request.getParameter("persistenceFactory") );
 		}
 		else if (className.equals("gov.bnl.gums.account.AccountPoolMapper")) {
 			accountMapper = new AccountPoolMapper();
@@ -104,7 +94,7 @@ public class ConfigurationWebToolkit implements Remote {
 			if (request.getParameter("accountPool")!=null)
 				((AccountPoolMapper)accountMapper).setAccountPool( request.getParameter("accountPool") );
 			if (request.getParameter("persistenceFactory")!=null)
-				((AccountPoolMapper)accountMapper).setPersistenceFactory( (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("persistenceFactory") ) );
+				((AccountPoolMapper)accountMapper).setPersistenceFactory( request.getParameter("persistenceFactory") );
 		}
 		else if (className.equals("gov.bnl.gums.account.GecosLdapAccountMapper")) {
 			accountMapper = new GecosLdapAccountMapper();
@@ -116,7 +106,7 @@ public class ConfigurationWebToolkit implements Remote {
 		return accountMapper;
 	}		
 
-	static public UserGroup parseUserGroup(Configuration configuration, HttpServletRequest request) throws Exception {
+	static public UserGroup parseUserGroup(HttpServletRequest request) throws Exception {
 		UserGroup userGroup = null;
 
 		String className = request.getParameter("className");
@@ -126,7 +116,7 @@ public class ConfigurationWebToolkit implements Remote {
 			userGroup.setName( request.getParameter("name") );
 			userGroup.setAccess( request.getParameter("access") );
 			if (request.getParameter("persistenceFactory")!=null)
-				((ManualUserGroup)userGroup).setPersistenceFactory( (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("persistenceFactory") ) );
+				((ManualUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory") );
 		} else if (className.equals("gov.bnl.gums.userGroup.LDAPUserGroup")) {
 			userGroup = new LDAPUserGroup();
 			userGroup.setName( request.getParameter("name") );
@@ -136,17 +126,17 @@ public class ConfigurationWebToolkit implements Remote {
 			if (request.getParameter("query")!=null)
 				((LDAPUserGroup)userGroup).setQuery( request.getParameter("query") );
 			if (request.getParameter("persistenceFactory")!=null)
-				((LDAPUserGroup)userGroup).setPersistenceFactory( (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("persistenceFactory") ) );
+				((LDAPUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory") );
 			if (request.getParameter("query")!=null)
 				((LDAPUserGroup)userGroup).setQuery( request.getParameter("query") );
 			if (request.getParameter("persistenceFactory")!=null)
-				((LDAPUserGroup)userGroup).setPersistenceFactory( (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("persistenceFactory") ) );
+				((LDAPUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory") );
 		} else if (className.equals("gov.bnl.gums.userGroup.VOMSUserGroup")) {
 			userGroup = new VOMSUserGroup();
 			userGroup.setName( request.getParameter("name") );
 			userGroup.setAccess( request.getParameter("access") );
 			if (request.getParameter("vo")!=null)
-				((VOMSUserGroup)userGroup).setVirtualOrganization( (VirtualOrganization)configuration.getVirtualOrganizations().get( request.getParameter("vo") ) );
+				((VOMSUserGroup)userGroup).setVirtualOrganization( request.getParameter("vo") );
 			if (request.getParameter("url")!=null)
 				((VOMSUserGroup)userGroup).setRemainderUrl( request.getParameter("url") );
 			if (request.getParameter("nVOMS")!=null)
@@ -170,8 +160,10 @@ public class ConfigurationWebToolkit implements Remote {
 		return userGroup;
 	}
 
-	static public VirtualOrganization parseVirtualOrganization(Configuration configuration, HttpServletRequest request) throws Exception {
+	static public VirtualOrganization parseVirtualOrganization(HttpServletRequest request) throws Exception {
 		VirtualOrganization virtualOrganization = new VirtualOrganization();
+		if (request.getParameter("persistenceFactory")!=null)
+			virtualOrganization.setPersistenceFactory( request.getParameter("persistenceFactory") );
 		virtualOrganization.setName( request.getParameter("name") );
 		if (request.getParameter("baseURL")!=null)
 			virtualOrganization.setSslKey( request.getParameter("baseURL") );
@@ -186,7 +178,7 @@ public class ConfigurationWebToolkit implements Remote {
 		return virtualOrganization;
 	}	
 	
-	static public PersistenceFactory parsePersistenceFactory(Configuration configuration, HttpServletRequest request) throws Exception {
+	static public PersistenceFactory parsePersistenceFactory(HttpServletRequest request) throws Exception {
 		PersistenceFactory persistenceFactory = null;
 		
 		String className = request.getParameter("className");

@@ -57,24 +57,26 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
-		Map origAccountMappers = new TreeMap();
-		origAccountMappers.putAll(configuration.getAccountMappers());
+		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			configuration.getAccountMappers().put(request.getParameter("name"), ConfigurationWebToolkit.parseAccountMapper(configuration, request));
-			gums.setConfiguration(configuration);
+			newConfiguration.removeAccountMapper( request.getParameter("name") );
+			newConfiguration.addAccountMapper( ConfigurationWebToolkit.parseAccountMapper(request) );
+			gums.setConfiguration(newConfiguration);
+			configuration = newConfiguration;
 			message = "<div class=\"success\">Account mapper has been saved.</div>";
 		}catch(Exception e){
-			configuration.setAccountMappers(origAccountMappers);
 			message = "<div class=\"failure\">Error saving account mapper: " + e.getMessage() + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("action"))) {
+		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			String references = ConfigurationWebToolkit.getGroupToAccountMappingReferences(configuration, request.getParameter("name"), "gov.bnl.gums.account.AccountMapper");
+			String references = ConfigurationWebToolkit.getGroupToAccountMappingReferences(newConfiguration, request.getParameter("name"), "gov.bnl.gums.account.AccountMapper");
 			if( references==null ) {
-				if (configuration.getAccountMappers().remove( request.getParameter("name") )!=null) {
+				if (newConfiguration.removeAccountMapper( request.getParameter("name") )!=null) {
 					gums.setConfiguration(configuration);
+					configuration = newConfiguration;
 					message = "<div class=\"success\">Account mapper has been deleted.</div>";
 				}
 				else
@@ -179,7 +181,7 @@ else if ("edit".equals(request.getParameter("action"))
 
 	if ("reload".equals(request.getParameter("action"))) {
 		try{
-			accountMapper = ConfigurationWebToolkit.parseAccountMapper(configuration, request);
+			accountMapper = ConfigurationWebToolkit.parseAccountMapper(request);
 		} catch(Exception e) {
 			out.write( "<div class=\"failure\">Error reloading account mapper: " + e.getMessage() + "</div>" );
 			return;
@@ -187,7 +189,7 @@ else if ("edit".equals(request.getParameter("action"))
 	}
 		
 	else if ("add".equals(request.getParameter("action"))) {
-		accountMapper = new GroupAccountMapper();
+		accountMapper = new GroupAccountMapper(configuration);
 	}		
 		
 	out.write(

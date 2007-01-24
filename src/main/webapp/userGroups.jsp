@@ -56,24 +56,26 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
-		Map origUserGroups = new TreeMap();
-		origUserGroups.putAll(configuration.getUserGroups());
+		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			configuration.getUserGroups().put(request.getParameter("name"), ConfigurationWebToolkit.parseUserGroup(configuration, request));
-			gums.setConfiguration(configuration);
+			newConfiguration.removeUserGroup( request.getParameter("name") );
+			newConfiguration.addUserGroup( ConfigurationWebToolkit.parseUserGroup(request) );
+			gums.setConfiguration(newConfiguration);
+			configuration = newConfiguration;
 			message = "<div class=\"success\">User group has been saved.</div>";
 		}catch(Exception e){
-			configuration.setUserGroups(origUserGroups);
 			message = "<div class=\"failure\">Error saving user group: " + e.getMessage() + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("action"))) {
+		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			String references = ConfigurationWebToolkit.getGroupToAccountMappingReferences(configuration, request.getParameter("name"), "gov.bnl.gums.userGroup.UserGroup");
+			String references = ConfigurationWebToolkit.getGroupToAccountMappingReferences(newConfiguration, request.getParameter("name"), "gov.bnl.gums.userGroup.UserGroup");
 			if( references==null ) {
-				if (configuration.getUserGroups().remove( request.getParameter("name") )!=null) {
-					gums.setConfiguration(configuration);
+				if (newConfiguration.removeUserGroup( request.getParameter("name") )!=null) {
+					gums.setConfiguration(newConfiguration);
+					configuration = newConfiguration;
 					message = "<div class=\"success\">User group has been deleted.</div>";
 				}
 				else
@@ -188,7 +190,7 @@ else if ("edit".equals(request.getParameter("action"))
 
 	if ("reload".equals(request.getParameter("action"))) {
 		try{
-			userGroup = ConfigurationWebToolkit.parseUserGroup(configuration, request);
+			userGroup = ConfigurationWebToolkit.parseUserGroup(request);
 		} catch(Exception e) {
 			out.write( "<div class=\"failure\">Error reloading user group: " + e.getMessage() + "</div>" );
 			return;
@@ -196,7 +198,7 @@ else if ("edit".equals(request.getParameter("action"))
 	}
 		
 	else if ("add".equals(request.getParameter("action"))) {
-		userGroup = new VOMSUserGroup();
+		userGroup = new VOMSUserGroup(configuration);
 	}		
 		
 	out.write(

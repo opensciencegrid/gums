@@ -20,16 +20,32 @@
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
-<p>
 <%-- <jsp:useBean id="beanInstanceName" scope="session" class="beanPackage.BeanClassName" /> --%>
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
+<%
+Configuration configuration = null;
+try {
+	configuration = gums.getConfiguration();
+}catch(Exception e){
+%>
+
+<p><div class="failure">Error getting configuration: <%= e.getMessage() %></div></p>
+</div>
+<%@include file="bottomNav.jspf"%>
+</body>
+</html>
+
+<%
+	return;
+}
+%>
+
+<p>
 Configures persistence factories.
 </p>
 
 <%
-
-Configuration configuration = gums.getConfiguration();
 String message = null;
 Collection persistenceFactories = configuration.getPersistenceFactories().values();
 
@@ -38,24 +54,26 @@ if (request.getParameter("action")==null ||
 	"delete".equals(request.getParameter("action"))) {
 	
 	if ("save".equals(request.getParameter("action"))) {
-		Map origPersistenceFactories = new TreeMap();
-		origPersistenceFactories.putAll(configuration.getPersistenceFactories());	
+		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			configuration.getPersistenceFactories().put(request.getParameter("name"), ConfigurationWebToolkit.parsePersistenceFactory(configuration, request));
-			gums.setConfiguration(configuration);
+			newConfiguration.removePersistenceFactory( request.getParameter("name") );
+			newConfiguration.addPersistenceFactory( ConfigurationWebToolkit.parsePersistenceFactory(request) );
+			gums.setConfiguration(newConfiguration);
+			configuration = newConfiguration;
 			message = "<div class=\"success\">Persistence factory has been saved.</div>";
 		}catch(Exception e){
-			configuration.setPersistenceFactories(origPersistenceFactories);
 			message = "<div class=\"failure\">Error saving persistence factory: " + e.getMessage() + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("action"))) {
+		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			String references = ConfigurationWebToolkit.getReferencesForPersistenceFactory(configuration, request.getParameter("name"));
+			String references = ConfigurationWebToolkit.getReferencesForPersistenceFactory(newConfiguration, request.getParameter("name"));
 			if( references==null ) {
-				if (configuration.getPersistenceFactories().remove( request.getParameter("name") )!=null) {
-					gums.setConfiguration(configuration);
+				if (newConfiguration.removePersistenceFactory( request.getParameter("name") )!=null) {
+					gums.setConfiguration(newConfiguration);
+					configuration = newConfiguration;
 					message = "<div class=\"success\">Persistence factory has been deleted.</div>";
 				}
 				else
@@ -163,7 +181,7 @@ else if ("edit".equals(request.getParameter("action"))
 
 	if ("reload".equals(request.getParameter("action"))) {
 		try{
-			persistenceFactory = ConfigurationWebToolkit.parsePersistenceFactory(configuration, request);
+			persistenceFactory = ConfigurationWebToolkit.parsePersistenceFactory(request);
 		} catch(Exception e) {
 			out.write( "<div class=\"failure\">Error reloading persistence factory: " + e.getMessage() + "</div>" );
 			return;
@@ -171,7 +189,7 @@ else if ("edit".equals(request.getParameter("action"))
 	}
 		
 	else if ("add".equals(request.getParameter("action"))) {
-		persistenceFactory = new HibernatePersistenceFactory();
+		persistenceFactory = new HibernatePersistenceFactory(configuration);
 		((HibernatePersistenceFactory)persistenceFactory).setProperties( ConfigurationWebToolkit.getHibernateProperties(persistenceFactory, request, false) );
 	}		
 			
