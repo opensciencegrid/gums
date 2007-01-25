@@ -36,14 +36,12 @@ public abstract class AccountMapper {
     }
 	
 	/**
-	 * Automatically adds itself to the configuration.
 	 * @param configuration
 	 * @param name
 	 */
 	public AccountMapper(Configuration configuration, String name) {
     	this.configuration = configuration;
     	this.name = name;
-    	configuration.addAccountMapper(this);
     }
     
 	public void setName(String name) {

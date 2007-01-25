@@ -35,7 +35,9 @@ public class ManualAccountMapperTest extends TestCase {
     public void setUp() {
     	Configuration configuration = new Configuration();
         ManualAccountMapper mMapper = new ManualAccountMapper(configuration, "manualAccountMapper");
+        configuration.addAccountMapper(mMapper);
         PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "mock");
+        configuration.addPersistenceFactory(persistenceFactory);
         mMapper.setPersistenceFactory( persistenceFactory.getName() );
         mapper = mMapper;
     }

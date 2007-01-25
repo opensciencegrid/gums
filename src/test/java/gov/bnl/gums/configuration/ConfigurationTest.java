@@ -49,17 +49,21 @@ public class ConfigurationTest extends TestCase {
         Configuration conf = new Configuration();
 
         GroupToAccountMapping gMap = new GroupToAccountMapping(conf, "mockGroup");
+        conf.addGroupToAccountMapping(gMap);
         gMap.setAccountingVo("mock");
         gMap.setAccountingDesc("mock");
         UserGroup userGroup = new MockUserGroup(conf, "mockUserGroup");
+        conf.addUserGroup(userGroup);
         gMap.addUserGroup(userGroup.getName());
         AccountMapper accountMapper = new MockAccountMapper(conf, "mockAccountMapper");
+        conf.addAccountMapper(accountMapper);
         gMap.addAccountMapper(accountMapper.getName());
 
-        MockHostToGroupMapping hMap = new MockHostToGroupMapping(conf);
+        MockHostToGroupMapping hMap = new MockHostToGroupMapping(conf, "mockHostToGroupMapping");
+        conf.addHostToGroupMapping(hMap);
         hMap.addGroupToAccountMapping(gMap.getName());
         
-        new MockPersistenceFactory(conf, "mockPers");
+        conf.addPersistenceFactory( new MockPersistenceFactory(conf, "mockPers") );
         
         return conf;
     }
@@ -67,21 +71,28 @@ public class ConfigurationTest extends TestCase {
     public void testSingleUserGroupCopy() {
         Configuration conf = new Configuration();
         MySQLPersistenceFactory factory = new MySQLPersistenceFactory(conf, "mysql");
+        conf.addPersistenceFactory(factory);
         GroupToAccountMapping gMap = new GroupToAccountMapping(conf, "group1");
+        conf.addGroupToAccountMapping(gMap);
         LDAPUserGroup userGroup = new LDAPUserGroup(conf, "userGroup1");
+        conf.addUserGroup(userGroup);
         userGroup.setPersistenceFactory(factory.getName());
         userGroup.setQuery("query");
         userGroup.setServer("server");
         gMap.addUserGroup(userGroup.getName());
         MockAccountMapper accountMapper = new MockAccountMapper(conf, "mockAccountMapper");
+        conf.addAccountMapper(accountMapper);
         gMap.addAccountMapper(accountMapper.getName());
         gMap = new GroupToAccountMapping(conf, "group2");
+        conf.addGroupToAccountMapping(gMap);
         userGroup = new LDAPUserGroup(conf, "userGroup2");
+        conf.addUserGroup(userGroup);
         userGroup.setPersistenceFactory(factory.getName());
         userGroup.setQuery("query");
         userGroup.setServer("server");
         gMap.addUserGroup(userGroup.getName());
         accountMapper = new MockAccountMapper(conf, "mockAccountMapper");
+        conf.addAccountMapper(accountMapper);
         gMap.addAccountMapper(accountMapper.getName());
         assertEquals(2, conf.getGroupToAccountMappings().values().size());
         assertEquals(1, gMap.getUserGroups().size());

@@ -35,10 +35,12 @@ public class AccountPoolMapperTest extends TestCase {
     
     public void setUp() {
     	Configuration configuration = new Configuration();
-        AccountPoolMapper gMapper = new AccountPoolMapper(configuration, "accountPoolMapper");
+        AccountPoolMapper accountMapper = new AccountPoolMapper(configuration, "accountPoolMapper");
+        configuration.addAccountMapper(accountMapper);
         PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "myGroup");
-        mapper = gMapper;
-        gMapper.setPersistenceFactory(persistenceFactory.getName());
+        configuration.addPersistenceFactory(persistenceFactory);
+        mapper = accountMapper;
+        accountMapper.setPersistenceFactory(persistenceFactory.getName());
     }
     
     public void testMapUser() {

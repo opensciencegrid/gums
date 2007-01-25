@@ -9,6 +9,7 @@ package gov.bnl.gums.userGroup;
 
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.MockPersistenceFactory;
+import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.GridUser;
 
 import java.util.*;
@@ -34,9 +35,12 @@ public class ManualUserGroupTest extends TestCase {
     }
     
     public void setUp() {
-        ManualUserGroup manualGroup = new ManualUserGroup(configuration, "mockUserGroup");
-        manualGroup.setPersistenceFactory(new MockPersistenceFactory(configuration, "mockPers").getName());
-        group = manualGroup;
+        ManualUserGroup userGroup = new ManualUserGroup(configuration, "mockUserGroup");
+        configuration.addUserGroup(userGroup);
+        PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "mockPers");
+        configuration.addPersistenceFactory(persistenceFactory);
+        userGroup.setPersistenceFactory(persistenceFactory.getName());
+        group = userGroup;
     }
     
     public void testUpdateMembers() {

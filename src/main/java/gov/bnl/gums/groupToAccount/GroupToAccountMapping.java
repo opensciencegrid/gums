@@ -49,14 +49,12 @@ public class GroupToAccountMapping {
 	}
 	
 	/**
-	 * Automatically adds itself to the configuration.
 	 * @param configuration
 	 * @param name
 	 */
 	public GroupToAccountMapping(Configuration configuration, String name) {
 		this.configuration = configuration;
 		this.name = name;
-		configuration.addGroupToAccountMapping(this);
 	}
 
 	public void setName(String name) {

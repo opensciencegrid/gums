@@ -27,22 +27,23 @@ import org.apache.commons.logging.LogFactory;
 public class WildcardHostToGroupMapping extends HostToGroupMapping {
     static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     
-    private String wildcard;
     private List regexs;
   
     /** Creates a new wildcard mapping, which needs to be properly configured. */
     public WildcardHostToGroupMapping() {
         adminLog.warn("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
     }
-    
+ 
     /** Creates a new wildcard mapping, which needs to be properly configured. */
     public WildcardHostToGroupMapping(Configuration configuration) {
     	super(configuration);
         adminLog.warn("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
     }
     
-    public String getName() {
-    	return wildcard;
+    /** Creates a new wildcard mapping, which needs to be properly configured. */
+    public WildcardHostToGroupMapping(Configuration configuration, String wildcard) {
+    	super(configuration, wildcard);
+        adminLog.warn("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
     }
     
     public boolean isInGroup(String hostname) {
@@ -54,18 +55,19 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
         return false;
     }
     
-    /** Retrieves the wildcard that will be used to match the hostname.
-     * @return The wildcard (i.e. '*.mycompany.com').
-     */
+    public void setName(String name) {
+    	throw new RuntimeException("Call setWildcard rather than setName");
+    }
+    
     public String getWildcard() {
-        return this.wildcard;
+        return getName();
     }
     
     /** Changes the wildcard that will be used to match the hostname.
      * @param wildcard The new wildcard (i.e. '*.mycompany.com').
      */
     public void setWildcard(String wildcard) {
-        this.wildcard = wildcard;
+    	super.setName(wildcard);
         StringTokenizer tokens = new StringTokenizer(wildcard, ",");
         regexs = new ArrayList();
         while (tokens.hasMoreTokens()) {
@@ -79,11 +81,11 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
     
     public String toXML() {
     	return super.toXML() +
-			"\t\t\twildcard='"+wildcard+"'/>\n\n";
+			"\t\t\twildcard='"+getWildcard()+"'/>\n\n";
     }        
     
     public HostToGroupMapping clone(Configuration configuration) {
-    	WildcardHostToGroupMapping hostToGroupMapping = new WildcardHostToGroupMapping(configuration);
+    	WildcardHostToGroupMapping hostToGroupMapping = new WildcardHostToGroupMapping(configuration, getName());
     	hostToGroupMapping.setWildcard(getWildcard());
     	Iterator it = getGroupToAccountMappings().iterator();
     	while (it.hasNext()) {

@@ -37,6 +37,13 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     public CertificateHostToGroupMapping(Configuration configuration) {
     	super(configuration);
     }
+    
+    // Name becomes cn as default
+    public CertificateHostToGroupMapping(Configuration configuration, String name) {
+    	super(configuration, name);
+        this.cn = cn;
+        updateRegEx();
+    }
 
     public boolean isInGroup(String hostname) {
         Iterator iter = regexs.iterator();
@@ -45,15 +52,6 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
                 return true;
         }
         return false;
-    }
-    
-    public String getName() {
-    	if(cn!=null)
-    		return cn;
-    	else if(dn!=null)
-    		return dn;
-    	else
-    		return "";
     }
     
     /** Retrieves the wildcard that will be used to match the CN.
@@ -67,6 +65,7 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
      * @param cn The new wildcard (i.e. '*.mycompany.com').
      */
     public void setCn(String cn) {
+        super.setName(cn);
         this.cn = cn;
         updateRegEx();
     }
@@ -82,8 +81,13 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
      * @param wildcard The new wildcard (i.e. '/DC=org/DC=doegrids/OU=Services/CN=*.mycompany.com').
      */
     public void setDn(String dn) {
+        super.setName(dn);
         this.dn = dn;
         updateRegEx();
+    }
+    
+    public void setName(String name) {
+    	throw new RuntimeException("Call setCn or SetDn rather than setName");
     }
     
     private void updateRegEx() {
@@ -110,18 +114,16 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     
     public String toXML() {
     	String retStr = super.toXML();
-    	if (cn != null)
-    		retStr += "\t\t\tcn='"+cn+"'";
-    	if(cn != null && dn != null)
-    		retStr += "\n";
     	if (dn != null)
-    		retStr += "\t\t\tdn='"+dn+"'";
+    		retStr += "\t\t\tdn='" + dn + "'";
+    	else
+    		retStr += "\t\t\tcn='" + (cn!=null?cn:"") + "'";
     	retStr += "/>\n\n";
     	return retStr;
     }      
     
     public HostToGroupMapping clone(Configuration configuration) {
-    	CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping(configuration);
+    	CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping(configuration, getName());
     	if (hostToGroupMapping.getCn()!=null)
     		hostToGroupMapping.setCn(getCn());
     	if (hostToGroupMapping.getDn()!=null)

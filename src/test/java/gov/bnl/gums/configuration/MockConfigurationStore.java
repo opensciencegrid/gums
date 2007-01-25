@@ -32,13 +32,15 @@ public class MockConfigurationStore implements ConfigurationStore {
         List groupMappers = new ArrayList();
         GroupToAccountMapping gMap = new GroupToAccountMapping(conf, "mockGroup");
         UserGroup userGroup = new MockUserGroup(conf, "mockUserGroup");
+        conf.addUserGroup(userGroup);
         gMap.addUserGroup(userGroup.getName());
         AccountMapper accountMapper = new MockAccountMapper(conf, "mockAccountMapper");
+        conf.addAccountMapper(accountMapper);
         gMap.addAccountMapper(accountMapper.getName());
         groupMappers.add(gMap);
         hMap.setGroupMappers(groupMappers);
         try {
-			new MockPersistenceFactory(conf, "mockPers");
+			conf.addPersistenceFactory( new MockPersistenceFactory(conf, "mockPers") );
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

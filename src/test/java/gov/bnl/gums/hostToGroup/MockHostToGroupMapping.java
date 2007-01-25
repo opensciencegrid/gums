@@ -27,10 +27,11 @@ public class MockHostToGroupMapping extends HostToGroupMapping {
     	super(configuration);
     }
     
-    public String getName() {
-    	return "mockHost";
+    /** Creates a new instance of MockHostnameMapping */
+    public MockHostToGroupMapping(Configuration configuration, String name) {
+    	super(configuration, name);
     }
-
+    
     public void addGroupMapper(MockHostToGroupMapping groupMapper) {
         this.groupMappers.add(groupMapper);
     }

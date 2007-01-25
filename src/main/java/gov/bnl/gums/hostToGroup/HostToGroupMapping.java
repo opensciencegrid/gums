@@ -28,30 +28,37 @@ import java.util.*;
 public abstract class HostToGroupMapping {
     private List groupToAccountMappers = new ArrayList();
     private Configuration configuration = null;
+    private String name = "";
     
 	/**
 	 * This empty constructor needed by XML Digestor
 	 */
     public HostToGroupMapping() {
     }
-    
-	/**
-	 * Automatically adds itself to the configuration.
-	 * @param configuration
-	 */
+
     public HostToGroupMapping(Configuration configuration) {
     	this.configuration = configuration;
-   		configuration.addHostToGroupMapping(this);
+    }
+    
+	/**
+	 * @param configuration
+	 */
+    public HostToGroupMapping(Configuration configuration, String name) {
+    	this.configuration = configuration;
+    	this.name = name;
     }
 
-	public void setConfiguration(Configuration configuration) {
+    public void setName(String name) {
+    	this.name = name;
+    }
+    
+    public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
     
-    /** Returns name.
-     * @return name or unique identifier.
-     */
-    public abstract String getName();
+    public String getName() {
+    	return name;
+    }
     
     public Configuration getConfiguration() {
     	return configuration;

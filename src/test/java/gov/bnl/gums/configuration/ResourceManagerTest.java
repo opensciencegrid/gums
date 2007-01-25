@@ -14,6 +14,7 @@ import gov.bnl.gums.hostToGroup.HostToGroupMapping;
 import gov.bnl.gums.hostToGroup.MockHostToGroupMapping;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.persistence.MockPersistenceFactory;
+import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.MockUserGroup;
 import gov.bnl.gums.userGroup.UserGroup;
@@ -76,15 +77,20 @@ public class ResourceManagerTest extends TestCase {
     
     public void testGenerateGridMapfileOrder() {
         ManualUserGroup userGroup = new ManualUserGroup(conf, "testUserGroup");
-        userGroup.setPersistenceFactory(new MockPersistenceFactory(conf, "testUserGroup").getName());
+        conf.addUserGroup(userGroup);
+        PersistenceFactory persistenceFactory = new MockPersistenceFactory(conf, "testUserGroup");
+        conf.addPersistenceFactory(persistenceFactory);
+        userGroup.setPersistenceFactory(persistenceFactory.getName());
         userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
         userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Dantong Yu", null));
         userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Jason Smith", null));
 
         GroupAccountMapper groupAccountMapper = new GroupAccountMapper(conf, "test");
+        conf.addAccountMapper(groupAccountMapper);
         groupAccountMapper.setAccountName(groupAccountMapper.getName());
         
         GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping(conf, "mockGroup2");
+        conf.addGroupToAccountMapping(groupToAccountMapping);
         groupToAccountMapping.addUserGroup(userGroup.getName());
         groupToAccountMapping.addAccountMapper(groupAccountMapper.getName());
 

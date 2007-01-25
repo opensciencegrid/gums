@@ -38,14 +38,12 @@ public class VirtualOrganization {
 	}
 	
 	/**
-	 * Automatically adds itself to the configuration.
 	 * @param configuration
 	 * @param name
 	 */
 	public VirtualOrganization(Configuration configuration, String name) {
 		this.configuration = configuration;
 		this.name = name;
-		configuration.addVirtualOrganization(this);
 	}
 	 
 	public void setName(String name) {
@@ -182,7 +180,7 @@ public class VirtualOrganization {
     	return retStr;
     }
     
-    public Object clone(Configuration configuration) {
+    public VirtualOrganization clone(Configuration configuration) {
     	VirtualOrganization virtualOrganization = new VirtualOrganization(configuration, name);
     	virtualOrganization.setBaseUrl(baseUrl);
     	virtualOrganization.setSslKey(sslKey);

@@ -38,14 +38,12 @@ public abstract class UserGroup {
 	}
 	
 	/**
-	 * Automatically adds itself to the configuration.
 	 * @param configuration
 	 * @param name
 	 */
 	public UserGroup(Configuration configuration, String name) {
 		this.configuration = configuration;
 		this.name = name;
-		configuration.addUserGroup(this);
 	}
 
 	public void setName(String name) {

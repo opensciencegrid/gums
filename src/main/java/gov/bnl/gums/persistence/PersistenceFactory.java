@@ -47,14 +47,12 @@ public abstract class PersistenceFactory {
 	}
 	
 	/**
-	 * Automatically adds itself to the configuration.
 	 * @param configuration
 	 * @param name
 	 */
 	public PersistenceFactory(Configuration configuration, String name) {
 		this.name = name;
 		this.configuration = configuration;
-		configuration.addPersistenceFactory(this);
 	}
 
 	public void setName(String name) {

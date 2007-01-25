@@ -63,7 +63,7 @@ public class ConfigurationToolkitTest extends TestCase {
         "</gums>";
         Digester digester = toolkit.retrieveDigester(getSchemaFile());
         Configuration conf = new Configuration();
-        new MySQLPersistenceFactory(conf, "mysql").getName();
+        conf.addPersistenceFactory( new MySQLPersistenceFactory(conf, "mysql") );
         digester.push(conf);
         Configuration acc = (Configuration) digester.parse(new StringReader(xml));
         assertSame(conf, acc);
@@ -89,6 +89,7 @@ public class ConfigurationToolkitTest extends TestCase {
         Digester digester = toolkit.retrieveDigester(getSchemaFile());
         Configuration conf = new Configuration();
         MySQLPersistenceFactory factory = new MySQLPersistenceFactory(conf, "mysql");
+        conf.addPersistenceFactory(factory);
         digester.push(conf);
         try {
             Configuration acc = (Configuration) digester.parse(new StringReader(xml));
@@ -110,6 +111,7 @@ public class ConfigurationToolkitTest extends TestCase {
         Digester digester = toolkit.retrieveDigester(getSchemaFile());
         Configuration conf = new Configuration();
         MySQLPersistenceFactory factory = new MySQLPersistenceFactory(conf, "mysql");
+        conf.addPersistenceFactory(factory);
         digester.push(conf);
         try {
             Configuration acc = (Configuration) digester.parse(new StringReader(xml));
