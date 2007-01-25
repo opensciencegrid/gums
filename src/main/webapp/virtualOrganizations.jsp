@@ -48,7 +48,6 @@ Configures virtual organizations.
 
 <%
 String message = null;
-Collection virtualOrganizations = configuration.getVirtualOrganizations().values();
 
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
@@ -86,6 +85,8 @@ if (request.getParameter("action")==null ||
 			message = "<div class=\"failure\">Error deleting virtual organization: " + e.getMessage() + "</div>";
 		}
 	}
+	
+	Collection virtualOrganizations = configuration.getVirtualOrganizations().values();
 
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
@@ -115,10 +116,13 @@ if (request.getParameter("action")==null ||
 				    		
 		out.write(		" by querying VOMS server at base URL " + "<span style=\"color:blue\">" + virtualOrganization.getBaseUrl() + "</span> (additional path specified in user group)"+
 						" and caching results in persistence factory "+ 
-						" <span style=\"color:blue\">" + virtualOrganization.getPersistenceFactory() + "</span>.");
+						" <span style=\"color:blue\">" + virtualOrganization.getPersistenceFactory() + "</span>");
+						if ( !( virtualOrganization.getSslKey().equals("") && virtualOrganization.getSslCertfile().equals("") && virtualOrganization.getSslCAFiles().equals("") ) )
+							out.write(
+							" using" );
 	
 		if ( !virtualOrganization.getSslKey().equals("") ) {
-			out.write(	" using SSL key <span style=\"color:blue\">" + virtualOrganization.getSslKey() + "</span>");
+			out.write(	" SSL key <span style=\"color:blue\">" + virtualOrganization.getSslKey() + "</span>");
 			if ( !virtualOrganization.getSslCertfile().equals("") && !virtualOrganization.getSslCAFiles().equals("") )
 				out.write(	
 						"," );
@@ -138,7 +142,7 @@ if (request.getParameter("action")==null ||
 			out.write(	" SSL CA files <span style=\"color:blue\">" + virtualOrganization.getSslCAFiles() + "</span>");
 
 		out.write(	
-						"</td>"+
+						".</td>"+
 			      	"</tr>"+
 				"</table>"+
 			"</td>"+
@@ -161,6 +165,8 @@ if (request.getParameter("action")==null ||
 else if ("edit".equals(request.getParameter("action"))
 	|| "add".equals(request.getParameter("action"))
 	|| "reload".equals(request.getParameter("action"))) {
+	
+	Collection virtualOrganizations = configuration.getVirtualOrganizations().values();
 	
 	VirtualOrganization virtualOrganization = null;
 	
@@ -228,6 +234,14 @@ else if ("edit".equals(request.getParameter("action"))
 				"<input maxlength=\"256\" size=\"32\" name=\"baseURL\" value=\"" + virtualOrganization.getBaseUrl() + "\"/>(additional path in user group)"+
 			"</td>"+
 		"</tr>"+
+	    "<tr>"+
+    		"<td nowrap style=\"text-align: right;\">"+
+	    		"i.e."+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"https://lcg-voms.cern.ch:8443/voms"+
+		    "</td>"+
+		"</tr>"+	
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
 				"and caching results in persistence factory"+
@@ -238,16 +252,8 @@ else if ("edit".equals(request.getParameter("action"))
 						virtualOrganization.getPersistenceFactory(),
 						null,
 						configuration.getPersistenceFactories().values().size()>1)+
-			".</td>"+
+			"</td>"+
 		"</tr>"+
-	    "<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-		    	"https://lcg-voms.cern.ch:8443/voms"+
-		    "</td>"+
-		"</tr>"+	
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
 				"using SSL key"+

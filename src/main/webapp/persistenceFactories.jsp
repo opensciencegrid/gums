@@ -47,7 +47,6 @@ Configures persistence factories.
 
 <%
 String message = null;
-Collection persistenceFactories = configuration.getPersistenceFactories().values();
 
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
@@ -85,6 +84,8 @@ if (request.getParameter("action")==null ||
 			message = "<div class=\"failure\">Error deleting persistence factory: " + e.getMessage() + "</div>";
 		}
 	}
+	
+	Collection persistenceFactories = configuration.getPersistenceFactories().values();
 
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
@@ -158,6 +159,8 @@ if (request.getParameter("action")==null ||
 else if ("edit".equals(request.getParameter("action"))
 	|| "add".equals(request.getParameter("action"))
 	|| "reload".equals(request.getParameter("action"))) {
+	
+	Collection persistenceFactories = configuration.getPersistenceFactories().values();
 	
 	PersistenceFactory persistenceFactory = null;
 

@@ -49,7 +49,6 @@ Configures user groups.
 
 <%
 String message = null;
-Collection userGroups = configuration.getUserGroups().values();
 
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
@@ -87,6 +86,8 @@ if (request.getParameter("action")==null ||
 			message = "<div class=\"failure\">Error deleting user group: " + e.getMessage() + "</div>";
 		}
 	}
+	
+	Collection userGroups = configuration.getUserGroups().values();
 
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
@@ -171,6 +172,8 @@ if (request.getParameter("action")==null ||
 else if ("edit".equals(request.getParameter("action"))
 	|| "add".equals(request.getParameter("action"))
 	|| "reload".equals(request.getParameter("action"))) {
+	
+	Collection userGroups = configuration.getUserGroups().values();
 	
 	UserGroup userGroup = null;
 	

@@ -49,7 +49,6 @@ Configures group to account mappings.
 
 <%
 String message = null;
-Collection g2AMappings = configuration.getGroupToAccountMappings().values();
 
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
@@ -88,6 +87,8 @@ if (request.getParameter("action")==null ||
 		}
 	}
 
+	Collection g2AMappings = configuration.getGroupToAccountMappings().values();
+
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
 
@@ -119,8 +120,8 @@ if (request.getParameter("action")==null ||
 		Iterator userGroupsIt = g2AMapping.getUserGroups().iterator();
 		while(userGroupsIt.hasNext())
 		{
-			UserGroup userGroup = (UserGroup)userGroupsIt.next();
-			out.write( "<span style=\"color:blue\">"+userGroup.getName()+"</span>" );
+			String userGroup = (String)userGroupsIt.next();
+			out.write( "<span style=\"color:blue\">"+userGroup+"</span>" );
 			if( userGroupsIt.hasNext() )
 				out.write(", ");
 		}
@@ -133,8 +134,8 @@ if (request.getParameter("action")==null ||
 		Iterator accountMappersIt = g2AMapping.getAccountMappers().iterator();
 		while(accountMappersIt.hasNext())
 		{
-			AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();
-			out.write( "<span style=\"color:blue\">"+accountMapper.getName()+"</span>" );
+			String accountMapper = (String)accountMappersIt.next();
+			out.write( "<span style=\"color:blue\">"+accountMapper+"</span>" );
 			if( accountMappersIt.hasNext() )
 				out.write(", ");
 		}
@@ -167,6 +168,8 @@ else if ("edit".equals(request.getParameter("action"))
 	|| "add".equals(request.getParameter("action"))
 	|| "reload".equals(request.getParameter("action"))) {
 	
+	Collection g2AMappings = configuration.getGroupToAccountMappings().values();
+	
 	GroupToAccountMapping g2AMapping = null;
 	
 	if ("edit".equals(request.getParameter("action"))) {
@@ -189,7 +192,7 @@ else if ("edit".equals(request.getParameter("action"))
 		
 	else if ("add".equals(request.getParameter("action"))) {
 		g2AMapping = new GroupToAccountMapping(configuration);
-	}		
+	}
 		
 	out.write(
 "<form action=\"groupToAccount.jsp\" method=\"get\">"+

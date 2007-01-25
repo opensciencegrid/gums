@@ -50,7 +50,6 @@ Configures host to group mappings.
 <%
 String message = null;
 String movedName = null;
-Collection h2GMappings = configuration.getHostToGroupMappings();
 
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
@@ -61,9 +60,13 @@ if (request.getParameter("action")==null ||
 	if ("save".equals(request.getParameter("action"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
+			int index = newConfiguration.getHostToGroupMappings().indexOf( newConfiguration.getHostToGroupMapping(request.getParameter("name")) );
 			newConfiguration.removeHostToGroupMapping( request.getParameter("name") );
-			newConfiguration.addHostToGroupMapping( index, ConfigurationWebToolkit.parseHostToGroupMapping(request) );
-			gums.setConfiguration(configuration);
+			if (index!=-1)
+				newConfiguration.addHostToGroupMapping( index, ConfigurationWebToolkit.parseHostToGroupMapping(request) );
+			else
+				newConfiguration.addHostToGroupMapping( ConfigurationWebToolkit.parseHostToGroupMapping(request) );
+			gums.setConfiguration(newConfiguration);
 			configuration = newConfiguration;
 			message = "<div class=\"success\">Host to group mapping has been saved.</div>";
 		}catch(Exception e){
@@ -88,11 +91,13 @@ if (request.getParameter("action")==null ||
 
 	if ("up".equals(request.getParameter("action"))) {
 		try{
-			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
-			int index = configuration.getHostToGroupMappings().indexOf(h2GMapping);
-			configuration.getHostToGroupMappings().remove(index);
-			configuration.getHostToGroupMappings().add(Math.max(0, index-1), h2GMapping);
-			gums.setConfiguration(configuration);
+			Configuration newConfiguration = (Configuration)configuration.clone();
+			HostToGroupMapping h2GMapping = newConfiguration.getHostToGroupMapping( request.getParameter("name") );
+			int index = newConfiguration.getHostToGroupMappings().indexOf(h2GMapping);
+			newConfiguration.getHostToGroupMappings().remove(index);
+			newConfiguration.getHostToGroupMappings().add(Math.max(0, index-1), h2GMapping);
+			gums.setConfiguration(newConfiguration);
+			configuration = newConfiguration;
 			movedName = request.getParameter("name");
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error moving up: " + e.getMessage() + "</div>";
@@ -101,16 +106,20 @@ if (request.getParameter("action")==null ||
 	
 	if ("down".equals(request.getParameter("action"))) {
 		try{
-			HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping( request.getParameter("name") );
-			int index = configuration.getHostToGroupMappings().indexOf(h2GMapping);
-			configuration.getHostToGroupMappings().remove(index);
-			configuration.getHostToGroupMappings().add(Math.min(configuration.getHostToGroupMappings().size(), index+1), h2GMapping);
-			gums.setConfiguration(configuration);
+			Configuration newConfiguration = (Configuration)configuration.clone();
+			HostToGroupMapping h2GMapping = newConfiguration.getHostToGroupMapping( request.getParameter("name") );
+			int index = newConfiguration.getHostToGroupMappings().indexOf(h2GMapping);
+			newConfiguration.getHostToGroupMappings().remove(index);
+			newConfiguration.getHostToGroupMappings().add(Math.min(newConfiguration.getHostToGroupMappings().size(), index+1), h2GMapping);
+			gums.setConfiguration(newConfiguration);
+			configuration = newConfiguration;
 			movedName = request.getParameter("name");
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error moving down: " + e.getMessage() + "</div>";
 		}
 	}	
+	
+	Collection h2GMappings = configuration.getHostToGroupMappings();
 
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
@@ -149,8 +158,8 @@ if (request.getParameter("action")==null ||
 			Iterator g2AMappingsIt = cH2GMapping.getGroupToAccountMappings().iterator();
 			while(g2AMappingsIt.hasNext())
 			{
-				GroupToAccountMapping g2AMapping = (GroupToAccountMapping)g2AMappingsIt.next();
-				out.write( "<span style=\"color:blue\">"+g2AMapping.getName()+"</span>" );
+				String g2AMapping = (String)g2AMappingsIt.next();
+				out.write( "<span style=\"color:blue\">"+g2AMapping+"</span>" );
 				if( g2AMappingsIt.hasNext() )
 					out.write(", ");
 			}
@@ -183,6 +192,8 @@ if (request.getParameter("action")==null ||
 else if ("edit".equals(request.getParameter("action"))
 	|| "add".equals(request.getParameter("action"))
 	|| "reload".equals(request.getParameter("action"))) {
+	
+	Collection h2GMappings = configuration.getHostToGroupMappings();
 	
 	HostToGroupMapping h2GMapping = null;
 	

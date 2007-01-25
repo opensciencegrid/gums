@@ -162,9 +162,9 @@ public class ConfigurationWebToolkit implements Remote {
 
 	static public VirtualOrganization parseVirtualOrganization(HttpServletRequest request) throws Exception {
 		VirtualOrganization virtualOrganization = new VirtualOrganization();
+		virtualOrganization.setName( request.getParameter("name") );
 		if (request.getParameter("persistenceFactory")!=null)
 			virtualOrganization.setPersistenceFactory( request.getParameter("persistenceFactory") );
-		virtualOrganization.setName( request.getParameter("name") );
 		if (request.getParameter("baseURL")!=null)
 			virtualOrganization.setSslKey( request.getParameter("baseURL") );
 		if (request.getParameter("sslKey")!=null)
@@ -238,8 +238,8 @@ public class ConfigurationWebToolkit implements Remote {
 			HostToGroupMapping h2GMapping = (HostToGroupMapping)it.next();
 			Iterator it2 = h2GMapping.getGroupToAccountMappings().iterator();
 			while (it2.hasNext()) {
-				GroupToAccountMapping thisG2AMapping = (GroupToAccountMapping)it2.next();
-				if (thisG2AMapping.getName().equals(g2AMappingName)) {
+				String thisG2AMapping = (String)it2.next();
+				if (thisG2AMapping.equals(g2AMappingName)) {
 					if (retStr==null) 
 						retStr = "";
 					retStr += "\"" + h2GMapping.getName() + "\", ";
@@ -261,8 +261,8 @@ public class ConfigurationWebToolkit implements Remote {
 			if(className.equals("gov.bnl.gums.account.AccountMapper")) {
 				Iterator it2 = g2AMapping.getAccountMappers().iterator();
 				while (it2.hasNext()) {
-					AccountMapper thisAccountMapper = (AccountMapper)it2.next();
-					if (thisAccountMapper.getName().equals(name)) {
+					String thisAccountMapper = (String)it2.next();
+					if (thisAccountMapper.equals(name)) {
 						if (retStr==null) 
 							retStr = "";
 						retStr += g2AMapping.getName() + ", ";
@@ -273,8 +273,8 @@ public class ConfigurationWebToolkit implements Remote {
 			else if(className.equals("gov.bnl.gums.userGroup.UserGroup")) {
 				Iterator it2 = g2AMapping.getUserGroups().iterator();
 				while (it2.hasNext()) {
-					UserGroup thisUserGroup = (UserGroup)it2.next();
-					if (thisUserGroup.getName().equals(name)) {
+					String thisUserGroup = (String)it2.next();
+					if (thisUserGroup.equals(name)) {
 						if (retStr==null) 
 							retStr = "";
 						retStr += g2AMapping.getName() + ", ";
@@ -293,8 +293,8 @@ public class ConfigurationWebToolkit implements Remote {
 		Collection userGroups = configuration.getUserGroups().values();
 		Iterator it = userGroups.iterator();
 		while (it.hasNext()) {
-			VOMSUserGroup userGroup = (VOMSUserGroup)it.next();
-			if ( virtualOrganization.equals( userGroup.getVirtualOrganization() ) ) {
+			UserGroup userGroup = (UserGroup)it.next();
+			if ( userGroup instanceof VOMSUserGroup && virtualOrganization.equals( ((VOMSUserGroup)userGroup).getVirtualOrganization() ) ) {
 				if (retStr==null) 
 					retStr = "";
 				retStr += userGroup.getName() + ", ";

@@ -50,7 +50,6 @@ Configures account mappers.
 <%
 
 String message = null;
-Collection accountMappers = configuration.getAccountMappers().values();
 
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
@@ -75,7 +74,7 @@ if (request.getParameter("action")==null ||
 			String references = ConfigurationWebToolkit.getGroupToAccountMappingReferences(newConfiguration, request.getParameter("name"), "gov.bnl.gums.account.AccountMapper");
 			if( references==null ) {
 				if (newConfiguration.removeAccountMapper( request.getParameter("name") )!=null) {
-					gums.setConfiguration(configuration);
+					gums.setConfiguration(newConfiguration);
 					configuration = newConfiguration;
 					message = "<div class=\"success\">Account mapper has been deleted.</div>";
 				}
@@ -88,6 +87,8 @@ if (request.getParameter("action")==null ||
 			message = "<div class=\"failure\">Error deleting account mapper: " + e.getMessage() + "</div>";
 		}
 	}
+	
+	Collection accountMappers = configuration.getAccountMappers().values();
 
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
@@ -161,6 +162,8 @@ if (request.getParameter("action")==null ||
 else if ("edit".equals(request.getParameter("action"))
 	|| "add".equals(request.getParameter("action"))
 	|| "reload".equals(request.getParameter("action"))) {
+	
+	Collection accountMappers = configuration.getAccountMappers().values();
 	
 	AccountMapper accountMapper = null;
 	
