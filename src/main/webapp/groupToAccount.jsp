@@ -60,7 +60,7 @@ if (request.getParameter("action")==null ||
 			newConfiguration.removeGroupToAccountMapping( request.getParameter("name") );
 			newConfiguration.addGroupToAccountMapping( ConfigurationWebToolkit.parseGroupToAccountMapping(request) );
 			gums.setConfiguration(newConfiguration);
-			configuration = newConfiguration;
+			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">Group to account mapping has been saved.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error saving group to account mapping: " + e.getMessage() + "</div>";
@@ -74,7 +74,7 @@ if (request.getParameter("action")==null ||
 			if( references==null ) {
 				if (newConfiguration.removeGroupToAccountMapping( request.getParameter("name") )!=null) {
 					gums.setConfiguration(newConfiguration);
-					configuration = newConfiguration;
+					configuration = gums.getConfiguration();
 					message = "<div class=\"success\">Group to account mapping has been deleted.</div>";
 				}
 				else

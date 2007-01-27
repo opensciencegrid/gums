@@ -166,7 +166,7 @@ public class ConfigurationWebToolkit implements Remote {
 		if (request.getParameter("persistenceFactory")!=null)
 			virtualOrganization.setPersistenceFactory( request.getParameter("persistenceFactory") );
 		if (request.getParameter("baseURL")!=null)
-			virtualOrganization.setSslKey( request.getParameter("baseURL") );
+			virtualOrganization.setBaseUrl( request.getParameter("baseURL") );
 		if (request.getParameter("sslKey")!=null)
 			virtualOrganization.setSslKey( request.getParameter("sslKey") );
 		if (request.getParameter("sslCert")!=null)

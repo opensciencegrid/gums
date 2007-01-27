@@ -59,7 +59,7 @@ if (request.getParameter("action")==null ||
 			newConfiguration.removeVirtualOrganization( request.getParameter("name") );
 			newConfiguration.addVirtualOrganization( ConfigurationWebToolkit.parseVirtualOrganization(request) );
 			gums.setConfiguration(newConfiguration);
-			configuration = newConfiguration;
+			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">Virtual organization has been saved.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error saving virtual organization: " + e.getMessage() + "</div>";
@@ -73,7 +73,7 @@ if (request.getParameter("action")==null ||
 			if( references==null ) {
 				if (newConfiguration.removeVirtualOrganization( request.getParameter("name") )!=null) {
 					gums.setConfiguration(newConfiguration);
-					configuration = newConfiguration;
+					configuration = gums.getConfiguration();
 					message = "<div class=\"success\">Virtual organization has been deleted.</div>";
 				}
 				else
@@ -137,10 +137,10 @@ if (request.getParameter("action")==null ||
 				out.write(	
 						" and" );
 		}
-						
+
 		if ( !virtualOrganization.getSslCAFiles().equals("") )
 			out.write(	" SSL CA files <span style=\"color:blue\">" + virtualOrganization.getSslCAFiles() + "</span>");
-
+						
 		out.write(	
 						".</td>"+
 			      	"</tr>"+
@@ -288,7 +288,15 @@ else if ("edit".equals(request.getParameter("action"))
 		"</tr>"+
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
-				"SSL CA files (optional)"+
+				"SSL key password"+
+			"</td>"+
+			"<td>"+ 
+				"<input type=\"password\" maxlength=\"256\" size=\"32\" name=\"sslKeyPW\" value=\"" + virtualOrganization.getSslKeyPasswd() + "\"/>"+
+			"</td>"+
+		"</tr>"+
+		"<tr>"+
+			"<td nowrap style=\"text-align: right;\">"+
+				"SSL CA files"+
 			"</td>"+
 			"<td>"+ 
 				"<input maxlength=\"256\" size=\"32\" name=\"sslCA\" value=\"" + virtualOrganization.getSslCAFiles() + "\"/> ,"+
@@ -304,11 +312,11 @@ else if ("edit".equals(request.getParameter("action"))
 		"</tr>"+
 		"<tr>"+
 			"<td nowrap style=\"text-align: right;\">"+
-				"SSL key password (optional)"+
-			"</td>"+
-			"<td>"+ 
-				"<input type=\"password\" maxlength=\"256\" size=\"32\" name=\"sslKeyPW\" value=\"" + virtualOrganization.getSslKeyPasswd() + "\"/>"+
-			"</td>"+
+	    		"NOTE:"+
+		    "</td>"+
+		    "<td nowrap>"+
+		    	"SSL fields are only required if overriding those in server.xml"+
+		    "</td>"+
 		"</tr>");
 						
 	out.write(

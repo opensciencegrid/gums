@@ -63,9 +63,18 @@ Adds range of accounts to a pool.
 		out.write(
 			ConfigurationWebToolkit.createSelectBox("accountMapper", 
 				poolMappers, 
-				null,
-				null,
+				(request.getParameter("accountMapper")!=null ? request.getParameter("accountMapper") : null),
+				"onchange=\"document.forms[0].submit();\"",
 				poolMappers.size()>1) );
+				
+		String selected = null;
+		if (request.getParameter("accountMapper")!=null)
+			selected = request.getParameter("accountMapper");
+		else if(poolMappers.size()>=1)
+			selected = (String)poolMappers.get(0);
+		if (selected!=null)
+			out.write( "("+((AccountPoolMapper)configuration.getAccountMapper(selected)).getNumberAssigned() + " accounts assigned, " +
+				 ((AccountPoolMapper)configuration.getAccountMapper(selected)).getNumberUnassigned() + " unassigned)");
 %>   
 	</td>
       </tr>

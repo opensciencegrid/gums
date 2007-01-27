@@ -60,7 +60,7 @@ if (request.getParameter("action")==null ||
 			newConfiguration.removeUserGroup( request.getParameter("name") );
 			newConfiguration.addUserGroup( ConfigurationWebToolkit.parseUserGroup(request) );
 			gums.setConfiguration(newConfiguration);
-			configuration = newConfiguration;
+			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">User group has been saved.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error saving user group: " + e.getMessage() + "</div>";
@@ -74,7 +74,7 @@ if (request.getParameter("action")==null ||
 			if( references==null ) {
 				if (newConfiguration.removeUserGroup( request.getParameter("name") )!=null) {
 					gums.setConfiguration(newConfiguration);
-					configuration = newConfiguration;
+					configuration = gums.getConfiguration();
 					message = "<div class=\"success\">User group has been deleted.</div>";
 				}
 				else
@@ -378,7 +378,7 @@ else if ("edit".equals(request.getParameter("action"))
 			"</tr>"+
 			"<tr>"+
 				"<td nowrap style=\"text-align: right;\">"+
-					"and VOMS certificate's VO "+((VOMSUserGroup)userGroup).isIgnoreFQAN()+
+					"and VOMS certificate's VO "+
 				"</td>"+
 				"<td>"+ 
 					"<select name=\"VOMS\" onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\">"+

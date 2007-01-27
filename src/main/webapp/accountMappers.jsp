@@ -61,7 +61,7 @@ if (request.getParameter("action")==null ||
 			newConfiguration.removeAccountMapper( request.getParameter("name") );
 			newConfiguration.addAccountMapper( ConfigurationWebToolkit.parseAccountMapper(request) );
 			gums.setConfiguration(newConfiguration);
-			configuration = newConfiguration;
+			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">Account mapper has been saved.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error saving account mapper: " + e.getMessage() + "</div>";
@@ -75,7 +75,7 @@ if (request.getParameter("action")==null ||
 			if( references==null ) {
 				if (newConfiguration.removeAccountMapper( request.getParameter("name") )!=null) {
 					gums.setConfiguration(newConfiguration);
-					configuration = newConfiguration;
+					configuration = gums.getConfiguration();
 					message = "<div class=\"success\">Account mapper has been deleted.</div>";
 				}
 				else

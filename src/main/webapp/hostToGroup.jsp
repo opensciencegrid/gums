@@ -67,7 +67,7 @@ if (request.getParameter("action")==null ||
 			else
 				newConfiguration.addHostToGroupMapping( ConfigurationWebToolkit.parseHostToGroupMapping(request) );
 			gums.setConfiguration(newConfiguration);
-			configuration = newConfiguration;
+			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">Host to group mapping has been saved.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error saving host to group mapping: " + e.getMessage() + "</div>";
@@ -79,7 +79,7 @@ if (request.getParameter("action")==null ||
 		try{
 			if( newConfiguration.removeHostToGroupMapping( request.getParameter("name") )!=null ) {
 				gums.setConfiguration(newConfiguration);
-				configuration = newConfiguration;
+				configuration = gums.getConfiguration();
 				message = "<div class=\"success\">Host to group mapping has been deleted.</div>";
 			}
 			else
@@ -94,8 +94,8 @@ if (request.getParameter("action")==null ||
 			Configuration newConfiguration = (Configuration)configuration.clone();
 			HostToGroupMapping h2GMapping = newConfiguration.getHostToGroupMapping( request.getParameter("name") );
 			int index = newConfiguration.getHostToGroupMappings().indexOf(h2GMapping);
-			newConfiguration.getHostToGroupMappings().remove(index);
-			newConfiguration.getHostToGroupMappings().add(Math.max(0, index-1), h2GMapping);
+			newConfiguration.removeHostToGroupMapping(h2GMapping.getName());
+			newConfiguration.addHostToGroupMapping(Math.max(0, index-1), h2GMapping);
 			gums.setConfiguration(newConfiguration);
 			configuration = newConfiguration;
 			movedName = request.getParameter("name");
@@ -109,8 +109,8 @@ if (request.getParameter("action")==null ||
 			Configuration newConfiguration = (Configuration)configuration.clone();
 			HostToGroupMapping h2GMapping = newConfiguration.getHostToGroupMapping( request.getParameter("name") );
 			int index = newConfiguration.getHostToGroupMappings().indexOf(h2GMapping);
-			newConfiguration.getHostToGroupMappings().remove(index);
-			newConfiguration.getHostToGroupMappings().add(Math.min(newConfiguration.getHostToGroupMappings().size(), index+1), h2GMapping);
+			newConfiguration.removeHostToGroupMapping(h2GMapping.getName());
+			newConfiguration.addHostToGroupMapping(Math.min(newConfiguration.getHostToGroupMappings().size(), index+1), h2GMapping);
 			gums.setConfiguration(newConfiguration);
 			configuration = newConfiguration;
 			movedName = request.getParameter("name");

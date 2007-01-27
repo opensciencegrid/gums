@@ -58,7 +58,7 @@ if (request.getParameter("action")==null ||
 			newConfiguration.removePersistenceFactory( request.getParameter("name") );
 			newConfiguration.addPersistenceFactory( ConfigurationWebToolkit.parsePersistenceFactory(request) );
 			gums.setConfiguration(newConfiguration);
-			configuration = newConfiguration;
+			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">Persistence factory has been saved.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error saving persistence factory: " + e.getMessage() + "</div>";
@@ -72,7 +72,7 @@ if (request.getParameter("action")==null ||
 			if( references==null ) {
 				if (newConfiguration.removePersistenceFactory( request.getParameter("name") )!=null) {
 					gums.setConfiguration(newConfiguration);
-					configuration = newConfiguration;
+					configuration = gums.getConfiguration();
 					message = "<div class=\"success\">Persistence factory has been deleted.</div>";
 				}
 				else
