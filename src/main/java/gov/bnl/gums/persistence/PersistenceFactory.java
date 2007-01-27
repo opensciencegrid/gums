@@ -83,6 +83,7 @@ public abstract class PersistenceFactory {
 	public abstract UserGroupDB retrieveUserGroupDB(String name);
 	public abstract ManualUserGroupDB retrieveManualUserGroupDB(String name);
 	public abstract AccountPoolMapperDB retrieveAccountPoolMapperDB(String name);
+	
 	public String toXML() {
     	String retStr = "\t\t<persistenceFactory\n"+
     		"\t\t\tclassName='"+getClass().getName()+"'\n"+
@@ -101,5 +102,6 @@ public abstract class PersistenceFactory {
     	
     	return retStr;
 	}
+	
 	public abstract PersistenceFactory clone(Configuration configuration);
 }

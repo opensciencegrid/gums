@@ -57,6 +57,14 @@ public class AccountPoolMapper extends AccountMapper {
         return getDB().assignAccount(userDN);
     }    
     
+    public int getNumberAssigned() {
+    	return getDB().retrieveAccountMap().values().size();
+    }
+
+    public int getNumberUnassigned() {
+    	return getDB().getNumberUnassignedMappings();
+    }
+    
     private AccountPoolMapperDB getDB() {
     	if (db==null)
     		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveAccountPoolMapperDB( accountPool );
@@ -71,14 +79,14 @@ public class AccountPoolMapper extends AccountMapper {
         this.persistenceFactory = persistenceFactory;
     }
     
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
+    }
+
     public String toXML() {
     	return super.toXML() +
 			"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
     		"\t\t\taccountPool='"+accountPool+"'/>\n\n";
-    }
-    
-    public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
     }
     
     public AccountMapper clone(Configuration configuration) {

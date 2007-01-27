@@ -118,14 +118,14 @@ public abstract class UserGroup {
     	return (accessIndex<=2);
     }
     
+    public abstract String toString(String bgColor);
+
     public String toXML() {
     	return "\t\t<userGroup\n"+
 		"\t\t\tclassName='"+getClass().getName()+"'\n" +
 		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tname='"+name+"'\n";
     }
-    
-    public abstract String getSummary(String bgColor);
     
     public abstract UserGroup clone(Configuration configuration);
 }

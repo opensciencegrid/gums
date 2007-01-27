@@ -21,7 +21,7 @@
 	<virtualOrganizations>
 	    <virtualOrganization
 			name='virtualOrganizationA'
-			baseUrl='https://lcg-voms.cern.ch:8443/voms'
+			baseUrl='https://vo.racf.bnl.gov:8443/voms'
 			persistenceFactory='persistenceFactoryA' 
 			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKey='/etc/grid-security/gumskey.pem'/>
@@ -37,13 +37,11 @@
 			className='gov.bnl.gums.userGroup.VOMSUserGroup' 
 			name='userGroupB'
 			virtualOrganization='virtualOrganizationA'
-			remainderUrl='/atlas/services/VOMSAdmin'/>	
-		<userGroup 
-			className='gov.bnl.gums.userGroup.LDAPUserGroup' 
-			name='userGroupC'
-			server='grid-vo.nikhef.nl' 
-			query='ou=usatlas,o=atlas,dc=eu-datagrid,dc=org' 
-			persistenceFactory='persistenceFactoryA'/>
+			remainderUrl='/atlas/services/VOMSAdmin'
+			acceptProxyWithoutFQAN='true'
+			matchFQAN='exact'
+			voGroup='/atlas/usatlas'
+			voRole='software'/>	
 	</userGroups>
 	
 	<accountMappers>
@@ -71,15 +69,11 @@
 			name='groupToAccountMappingB' 
 			userGroups='userGroupB' 
 			accountMappers='accountMapperB'/>
-		<groupToAccountMapping 
-			name='groupToAccountMappingC' 
-			userGroups='admins, userGroupB' 
-			accountMappers='accountMapperA, accountMapperB'/>
 	</groupToAccountMappings>
 	  
 	<hostToGroupMappings>
 		<hostToGroupMapping 
 			cn='*.site.com' 
-			groupToAccountMappings='groupToAccountMappingA, groupToAccountMappingB, groupToAccountMappingC'/>
+			groupToAccountMappings='groupToAccountMappingA, groupToAccountMappingB'/>
 	</hostToGroupMappings>
 </gums>

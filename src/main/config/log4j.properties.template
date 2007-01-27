@@ -1,5 +1,5 @@
 log4j.rootLogger=INFO
-log4j.logger.gov.bnl.gums=INFO, devFile
+log4j.logger.gov.bnl.gums=DEBUG, devFile
 log4j.logger.org.edg.security=WARN, edgFile
 log4j.logger.org.glite.security=WARN, egeeFile
 log4j.logger.org.opensciencegrid=INFO, privLogFile

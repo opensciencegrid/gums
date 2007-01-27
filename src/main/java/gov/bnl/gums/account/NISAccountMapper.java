@@ -111,14 +111,14 @@ public class NISAccountMapper extends AccountMapper {
         return client;
     }
 
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + jndiNisUrl + "</td>";
+    }
+
     public String toXML() {
     	return super.toXML() +
 			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
     }          
-    
-    public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + jndiNisUrl + "</td>";
-    }
     
     public AccountMapper clone(Configuration configuration) {
     	NISAccountMapper accountMapper = new NISAccountMapper(configuration, getName());

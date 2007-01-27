@@ -85,4 +85,8 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
         freeAccounts.add(account);
     }
     
+    public int getNumberUnassignedMappings() {
+    	return freeAccounts.size();
+    }
+    
 }

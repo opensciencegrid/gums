@@ -158,6 +158,10 @@ public class VirtualOrganization {
     	return db;
     }
     
+    public String toString() {
+        return "VirtualOrganization: baseUrl='" + baseUrl + "' sslCertfile='" + getSslCertfile() + "' sslKey='" + getSslKey() + "' sslKeyPasswd set:" + (!getSslKeyPasswd().equals("")) + " - sslCAFiles='" + getSslCAFiles() + "'";
+    }
+
     public String toXML() {
     	String retStr = "\t\t<virtualOrganization\n"+
 		"\t\t\tname='"+name+"'\n"+
@@ -167,10 +171,10 @@ public class VirtualOrganization {
     		retStr += "\t\t\tsslKey='"+sslKey+"'\n";
     	if (sslCertfile != null)
     		retStr += "\t\t\tsslCertfile='"+sslCertfile+"'\n";
-    	if (sslCAFiles != null)
-    		retStr += "\t\t\tsslCAFiles='"+sslCAFiles+"'\n";
     	if (sslKeyPasswd != null)
     		retStr += "\t\t\tsslKeyPasswd='"+sslKeyPasswd+"'\n";
+    	if (sslCAFiles != null)
+    		retStr += "\t\t\tsslCAFiles='"+sslCAFiles+"'\n";
 
     	if (retStr.charAt(retStr.length()-1)=='\n')
     		retStr = retStr.substring(0, retStr.length()-1);    
@@ -185,8 +189,8 @@ public class VirtualOrganization {
     	virtualOrganization.setBaseUrl(baseUrl);
     	virtualOrganization.setSslKey(sslKey);
     	virtualOrganization.setSslCertfile(sslCertfile);
-    	virtualOrganization.setSslCAFiles(sslCAFiles);
     	virtualOrganization.setSslKeyPasswd(sslKeyPasswd);
+    	virtualOrganization.setSslCAFiles(sslCAFiles);
     	virtualOrganization.setPersistenceFactory(persistenceFactory);
     	return virtualOrganization;
     }

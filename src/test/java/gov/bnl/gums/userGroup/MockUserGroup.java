@@ -46,8 +46,8 @@ public class MockUserGroup extends UserGroup {
         return updated;
     }
     
-    public String getSummary(String bgColor) {
-    	return null;
+    public String toString(String bgColor) {
+    	return "";
     }
     
     public UserGroup clone(Configuration configuration) {

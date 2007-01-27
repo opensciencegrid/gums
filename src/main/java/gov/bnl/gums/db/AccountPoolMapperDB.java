@@ -54,4 +54,10 @@ public interface AccountPoolMapperDB {
      * @param user the user that shouldn't be mapped anymore
      */
     void unassignUser(String user);
+
+    /**
+     * Return number of unassigned mappings
+     * @return
+     */
+    int getNumberUnassignedMappings();
 }

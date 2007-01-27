@@ -56,14 +56,14 @@ public class GroupAccountMapper extends AccountMapper {
         return accountName;
     }
 
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td>";
+    }
+    
     public String toXML() {
     	return super.toXML() +
 			"\t\t\taccountName='"+accountName+"'/>\n\n";
     }      
-    
-    public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td>";
-    }
     
     public AccountMapper clone(Configuration configuration) {
     	GroupAccountMapper accountMapper = new GroupAccountMapper(configuration, getName());

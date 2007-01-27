@@ -118,14 +118,14 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
         return jndiLdapUrl;
     }
 
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">"+jndiLdapUrl+"</td>";
+    }
+
     public String toXML() {
     	return super.toXML() +
 			"\t\t\tjndiLdapUrl='"+jndiLdapUrl+"'/>\n\n";
     }    
-    
-    public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">"+jndiLdapUrl+"</td>";
-    }
     
     public AccountMapper clone(Configuration configuration) {
     	GecosLdapAccountMapper accountMapper = new GecosLdapAccountMapper(configuration, getName());

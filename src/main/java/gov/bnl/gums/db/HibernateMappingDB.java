@@ -116,7 +116,7 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
         List hibernateMappings = q.list();
         return hibernateMappings;
     }
-    
+   
     private HibernateMapping retrieveMapping(Session session, Transaction tx, String userDN) throws Exception{
         Query q;
         q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ?");
@@ -394,6 +394,43 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
         // Handles when transaction goes wrong...
         } catch (Exception e) {
             log.error("Couldn't retrieve map for pool '" + map + "'", e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: rollback failed", e1);
+                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
+                }
+            }
+            throw new RuntimeException("Database error: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: couldn't close session", e1);
+                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
+                }
+            }
+        }
+    }
+    
+    public int getNumberUnassignedMappings() {
+        Session session = null;
+        Transaction tx = null;
+        try {
+            log.trace("Retrieving number of unassigned mappings for pool '" + map + "'");
+            session = persistenceFactory.retrieveSessionFactory().openSession();
+            tx = session.beginTransaction();
+            Query q;
+            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn is null");
+            q.setString(0, map);
+            List mappings = (List) q.list();
+            tx.commit();
+            return mappings.size();
+        // Handles when transaction goes wrong...
+        } catch (Exception e) {
+            log.error("Couldn't get number of unassigned mappings for pool '" + map + "'", e);
             if (tx != null) {
                 try {
                     tx.rollback();

@@ -91,7 +91,7 @@ public class CompositeAccountMapper extends AccountMapper {
         mappers.add(mapper);
     }
     
-    public String getSummary(String bgColor) {
+    public String toString(String bgColor) {
     	return ""; 
     }
     

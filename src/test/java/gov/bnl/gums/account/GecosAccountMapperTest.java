@@ -80,8 +80,8 @@ public class GecosAccountMapperTest extends TestCase {
             return "testMap";
         }
         
-        public String getSummary(String bgColor) {
-        	return null;
+        public String toString(String bgColor) {
+        	return "";
         }
         
         public AccountMapper clone(Configuration configuration) {

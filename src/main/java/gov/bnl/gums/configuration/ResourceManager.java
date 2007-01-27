@@ -242,9 +242,9 @@ public class ResourceManager {
 
     private String mapImpl(String hostname, GridUser user) {
         Configuration conf = gums.getConfiguration();
-        HostToGroupMapping group = host2GroupMapping(conf, hostname);
-        if (group == null) return null;
-        Iterator g2AMappingsIt = group.getGroupToAccountMappings().iterator();
+        HostToGroupMapping hostToGroupMapping = host2GroupMapping(conf, hostname);
+        if (hostToGroupMapping == null) return null;
+        Iterator g2AMappingsIt = hostToGroupMapping.getGroupToAccountMappings().iterator();
         while (g2AMappingsIt.hasNext()) {
             GroupToAccountMapping g2AMapping = (GroupToAccountMapping) conf.getGroupToAccountMapping( (String)g2AMappingsIt.next() );
             Collection userGroups = g2AMapping.getUserGroups();
@@ -276,7 +276,7 @@ public class ResourceManager {
         Configuration conf = gums.getConfiguration();
         Iterator g2AMappingsIt = conf.getGroupToAccountMappings().values().iterator();
         while (g2AMappingsIt.hasNext()) {
-            GroupToAccountMapping g2AMapping = (GroupToAccountMapping) conf.getGroupToAccountMapping( (String)g2AMappingsIt.next() );
+            GroupToAccountMapping g2AMapping = (GroupToAccountMapping) g2AMappingsIt.next();
             Collection userGroups = g2AMapping.getUserGroups();
             Iterator userGroupsIt = userGroups.iterator();
             while (userGroupsIt.hasNext()) {

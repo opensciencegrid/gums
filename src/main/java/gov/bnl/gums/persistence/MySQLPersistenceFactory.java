@@ -647,6 +647,23 @@ public class MySQLPersistenceFactory extends PersistenceFactory {
             }
         }
         
+        public int getNumberUnassignedMappings() {
+            Connection conn = getConnection();
+            try {
+                PreparedStatement retrieveAccountMapStmt = prepareStatement(conn, "SELECT account, userDN " +
+                    "FROM UserAccountMapping " +
+                    "WHERE userDN = NULL");
+                
+                ResultSet set = retrieveAccountMapStmt.executeQuery();
+                return set.getFetchSize();
+            } catch (SQLException e) {
+                log.info("Exception while executing query", e);
+                throw new RuntimeException("Couldn't retrieve number of unassigned mappings " + userGroup, e);
+            } finally {
+                releaseConnection(conn);
+            }
+        }
+        
     }
 
 }

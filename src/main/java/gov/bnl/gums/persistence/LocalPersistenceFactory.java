@@ -161,6 +161,10 @@ public class LocalPersistenceFactory extends PersistenceFactory {
             return mysqlDB.retrieveAccountMap();
         }
         
+        public int getNumberUnassignedMappings() {
+        	return mysqlDB.getNumberUnassignedMappings();
+        }
+        
     }
     public void setProperties(Properties properties) {
         super.setProperties(properties);

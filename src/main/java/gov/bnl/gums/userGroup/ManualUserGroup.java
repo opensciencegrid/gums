@@ -78,15 +78,15 @@ public class ManualUserGroup extends UserGroup {
             return "ManualUserGroup: persistenceFactory='" + persistenceFactory + "' - group='" + getName() + "'";
         }
     }
+ 
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
+    }
     
     public String toXML() {
     	return super.toXML() +
 		"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }    
-    
-    public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
-    }
     
     public UserGroup clone(Configuration configuration) {
     	ManualUserGroup userGroup = new ManualUserGroup(configuration, getName());

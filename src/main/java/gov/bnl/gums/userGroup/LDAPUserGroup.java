@@ -245,10 +245,6 @@ public class LDAPUserGroup extends UserGroup {
         return query.hashCode();
     }
     
-    public String toString() {
-        return "LDAPGroup: ldap://"+server+"/"+query;
-    }
-    
     public boolean equals(Object obj) {
         if (obj instanceof LDAPUserGroup) {
             LDAPUserGroup group = (LDAPUserGroup) obj;
@@ -262,6 +258,14 @@ public class LDAPUserGroup extends UserGroup {
         return false;
     }
     
+    public String toString() {
+        return "LDAPGroup: ldap://"+server+"/"+query;
+    }
+
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + server + "</td>";
+    }
+    
     public String toXML() {
     	return super.toXML() +
     	"\t\t\tserver='"+server+"'\n" +
@@ -270,10 +274,6 @@ public class LDAPUserGroup extends UserGroup {
 		"\t\t\tkeyStore='"+keyStore+"'\n" +
 		"\t\t\tkeyPassword='"+keyPassword+"'/>\n\n";
     }    
-    
-    public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + server + "</td>";
-    }
     
     public UserGroup clone(Configuration configuration) {
     	LDAPUserGroup userGroup = new LDAPUserGroup(configuration, getName());

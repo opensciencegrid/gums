@@ -71,14 +71,14 @@ public class ManualAccountMapper extends AccountMapper {
         this.persistenceFactory = persistanceFactory;
     }  
     
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
+    }
+
     public String toXML() {
     	return super.toXML() +
 			"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }      
-    
-    public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
-    }
     
     public AccountMapper clone(Configuration configuration) {
     	ManualAccountMapper accountMapper = new ManualAccountMapper(configuration, getName());

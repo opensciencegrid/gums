@@ -67,13 +67,13 @@ public abstract class AccountMapper {
      */
     public abstract String mapUser(String userDN);
 	
+    public abstract String toString(String bgColor);
+
     public String toXML() {
     	return "\t\t<accountMapper\n"+
     		"\t\t\tclassName='"+getClass().getName()+"'\n"+
     		"\t\t\tname='"+name+"'\n";
     }
-    
-    public abstract String getSummary(String bgColor);
     
     public abstract AccountMapper clone(Configuration configuration);
 }

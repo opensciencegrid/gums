@@ -26,8 +26,8 @@ import java.util.StringTokenizer;
  */
 public class CertificateHostToGroupMapping extends HostToGroupMapping {
     
-    private String cn;
-    private String dn;
+    private String cn = null;
+    private String dn = null;
     private List regexs;
     
     public CertificateHostToGroupMapping() {
@@ -36,13 +36,6 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     
     public CertificateHostToGroupMapping(Configuration configuration) {
     	super(configuration);
-    }
-    
-    // Name becomes cn as default
-    public CertificateHostToGroupMapping(Configuration configuration, String name) {
-    	super(configuration, name);
-        this.cn = cn;
-        updateRegEx();
     }
 
     public boolean isInGroup(String hostname) {
@@ -123,11 +116,13 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     }      
     
     public HostToGroupMapping clone(Configuration configuration) {
-    	CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping(configuration, getName());
-    	if (hostToGroupMapping.getCn()!=null)
-    		hostToGroupMapping.setCn(getCn());
-    	if (hostToGroupMapping.getDn()!=null)
+    	CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping(configuration);
+    	if (getDn()!=null)
     		hostToGroupMapping.setDn(getDn());
+    	else if (getCn()!=null)
+    		hostToGroupMapping.setCn(getCn());
+    	else
+    		hostToGroupMapping.setCn("");
     	Iterator it = getGroupToAccountMappings().iterator();
     	while (it.hasNext()) {
     		String groupToAccountMapping = (String)it.next();

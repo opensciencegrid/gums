@@ -42,7 +42,7 @@ public class VOMSUserGroup extends UserGroup {
     private String vo = "";
     private String voGroup = "";
     private String voRole = "";
-    private String fqan = null; // null since it is optional
+    private String fqan = "";
     private String matchFQAN = defaultMatchFQAN;
     private String remainderUrl = "";
     private boolean acceptProxyWithoutFQAN = defaultAcceptProxyWithoutFQAN;
@@ -70,8 +70,6 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     private UserGroupDB getVoDB() {
-    	if (getConfiguration()==null)
-    		throw new RuntimeException("Configuration has not yet been set for this class");    	
     	return getVoObject().getDB();
     }
     
@@ -84,7 +82,7 @@ public class VOMSUserGroup extends UserGroup {
             // if the voGroup is null and the user comes in with no Proxy
             // we still allow him in.
             // We should remove this in versions after 1.1
-            if ((voGroup == null) && (voRole == null)) {
+            if ((voGroup.equals("")) && (voRole.equals(""))) {
                 return getVoDB().isMemberInGroup(user);
             }
             return false;
@@ -92,7 +90,7 @@ public class VOMSUserGroup extends UserGroup {
         
         // If the user comes in wihout FQAN, but we accept proxies without it,
         // we simply check whether the DN is in the database
-        if ((user.getVoFQAN() == null) && isAcceptProxyWithoutFQAN()) {
+        if ((user.getVoFQAN().equals("")) && isAcceptProxyWithoutFQAN()) {
             if (getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan)))
                 return true;
             return false;
@@ -126,24 +124,24 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     public void updateMembers() {
-    	if(vo!=null)	
-    		getVoDB().loadUpdatedList(retrieveMembers());
+   		getVoDB().loadUpdatedList(retrieveMembers());
     }
     
     private List retrieveMembers() {
         Properties p = System.getProperties();
         try {
             setProperties();
-            log.debug("SSL properties: sslCAFiles='" + System.getProperty("sslCAFiles") + 
-            "' sslCertfile='" + System.getProperty("sslCertfile") +
+            log.debug("SSL properties read: " + 
+            "sslCertfile='" + System.getProperty("sslCertfile") +
             "' sslKey='" + System.getProperty("sslKey") +
-            "' sslKeyPasswd set:" + (System.getProperty("sslKeyPasswd")!= null) +"'"); 
+            "' sslKeyPasswd set:" + (System.getProperty("sslKeyPasswd")!=null) +
+            " sslCAFiles='" + System.getProperty("sslCAFiles") + "'" ); 
             VOMSAdmin voms = getVOMSAdmin();
         	org.edg.security.voms.service.User[] users = null;
-            if (voRole == null) {
+            if (!voRole.equals("") && !voGroup.equals("")) {
+                users = voms.listUsersWithRole("/atlas/usatlas", "Role=software");
+            } else if (!voGroup.equals("")){
                 users = voms.listMembers(getVoGroup());
-            } else {
-                users = voms.listUsersWithRole(getVoGroup(), "Role=" + getVoRole());
             }
             if (users.length > 0) {
                 log.trace("Retrieved " + users.length + " users. First is: '" + users[0].getDN());
@@ -162,14 +160,8 @@ public class VOMSUserGroup extends UserGroup {
         }
     }
     
-    public String toString() {
-    	if (getConfiguration()==null)
-    		throw new RuntimeException("Configuration has not yet been set for this class");    	
-        return "VOMSGroup: " + getUrl() + " - voGroup='" + getVoGroup() + "' - voRole='" + getVoRole() + "' - sslCAFiles='" + getVoObject().getSslCAFiles() +"' sslCertfile='" + getVoObject().getSslCertfile() +"' sslKey='" + getVoObject().getSslKey() + "' sslKeyPasswd=" + ((getVoObject().getSslKeyPasswd()!= null) ? "[set]" : "[not set]");
-    }
-
     public String getUrl() {
-    	return (getVoObject()!=null ? getVoObject().getBaseUrl() + remainderUrl : "");
+    	return getVoObject().getBaseUrl() + remainderUrl;
     }
     
     public VOMSAdmin getVOMSAdmin() {
@@ -213,7 +205,7 @@ public class VOMSUserGroup extends UserGroup {
 
     /**
      * Changes the VO role.
-     * @return The role name in the VOMS server (i.e. myrole), or null for no role
+     * @return The role name in the VOMS server (i.e. myrole), or "" for no role
      */
     public String getVoRole() {
         return this.voRole;
@@ -229,7 +221,7 @@ public class VOMSUserGroup extends UserGroup {
     
     /**
      * Changes the role to be retrieved within the VO group.
-     * @param voRole The role name in the VOMS server (i.e. myrole), or null for no role
+     * @param voRole The role name in the VOMS server (i.e. myrole), or "" for no role
      */
     public void setVirtualOrganizationRole(String voRole) {
         this.voRole = voRole;
@@ -237,6 +229,7 @@ public class VOMSUserGroup extends UserGroup {
     }
 
     /**
+     * Set name of virtual organization
      * @param vo
      */
     public void setVirtualOrganization(String vo) {
@@ -244,6 +237,7 @@ public class VOMSUserGroup extends UserGroup {
     }
 
     /**
+     * Get name of virtual organization
      * @return
      */
     public String getVirtualOrganization() {
@@ -269,33 +263,12 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     /**
-     * Tells whether the FQAN should be used to match the proxy or not. If set to false,
-     * the FQAN has to be present (i.e. won't accept non VOMS proxy) and has to match
-     * the one defined by the group. If set to true, the FQAN is not looked at, making
-     * all proxies (non VOMS and VOMS proxy with different FQAN) match as long as the
-     * DN matches. Setting true makes the behaviour similar to the one of the
-     * grid-mapfile.
+     * Convenience function for "ignore".equals(getmatchFQAN())
      * @return False if FQAN is used during the match
      */
    public boolean isIgnoreFQAN() {
         return "ignore".equals(matchFQAN);
     }
-    
-    /**
-     * Changes the way FQAN is used to match.
-     * @param ignoreFQAN False if FQAN is used during the matchNew value of property ignoreFQAN.
-     * @deprecated As of GUMS 1.1, use matchFQAN and acceptProxyWithoutFQAN
-     */
-/*    public void setIgnoreFQAN(boolean ignoreFQAN) {
-        resourceAdminLog.warn("The attribute \"ignoreFQAN\" for VOMSGroup is deprecated: use matchFQAN instead. DO NOT MIX ignoreFQAN and matchFQAN.");
-        if (ignoreFQAN) {
-            matchFQAN = "ignore";
-            acceptProxyWithoutFQAN = true;
-        } else {
-            matchFQAN = "exact";
-            acceptProxyWithoutFQAN = false;
-        }
-    }*/
 
     /**
      * Changes the scheme according to which the FQAN will be matched. See
@@ -307,10 +280,10 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     private void prepareFQAN() {
-        if (voGroup == null) {
+        if (voGroup.equals("")) {
             fqan = null;
         } else {
-            if (voRole == null) {
+            if (voRole.equals("")) {
                 fqan = voGroup;
             } else {
                 fqan = voGroup + "/Role=" + voRole;
@@ -337,40 +310,44 @@ public class VOMSUserGroup extends UserGroup {
     
     private void setProperties() {
     	VirtualOrganization voObject = getVoObject();
-        log.debug("SSL properties: sslCAFiles='" + voObject.getSslCAFiles() +"' sslCertfile='" + voObject.getSslCertfile() +"' sslKey='" + voObject.getSslKey() + "' sslKeyPasswd set:" + (voObject.getSslKeyPasswd()!= null) +"'"); 
-        if (voObject.getSslCAFiles() != null) {
-            System.setProperty("sslCAFiles", voObject.getSslCAFiles());
-        }
-        if (voObject.getSslCertfile() != null) {
+        log.debug( "SSL properties set: sslCertfile='" + voObject.getSslCertfile() + "' sslKey='" + voObject.getSslKey() + "' sslKeyPasswd set:" + (!voObject.getSslKeyPasswd().equals("")) + " sslCAFiles='" + voObject.getSslCAFiles() + "'" ); 
+        if (!voObject.getSslCertfile().equals("")) {
             System.setProperty("sslCertfile", voObject.getSslCertfile());
         }
-        if (voObject.getSslKey() != null) {
+        if (!voObject.getSslKey().equals("")) {
             System.setProperty("sslKey", voObject.getSslKey());
         }
-        if (voObject.getSslKeyPasswd() != null) {
+        if (!voObject.getSslKeyPasswd().equals("")) {
             System.setProperty("sslKeyPasswd", voObject.getSslKeyPasswd());
         }
+        if (!voObject.getSslCAFiles().equals("")) {
+            System.setProperty("sslCAFiles", voObject.getSslCAFiles());
+        }
+    }
+    
+    public String toString() {
+        return "VOMSGroup: remainderUrl='" + remainderUrl + "' - voGroup='" + getVoGroup() + "' - voRole='" + getVoRole() + "'";
+    }
+
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + matchFQAN + "</td><td bgcolor=\""+bgColor+"\">" + acceptProxyWithoutFQAN + "</td><td bgcolor=\""+bgColor+"\">" + voGroup + "</td><td bgcolor=\""+bgColor+"\">" + voRole + "</td><td bgcolor=\""+bgColor+"\">" + getVoObject().getBaseUrl() + remainderUrl + "</td>";
     }
     
     public String toXML() {
     	String retStr = super.toXML() +
         "\t\t\tvirtualOrganization='"+vo+"'\n";
-    	if (remainderUrl!=null)
+    	if (!remainderUrl.equals(""))
     		retStr += "\t\t\tremainderUrl='"+remainderUrl+"'\n";
    		retStr += "\t\t\tmatchFQAN='"+matchFQAN+"'\n";
    		retStr += "\t\t\tacceptProxyWithoutFQAN='"+acceptProxyWithoutFQAN+"'\n"; 
-    	if (voGroup!=null)
+    	if (!voGroup.equals(""))
         	retStr += "\t\t\tvoGroup='"+voGroup+"'\n";
-    	if (voRole!=null)
+    	if (!voRole.equals(""))
     		retStr += "\t\t\tvoRole='"+voRole+"'\n";
     	if (retStr.charAt(retStr.length()-1)=='\n')
     		retStr = retStr.substring(0, retStr.length()-1);
     	retStr += "/>\n\n";
     	return retStr;
-    }
-    
-    public String getSummary(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + matchFQAN + "</td><td bgcolor=\""+bgColor+"\">" + acceptProxyWithoutFQAN + "</td><td bgcolor=\""+bgColor+"\">" + voGroup + "</td><td bgcolor=\""+bgColor+"\">" + voRole + "</td><td bgcolor=\""+bgColor+"\">" + getVoObject().getBaseUrl() + remainderUrl + "</td>";
     }
     
     public UserGroup clone(Configuration configuration) {

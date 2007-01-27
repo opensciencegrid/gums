@@ -10,6 +10,7 @@
 
 package gov.bnl.gums.db;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -292,12 +293,31 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
         }
     }
     
+    public int getNumberUnassignedMappings() {
+        DirContext context = factory.retrieveContext();
+        int count = 0;
+        try {
+            SearchControls ctrls = new SearchControls();
+            ctrls.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+            NamingEnumeration result = context.search(mapDN, "(!(user=*))", null, ctrls);
+            while (result.hasMore())
+            	count++;
+            log.trace("Retrieved Number of unassigned LDAP mappings for '" + map + "'");
+            return count;
+        } catch (Exception e) {
+            log.error("Couldn't Number of unassigned LDAP mappings for '" + map + "'", e);
+            throw new RuntimeException("Couldn't retrieve Number of unassigned LDAP mappings for '" + map + "': " + e.getMessage(), e);
+        } finally {
+            factory.releaseContext(context);
+        }
+    }
+    
     public void resetAccountPool() {
         DirContext context = factory.retrieveContext();
         try {
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.ONELEVEL_SCOPE);
-            NamingEnumeration result = context.search(mapDN, "(user=*)", null, ctrls);
+            NamingEnumeration result = context.search(mapDN, "(!(user=*))", null, ctrls);
             while (result.hasMore()) {
                 SearchResult res = (SearchResult) result.next();
                 Attributes atts = res.getAttributes();
