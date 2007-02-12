@@ -6,14 +6,14 @@
 
 package gov.bnl.gums.persistence;
 
-import java.util.Iterator;
-import java.util.Properties;
-
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
+
+import java.util.Iterator;
+import java.util.Properties;
 
 /** Represent a factory for all the classes that take care of the persistance of
  * the AccountMappers, the UserGroups or any other components.
@@ -55,34 +55,36 @@ public abstract class PersistenceFactory {
 		this.configuration = configuration;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	public abstract PersistenceFactory clone(Configuration configuration);
 
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}
-	
 	public Configuration getConfiguration() {
 		return configuration;
 	}
-
+	
 	public String getName() {
 		return name;
 	}
 
-	public void setProperties(Properties properties) {
-		this.properties = properties;
-	}
-	
 	public Properties getProperties() {
 		return properties;
 	}
+
+	public abstract AccountPoolMapperDB retrieveAccountPoolMapperDB(String name);
 	
 	public abstract ManualAccountMapperDB retrieveManualAccountMapperDB(String name);
-	public abstract UserGroupDB retrieveUserGroupDB(String name);
+	
 	public abstract ManualUserGroupDB retrieveManualUserGroupDB(String name);
-	public abstract AccountPoolMapperDB retrieveAccountPoolMapperDB(String name);
+	public abstract UserGroupDB retrieveUserGroupDB(String name);
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void setProperties(Properties properties) {
+		this.properties = properties;
+	}
 	
 	public String toXML() {
     	String retStr = "\t\t<persistenceFactory\n"+
@@ -102,6 +104,4 @@ public abstract class PersistenceFactory {
     	
     	return retStr;
 	}
-	
-	public abstract PersistenceFactory clone(Configuration configuration);
 }

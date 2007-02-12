@@ -20,16 +20,10 @@ import java.util.Map;
  */
 public interface AccountPoolMapperDB {
     
-    /** Retrieves the accounts that are already mapped to a user.
-     * @return a Map between the userDN (String) as the key and the account (String).
+    /** Adds an account to the pool of free accounts.
+     * @param account the account to be added
      */
-    Map retrieveAccountMap();
-    
-    /** Retrieves the account associated to the Grid identity.
-     * @param userDN the certificate DN
-     * @return the account or null if the user wasn't mapped
-     */
-    String retrieveAccount(String userDN);
+    void addAccount(String account);
     
     /** Assigns a new account from the pool to the user. If the user is already
      * mapped, will throw an exception.
@@ -39,25 +33,31 @@ public interface AccountPoolMapperDB {
      */
     String assignAccount(String userDN);
     
-    /** Adds an account to the pool of free accounts.
-     * @param account the account to be added
+    /**
+     * Return number of unassigned mappings
+     * @return
      */
-    void addAccount(String account);
+    int getNumberUnassignedMappings();
+    
+    /** Retrieves the account associated to the Grid identity.
+     * @param userDN the certificate DN
+     * @return the account or null if the user wasn't mapped
+     */
+    String retrieveAccount(String userDN);
+    
+    /** Retrieves the accounts that are already mapped to a user.
+     * @return a Map between the userDN (String) as the key and the account (String).
+     */
+    Map retrieveAccountMap();
     
     /** Retrieve the list of account not in use since the given date/
      * @param date the time since the accounts haven't been used.
      * @return a list of String with the accounts
      */
     List retrieveUsersNotUsedSince(Date date);
-    
+
     /** Removes an account from the mapping, and renders it available to the pool.
      * @param user the user that shouldn't be mapped anymore
      */
     void unassignUser(String user);
-
-    /**
-     * Return number of unassigned mappings
-     * @return
-     */
-    int getNumberUnassignedMappings();
 }

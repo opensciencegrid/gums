@@ -21,7 +21,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.text.DateFormat;
@@ -42,7 +41,6 @@ public class FileConfigurationStore implements ConfigurationStore {
     private Log gumsSiteAdminLog = LogFactory.getLog(GUMS.siteAdminLog);
     private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     private Exception configError;
-    
     private Configuration conf;
     private Date lastRetrival;
     private String filename = null;
@@ -59,7 +57,7 @@ public class FileConfigurationStore implements ConfigurationStore {
     		try {
     			BufferedWriter out = new BufferedWriter(new FileWriter(filename));
     			out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n"+
-	    			"<gums>\n\n"+
+	    			"<gums version='"+GUMS.getVersion()+"'>\n\n"+
 	    				"\t<persistenceFactories>\n\n"+
 	    					"\t\t<persistenceFactory\n"+
 				    			"\t\t\tclassName='gov.bnl.gums.persistence.HibernatePersistenceFactory'\n"+
@@ -77,7 +75,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 	    				"\t<userGroups>\n\n"+
 				    		"\t\t<userGroup\n"+
 				    			"\t\t\tclassName='gov.bnl.gums.userGroup.ManualUserGroup'\n"+
-				    			"\t\t\tname='admin'\n"+
+				    			"\t\t\tname='admins'\n"+
 				    			"\t\t\tpersistenceFactory='mysql'\n"+
 				    			"\t\t\taccess='write'/>\n\n"+
 	    				"\t</userGroups>\n\n"+
@@ -89,6 +87,10 @@ public class FileConfigurationStore implements ConfigurationStore {
         }
     }
     
+    public URL getConfURL() {
+    	return getClass().getClassLoader().getResource("gums.config");
+    }
+    
     public boolean isActive() {
         log.debug("Checking whether gums.config is present");
         return ((filename != null) || (getConfURL() != null));
@@ -98,10 +100,6 @@ public class FileConfigurationStore implements ConfigurationStore {
         return false;
     }
     
-    public URL getConfURL() {
-    	return getClass().getClassLoader().getResource("gums.config");
-    }
-    
     public synchronized Configuration retrieveConfiguration() {
         if ((lastRetrival == null) || (lastRetrival.before(lastModification())))
             reloadConfiguration();
@@ -109,51 +107,6 @@ public class FileConfigurationStore implements ConfigurationStore {
             throw new RuntimeException(filename+"  "+" is misconfigured: please check the resource admin log for errors, and the gums.config file.");
         }
         return conf;
-    }
-    
-    private Date lastModification() {
-        try {
-            if (filename != null) {
-                // If conf filename was specified
-                File file = new File(filename);
-                return new Date(file.lastModified());
-            } else {
-                // Conf filename not specified, getting it from the
-                // classpath
-                URL confURL = getConfURL();
-                URI uri = new URI(confURL.toString());
-                File file = new File(uri);
-                return new Date(file.lastModified());
-            }
-        } catch (Exception e) {
-            gumsResourceAdminLog.fatal("The configuration wasn't read properly. GUMS is not operational.", e);
-            return null;
-        }
-    }
-    
-    private void reloadConfiguration() {
-		conf = null;
-        configError = null;
-        try {
-            log.debug("Attempting to load configuration from gums.config");
-            if (filename != null) {
-        		conf = ConfigurationToolkit.loadConfiguration(filename);
-                log.trace("Configuration reloaded from '" + filename + "'");
-                gumsResourceAdminLog.info("Configuration reloaded from '" + filename + "'");
-                gumsSiteAdminLog.info("Configuration reloaded from '" + filename + "'");
-            } else {
-    			URL confURL = getConfURL();
-                conf = ConfigurationToolkit.loadConfiguration(confURL.getPath());
-                log.trace("Configuration reloaded from classpath '" + confURL + "'");
-                gumsResourceAdminLog.info("Configuration reloaded '" + confURL + "'");
-                gumsSiteAdminLog.info("Configuration reloaded '" + confURL + "'");
-            }
-            lastRetrival = new Date();
-        } catch (Exception e) {
-            configError = e;
-            gumsResourceAdminLog.fatal("The configuration wasn't read properly. GUMS is not operational: " + e.getMessage());
-            log.info("Configuration wasn't read correctly.", e);
-        }
     }
     
     public synchronized void setConfiguration(Configuration conf, boolean backup) throws IOException {
@@ -173,7 +126,7 @@ public class FileConfigurationStore implements ConfigurationStore {
         
         out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n");
         
-        out.write("<gums>\n\n");
+        out.write("<gums version='"+GUMS.getVersion()+"'>\n\n");
         
         // Write persistence factories
         if( conf.getPersistenceFactories().size()>0 ) {
@@ -280,4 +233,49 @@ public class FileConfigurationStore implements ConfigurationStore {
 			e.printStackTrace();
 		}
 	}
+    
+    private Date lastModification() {
+        try {
+            if (filename != null) {
+                // If conf filename was specified
+                File file = new File(filename);
+                return new Date(file.lastModified());
+            } else {
+                // Conf filename not specified, getting it from the
+                // classpath
+                URL confURL = getConfURL();
+                URI uri = new URI(confURL.toString());
+                File file = new File(uri);
+                return new Date(file.lastModified());
+            }
+        } catch (Exception e) {
+            gumsResourceAdminLog.fatal("The configuration wasn't read properly. GUMS is not operational.", e);
+            return null;
+        }
+    }
+    
+    private void reloadConfiguration() {
+		conf = null;
+        configError = null;
+        try {
+            log.debug("Attempting to load configuration from gums.config");
+            if (filename != null) {
+        		conf = ConfigurationToolkit.loadConfiguration(filename);
+                log.trace("Configuration reloaded from '" + filename + "'");
+                gumsResourceAdminLog.info("Configuration reloaded from '" + filename + "'");
+                gumsSiteAdminLog.info("Configuration reloaded from '" + filename + "'");
+            } else {
+    			URL confURL = getConfURL();
+                conf = ConfigurationToolkit.loadConfiguration(confURL.getPath());
+                log.trace("Configuration reloaded from classpath '" + confURL + "'");
+                gumsResourceAdminLog.info("Configuration reloaded '" + confURL + "'");
+                gumsSiteAdminLog.info("Configuration reloaded '" + confURL + "'");
+            }
+            lastRetrival = new Date();
+        } catch (Exception e) {
+            configError = e;
+            gumsResourceAdminLog.fatal("The configuration wasn't read properly. GUMS is not operational: " + e.getMessage());
+            log.info("Configuration wasn't read correctly.", e);
+        }
+    }
 }

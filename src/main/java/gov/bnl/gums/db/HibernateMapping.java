@@ -15,7 +15,11 @@ package gov.bnl.gums.db;
  * @author carcassi
  */
 public class HibernateMapping {
-    
+    private Long id;
+    private String dn;
+    private String account;
+    private String map;
+
     /**
      * Creates a new instance of Mapping 
      */
@@ -23,32 +27,13 @@ public class HibernateMapping {
     }
 
     /**
-     * Holds value of property id.
+     * Getter for property account.
+     * @return Value of property account.
      */
-    private Long id;
+    public String getAccount() {
 
-    /**
-     * Getter for property id.
-     * @return Value of property id.
-     */
-    public Long getId() {
-
-        return this.id;
+        return this.account;
     }
-
-    /**
-     * Setter for property id.
-     * @param id New value of property id.
-     */
-    public void setId(Long id) {
-
-        this.id = id;
-    }
-
-    /**
-     * Holds value of property dn.
-     */
-    private String dn;
 
     /**
      * Getter for property dn.
@@ -60,26 +45,21 @@ public class HibernateMapping {
     }
 
     /**
-     * Setter for property dn.
-     * @param dn New value of property dn.
+     * Getter for property id.
+     * @return Value of property id.
      */
-    public void setDn(String dn) {
+    public Long getId() {
 
-        this.dn = dn;
+        return this.id;
     }
 
     /**
-     * Holds value of property account.
+     * Getter for property group.
+     * @return Value of property group.
      */
-    private String account;
+    public String getMap()   {
 
-    /**
-     * Getter for property account.
-     * @return Value of property account.
-     */
-    public String getAccount() {
-
-        return this.account;
+        return this.map;
     }
 
     /**
@@ -92,17 +72,21 @@ public class HibernateMapping {
     }
 
     /**
-     * Holds value of property map.
+     * Setter for property dn.
+     * @param dn New value of property dn.
      */
-    private String map;
+    public void setDn(String dn) {
+
+        this.dn = dn;
+    }
 
     /**
-     * Getter for property group.
-     * @return Value of property group.
+     * Setter for property id.
+     * @param id New value of property id.
      */
-    public String getMap()   {
+    public void setId(Long id) {
 
-        return this.map;
+        this.id = id;
     }
 
     /**

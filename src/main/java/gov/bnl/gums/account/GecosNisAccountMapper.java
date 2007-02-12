@@ -6,17 +6,17 @@
 
 package gov.bnl.gums.account;
 
-
-
 import gov.bnl.gums.configuration.Configuration;
 
 import java.util.Properties;
+
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchResult;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -40,6 +40,12 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     	super(configuration, name);
     }
     
+    public AccountMapper clone(Configuration configuration) {
+    	GecosNisAccountMapper accountMapper = new GecosNisAccountMapper(configuration, getName());
+    	accountMapper.setJndiNisUrl(jndiNisUrl);
+    	return accountMapper;
+    }
+    
     /**
      * Returns the URL used to describe the NIS server.
      * @return NIS url according to JNDI NIS driver.
@@ -56,6 +62,15 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
         this.jndiNisUrl = jndiNisUrl;
     }
     
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + jndiNisUrl + "</td>";
+    }
+
+    public String toXML() {
+    	return super.toXML() +
+			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
+    }
+
     /** Prepares the parameters for the JNDI connection.
      */
     private Properties retrieveJndiProperties() {
@@ -64,7 +79,7 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
         jndiProperties.put("java.naming.factory.initial","com.sun.jndi.nis.NISCtxFactory");
         return jndiProperties;
     }
-    
+
     protected GecosMap createMap() {
         Properties jndiProperties = retrieveJndiProperties();
         int nTries = 5;
@@ -113,24 +128,9 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
             throw new RuntimeException("Couldn't retrieve NIS maps from " + jndiNisUrl, lastException);
         }
         return null;
-    }
-
-    protected String mapName() {
-        return jndiNisUrl;
-    }
-
-    public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + jndiNisUrl + "</td>";
-    }
-
-    public String toXML() {
-    	return super.toXML() +
-			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
     }      
     
-    public AccountMapper clone(Configuration configuration) {
-    	GecosNisAccountMapper accountMapper = new GecosNisAccountMapper(configuration, getName());
-    	accountMapper.setJndiNisUrl(jndiNisUrl);
-    	return accountMapper;
+    protected String mapName() {
+        return jndiNisUrl;
     }
 }

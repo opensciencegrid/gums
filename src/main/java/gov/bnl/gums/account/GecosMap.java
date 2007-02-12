@@ -6,7 +6,6 @@
 
 package gov.bnl.gums.account;
 
-
 import gov.bnl.gums.GUMS;
 import gov.bnl.gums.NISClient;
 
@@ -18,6 +17,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.logging.Log;
@@ -36,6 +36,22 @@ public class GecosMap {
     private Map accountToSurname = new Hashtable();
     private MultiMap nameToAccount = new MultiHashMap();
     private MultiMap surnameToAccount = new MultiHashMap();
+    private Date lastUpdate = null;
+    private long expiration = 60*60*1000;
+
+    public void addEntry(String username, String gecos) {
+        String name = retrieveName(gecos);
+        String surname = retrieveSurname(gecos);
+        log.trace("Adding user '" + username + "': GECOS='" + gecos + "' name='" + name + "' surname='" + surname + "'");
+        accountToGecos.put(username, gecos);
+        if (name != null) {
+            accountToName.put(username, name);
+            nameToAccount.put(name.toLowerCase(), username);
+        }
+        accountToSurname.put(username, surname);
+        surnameToAccount.put(surname.toLowerCase(), username);
+        lastUpdate = new Date();
+    }
     
     public String findAccount(String name, String surname) {
         Collection accountsWithName = (Collection) nameToAccount.get(name.toLowerCase());
@@ -117,48 +133,21 @@ public class GecosMap {
         return null;
     }
     
-    private Date lastUpdate = null;
-    private long expiration = 60*60*1000;
+    /**
+     * How long the map will be valid since the last change.
+     * <p>
+     * By default is 60*60*1000 (one hour).
+     * @return Time of validity in ms.
+     */
+    public long getExpiration() {
+
+        return this.expiration;
+    }
+    
     public boolean isValid() {
         if (lastUpdate == null) return false;
         if ((System.currentTimeMillis() - lastUpdate.getTime()) > expiration) return false;
         return true;
-    }
-    
-    private String retrieveName(String gecos) {
-        gecos = gecos.trim();
-        int comma = gecos.indexOf(',');
-        if (comma != -1) {
-            gecos = gecos.substring(0, comma);
-        }
-        int index = gecos.lastIndexOf(' ');
-        if (index == -1) return "";
-        return gecos.substring(0, gecos.indexOf(' '));
-    }
-    
-    private String retrieveSurname(String gecos) {
-        gecos = gecos.trim();
-        int comma = gecos.indexOf(',');
-        if (comma != -1) {
-            gecos = gecos.substring(0, comma);
-        }
-        int index = gecos.lastIndexOf(' ');
-        if (index == -1) return gecos;
-        return gecos.substring(gecos.lastIndexOf(' ')+1);
-    }
-    
-    public void addEntry(String username, String gecos) {
-        String name = retrieveName(gecos);
-        String surname = retrieveSurname(gecos);
-        log.trace("Adding user '" + username + "': GECOS='" + gecos + "' name='" + name + "' surname='" + surname + "'");
-        accountToGecos.put(username, gecos);
-        if (name != null) {
-            accountToName.put(username, name);
-            nameToAccount.put(name.toLowerCase(), username);
-        }
-        accountToSurname.put(username, surname);
-        surnameToAccount.put(surname.toLowerCase(), username);
-        lastUpdate = new Date();
     }
     
     public void printMaps(PrintStream out) {
@@ -187,6 +176,15 @@ public class GecosMap {
         }
     }
     
+    /**
+     * How long the map will be valid since the last change.
+     * @param expiration Time of validity in ms.
+     */
+    public void setExpiration(long expiration) {
+
+        this.expiration = expiration;
+    }
+    
     private void printMap(PrintStream out, Map map, int offset) {
         Iterator accounts = map.keySet().iterator();
         while (accounts.hasNext()) {
@@ -201,24 +199,26 @@ public class GecosMap {
         }
     }
 
-    /**
-     * How long the map will be valid since the last change.
-     * <p>
-     * By default is 60*60*1000 (one hour).
-     * @return Time of validity in ms.
-     */
-    public long getExpiration() {
-
-        return this.expiration;
+    private String retrieveName(String gecos) {
+        gecos = gecos.trim();
+        int comma = gecos.indexOf(',');
+        if (comma != -1) {
+            gecos = gecos.substring(0, comma);
+        }
+        int index = gecos.lastIndexOf(' ');
+        if (index == -1) return "";
+        return gecos.substring(0, gecos.indexOf(' '));
     }
 
-    /**
-     * How long the map will be valid since the last change.
-     * @param expiration Time of validity in ms.
-     */
-    public void setExpiration(long expiration) {
-
-        this.expiration = expiration;
+    private String retrieveSurname(String gecos) {
+        gecos = gecos.trim();
+        int comma = gecos.indexOf(',');
+        if (comma != -1) {
+            gecos = gecos.substring(0, comma);
+        }
+        int index = gecos.lastIndexOf(' ');
+        if (index == -1) return gecos;
+        return gecos.substring(gecos.lastIndexOf(' ')+1);
     }
     
 }

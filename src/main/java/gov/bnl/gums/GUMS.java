@@ -11,12 +11,12 @@ import gov.bnl.gums.configuration.ConfigurationStore;
 import gov.bnl.gums.configuration.FileConfigurationStore;
 import gov.bnl.gums.configuration.ResourceManager;
 
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
 import org.apache.commons.logging.*;
 
 /** Facade for the whole business logic available in GUMS. Using GUMS means
@@ -28,43 +28,14 @@ import org.apache.commons.logging.*;
 public class GUMS {
     static final public String siteAdminLog = "gums.siteAdmin";
     static final public String resourceAdminLog = "gums.resourceAdmin";
+    static final public String version = "1.2";
     static private Log log = LogFactory.getLog(GUMS.class);
     static private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-    static final public String version = "1.2";
     private static Timer timer;
-    
-    private Configuration conf;
-    protected ConfigurationStore confStore;
-    private ResourceManager resMan = new ResourceManager(this);
-    
-    /** Creates and initilializes a new instance of GUMS. */
-    public GUMS() {
-        confStore = new FileConfigurationStore();
-        if (!confStore.isActive()) {
-            gumsResourceAdminLog.fatal("Couldn't read GUMS policy file (gums.config)");
-        }
-        
-        startUpdateThread(this);
-    }
-    
-    public GUMS(ConfigurationStore confStore) {
-        this.confStore = confStore;
-        if (!confStore.isActive()) {
-            gumsResourceAdminLog.fatal("Couldn't read GUMS policy file (gums.config)");
-        }
-        
-        startUpdateThread(this);
-    }
-    
-    /** @todo This constructor should probably go away... */
-    public GUMS(Configuration conf) {
-        this.conf = conf;
-    }
     
     public static String getVersion() {
     	return version;
     }
-    
     private static synchronized void startUpdateThread(final GUMS gums) {
         // If JNDI property is set, run the update every x minutes
         if (timer == null) {
@@ -96,15 +67,36 @@ public class GUMS {
             }
         }
     }
-
-    /**
-     * Retrieve the ResourceManager to perform actions on the business logic.
-     * @return the resource manager.
-     */
-    public ResourceManager getResourceManager() {
-        return resMan;
+    private Configuration conf;
+    
+    private ResourceManager resMan = new ResourceManager(this);
+    
+    protected ConfigurationStore confStore;
+    
+    /** Creates and initilializes a new instance of GUMS. */
+    public GUMS() {
+        confStore = new FileConfigurationStore();
+        if (!confStore.isActive()) {
+            gumsResourceAdminLog.fatal("Couldn't read GUMS policy file (gums.config)");
+        }
+        
+        startUpdateThread(this);
     }
     
+    /** @todo This constructor should probably go away... */
+    public GUMS(Configuration conf) {
+        this.conf = conf;
+    }
+    
+    public GUMS(ConfigurationStore confStore) {
+        this.confStore = confStore;
+        if (!confStore.isActive()) {
+            gumsResourceAdminLog.fatal("Couldn't read GUMS policy file (gums.config)");
+        }
+        
+        startUpdateThread(this);
+    }
+
     /**
      * Retrieves the configuration being used by GUMS. The configuration might
      * change from one call to the other. Therefore, the business logic needs
@@ -115,6 +107,14 @@ public class GUMS {
     public Configuration getConfiguration() {
         if (confStore != null) return confStore.retrieveConfiguration();
         return conf;
+    }
+    
+    /**
+     * Retrieve the ResourceManager to perform actions on the business logic.
+     * @return the resource manager.
+     */
+    public ResourceManager getResourceManager() {
+        return resMan;
     }
     
     /**

@@ -29,25 +29,7 @@ public class NISAccountMapper extends AccountMapper {
     static Log log = LogFactory.getLog(NISAccountMapper.class);
     static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     private String jndiNisUrl = "";
-    
-    public NISAccountMapper() {
-    	super();
-        adminLog.warn("The use of gov.bnl.gums.NISAccountMapper is deprecated. Please use gov.bnl.gums.GecosNisAccoutMapper: it provides the same functionalities.");
-    }
-
-    public NISAccountMapper(Configuration configuration) {
-    	super(configuration);
-        adminLog.warn("The use of gov.bnl.gums.NISAccountMapper is deprecated. Please use gov.bnl.gums.GecosNisAccoutMapper: it provides the same functionalities.");
-    }
-    
-    public NISAccountMapper(Configuration configuration, String name) {
-    	super(configuration, name);
-    }
-   
-    public String mapUser(String userDN) {
-        String[] nameSurname = parseNameAndSurname(userDN);
-        return nisClient(jndiNisUrl).findAccount(nameSurname[0], nameSurname[1]);
-    }
+    private Map nisClients = new Hashtable();
     
     public static String[] parseNameAndSurname(String certificateSubject) {
         int begin = certificateSubject.indexOf("CN=") + 3;
@@ -81,6 +63,26 @@ public class NISAccountMapper extends AccountMapper {
         
         return true;
     }
+
+    public NISAccountMapper() {
+    	super();
+        adminLog.warn("The use of gov.bnl.gums.NISAccountMapper is deprecated. Please use gov.bnl.gums.GecosNisAccoutMapper: it provides the same functionalities.");
+    }
+    
+    public NISAccountMapper(Configuration configuration) {
+    	super(configuration);
+        adminLog.warn("The use of gov.bnl.gums.NISAccountMapper is deprecated. Please use gov.bnl.gums.GecosNisAccoutMapper: it provides the same functionalities.");
+    }
+    
+    public NISAccountMapper(Configuration configuration, String name) {
+    	super(configuration, name);
+    }
+    
+    public AccountMapper clone(Configuration configuration) {
+    	NISAccountMapper accountMapper = new NISAccountMapper(configuration, getName());
+    	accountMapper.setJndiNisUrl(jndiNisUrl);
+    	return accountMapper;
+    }
     
     /**
      * Getter for property jndiNisUrl.
@@ -90,25 +92,16 @@ public class NISAccountMapper extends AccountMapper {
         return jndiNisUrl;
     }
     
+    public String mapUser(String userDN) {
+        String[] nameSurname = parseNameAndSurname(userDN);
+        return nisClient(jndiNisUrl).findAccount(nameSurname[0], nameSurname[1]);
+    }
     /**
      * Setter for property jndiNisUrl.
      * @param jndiNisUrl New value of property jndiNisUrl.
      */
     public void setJndiNisUrl(String jndiNisUrl) {
         this.jndiNisUrl = jndiNisUrl;
-    }
-    
-    private Map nisClients = new Hashtable();
-    private NISClient nisClient(String jndiNisUrl) {
-        NISClient client = (NISClient) nisClients.get(jndiNisUrl);
-        if (client != null) {
-            log.trace("Reusing NisClient for '" + jndiNisUrl +"'");
-            return client;
-        }
-        log.debug("Creating new NisClient for '" + jndiNisUrl + "'");
-        client = new NISClient(jndiNisUrl);
-        nisClients.put(jndiNisUrl, client);
-        return client;
     }
 
     public String toString(String bgColor) {
@@ -120,9 +113,15 @@ public class NISAccountMapper extends AccountMapper {
 			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
     }          
     
-    public AccountMapper clone(Configuration configuration) {
-    	NISAccountMapper accountMapper = new NISAccountMapper(configuration, getName());
-    	accountMapper.setJndiNisUrl(jndiNisUrl);
-    	return accountMapper;
+    private NISClient nisClient(String jndiNisUrl) {
+        NISClient client = (NISClient) nisClients.get(jndiNisUrl);
+        if (client != null) {
+            log.trace("Reusing NisClient for '" + jndiNisUrl +"'");
+            return client;
+        }
+        log.debug("Creating new NisClient for '" + jndiNisUrl + "'");
+        client = new NISClient(jndiNisUrl);
+        nisClients.put(jndiNisUrl, client);
+        return client;
     }
 }

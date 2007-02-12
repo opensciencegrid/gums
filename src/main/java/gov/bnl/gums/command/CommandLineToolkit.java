@@ -5,25 +5,10 @@
  */
 package gov.bnl.gums.command;
 
-import gov.bnl.gums.admin.*;
-
 /**
  * @author carcassi
  */
 public class CommandLineToolkit {
-    /**
-     * Creates a new instance of CommandLineToolkit
-     */
-    private CommandLineToolkit() {
-    }
-
-    /**
-     * TODO: write doc
-     *
-     * @param className TODO: write doc
-     *
-     * @return TODO: write doc
-     */
     public static String getCommandName(String className) {
         className = className.substring(className.lastIndexOf('.') + 1);
 
@@ -43,5 +28,11 @@ public class CommandLineToolkit {
         }
 
         return buffer.toString();
+    }
+
+    /**
+     * Creates a new instance of CommandLineToolkit
+     */
+    private CommandLineToolkit() {
     }
 }

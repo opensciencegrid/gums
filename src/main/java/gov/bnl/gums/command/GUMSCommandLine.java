@@ -5,28 +5,25 @@
  */
 package gov.bnl.gums.command;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import gov.bnl.gums.admin.*;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author carcassi
  */
 public class GUMSCommandLine {
+    public static String command = "gums";
     private static Log log = LogFactory.getLog(GUMSCommandLine.class);
     private static Map commands = new Hashtable();
     private static SortedMap commandDescriptions = new TreeMap();
-    public static String command = "gums";
 
     public static void addCommand(String className, String description) {
         String command = CommandLineToolkit.getCommandName(className);
@@ -37,23 +34,6 @@ public class GUMSCommandLine {
 
     public static void clearCommands() {
         commands = new Hashtable();
-    }
-
-    static void printHelp() {
-        System.out.println("usage: " + command + " command [command-options] ");
-        System.out.println("Commands:");
-
-        Iterator iter = commandDescriptions.keySet().iterator();
-
-        while (iter.hasNext()) {
-            String command = (String) iter.next();
-
-            System.out.println("  " + command + " - " +
-                commandDescriptions.get(command));
-        }
-
-        System.out.println("For help on any command:");
-        System.out.println("  " + command + " command --help");
     }
 
     /**
@@ -82,7 +62,24 @@ public class GUMSCommandLine {
         System.exit(retCode);
     }
 
-    static int runCommand(String command, String[] args) {
+    public static void printHelp() {
+        System.out.println("usage: " + command + " command [command-options] ");
+        System.out.println("Commands:");
+
+        Iterator iter = commandDescriptions.keySet().iterator();
+
+        while (iter.hasNext()) {
+            String command = (String) iter.next();
+
+            System.out.println("  " + command + " - " +
+                commandDescriptions.get(command));
+        }
+
+        System.out.println("For help on any command:");
+        System.out.println("  " + command + " command --help");
+    }
+
+    public static int runCommand(String command, String[] args) {
         String className = (String) commands.get(command);
 
         if (className == null) {

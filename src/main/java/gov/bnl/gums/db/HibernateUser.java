@@ -15,38 +15,14 @@ package gov.bnl.gums.db;
  * @author carcassi
  */
 public class HibernateUser {
+    private Long id;
+    private String dn;
+    private String fqan;
+    private String group;
     
     /** Creates a new instance of User */
     public HibernateUser() {
     }
-
-    /**
-     * Holds value of property id.
-     */
-    private Long id;
-
-    /**
-     * Getter for property id.
-     * @return Value of property id.
-     */
-    public Long getId() {
-
-        return this.id;
-    }
-
-    /**
-     * Setter for property id.
-     * @param id New value of property id.
-     */
-    public void setId(Long id) {
-
-        this.id = id;
-    }
-
-    /**
-     * Holds value of property dn.
-     */
-    private String dn;
 
     /**
      * Getter for property dn.
@@ -55,6 +31,33 @@ public class HibernateUser {
     public String getDn() {
 
         return this.dn;
+    }
+
+    /**
+     * Getter for property fqan.
+     * @return Value of property fqan.
+     */
+    public String getFqan() {
+
+        return this.fqan;
+    }
+
+    /**
+     * Getter for property group.
+     * @return Value of property group.
+     */
+    public String getGroup() {
+
+        return this.group;
+    }
+
+    /**
+     * Getter for property id.
+     * @return Value of property id.
+     */
+    public Long getId() {
+
+        return this.id;
     }
 
     /**
@@ -67,20 +70,6 @@ public class HibernateUser {
     }
 
     /**
-     * Holds value of property fqan.
-     */
-    private String fqan;
-
-    /**
-     * Getter for property fqan.
-     * @return Value of property fqan.
-     */
-    public String getFqan() {
-
-        return this.fqan;
-    }
-
-    /**
      * Setter for property fqan.
      * @param fqan New value of property fqan.
      */
@@ -90,26 +79,21 @@ public class HibernateUser {
     }
 
     /**
-     * Holds value of property group.
-     */
-    private String group;
-
-    /**
-     * Getter for property group.
-     * @return Value of property group.
-     */
-    public String getGroup() {
-
-        return this.group;
-    }
-
-    /**
      * Setter for property group.
      * @param group New value of property group.
      */
     public void setGroup(String group) {
 
         this.group = group;
+    }
+
+    /**
+     * Setter for property id.
+     * @param id New value of property id.
+     */
+    public void setId(Long id) {
+
+        this.id = id;
     }
     
 }

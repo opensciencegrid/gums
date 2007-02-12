@@ -10,8 +10,6 @@
 
 package gov.bnl.gums.hostToGroup;
 
-
-
 import gov.bnl.gums.configuration.Configuration;
 
 import java.util.ArrayList;
@@ -38,13 +36,20 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     	super(configuration);
     }
 
-    public boolean isInGroup(String hostname) {
-        Iterator iter = regexs.iterator();
-        while (iter.hasNext()) {
-            if (hostname.matches((String) iter.next()))
-                return true;
-        }
-        return false;
+    public HostToGroupMapping clone(Configuration configuration) {
+    	CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping(configuration);
+    	if (getDn()!=null)
+    		hostToGroupMapping.setDn(getDn());
+    	else if (getCn()!=null)
+    		hostToGroupMapping.setCn(getCn());
+    	else
+    		hostToGroupMapping.setCn("");
+    	Iterator it = getGroupToAccountMappings().iterator();
+    	while (it.hasNext()) {
+    		String groupToAccountMapping = (String)it.next();
+    		hostToGroupMapping.addGroupToAccountMapping(groupToAccountMapping);
+    	}
+    	return hostToGroupMapping;
     }
     
     /** Retrieves the wildcard that will be used to match the CN.
@@ -54,15 +59,6 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
         return this.cn;
     }
     
-    /** Changes the wildcard that will be used to match the CN.
-     * @param cn The new wildcard (i.e. '*.mycompany.com').
-     */
-    public void setCn(String cn) {
-        super.setName(cn);
-        this.cn = cn;
-        updateRegEx();
-    }
-    
     /** Retrieves the wildcard that will be used to match the DN.
      * @return The wildcard (i.e. '/DC=org/DC=doegrids/OU=Services/CN=*.mycompany.com').
      */
@@ -70,8 +66,26 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
         return this.dn;
     }
     
-    /** Changes the wildcard that will be used to match the DN.
-     * @param wildcard The new wildcard (i.e. '/DC=org/DC=doegrids/OU=Services/CN=*.mycompany.com').
+    public boolean isInGroup(String hostname) {
+        Iterator iter = regexs.iterator();
+        while (iter.hasNext()) {
+            if (hostname.matches((String) iter.next()))
+                return true;
+        }
+        return false;
+    }
+    
+    /** Changes the wildcard that will be used to match the CN(s).
+     * @param cn The new wildcard (i.e. '*.mycompany.com, *othercompany.com').
+     */
+    public void setCn(String cn) {
+        super.setName(cn);
+        this.cn = cn;
+        updateRegEx();
+    }
+    
+    /** Changes the wildcard that will be used to match the DN(s).
+     * @param wildcard The new wildcard (i.e. '/DC=org/DC=doegrids/OU=Services/CN=*.mycompany.com, /DC=org/DC=doegrids/OU=Services/CN=*.othercompany.com').
      */
     public void setDn(String dn) {
         super.setName(dn);
@@ -82,6 +96,16 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     public void setName(String name) {
     	throw new RuntimeException("Call setCn or SetDn rather than setName");
     }
+    
+    public String toXML() {
+    	String retStr = super.toXML();
+    	if (dn != null)
+    		retStr += "\t\t\tdn='" + dn + "'";
+    	else
+    		retStr += "\t\t\tcn='" + (cn!=null?cn:"") + "'";
+    	retStr += "/>\n\n";
+    	return retStr;
+    }      
     
     private void updateRegEx() {
         regexs = new ArrayList();
@@ -103,31 +127,5 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
                 regexs.add(regex);
             }
         }
-    }
-    
-    public String toXML() {
-    	String retStr = super.toXML();
-    	if (dn != null)
-    		retStr += "\t\t\tdn='" + dn + "'";
-    	else
-    		retStr += "\t\t\tcn='" + (cn!=null?cn:"") + "'";
-    	retStr += "/>\n\n";
-    	return retStr;
-    }      
-    
-    public HostToGroupMapping clone(Configuration configuration) {
-    	CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping(configuration);
-    	if (getDn()!=null)
-    		hostToGroupMapping.setDn(getDn());
-    	else if (getCn()!=null)
-    		hostToGroupMapping.setCn(getCn());
-    	else
-    		hostToGroupMapping.setCn("");
-    	Iterator it = getGroupToAccountMappings().iterator();
-    	while (it.hasNext()) {
-    		String groupToAccountMapping = (String)it.next();
-    		hostToGroupMapping.addGroupToAccountMapping(groupToAccountMapping);
-    	}
-    	return hostToGroupMapping;
     }
 }

@@ -2,19 +2,13 @@ package gov.bnl.gums.userGroup;
 
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.UserGroupDB;
-import gov.bnl.gums.persistence.PersistenceFactory;
-
-import java.net.URL;
-
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.edg.security.voms.service.admin.VOMSAdmin;
-import org.edg.security.voms.service.admin.VOMSAdminServiceLocator;
 
 public class VirtualOrganization {
-	private String name = "";
     private Log log = LogFactory.getLog(VOMSUserGroup.class);
+	private String name = "";
     private String baseUrl = "";
     private String sslKey = "";
     private String sslCertfile = "";
@@ -46,28 +40,73 @@ public class VirtualOrganization {
 		this.name = name;
 	}
 	 
-	public void setName(String name) {
-		this.name = name;
-	}
+	public VirtualOrganization clone(Configuration configuration) {
+    	VirtualOrganization virtualOrganization = new VirtualOrganization(configuration, name);
+    	virtualOrganization.setBaseUrl(baseUrl);
+    	virtualOrganization.setSslKey(sslKey);
+    	virtualOrganization.setSslCertfile(sslCertfile);
+    	virtualOrganization.setSslKeyPasswd(sslKeyPasswd);
+    	virtualOrganization.setSslCAFiles(sslCAFiles);
+    	virtualOrganization.setPersistenceFactory(persistenceFactory);
+    	return virtualOrganization;
+    }
 
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public Configuration getConfiguration() {
-		return configuration;
-	}
-	
-    /**
+	/**
      * Returns the address of the VOMS server to contact.
      * @return The address of the VOMS server (i.e. https://voms.myste.org:8443/edg-voms-admin/myvo/services/VOMSAdmin)
      */
     public String getBaseUrl() {
         return baseUrl;
+    }
+	
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+	
+	public UserGroupDB getDB() {
+    	if (db==null)
+            db = configuration.getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( getName() );
+    	return db;
+    }
+	
+    public String getName() {
+		return name;
+	}
+    
+    public String getPersistenceFactory() {
+        return persistenceFactory;
+    }
+    
+    /**
+     * Returns the location of the Certificate Authority certificates used to connect to the VOMS server.
+     * @return The location of the CA certificates (i.e. /etc/grid-security/certificates/*.0)
+     */
+    public String getSslCAFiles() {
+        return this.sslCAFiles;
+    }
+    
+    /**
+     * Returns the location of the certificated used to connect to the VOMS server.
+     * @return The location of the certificate (i.e. /etc/grid-security/hostcert.pem)
+     */
+    public String getSslCertfile() {
+        return this.sslCertfile;
+    }
+    
+    /**
+     * Returns the location of the key to be used during the connection.
+     * @return The location of the key (i.e. /etc/grid-security/hostkey.pem)
+     */
+    public String getSslKey() {
+        return this.sslKey;
+    }
+    
+    /**
+     * Returns the private key password used to connect to the VOMS server.
+     * @return The password for the private key
+     */
+    public String getSslKeyPasswd() {
+        return this.sslKeyPasswd;
     }
     
     /**
@@ -80,44 +119,16 @@ public class VirtualOrganization {
         this.baseUrl = baseUrl;
     }
     
-    /**
-     * Returns the location of the key to be used during the connection.
-     * @return The location of the key (i.e. /etc/grid-security/hostkey.pem)
-     */
-    public String getSslKey() {
-        return this.sslKey;
-    }
+    public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
     
-    /**
-     * Changes the location of the private key used to connect to the VOMS server.
-     * @param sslKey The location of the key (i.e. /etc/grid-security/hostkey.pem)
-     */
-    public void setSslKey(String sslKey) {
-        this.sslKey = sslKey;
-    }
+    public void setName(String name) {
+		this.name = name;
+	}
     
-    /**
-     * Returns the location of the certificated used to connect to the VOMS server.
-     * @return The location of the certificate (i.e. /etc/grid-security/hostcert.pem)
-     */
-    public String getSslCertfile() {
-        return this.sslCertfile;
-    }
-    
-    /**
-     * Changes the location of the certificated used to connect to the VOMS server.
-     * @param sslCertfile The location of the certificate (i.e. /etc/grid-security/hostcert.pem)
-     */
-    public void setSslCertfile(String sslCertfile) {
-        this.sslCertfile = sslCertfile;
-    }
-    
-    /**
-     * Returns the location of the Certificate Authority certificates used to connect to the VOMS server.
-     * @return The location of the CA certificates (i.e. /etc/grid-security/certificates/*.0)
-     */
-    public String getSslCAFiles() {
-        return this.sslCAFiles;
+    public void setPersistenceFactory(String persistenceFactory) {
+        this.persistenceFactory = persistenceFactory;
     }
     
     /**
@@ -129,11 +140,19 @@ public class VirtualOrganization {
     }
     
     /**
-     * Returns the private key password used to connect to the VOMS server.
-     * @return The password for the private key
+     * Changes the location of the certificated used to connect to the VOMS server.
+     * @param sslCertfile The location of the certificate (i.e. /etc/grid-security/hostcert.pem)
      */
-    public String getSslKeyPasswd() {
-        return this.sslKeyPasswd;
+    public void setSslCertfile(String sslCertfile) {
+        this.sslCertfile = sslCertfile;
+    }
+    
+    /**
+     * Changes the location of the private key used to connect to the VOMS server.
+     * @param sslKey The location of the key (i.e. /etc/grid-security/hostkey.pem)
+     */
+    public void setSslKey(String sslKey) {
+        this.sslKey = sslKey;
     }
     
     /**
@@ -143,25 +162,11 @@ public class VirtualOrganization {
     public void setSslKeyPasswd(String sslKeyPasswd) {
         this.sslKeyPasswd = sslKeyPasswd;
     }
-    
-    public String getPersistenceFactory() {
-        return persistenceFactory;
-    }
-    
-    public void setPersistenceFactory(String persistenceFactory) {
-        this.persistenceFactory = persistenceFactory;
-    }
-    
-    public UserGroupDB getDB() {
-    	if (db==null)
-            db = configuration.getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( getName() );
-    	return db;
-    }
-    
+
     public String toString() {
         return "VirtualOrganization: baseUrl='" + baseUrl + "' sslCertfile='" + getSslCertfile() + "' sslKey='" + getSslKey() + "' sslKeyPasswd set:" + (!getSslKeyPasswd().equals("")) + " - sslCAFiles='" + getSslCAFiles() + "'";
     }
-
+    
     public String toXML() {
     	String retStr = "\t\t<virtualOrganization\n"+
 		"\t\t\tname='"+name+"'\n"+
@@ -182,17 +187,6 @@ public class VirtualOrganization {
     	retStr += "/>\n\n";    	
     	
     	return retStr;
-    }
-    
-    public VirtualOrganization clone(Configuration configuration) {
-    	VirtualOrganization virtualOrganization = new VirtualOrganization(configuration, name);
-    	virtualOrganization.setBaseUrl(baseUrl);
-    	virtualOrganization.setSslKey(sslKey);
-    	virtualOrganization.setSslCertfile(sslCertfile);
-    	virtualOrganization.setSslKeyPasswd(sslKeyPasswd);
-    	virtualOrganization.setSslCAFiles(sslCAFiles);
-    	virtualOrganization.setPersistenceFactory(persistenceFactory);
-    	return virtualOrganization;
     }
     
 }

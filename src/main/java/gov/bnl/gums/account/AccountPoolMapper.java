@@ -6,15 +6,8 @@
 
 package gov.bnl.gums.account;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import gov.bnl.gums.configuration.Configuration;
-import gov.bnl.gums.db.HibernateMapping;
 import gov.bnl.gums.db.AccountPoolMapperDB;
-import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
-import gov.bnl.gums.persistence.PersistenceFactory;
 
 /** Provides the mapping by assigning user accounts from a pool provided by
  * the AccountPoolMapperDB.
@@ -26,7 +19,6 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  * @author  Gabriele Carcassi
  */
 public class AccountPoolMapper extends AccountMapper {
-    
     private AccountPoolMapperDB db;
     private String persistenceFactory = "";
     private String accountPool = "";
@@ -43,36 +35,37 @@ public class AccountPoolMapper extends AccountMapper {
     	super(configuration, name);
     }
     
+    public AccountMapper clone(Configuration configuration) {
+    	AccountPoolMapper accountMapper = new AccountPoolMapper(configuration, getName());
+    	accountMapper.setAccountPool(accountPool);
+    	accountMapper.setPersistenceFactory(persistenceFactory);
+    	return accountMapper;
+    }
+    
     public String getAccountPool() {
     	return accountPool;
     }
+
+    public int getNumberAssigned() {
+    	return getDB().retrieveAccountMap().values().size();
+    }    
     
-    public void setAccountPool(String accountPool) {
-    	this.accountPool = accountPool;
+    public int getNumberUnassigned() {
+    	return getDB().getNumberUnassignedMappings();
     }
 
+    public String getPersistenceFactory() {
+       return persistenceFactory;
+    }
+    
     public String mapUser(String userDN) {
         String account = getDB().retrieveAccount(userDN);
         if (account != null) return account;
         return getDB().assignAccount(userDN);
-    }    
-    
-    public int getNumberAssigned() {
-    	return getDB().retrieveAccountMap().values().size();
-    }
-
-    public int getNumberUnassigned() {
-    	return getDB().getNumberUnassignedMappings();
     }
     
-    private AccountPoolMapperDB getDB() {
-    	if (db==null)
-    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveAccountPoolMapperDB( accountPool );
-    	return db;
-    }
-    
-    public String getPersistenceFactory() {
-       return persistenceFactory;
+    public void setAccountPool(String accountPool) {
+    	this.accountPool = accountPool;
     }
     
     public void setPersistenceFactory(String persistenceFactory) {
@@ -89,10 +82,9 @@ public class AccountPoolMapper extends AccountMapper {
     		"\t\t\taccountPool='"+accountPool+"'/>\n\n";
     }
     
-    public AccountMapper clone(Configuration configuration) {
-    	AccountPoolMapper accountMapper = new AccountPoolMapper(configuration, getName());
-    	accountMapper.setAccountPool(accountPool);
-    	accountMapper.setPersistenceFactory(persistenceFactory);
-    	return accountMapper;
+    private AccountPoolMapperDB getDB() {
+    	if (db==null)
+    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveAccountPoolMapperDB( accountPool );
+    	return db;
     }
 }

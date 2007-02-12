@@ -22,7 +22,22 @@ import java.security.cert.X509Certificate;
  */
 public class CertToolkit {
     
-    private  CertToolkit() {
+    public static String convertDN(String commaDN) {
+        List pieces = new ArrayList();
+        while (commaDN.indexOf(", ") != -1) {
+            int pos = commaDN.indexOf(", ");
+            pieces.add(commaDN.substring(0, pos));
+            commaDN = commaDN.substring(pos+2);
+        }
+        pieces.add(commaDN);
+        Collections.reverse(pieces);
+        Iterator iter = pieces.iterator();
+        StringBuffer DN = new StringBuffer();
+        while (iter.hasNext()) {
+            DN.append("/");
+            DN.append((String) iter.next());
+        }
+        return DN.toString();
     }
     
     public static String getUserDN(X509Certificate cert) {
@@ -44,21 +59,6 @@ public class CertToolkit {
         return convertDN(commaDN);
     }
     
-    public static String convertDN(String commaDN) {
-        List pieces = new ArrayList();
-        while (commaDN.indexOf(", ") != -1) {
-            int pos = commaDN.indexOf(", ");
-            pieces.add(commaDN.substring(0, pos));
-            commaDN = commaDN.substring(pos+2);
-        }
-        pieces.add(commaDN);
-        Collections.reverse(pieces);
-        Iterator iter = pieces.iterator();
-        StringBuffer DN = new StringBuffer();
-        while (iter.hasNext()) {
-            DN.append("/");
-            DN.append((String) iter.next());
-        }
-        return DN.toString();
+    private  CertToolkit() {
     }
 }

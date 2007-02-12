@@ -11,10 +11,7 @@ import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.configuration.FileConfigurationStore;
 import gov.bnl.gums.userGroup.UserGroup;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -32,18 +29,53 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  * @author  carcassi
  */
 public class GUMSAPIImpl implements GUMSAPI {
+    private static GUMS gums;
     private Log log = LogFactory.getLog(GUMSAPI.class);
     private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     private Log siteLog = LogFactory.getLog(GUMS.siteAdminLog);
-    private static GUMS gums;
+    private boolean isInWeb = false;
     
-    private GUMS gums() {
-        if (gums == null) {
-        	String confPath = CertCache.getConfPath();
-        	FileConfigurationStore confStore = new FileConfigurationStore(confPath, !(new File(confPath).exists()));
-            gums = new GUMS(confStore);
+    {
+        try {
+            Class.forName("javax.servlet.Filter");
+            isInWeb = true;
+        } catch (ClassNotFoundException e) {
+            isInWeb = false;
         }
-        return gums;
+    }
+    
+    public void addAccountRange(String persistenceManager, String groupName, String range) {
+        String firstAccount = range.substring(0, range.indexOf('-'));
+        String lastAccountN = range.substring(range.indexOf('-') + 1);
+        String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
+        String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
+        int nFirstAccount = Integer.parseInt(firstAccountN);
+        int nLastAccount = Integer.parseInt(lastAccountN);
+
+        StringBuffer last = new StringBuffer(firstAccount);
+        String nLastAccountString = Integer.toString(nLastAccount);
+        last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
+        
+        System.out.println("Adding accounts between '" + firstAccount + "' and '" + last.toString() + "' to pool '" + groupName + "'");
+        
+        StringBuffer buf = new StringBuffer(firstAccount);
+        int len = firstAccount.length();
+        for (int account = nFirstAccount; account <= nLastAccount; account++) {
+            String nAccount = Integer.toString(account);
+            buf.replace(len - nAccount.length(), len, nAccount);
+            addPoolAccount(persistenceManager, groupName, buf.toString());
+            System.out.println(buf.toString() + " added");
+        }
+    }
+    
+    public void backupConfiguration() {
+    	if (hasWriteAccess(currentUser()))
+    		gums().setConfiguration(gums().getConfiguration(), true);
+    	else {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to backup configuration because user doesn't have write access");
+    		siteLog.info(logUserAccess() + "Failed to backup configuration because user doesn't have write access");
+    		throw new AuthorizationDeniedException();
+    	}
     }
     
     public String generateGrid3UserVoMap(String hostname) {
@@ -82,6 +114,20 @@ public class GUMSAPIImpl implements GUMSAPI {
             gumsResourceAdminLog.error(logUserAccess() + "Failed to generate mapfile for host '" + hostname + "' - " + e.getMessage());
             throw e;
         }
+    }
+    
+    public Configuration getConfiguration() {
+    	if (hasWriteAccess(currentUser()))
+    		return gums().getConfiguration();
+    	else {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to get configuration because user doesn't have write access");
+    		siteLog.info(logUserAccess() + "Failed to get configuration because user doesn't have write access");
+    		throw new AuthorizationDeniedException();
+    	}
+    }
+    
+    public String getVersion() {
+    	return GUMS.getVersion();
     }
     
     public void manualGroupAdd(String persistanceManager, String group, String userDN) {
@@ -149,7 +195,7 @@ public class GUMSAPIImpl implements GUMSAPI {
             throw e;
         }
     }
-    
+
     public void manualMappingRemove(String persistanceManager, String group, String userDN) {
         try {
             if (hasWriteAccess(currentUser())) {
@@ -168,25 +214,6 @@ public class GUMSAPIImpl implements GUMSAPI {
         } catch (RuntimeException e) {
             gumsResourceAdminLog.error(logUserAccess() + "Failed to remove mapping from persistence '" + persistanceManager + "' group '" + group + "' for user '" + userDN + "' - " + e.getMessage());
             siteLog.info(logUserAccess() + "Failed to remove mapping from persistence '" + persistanceManager + "' group '" + group + "' for user '" + userDN + "' - " + e.getMessage());
-            throw e;
-        }
-    }
-    
-    public String mapUser(String hostname, String userDN, String fqan) {
-        try {
-            if ( (hasReadSelfAccess(currentUser()) && currentUser().getCertificateDN().equals(userDN)) || hasReadAllAccess(currentUser())) {
-                String username = gums().getResourceManager().map(hostname, new GridUser(userDN, fqan));
-                gumsResourceAdminLog.info(logUserAccess() + "Mapped on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' to '" + username + "'");
-                return username;
-            } else {
-                throw new AuthorizationDeniedException();
-            }
-        } catch (AuthorizationDeniedException e) {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to map on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' - " + e.getMessage());
-            siteLog.info(logUserAccess() + "Unauthorized access to map on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "'");
-            throw e;
-        } catch (RuntimeException e) {
-            gumsResourceAdminLog.error(logUserAccess() + "Failed to map on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' - " + e.getMessage());
             throw e;
         }
     }
@@ -227,6 +254,35 @@ public class GUMSAPIImpl implements GUMSAPI {
         }
     }
     
+    public String mapUser(String hostname, String userDN, String fqan) {
+        try {
+            if ( (hasReadSelfAccess(currentUser()) && currentUser().getCertificateDN().equals(userDN)) || hasReadAllAccess(currentUser())) {
+                String username = gums().getResourceManager().map(hostname, new GridUser(userDN, fqan));
+                gumsResourceAdminLog.info(logUserAccess() + "Mapped on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' to '" + username + "'");
+                return username;
+            } else {
+                throw new AuthorizationDeniedException();
+            }
+        } catch (AuthorizationDeniedException e) {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to map on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Unauthorized access to map on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "'");
+            throw e;
+        } catch (RuntimeException e) {
+            gumsResourceAdminLog.error(logUserAccess() + "Failed to map on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' - " + e.getMessage());
+            throw e;
+        }
+    }
+    
+    public void setConfiguration(Configuration configuration) throws Exception {
+    	if (hasWriteAccess(currentUser()))
+    		gums().setConfiguration(configuration, false);
+    	else {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
+    		siteLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
+    		throw new AuthorizationDeniedException();
+    	}
+    }
+    
     public void updateGroups() {
         try {
             if (hasWriteAccess(currentUser())) {
@@ -246,135 +302,6 @@ public class GUMSAPIImpl implements GUMSAPI {
             throw e;
         }
     }
-
-    public Configuration getConfiguration() {
-    	if (hasWriteAccess(currentUser()))
-    		return gums().getConfiguration();
-    	else {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to get configuration because user doesn't have write access");
-    		siteLog.info(logUserAccess() + "Failed to get configuration because user doesn't have write access");
-    		throw new AuthorizationDeniedException();
-    	}
-    }
-    
-    public void setConfiguration(Configuration configuration) throws Exception {
-    	if (hasWriteAccess(currentUser()))
-    		gums().setConfiguration(configuration, false);
-    	else {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
-    		siteLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
-    		throw new AuthorizationDeniedException();
-    	}
-    }
-    
-    public String getVersion() {
-    	return GUMS.getVersion();
-    }
-    
-    public void backupConfiguration() {
-    	if (hasWriteAccess(currentUser()))
-    		gums().setConfiguration(gums().getConfiguration(), true);
-    	else {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to backup configuration because user doesn't have write access");
-    		siteLog.info(logUserAccess() + "Failed to backup configuration because user doesn't have write access");
-    		throw new AuthorizationDeniedException();
-    	}
-    }
-    
-    private String logUserAccess() {
-        if (currentUser() == null) {
-            return "No AuthN - ";
-        } else {
-            return currentUser() + " - ";
-        }
-    }
-    
-    private boolean isInWeb = false;
-    {
-        try {
-            Class.forName("javax.servlet.Filter");
-            isInWeb = true;
-        } catch (ClassNotFoundException e) {
-            isInWeb = false;
-        }
-    }
-    
-    private GridUser currentUser() {
-        if (!isInWeb) return null;
-        String DN = CertCache.getUserDN();
-        if (DN != null) {
-            return new GridUser(DN, null);
-        } else {
-            return null;
-        }
-    }
-
-    private boolean hasWriteAccess(GridUser user) {
-        if (user == null) return false;
-        if (gums().getConfiguration().getWriteUserGroups() == null)
-            return false;
-        Collection writeUserGroups = gums().getConfiguration().getWriteUserGroups();
-        Iterator it = writeUserGroups.iterator();
-        while (it.hasNext()) {
-        	UserGroup userGroupManager = (UserGroup)it.next();
-        	if (userGroupManager.isInGroup(user))
-        		return true;
-        }
-        return false;
-    }    
-    
-    private boolean hasReadSelfAccess(GridUser currentUser) {
-        if (currentUser == null) return false;
-        if (gums().getConfiguration().getReadSelfUserGroups() == null)
-            return false;
-        Collection readSelfUserGroups = gums().getConfiguration().getReadSelfUserGroups();
-        Iterator it = readSelfUserGroups.iterator();
-        while (it.hasNext()) {
-        	UserGroup userGroupManager = (UserGroup)it.next();
-        	if (userGroupManager.isInGroup(currentUser))
-        		return true;
-        }
-        return false;
-    }
-
-    private boolean hasReadAllAccess(GridUser user) {
-        if (user == null) return false;
-        if (gums().getConfiguration().getReadAllUserGroups() == null)
-            return false;
-        Collection readAllUserGroups = gums().getConfiguration().getReadAllUserGroups();
-        Iterator it = readAllUserGroups.iterator();
-        while (it.hasNext()) {
-        	UserGroup userGroupManager = (UserGroup)it.next();
-        	if (userGroupManager.isInGroup(user))
-        		return true;
-        }
-        return false;
-    }
-    
-    public void addAccountRange(String persistenceManager, String groupName, String range) {
-        String firstAccount = range.substring(0, range.indexOf('-'));
-        String lastAccountN = range.substring(range.indexOf('-') + 1);
-        String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
-        String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
-        int nFirstAccount = Integer.parseInt(firstAccountN);
-        int nLastAccount = Integer.parseInt(lastAccountN);
-
-        StringBuffer last = new StringBuffer(firstAccount);
-        String nLastAccountString = Integer.toString(nLastAccount);
-        last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
-        
-        System.out.println("Adding accounts between '" + firstAccount + "' and '" + last.toString() + "' to pool '" + groupName + "'");
-        
-        StringBuffer buf = new StringBuffer(firstAccount);
-        int len = firstAccount.length();
-        for (int account = nFirstAccount; account <= nLastAccount; account++) {
-            String nAccount = Integer.toString(account);
-            buf.replace(len - nAccount.length(), len, nAccount);
-            addPoolAccount(persistenceManager, groupName, buf.toString());
-            System.out.println(buf.toString() + " added");
-        }
-    }
-    
     private void addPoolAccount(String persistanceManager, String group, String username) {
         try {
             if (hasWriteAccess(currentUser())) {
@@ -397,6 +324,75 @@ public class GUMSAPIImpl implements GUMSAPI {
             gumsResourceAdminLog.error(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
             siteLog.info(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceManager + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
             throw e;
+        }
+    }
+    
+    private GridUser currentUser() {
+        if (!isInWeb) return null;
+        String DN = CertCache.getUserDN();
+        if (DN != null) {
+            return new GridUser(DN, null);
+        } else {
+            return null;
+        }
+    }
+
+    private GUMS gums() {
+        if (gums == null) {
+        	String confPath = CertCache.getConfPath();
+        	FileConfigurationStore confStore = new FileConfigurationStore(confPath, !(new File(confPath).exists()));
+            gums = new GUMS(confStore);
+        }
+        return gums;
+    }    
+    
+    private boolean hasReadAllAccess(GridUser user) {
+        if (user == null) return false;
+        if (gums().getConfiguration().getReadAllUserGroups() == null)
+            return false;
+        Collection readAllUserGroups = gums().getConfiguration().getReadAllUserGroups();
+        Iterator it = readAllUserGroups.iterator();
+        while (it.hasNext()) {
+        	UserGroup userGroupManager = (UserGroup)it.next();
+        	if (userGroupManager.isInGroup(user))
+        		return true;
+        }
+        return false;
+    }
+
+    private boolean hasReadSelfAccess(GridUser currentUser) {
+        if (currentUser == null) return false;
+        if (gums().getConfiguration().getReadSelfUserGroups() == null)
+            return false;
+        Collection readSelfUserGroups = gums().getConfiguration().getReadSelfUserGroups();
+        Iterator it = readSelfUserGroups.iterator();
+        while (it.hasNext()) {
+        	UserGroup userGroupManager = (UserGroup)it.next();
+        	if (userGroupManager.isInGroup(currentUser))
+        		return true;
+        }
+        return false;
+    }
+    
+    private boolean hasWriteAccess(GridUser user) {
+        if (user == null) return false;
+        if (gums().getConfiguration().getWriteUserGroups() == null)
+            return false;
+        Collection writeUserGroups = gums().getConfiguration().getWriteUserGroups();
+        Iterator it = writeUserGroups.iterator();
+        while (it.hasNext()) {
+        	UserGroup userGroupManager = (UserGroup)it.next();
+        	if (userGroupManager.isInGroup(user))
+        		return true;
+        }
+        return false;
+    }
+    
+    private String logUserAccess() {
+        if (currentUser() == null) {
+            return "No AuthN - ";
+        } else {
+            return currentUser() + " - ";
         }
     }
     

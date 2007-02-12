@@ -10,16 +10,14 @@ import gov.bnl.gums.GUMS;
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.configuration.ConfigurationStore;
-
-import java.util.*;
-import javax.naming.*;
-import javax.naming.directory.*;
-import org.apache.commons.logging.*;
-
-import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
 
-import gov.bnl.gums.persistence.PersistenceFactory;
+import java.util.*;
+
+import javax.naming.*;
+import javax.naming.directory.*;
+
+import org.apache.commons.logging.*;
 
 /** A group of users defined by an LDAP VO.
  * <p>
@@ -44,11 +42,11 @@ public class LDAPUserGroup extends UserGroup {
     private UserGroupDB db;
     private String persistenceFactory = "";    
     private Configuration conf;
-    protected ConfigurationStore confStore;
     private String server = "";
     private String query = "";
-	private String keyStore = "";
+    private String keyStore = "";
 	private String keyPassword = "";
+	protected ConfigurationStore confStore;
     
     public LDAPUserGroup() {
     	super();
@@ -62,34 +60,146 @@ public class LDAPUserGroup extends UserGroup {
 		super(configuration, name);
 	}
     
-    public java.util.List getMemberList() {
-        return getDB().retrieveMembers();
+    public UserGroup clone(Configuration configuration) {
+    	LDAPUserGroup userGroup = new LDAPUserGroup(configuration, getName());
+    	userGroup.setPersistenceFactory(persistenceFactory);
+    	userGroup.setAccess(getAccess());
+    	userGroup.setKeyPassword(getKeyPassword());
+    	userGroup.setKeyStore(getKeyStore());
+    	userGroup.setQuery(getQuery());
+    	userGroup.setServer(getServer());
+    	return userGroup;
     }
     
-    public boolean isInGroup(GridUser user) {
-        return getDB().isMemberInGroup(user);
-    }
-    
-    public void updateMembers() {
-    	getDB().loadUpdatedList(retrieveMembers());
-    }
-    
-    public void setKeyStore(String keyStore) {
-    	this.keyStore = keyStore;
-    }
-    
-    public String getKeyStore() {
-    	return keyStore;
-    }
-    
-    public void setKeyPassword(String keyPassword) {
-    	this.keyPassword = keyPassword;
+    public boolean equals(Object obj) {
+        if (obj instanceof LDAPUserGroup) {
+            LDAPUserGroup group = (LDAPUserGroup) obj;
+            if ((server == null ? group.server == null : server.equals(group.server)) &&
+               (query == null ? group.query == null : query.equals(group.query)) && 
+               (getName() == null ? group.getName() == null : getName().equals(group.getName())) && 
+               (persistenceFactory == null ? group.persistenceFactory == null : persistenceFactory.equals(group.persistenceFactory))) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public String getKeyPassword() {
     	return keyPassword;
     }
     
+    public String getKeyStore() {
+    	return keyStore;
+    }
+    
+    public java.util.List getMemberList() {
+        return getDB().retrieveMembers();
+    }
+    
+    public String getPersistenceFactory() {
+        return persistenceFactory;
+    }
+    
+    /**
+     * The LDAP query used to retrieveGetter for property query.
+     * @return The LDAP query used. i.e. "ou=usatlas,o=atlas,dc=eu-datagrid,dc=org"
+     */
+    public String getQuery() {
+        return this.query;
+    }
+    
+    /**
+     * Returns the name of the LDAP server used to retrieve the list of users.
+     * @return The name of the server server. i.e. "grid-vo.nikhef.nl"
+     */
+    public String getServer() {
+        return this.server;
+    }
+    
+    public int hashCode() {
+        return query.hashCode();
+    }
+    
+    public boolean isInGroup(GridUser user) {
+        return getDB().isMemberInGroup(user);
+    }
+    
+    public void setKeyPassword(String keyPassword) {
+    	this.keyPassword = keyPassword;
+    }
+    
+    public void setKeyStore(String keyStore) {
+    	this.keyStore = keyStore;
+    }
+    
+    public void setPersistenceFactory(String persistenceFactory) {
+        this.persistenceFactory = persistenceFactory;
+    }
+    
+    /**
+     * Changes the LDAP query used to retrieveGetter for property query.
+     * @param query The LDAP query used. i.e. "ou=usatlas,o=atlas,dc=eu-datagrid,dc=org"
+     */
+    public void setQuery(String query) {
+        this.query = query;
+    }
+    
+    /**
+     * Changes the LDAP server used to retrieve the list of users.
+     * @param server The name of the server server. i.e. "grid-vo.nikhef.nl"
+     */
+    public void setServer(String server) {
+        this.server = server;
+    }
+    
+    public String toString() {
+        return "LDAPGroup: ldap://"+server+"/"+query;
+    }
+    
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + server + "</td>";
+    }
+    
+    public String toXML() {
+    	return super.toXML() +
+    	"\t\t\tserver='"+server+"'\n" +
+		"\t\t\tquery='"+query+"'\n" +
+		"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
+		"\t\t\tkeyStore='"+keyStore+"'\n" +
+		"\t\t\tkeyPassword='"+keyPassword+"'/>\n\n";
+    }
+    
+    public void updateMembers() {
+    	getDB().loadUpdatedList(retrieveMembers());
+    }
+    
+    private UserGroupDB getDB() {
+    	if (db==null)
+            db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( getName() );
+    	return db;
+    }
+    
+    private List retrieveGroupMembers(DirContext rootCtx, Attribute members) throws javax.naming.NamingException {
+        Map people = retrievePeopleMap(rootCtx);
+        NamingEnumeration names = members.getAll();
+        List list = new ArrayList();
+        while (names.hasMore()) {
+            // Converting the people to the DN, by looking up the person description attribute
+            String ldapName = (String) names.next();
+            ldapName = ldapName.trim();
+            String certDN = (String) people.get(ldapName);
+            if (certDN == null) {
+                resourceAdminLog.warn("Member of a LDAP VO group not mapped to any certificate: '" + ldapName + "'");
+            } else {
+                list.add(new GridUser(certDN, null));
+            }
+        }
+        if (list.isEmpty()) {
+            resourceAdminLog.warn("The following group returned no members: " + this);
+        }
+        return list;
+    }
+
     /**
      * Returns the list of member retrieved from the LDAP server. The members are not saved in the database.
      * Must be synchronized since the System properties are being set
@@ -151,28 +261,7 @@ public class LDAPUserGroup extends UserGroup {
             resourceAdminLog.warn("The following group returned no members: " + this);
         }
         return users;
-    }
-    
-    private List retrieveGroupMembers(DirContext rootCtx, Attribute members) throws javax.naming.NamingException {
-        Map people = retrievePeopleMap(rootCtx);
-        NamingEnumeration names = members.getAll();
-        List list = new ArrayList();
-        while (names.hasMore()) {
-            // Converting the people to the DN, by looking up the person description attribute
-            String ldapName = (String) names.next();
-            ldapName = ldapName.trim();
-            String certDN = (String) people.get(ldapName);
-            if (certDN == null) {
-                resourceAdminLog.warn("Member of a LDAP VO group not mapped to any certificate: '" + ldapName + "'");
-            } else {
-                list.add(new GridUser(certDN, null));
-            }
-        }
-        if (list.isEmpty()) {
-            resourceAdminLog.warn("The following group returned no members: " + this);
-        }
-        return list;
-    }
+    }    
     
     Map retrievePeopleMap(DirContext ldap) throws javax.naming.NamingException {
         NamingEnumeration people = ldap.search("ou=People", "(description=subject=*)", null);
@@ -193,96 +282,5 @@ public class LDAPUserGroup extends UserGroup {
             map.put(ldapDN, certDN);
         }
         return map;
-    }
-    
-    private UserGroupDB getDB() {
-    	if (db==null)
-            db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( getName() );
-    	return db;
-    }
-    
-    /**
-     * Returns the name of the LDAP server used to retrieve the list of users.
-     * @return The name of the server server. i.e. "grid-vo.nikhef.nl"
-     */
-    public String getServer() {
-        return this.server;
-    }
-    
-    /**
-     * Changes the LDAP server used to retrieve the list of users.
-     * @param server The name of the server server. i.e. "grid-vo.nikhef.nl"
-     */
-    public void setServer(String server) {
-        this.server = server;
-    }
-    
-    /**
-     * The LDAP query used to retrieveGetter for property query.
-     * @return The LDAP query used. i.e. "ou=usatlas,o=atlas,dc=eu-datagrid,dc=org"
-     */
-    public String getQuery() {
-        return this.query;
-    }
-    
-    /**
-     * Changes the LDAP query used to retrieveGetter for property query.
-     * @param query The LDAP query used. i.e. "ou=usatlas,o=atlas,dc=eu-datagrid,dc=org"
-     */
-    public void setQuery(String query) {
-        this.query = query;
-    }
-    
-    public String getPersistenceFactory() {
-        return persistenceFactory;
-    }
-    
-    public void setPersistenceFactory(String persistenceFactory) {
-        this.persistenceFactory = persistenceFactory;
-    }
-    
-    public int hashCode() {
-        return query.hashCode();
-    }
-    
-    public boolean equals(Object obj) {
-        if (obj instanceof LDAPUserGroup) {
-            LDAPUserGroup group = (LDAPUserGroup) obj;
-            if ((server == null ? group.server == null : server.equals(group.server)) &&
-               (query == null ? group.query == null : query.equals(group.query)) && 
-               (getName() == null ? group.getName() == null : getName().equals(group.getName())) && 
-               (persistenceFactory == null ? group.persistenceFactory == null : persistenceFactory.equals(group.persistenceFactory))) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public String toString() {
-        return "LDAPGroup: ldap://"+server+"/"+query;
-    }
-
-    public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + server + "</td>";
-    }
-    
-    public String toXML() {
-    	return super.toXML() +
-    	"\t\t\tserver='"+server+"'\n" +
-		"\t\t\tquery='"+query+"'\n" +
-		"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
-		"\t\t\tkeyStore='"+keyStore+"'\n" +
-		"\t\t\tkeyPassword='"+keyPassword+"'/>\n\n";
-    }    
-    
-    public UserGroup clone(Configuration configuration) {
-    	LDAPUserGroup userGroup = new LDAPUserGroup(configuration, getName());
-    	userGroup.setPersistenceFactory(persistenceFactory);
-    	userGroup.setAccess(getAccess());
-    	userGroup.setKeyPassword(getKeyPassword());
-    	userGroup.setKeyStore(getKeyStore());
-    	userGroup.setQuery(getQuery());
-    	userGroup.setServer(getServer());
-    	return userGroup;
     }
 }

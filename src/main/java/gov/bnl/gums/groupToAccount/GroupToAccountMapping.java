@@ -10,10 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.configuration.Configuration;
-import gov.bnl.gums.persistence.PersistenceFactory;
-import gov.bnl.gums.userGroup.UserGroup;
 
 /** This class defines which mapping policy should be used for the given group.
  * It tells that a given user group (all the members of the 'usatlas'
@@ -57,43 +54,36 @@ public class GroupToAccountMapping {
 		this.name = name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}
-	
-    /**
-     * Getter for property name.
-     * @return Value of property name.
+	/**
+     * Setter for property mapper.
+     * @param mapper New value of property mapper.
      */
-    public String getName() {
-        return (name!=null ? name : "");
+    public void addAccountMapper(String accountMapper) {
+        accountMappers.add(accountMapper);
     }
-    
-	public Configuration getConfiguration() {
-		return configuration;
-	}
-    
-    /**
-     * Getter for property group.
-     * @return Value of property group.
-     */
-    public ArrayList getUserGroups() {
-        return this.userGroups;
-    }    
-    
-    /**
+	
+	/**
      * Setter for property group.
      * @param group New value of property group.
      */
     public void addUserGroup(String userGroup) {
     	userGroups.add(userGroup);
-    }    
+    }
+	
+    public GroupToAccountMapping clone(Configuration configuration) {
+    	GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping(configuration, name);
+    	groupToAccountMapping.setAccountingVo(accountingVo);
+    	groupToAccountMapping.setAccountingDesc(accountingDesc);
+    	Iterator it = getUserGroups().iterator();
+    	while (it.hasNext())
+    		groupToAccountMapping.addUserGroup( (String)it.next() );
+    	it = getAccountMappers().iterator();
+    	while (it.hasNext())
+    		groupToAccountMapping.addAccountMapper( (String)it.next() );
+    	return groupToAccountMapping;
+    }
     
-    /**
+	/**
      * @return returns true if userGroup is matched.
      */
     public boolean containsUserGroup(String userGroupQuery) {
@@ -104,23 +94,16 @@ public class GroupToAccountMapping {
     			return true;
     	}
     	return false;
+    }
+    
+    /**
+     * Getter for property accountingDesc.
+     * @return Value of property accountingDesc.
+     */
+    public String getAccountingDesc() {
+
+        return this.accountingDesc;
     }    
-    
-    /**
-     * Getter for property mapper.
-     * @return Value of property mapper.
-     */
-    public ArrayList getAccountMappers() {
-        return accountMappers;
-    }
-    
-    /**
-     * Setter for property mapper.
-     * @param mapper New value of property mapper.
-     */
-    public void addAccountMapper(String accountMapper) {
-        accountMappers.add(accountMapper);
-    }
     
     /**
      * Getter for property accountingVo.
@@ -129,8 +112,45 @@ public class GroupToAccountMapping {
     public String getAccountingVo()  {
 
         return this.accountingVo;
+    }    
+    
+    /**
+     * Getter for property mapper.
+     * @return Value of property mapper.
+     */
+    public ArrayList getAccountMappers() {
+        return accountMappers;
+    }    
+    
+    public Configuration getConfiguration() {
+		return configuration;
+	}
+    
+    /**
+     * Getter for property name.
+     * @return Value of property name.
+     */
+    public String getName() {
+        return (name!=null ? name : "");
     }
     
+    /**
+     * Getter for property group.
+     * @return Value of property group.
+     */
+    public ArrayList getUserGroups() {
+        return this.userGroups;
+    }
+    
+    /**
+     * Setter for property accountingDesc.
+     * @param accountingDesc New value of property accountingDesc.
+     */
+    public void setAccountingDesc(String accountingDesc) {
+
+        this.accountingDesc = accountingDesc;
+    }
+
     /**
      * Setter for property accountingVo.
      * @param accountingVo New value of property accountingVo.
@@ -140,23 +160,13 @@ public class GroupToAccountMapping {
         this.accountingVo = accountingVo;
     }
 
-    /**
-     * Getter for property accountingDesc.
-     * @return Value of property accountingDesc.
-     */
-    public String getAccountingDesc() {
-
-        return this.accountingDesc;
-    }
-
-    /**
-     * Setter for property accountingDesc.
-     * @param accountingDesc New value of property accountingDesc.
-     */
-    public void setAccountingDesc(String accountingDesc) {
-
-        this.accountingDesc = accountingDesc;
-    }
+    public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+    
+    public void setName(String name) {
+		this.name = name;
+	}
     
     public String toXML() {
     	String retStr = "\t\t<groupToAccountMapping\n"+
@@ -186,19 +196,6 @@ public class GroupToAccountMapping {
 		retStr += "'/>\n\n";
 		
 		return retStr;
-    }
-    
-    public GroupToAccountMapping clone(Configuration configuration) {
-    	GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping(configuration, name);
-    	groupToAccountMapping.setAccountingVo(accountingVo);
-    	groupToAccountMapping.setAccountingDesc(accountingDesc);
-    	Iterator it = getUserGroups().iterator();
-    	while (it.hasNext())
-    		groupToAccountMapping.addUserGroup( (String)it.next() );
-    	it = getAccountMappers().iterator();
-    	while (it.hasNext())
-    		groupToAccountMapping.addAccountMapper( (String)it.next() );
-    	return groupToAccountMapping;
     }
     
 }

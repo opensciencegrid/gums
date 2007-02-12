@@ -8,7 +8,6 @@ package gov.bnl.gums.configuration;
 
 import java.io.IOException;
 
-
 /** Encapsulate the logic of retrieving the configuration from where it is stored.
  * This will allow to retrieve the configuration from a File, from a database,
  * or from whenever we will need to.

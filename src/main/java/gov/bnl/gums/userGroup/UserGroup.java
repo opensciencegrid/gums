@@ -24,7 +24,7 @@ public abstract class UserGroup {
 	private Configuration configuration = null;
 	
 	/**
-	 * This empty constructor needed by XML Digestor
+	 * This empty constructor is needed by XML Digestor
 	 */
 	public UserGroup() {
 	}
@@ -46,30 +46,17 @@ public abstract class UserGroup {
 		this.name = name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	public abstract UserGroup clone(Configuration configuration);
 
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}
+	public String getAccess() {
+    	return accessTypes[accessIndex];
+    }
 	
-	public String getName() {
-		return name;
-	}
-
 	public Configuration getConfiguration() {
 		return configuration;
 	}
-	
-    /**
-     * Determines whether the given user identity is part of the group.
-     * @param userDN the certificate DN.
-     * @return true if it's in the group
-     */
-    public abstract boolean isInGroup(GridUser user);
-    
-    /**
+
+	/**
      * Returns the list of user identities that are part of the group.
      * <p>
      * Some UserGroups, however, could be defined by a rule that doesn't
@@ -82,15 +69,29 @@ public abstract class UserGroup {
      * @return a List of GridUser objects representing the user certificate DN.
      */
     public abstract List getMemberList();
+	
+    public String getName() {
+		return name;
+	}
     
-    /** Updates the local list of the users from the source of the group.
-     * <p>
-     * Most user groups will get the information from a separate database
-     * accessible via WAN. For that reason, the user group will maintain a
-     * local cache with the list of members, which can be updated through
-     * this method.
+    public boolean hasReadAllAccess() {
+    	return (accessIndex<=1);
+    }
+    
+    public boolean hasReadSelfAccess() {
+    	return (accessIndex<=2);
+    }
+    
+    public boolean hasWriteAccess() {
+    	return (accessIndex==0);
+    }
+	
+    /**
+     * Determines whether the given user identity is part of the group.
+     * @param userDN the certificate DN.
+     * @return true if it's in the group
      */
-    public abstract void updateMembers();
+    public abstract boolean isInGroup(GridUser user);
     
     public void setAccess(String access) {
     	for(int i=0; i<accessTypes.length; i++) {
@@ -101,22 +102,14 @@ public abstract class UserGroup {
     	}
     	throw new RuntimeException("Invalid access type: "+access);
     }
-	
-    public String getAccess() {
-    	return accessTypes[accessIndex];
-    }
     
-    public boolean hasWriteAccess() {
-    	return (accessIndex==0);
-    }
+    public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
     
-    public boolean hasReadAllAccess() {
-    	return (accessIndex<=1);
-    }
-    
-    public boolean hasReadSelfAccess() {
-    	return (accessIndex<=2);
-    }
+    public void setName(String name) {
+		this.name = name;
+	}
     
     public abstract String toString(String bgColor);
 
@@ -127,5 +120,12 @@ public abstract class UserGroup {
 		"\t\t\tname='"+name+"'\n";
     }
     
-    public abstract UserGroup clone(Configuration configuration);
+    /** Updates the local list of the users from the source of the group.
+     * <p>
+     * Most user groups will get the information from a separate database
+     * accessible via WAN. For that reason, the user group will maintain a
+     * local cache with the list of members, which can be updated through
+     * this method.
+     */
+    public abstract void updateMembers();
 }

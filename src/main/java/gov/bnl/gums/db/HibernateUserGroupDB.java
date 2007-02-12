@@ -12,17 +12,19 @@ package gov.bnl.gums.db;
 
 import gov.bnl.gums.*;
 
+import gov.bnl.gums.persistence.HibernatePersistenceFactory;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import net.sf.hibernate.*;
 import net.sf.hibernate.type.StringType;
 import net.sf.hibernate.type.Type;
-import org.apache.commons.logging.*;
 
-import gov.bnl.gums.persistence.HibernatePersistenceFactory;
+import org.apache.commons.logging.*;
 
 /**
  *
@@ -30,10 +32,8 @@ import gov.bnl.gums.persistence.HibernatePersistenceFactory;
  */
 public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     private Log log = LogFactory.getLog(HibernateUserGroupDB.class);
-    
     private HibernatePersistenceFactory persistenceFactory;
     private String group;
-    
     private List addedMembers;
     private List removedMembers;
     
@@ -44,6 +44,42 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         this.group = group;
     }
 
+    public void addMember(GridUser user) {
+        Session session = null;
+        Transaction tx = null;
+        try {
+            // Checks whether the value is present in the database
+            session = persistenceFactory.retrieveSessionFactory().openSession();
+            tx = session.beginTransaction();
+            if (isMemberInGroup(user)) {
+                throw new Exception("User " + user + " is already present in group '" + group + "'");
+            }
+            addMember(session, tx, user);
+            tx.commit();
+        // Handles when transaction goes wrong...
+        } catch (Exception e) {
+            log.error("Couldn't add member to '" + group + "'", e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: rollback failed", e1);
+                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
+                }
+            }
+            throw new RuntimeException("Database error: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: couldn't close session", e1);
+                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
+                }
+            }
+        }
+    }
+    
     public boolean isMemberInGroup(GridUser user) {
         Session session = null;
         Transaction tx = null;
@@ -77,20 +113,6 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
                 }
             }
         }
-    }
-    
-    private boolean isMemberInGroup(Session session, Transaction tx, GridUser user) throws Exception {
-        Query q;
-        if (user.getVoFQAN() == null) {
-            q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan IS NULL");
-        } else {
-            q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan = ?");
-            q.setString(2, user.getVoFQAN().toString());
-        }
-        q.setString(0, group);
-        q.setString(1, user.getCertificateDN());
-        List result = q.list();
-        return result.size() > 0;
     }
 
     public void loadUpdatedList(java.util.List members) {
@@ -174,12 +196,38 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         }
     }
 
-    public java.util.List retrieveRemovedMembers() {
-        return removedMembers;
-    }
-
-    public java.util.List retrieveNewMembers() {
-        return addedMembers;
+    public boolean removeMember(GridUser user) {
+        Session session = null;
+        Transaction tx = null;
+        try {
+            // Checks whether the value is present in the database
+            session = persistenceFactory.retrieveSessionFactory().openSession();
+            tx = session.beginTransaction();
+            boolean result = removeMember(session, tx, user);
+            tx.commit();
+            return result;
+        // Handles when transaction goes wrong...
+        } catch (Exception e) {
+            log.error("Couldn't remove member from group '" + group + "'", e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: rollback failed", e1);
+                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
+                }
+            }
+            throw new RuntimeException("Database error: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: couldn't close session", e1);
+                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
+                }
+            }
+        }
     }
 
     public java.util.List retrieveMembers() {
@@ -216,7 +264,49 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             }
         }
     }
+
+    public java.util.List retrieveNewMembers() {
+        return addedMembers;
+    }
     
+    public java.util.List retrieveRemovedMembers() {
+        return removedMembers;
+    }
+    
+    private void addMember(Session session, Transaction tx, GridUser user) throws Exception {
+        HibernateUser hUser = new HibernateUser();
+        hUser.setGroup(group);
+        hUser.setDn(user.getCertificateDN());
+        if (user.getVoFQAN() != null) {
+            hUser.setFqan(user.getVoFQAN().toString());
+        }
+        session.save(hUser);
+    }
+    
+    private boolean isMemberInGroup(Session session, Transaction tx, GridUser user) throws Exception {
+        Query q;
+        if (user.getVoFQAN() == null) {
+            q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan IS NULL");
+        } else {
+            q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan = ?");
+            q.setString(2, user.getVoFQAN().toString());
+        }
+        q.setString(0, group);
+        q.setString(1, user.getCertificateDN());
+        List result = q.list();
+        return result.size() > 0;
+    }
+
+    private boolean removeMember(Session session, Transaction tx, GridUser user) throws Exception {
+        if (user.getVoFQAN() == null) {
+            int n = session.delete("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan is null", new Object[] {group, user.getCertificateDN()}, new Type[] {new StringType(), new StringType()});
+            return n > 0;
+        } else {
+            int n = session.delete("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan = ?", new Object[] {group, user.getCertificateDN(), user.getVoFQAN().toString()}, new Type[] {new StringType(), new StringType(), new StringType()});
+            return n > 0;
+        }
+    }
+
     private java.util.List retrieveMembers(Session session, Transaction tx) throws Exception {
         Query q;
         q = session.createQuery("FROM HibernateUser u WHERE u.group = ?");
@@ -229,95 +319,5 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             members.add(new GridUser(user.getDn(), user.getFqan()));
         }
         return members;
-    }
-    
-    private boolean removeMember(Session session, Transaction tx, GridUser user) throws Exception {
-        if (user.getVoFQAN() == null) {
-            int n = session.delete("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan is null", new Object[] {group, user.getCertificateDN()}, new Type[] {new StringType(), new StringType()});
-            return n > 0;
-        } else {
-            int n = session.delete("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan = ?", new Object[] {group, user.getCertificateDN(), user.getVoFQAN().toString()}, new Type[] {new StringType(), new StringType(), new StringType()});
-            return n > 0;
-        }
-    }
-    
-    private void addMember(Session session, Transaction tx, GridUser user) throws Exception {
-        HibernateUser hUser = new HibernateUser();
-        hUser.setGroup(group);
-        hUser.setDn(user.getCertificateDN());
-        if (user.getVoFQAN() != null) {
-            hUser.setFqan(user.getVoFQAN().toString());
-        }
-        session.save(hUser);
-    }
-
-    public void addMember(GridUser user) {
-        Session session = null;
-        Transaction tx = null;
-        try {
-            // Checks whether the value is present in the database
-            session = persistenceFactory.retrieveSessionFactory().openSession();
-            tx = session.beginTransaction();
-            if (isMemberInGroup(user)) {
-                throw new Exception("User " + user + " is already present in group '" + group + "'");
-            }
-            addMember(session, tx, user);
-            tx.commit();
-        // Handles when transaction goes wrong...
-        } catch (Exception e) {
-            log.error("Couldn't add member to '" + group + "'", e);
-            if (tx != null) {
-                try {
-                    tx.rollback();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: rollback failed", e1);
-                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
-                }
-            }
-            throw new RuntimeException("Database error: " + e.getMessage(), e);
-        } finally {
-            if (session != null) {
-                try {
-                    session.close();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: couldn't close session", e1);
-                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
-                }
-            }
-        }
-    }
-
-    public boolean removeMember(GridUser user) {
-        Session session = null;
-        Transaction tx = null;
-        try {
-            // Checks whether the value is present in the database
-            session = persistenceFactory.retrieveSessionFactory().openSession();
-            tx = session.beginTransaction();
-            boolean result = removeMember(session, tx, user);
-            tx.commit();
-            return result;
-        // Handles when transaction goes wrong...
-        } catch (Exception e) {
-            log.error("Couldn't remove member from group '" + group + "'", e);
-            if (tx != null) {
-                try {
-                    tx.rollback();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: rollback failed", e1);
-                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
-                }
-            }
-            throw new RuntimeException("Database error: " + e.getMessage(), e);
-        } finally {
-            if (session != null) {
-                try {
-                    session.close();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: couldn't close session", e1);
-                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
-                }
-            }
-        }
     }
 }

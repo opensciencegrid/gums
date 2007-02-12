@@ -25,7 +25,6 @@ import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 public class LDAPGroupIDAssigner {
     private Log log = LogFactory.getLog(LDAPGroupIDAssigner.class);
     private Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-    
     private LDAPPersistenceFactory factory;
     private List domains;
     
@@ -61,29 +60,13 @@ public class LDAPGroupIDAssigner {
     }
     
     /**
-     * Reassigns the groups to the username, refreshing something that should be
-     * already be present in LDAP. The LDAP factory controls whether this
-     * actually is performed by setting the synchGroups property.
-     * @param username A UNIX username (i.e. 'carcassi')
-     * @param primary A UNIX group name (i.e. 'usatlas')
-     * @param secondary A list of Strings representing secondary UNIX group names
-     */
-    public void reassignGroups(String username, String primary, List secondary) {
-        if (factory.isSynchGroups()) {
-            assignGroups(username, primary, secondary);
-        } else {
-            log.trace("Skip reassign groups for username '" + username + "' - primary group '" + primary + "' - secondary '" + secondary + "'");
-        }
-    }
-    
-    /**
      * Assigns the groups to the username for a particular domain.
      * @param domain The domain in which to assign the groups
      * @param username A UNIX username (i.e. 'carcassi')
      * @param primary A UNIX group name (i.e. 'usatlas')
      * @param secondary A list of Strings representing secondary UNIX group names
      */
-    void assignGroups(String domain, String username, String primary, List secondary) {
+    public void assignGroups(String domain, String username, String primary, List secondary) {
         try {
             factory.changeGroupID(domain, username, primary);
             log.trace("Assigned '" + primary + "' to '" + username + "' for domain '" + domain + "'");
@@ -98,6 +81,22 @@ public class LDAPGroupIDAssigner {
             log.info("Couldn't assign GIDs. Domain '" + domain + "' - account '" + username + "' - primary group '" + primary + "' - secondary '" + secondary + "'", e);
             adminLog.error("Couldn't assign GIDs: " + e.getMessage() + ". Domain '" + domain + "' - account '" + username + "' - primary group '" + primary + "' - secondary '" + secondary + "'");
             throw new RuntimeException("Couldn't assign GIDs: " + e.getMessage() + ". Domain '" + domain + "' - account '" + username + "' - primary group '" + primary + "' - secondary '" + secondary + "'", e);
+        }
+    }
+    
+    /**
+     * Reassigns the groups to the username, refreshing something that should be
+     * already be present in LDAP. The LDAP factory controls whether this
+     * actually is performed by setting the synchGroups property.
+     * @param username A UNIX username (i.e. 'carcassi')
+     * @param primary A UNIX group name (i.e. 'usatlas')
+     * @param secondary A list of Strings representing secondary UNIX group names
+     */
+    public void reassignGroups(String username, String primary, List secondary) {
+        if (factory.isSynchGroups()) {
+            assignGroups(username, primary, secondary);
+        } else {
+            log.trace("Skip reassign groups for username '" + username + "' - primary group '" + primary + "' - secondary '" + secondary + "'");
         }
     }
     

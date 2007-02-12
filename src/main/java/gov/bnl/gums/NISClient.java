@@ -19,12 +19,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchResult;
+
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.logging.Log;
@@ -46,6 +48,8 @@ public class NISClient {
     private MultiMap surnameToAccount;
     
     private ReadWriteLock lock = new ReadWriteLock("nis");
+    
+    private Date lastUpdate = null;
     
     /** Creates a new instance of NisClient */
     public NISClient(String nisJndiUrl) {
@@ -139,11 +143,31 @@ public class NISClient {
         }
     }
     
-    private Properties retrieveJndiProperties() {
-        Properties jndiProperties = new java.util.Properties();
-        jndiProperties.put("java.naming.provider.url", nisJndiUrl);
-        jndiProperties.put("java.naming.factory.initial","com.sun.jndi.nis.NISCtxFactory");
-        return jndiProperties;
+    public void printMaps(PrintStream out) {
+        fillMaps();
+        out.println("username to gecos map");
+        out.println("---------------------");
+        out.println();
+        Iterator accounts = accountToGecos.keySet().iterator();
+        while (accounts.hasNext()) {
+            String username = (String) accounts.next();
+            String gecos = (String) accountToGecos.get(username);
+            String name = (String) accountToName.get(username);
+            String surname = (String) accountToSurname.get(username);
+            out.print(username);
+            for (int n = username.length(); n < 15; n++) {
+                out.print(' ');
+            }
+            out.print(gecos);
+            for (int n = gecos.length(); n < 30; n++) {
+                out.print(' ');
+            }
+            out.print(name);
+            for (int n = name.length(); n < 15; n++) {
+                out.print(' ');
+            }
+            out.println(surname);
+        }
     }
     
     private void fillMaps() {
@@ -164,14 +188,6 @@ public class NISClient {
             }
         }
     }
-    
-    private Date lastUpdate = null;
-    private boolean mapsExpired() {
-        if (lastUpdate == null) return true;
-        if ((System.currentTimeMillis() - lastUpdate.getTime()) > 60*60*1000) return true;
-        return false;
-    }
-    
     private void fillMaps(Properties jndiProperties, Map accountToGecos,
     Map accountToName, Map accountToSurname) {
         int nTries = 5;
@@ -232,6 +248,33 @@ public class NISClient {
         }
     }
     
+    private boolean mapsExpired() {
+        if (lastUpdate == null) return true;
+        if ((System.currentTimeMillis() - lastUpdate.getTime()) > 60*60*1000) return true;
+        return false;
+    }
+    
+    private void printMap(PrintStream out, Map map, int offset) {
+        Iterator accounts = map.keySet().iterator();
+        while (accounts.hasNext()) {
+            String username = (String) accounts.next();
+            String gecos = (String) map.get(username);
+            out.print(username);
+            for (int n = username.length(); n < offset; n++) {
+                out.print(' ');
+            }
+            out.println(gecos);
+            
+        }
+    }
+    
+    private Properties retrieveJndiProperties() {
+        Properties jndiProperties = new java.util.Properties();
+        jndiProperties.put("java.naming.provider.url", nisJndiUrl);
+        jndiProperties.put("java.naming.factory.initial","com.sun.jndi.nis.NISCtxFactory");
+        return jndiProperties;
+    }
+    
     private String retrieveName(String gecos) {
         gecos = gecos.trim();
         int comma = gecos.indexOf(',');
@@ -252,47 +295,6 @@ public class NISClient {
         int index = gecos.lastIndexOf(' ');
         if (index == -1) return gecos;
         return gecos.substring(gecos.lastIndexOf(' ')+1);
-    }
-    
-    public void printMaps(PrintStream out) {
-        fillMaps();
-        out.println("username to gecos map");
-        out.println("---------------------");
-        out.println();
-        Iterator accounts = accountToGecos.keySet().iterator();
-        while (accounts.hasNext()) {
-            String username = (String) accounts.next();
-            String gecos = (String) accountToGecos.get(username);
-            String name = (String) accountToName.get(username);
-            String surname = (String) accountToSurname.get(username);
-            out.print(username);
-            for (int n = username.length(); n < 15; n++) {
-                out.print(' ');
-            }
-            out.print(gecos);
-            for (int n = gecos.length(); n < 30; n++) {
-                out.print(' ');
-            }
-            out.print(name);
-            for (int n = name.length(); n < 15; n++) {
-                out.print(' ');
-            }
-            out.println(surname);
-        }
-    }
-    
-    private void printMap(PrintStream out, Map map, int offset) {
-        Iterator accounts = map.keySet().iterator();
-        while (accounts.hasNext()) {
-            String username = (String) accounts.next();
-            String gecos = (String) map.get(username);
-            out.print(username);
-            for (int n = username.length(); n < offset; n++) {
-                out.print(' ');
-            }
-            out.println(gecos);
-            
-        }
     }
     
 }

@@ -47,7 +47,7 @@ public class GUMSTest extends TestCase {
 		Collection userGroups = (Collection) groupToAccountMapping.getUserGroups();
 		String userGroupName = (String)userGroups.iterator().next();
 		assertEquals("persistenceFactoryA", ((ManualUserGroup)conf.getUserGroup( userGroupName )).getPersistenceFactory() );
-		assertEquals("admin", (String)userGroups.iterator().next());
+		assertEquals("admins", (String)userGroups.iterator().next());
 		assertEquals("write", conf.getUserGroup( userGroupName ).getAccess() );
 		Collection accountMappers = (Collection) groupToAccountMapping.getAccountMappers();
 		assertEquals("accountMapperA", (String)accountMappers.iterator().next());

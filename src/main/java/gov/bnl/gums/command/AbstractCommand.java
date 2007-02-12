@@ -5,20 +5,18 @@
  */
 package gov.bnl.gums.command;
 
+import gov.bnl.gums.admin.*;
+
+import java.security.cert.X509Certificate;
+import java.net.ConnectException;
 
 import javax.net.ssl.X509KeyManager;
-import java.security.cert.X509Certificate;
-import org.apache.axis.AxisFault;
 
+import org.apache.axis.AxisFault;
 import org.apache.commons.cli.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.net.ConnectException;
-
-import gov.bnl.gums.admin.*;
 import org.glite.security.trustmanager.ContextWrapper;
-
 
 /**
  * @author carcassi
@@ -26,10 +24,16 @@ import org.glite.security.trustmanager.ContextWrapper;
 public abstract class AbstractCommand {
     protected static AbstractCommand command;
     private Log log = LogFactory.getLog(AbstractCommand.class);
+    private String clientDN;
+    private boolean usingProxy;
     protected String commandName;
     protected String syntax;
     protected String description;
     protected boolean failOnArguments;
+    
+    public static void main(String[] args) {
+        command.execute(args);
+    }
 
     /**
      * Creates a new AbstractWebCommand object.
@@ -40,8 +44,6 @@ public abstract class AbstractCommand {
         commandName = CommandLineToolkit.getCommandName(className);
     }
     
-    private String clientDN;
-    private boolean usingProxy;
     private void initClientCred() {
         // If DN is already found, no need to find it again...
         if (clientDN != null) return;
@@ -80,68 +82,9 @@ public abstract class AbstractCommand {
         }
     }
     
-    protected String getClientDN() {
-        initClientCred();
-        return clientDN;
-    }
-    
-    protected boolean isUsingProxy() {
-        initClientCred();
-        return usingProxy;
-    }
-
-    protected abstract GUMSAPI getGums();
-
-    protected CommandLine parse(Options options, String[] args) {
-        CommandLineParser parser = new BasicParser();
-        CommandLine commands = null;
-
-        try {
-            commands = parser.parse(options, args);
-
-            if (commands.hasOption("help")) {
-                printHelp(options);
-                System.exit(0);
-            }
-
-            if (failOnArguments && (commands.getArgs() != null) &&
-                    (commands.getArgs().length > 0)) {
-                System.out.println("The command doesn't accept arguments");
-                printHelp(options);
-                System.exit(-1);
-            }
-        } catch (UnrecognizedOptionException e) {
-            System.out.println(e.getMessage());
-            printHelp(options);
-            log.debug("Bogus option", e);
-            System.exit(-1);
-        } catch (ParseException pe) {
-            System.out.println("Command line error:" + pe.getMessage());
-            printHelp(options);
-            log.info("Command line error", pe);
-            System.exit(-1);
-        }
-
-        return commands;
-    }
-
-    protected void printHelp(Options options) {
-        HelpFormatter formatter = new HelpFormatter();
-
-        formatter.printHelp("gums " + commandName + " " + syntax,
-            description + "\n\nOptions:", options, "");
-    }
-
-    protected void failForWrongParameters(String message) {
-        System.out.println(message);
-        System.out.println("Try `gums " + commandName +
-            " --help' for more information.");
-        System.exit(-1);
-    }
+    protected abstract Options buildOptions();
 
     protected abstract void execute(CommandLine cmd) throws Exception;
-
-    protected abstract Options buildOptions();
 
     protected void execute(String[] args) {
         Options options = buildOptions();
@@ -218,12 +161,62 @@ public abstract class AbstractCommand {
         }
     }
 
-    /**
-     * TODO: write doc
-     *
-     * @param args TODO: write doc
-     */
-    public static void main(String[] args) {
-        command.execute(args);
+    protected void failForWrongParameters(String message) {
+        System.out.println(message);
+        System.out.println("Try `gums " + commandName +
+            " --help' for more information.");
+        System.exit(-1);
+    }
+
+    protected String getClientDN() {
+        initClientCred();
+        return clientDN;
+    }
+
+    protected abstract GUMSAPI getGums();
+
+    protected boolean isUsingProxy() {
+        initClientCred();
+        return usingProxy;
+    }
+
+    protected CommandLine parse(Options options, String[] args) {
+        CommandLineParser parser = new BasicParser();
+        CommandLine commands = null;
+
+        try {
+            commands = parser.parse(options, args);
+
+            if (commands.hasOption("help")) {
+                printHelp(options);
+                System.exit(0);
+            }
+
+            if (failOnArguments && (commands.getArgs() != null) &&
+                    (commands.getArgs().length > 0)) {
+                System.out.println("The command doesn't accept arguments");
+                printHelp(options);
+                System.exit(-1);
+            }
+        } catch (UnrecognizedOptionException e) {
+            System.out.println(e.getMessage());
+            printHelp(options);
+            log.debug("Bogus option", e);
+            System.exit(-1);
+        } catch (ParseException pe) {
+            System.out.println("Command line error:" + pe.getMessage());
+            printHelp(options);
+            log.info("Command line error", pe);
+            System.exit(-1);
+        }
+
+        return commands;
+    }
+
+    protected void printHelp(Options options) {
+        HelpFormatter formatter = new HelpFormatter();
+
+        formatter.printHelp("gums " + commandName + " " + syntax,
+            description + "\n\nOptions:", options, "");
     }
 }

@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class GridUser {
     private Log log = LogFactory.getLog(GridUser.class);
-    
     private String certificateDN;
     private FQAN voFQAN;
     
@@ -34,52 +33,6 @@ public class GridUser {
         setCertificateDN(userDN);
         if (fqan != null)
             setVoFQAN(new FQAN(fqan));
-    }
-    
-    /**
-     * Retrieve the certificate DN of the user.
-     * @return The certificate DN (i.e. "/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi")
-     */
-    public String getCertificateDN() {
-        return this.certificateDN;
-    }
-    
-    /**
-     * Changes the certificate DN for the Grid credential.
-     * @param certificateDN A GRID certificate DN (i.e. "/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi")
-     */
-    public void setCertificateDN(String certificateDN) {
-        this.certificateDN = certificateDN;
-    }
-    
-    /**
-     * Retrieve the VOMS Fully Qualified Attribute name.
-     * @return The VOMS FQAN selected with voms-proxy-init (i.e. "/atlas/production/Role=Leader")
-     */
-    public FQAN getVoFQAN() {
-        return this.voFQAN;
-    }
-    
-    /**
-     * Sets the VOMS Fully Qualified Attribute name for the credential.
-     * @param voFQAN The VOMS FQAN selected with voms-proxy-init (i.e. "/atlas/production/Role=Leader")
-     */
-    public void setVoFQAN(FQAN voFQAN) {
-        this.voFQAN = voFQAN;
-    }
-    
-    /**
-     * Changed to reflect the change in equals, as in Object contract.
-     * @return A hash created from the DN and FQAN.
-     */
-    public int hashCode() {
-        if (certificateDN != null) {
-            return certificateDN.hashCode();
-        }
-        if (voFQAN != null) {
-            return voFQAN.getFqan().hashCode();
-        }
-        return 0;
     }
     
     /**
@@ -105,6 +58,52 @@ public class GridUser {
             log.trace(this + " equals " + obj);
         }
         return true;
+    }
+    
+    /**
+     * Retrieve the certificate DN of the user.
+     * @return The certificate DN (i.e. "/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi")
+     */
+    public String getCertificateDN() {
+        return this.certificateDN;
+    }
+    
+    /**
+     * Retrieve the VOMS Fully Qualified Attribute name.
+     * @return The VOMS FQAN selected with voms-proxy-init (i.e. "/atlas/production/Role=Leader")
+     */
+    public FQAN getVoFQAN() {
+        return this.voFQAN;
+    }
+    
+    /**
+     * Changed to reflect the change in equals, as in Object contract.
+     * @return A hash created from the DN and FQAN.
+     */
+    public int hashCode() {
+        if (certificateDN != null) {
+            return certificateDN.hashCode();
+        }
+        if (voFQAN != null) {
+            return voFQAN.getFqan().hashCode();
+        }
+        return 0;
+    }
+    
+    /**
+     * Changes the certificate DN for the Grid credential.
+     * @param certificateDN A GRID certificate DN (i.e. "/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi")
+     */
+    public void setCertificateDN(String certificateDN) {
+        this.certificateDN = certificateDN;
+    }
+    
+    /**
+     * Sets the VOMS Fully Qualified Attribute name for the credential.
+     * @param voFQAN The VOMS FQAN selected with voms-proxy-init (i.e. "/atlas/production/Role=Leader")
+     */
+    public void setVoFQAN(FQAN voFQAN) {
+        this.voFQAN = voFQAN;
     }
     
     /**

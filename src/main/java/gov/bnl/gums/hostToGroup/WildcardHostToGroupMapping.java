@@ -8,10 +8,9 @@ package gov.bnl.gums.hostToGroup;
 
 import gov.bnl.gums.GUMS;
 import gov.bnl.gums.configuration.Configuration;
-import gov.bnl.gums.userGroup.ManualUserGroup;
 
 import java.util.*;
-import java.util.regex.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -46,6 +45,21 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
         adminLog.warn("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
     }
     
+    public HostToGroupMapping clone(Configuration configuration) {
+    	WildcardHostToGroupMapping hostToGroupMapping = new WildcardHostToGroupMapping(configuration, getName());
+    	hostToGroupMapping.setWildcard(getWildcard());
+    	Iterator it = getGroupToAccountMappings().iterator();
+    	while (it.hasNext()) {
+    		String groupToAccountMapping = (String)it.next();
+    		hostToGroupMapping.addGroupToAccountMapping(groupToAccountMapping);
+    	}
+    	return hostToGroupMapping;
+    }
+    
+    public String getWildcard() {
+        return getName();
+    }
+    
     public boolean isInGroup(String hostname) {
         Iterator iter = regexs.iterator();
         while (iter.hasNext()) {
@@ -57,10 +71,6 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
     
     public void setName(String name) {
     	throw new RuntimeException("Call setWildcard rather than setName");
-    }
-    
-    public String getWildcard() {
-        return getName();
     }
     
     /** Changes the wildcard that will be used to match the hostname.
@@ -77,22 +87,11 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
             regexs.add(regex);
             regexs.add("(/[^=]*=[^=]*)*/CN=" + regex + "(/[^=]*=[^=]*)*");
         }
-    }
+    }        
     
     public String toXML() {
     	return super.toXML() +
 			"\t\t\twildcard='"+getWildcard()+"'/>\n\n";
-    }        
-    
-    public HostToGroupMapping clone(Configuration configuration) {
-    	WildcardHostToGroupMapping hostToGroupMapping = new WildcardHostToGroupMapping(configuration, getName());
-    	hostToGroupMapping.setWildcard(getWildcard());
-    	Iterator it = getGroupToAccountMappings().iterator();
-    	while (it.hasNext()) {
-    		String groupToAccountMapping = (String)it.next();
-    		hostToGroupMapping.addGroupToAccountMapping(groupToAccountMapping);
-    	}
-    	return hostToGroupMapping;
     }
     
 }

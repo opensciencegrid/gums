@@ -48,29 +48,6 @@ public abstract class HostToGroupMapping {
     	this.name = name;
     }
 
-    public void setName(String name) {
-    	this.name = name;
-    }
-    
-    public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}
-    
-    public String getName() {
-    	return name;
-    }
-    
-    public Configuration getConfiguration() {
-    	return configuration;
-    }
-    
-    /** Returns the list of group mapping associated with this mapping.
-     * @return A list of GroupMapper objects.
-     */
-    public List getGroupToAccountMappings() {
-        return Collections.unmodifiableList(groupToAccountMappers);
-    }
-    
     /** Changes the list of group mapping associated with this mapping.
      *
      * @param groupMapper A list of GroupMapper objects.
@@ -78,6 +55,8 @@ public abstract class HostToGroupMapping {
     public void addGroupToAccountMapping(String groupToAccountMapping) {
         this.groupToAccountMappers.add(groupToAccountMapping);
     }
+    
+    public abstract HostToGroupMapping clone(Configuration configuration);
     
     /**
      * @return returns true if group2AccountMapperName is matched.
@@ -92,7 +71,30 @@ public abstract class HostToGroupMapping {
     	return false;
     }
     
+    public Configuration getConfiguration() {
+    	return configuration;
+    }
+    
+    /** Returns the list of group mapping associated with this mapping.
+     * @return A list of GroupMapper objects.
+     */
+    public List getGroupToAccountMappings() {
+        return Collections.unmodifiableList(groupToAccountMappers);
+    }
+    
+    public String getName() {
+    	return name;
+    }
+    
     public abstract boolean isInGroup(String hostname);
+    
+    public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+    
+    public void setName(String name) {
+    	this.name = name;
+    }
     
     public String toXML() {
     	String retStr = "\t\t<hostToGroupMapping\n"+
@@ -106,6 +108,4 @@ public abstract class HostToGroupMapping {
     	
     	return retStr;
     }
-    
-    public abstract HostToGroupMapping clone(Configuration configuration);
 }

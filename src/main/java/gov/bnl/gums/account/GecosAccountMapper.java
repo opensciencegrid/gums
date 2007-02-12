@@ -6,8 +6,6 @@
 
 package gov.bnl.gums.account;
 
-
-
 import gov.bnl.gums.configuration.Configuration;
 
 import java.util.*;
@@ -30,26 +28,8 @@ import org.apache.commons.logging.*;
  */
 public abstract class GecosAccountMapper extends AccountMapper {
     static private Log log = LogFactory.getLog(GecosAccountMapper.class);
-    
-    public GecosAccountMapper() {
-    	super();
-    }
+    private static Map gecosMaps = new Hashtable();
 
-    public GecosAccountMapper(Configuration configuration) {
-    	super(configuration);
-    }
-    
-    public GecosAccountMapper(Configuration configuration, String name) {
-    	super(configuration, name);
-    }
-    
-    public String mapUser(String userDN) {
-        String[] nameSurname = parseNameAndSurname(userDN);
-        GecosMap map = gecosMap();
-        log.trace("GECOS findAccount. Name: " + nameSurname[0] + " - Surname: " + nameSurname[1] + " - GECOSMap: " + gecosMap());
-        return map.findAccount(nameSurname[0], nameSurname[1]);
-    }
-    
     public static String[] parseNameAndSurname(String certificateSubject) {
         int begin = certificateSubject.indexOf("CN=") + 3;
         String CN = certificateSubject.substring(begin);
@@ -83,7 +63,28 @@ public abstract class GecosAccountMapper extends AccountMapper {
         return true;
     }
     
-    private static Map gecosMaps = new Hashtable();
+    public GecosAccountMapper() {
+    	super();
+    }
+    
+    public GecosAccountMapper(Configuration configuration) {
+    	super(configuration);
+    }
+    
+    public GecosAccountMapper(Configuration configuration, String name) {
+    	super(configuration, name);
+    }
+    
+    public String mapUser(String userDN) {
+        String[] nameSurname = parseNameAndSurname(userDN);
+        GecosMap map = gecosMap();
+        log.trace("GECOS findAccount. Name: " + nameSurname[0] + " - Surname: " + nameSurname[1] + " - GECOSMap: " + gecosMap());
+        return map.findAccount(nameSurname[0], nameSurname[1]);
+    }
+    public String toXML() {
+    	return super.toXML();
+    }
+    
     private GecosMap gecosMap() {
         synchronized (gecosMaps) {
             GecosMap map = (GecosMap) gecosMaps.get(mapName());
@@ -113,8 +114,4 @@ public abstract class GecosAccountMapper extends AccountMapper {
      * instances of the mapper.
      */
     protected abstract String mapName();
-    
-    public String toXML() {
-    	return super.toXML();
-    }
 }

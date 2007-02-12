@@ -6,14 +6,8 @@
 
 package gov.bnl.gums.account;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import gov.bnl.gums.configuration.Configuration;
-import gov.bnl.gums.db.HibernateMapping;
 import gov.bnl.gums.db.ManualAccountMapperDB;
-import gov.bnl.gums.persistence.PersistenceFactory;
 
 /** An account mapping policy that looks at a stored table to determine the
  * account. The database implementation is an abstract interface, which
@@ -25,7 +19,6 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  * @author  Gabriele Carcassi
  */
 public class ManualAccountMapper extends AccountMapper {
-    
     private ManualAccountMapperDB db;
     private String persistenceFactory = "";
     

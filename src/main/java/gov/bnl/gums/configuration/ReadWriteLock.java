@@ -22,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ReadWriteLock {
     private Log log = LogFactory.getLog(ReadWriteLock.class);
-    
     private int[] lock = new int[2];
     private String name;
     
@@ -40,6 +39,24 @@ public class ReadWriteLock {
      */
     public synchronized boolean isWriteLocked() {
         return lock[0] != 0;
+    }
+    
+    public synchronized void obtainReadLock() {
+        log.trace("Trying to read on " + name + ": " + lock[0] + ", " + lock[1]);
+        // Wait that writes are finished
+        while (lock[1] != 0) {
+            try {
+                log.trace("Waiting read on " + name + ": " + lock[0] + ", " + lock[1]);
+                wait();
+            } catch (InterruptedException e) {
+                log.error("Wait was interrupted: " + e.getMessage(), e);
+            }
+        }
+        
+        // Increase read counter
+        lock[0]++;
+        log.trace("Locked read on " + name + ": " + lock[0] + ", " + lock[1]);
+        notifyAll();
     }
     
     public synchronized void obtainWriteLock() {
@@ -68,35 +85,17 @@ public class ReadWriteLock {
         }
     }
     
-    public synchronized void releaseWriteLock() {
-        log.trace("Unlocking write on " + name + ": " + lock[0] + ", " + lock[1]);
-        lock[1]=0;
-        log.trace("Unocked write on " + name + ": " + lock[0] + ", " + lock[1]);
-        notifyAll();
-    }
-    
-    public synchronized void obtainReadLock() {
-        log.trace("Trying to read on " + name + ": " + lock[0] + ", " + lock[1]);
-        // Wait that writes are finished
-        while (lock[1] != 0) {
-            try {
-                log.trace("Waiting read on " + name + ": " + lock[0] + ", " + lock[1]);
-                wait();
-            } catch (InterruptedException e) {
-                log.error("Wait was interrupted: " + e.getMessage(), e);
-            }
-        }
-        
-        // Increase read counter
-        lock[0]++;
-        log.trace("Locked read on " + name + ": " + lock[0] + ", " + lock[1]);
-        notifyAll();
-    }
-    
     public synchronized void releaseReadLock() {
         log.trace("Unlocking read on " + name + ": " + lock[0] + ", " + lock[1]);
         lock[0]--;
         log.trace("Unocked read on " + name + ": " + lock[0] + ", " + lock[1]);
+        notifyAll();
+    }
+    
+    public synchronized void releaseWriteLock() {
+        log.trace("Unlocking write on " + name + ": " + lock[0] + ", " + lock[1]);
+        lock[1]=0;
+        log.trace("Unocked write on " + name + ": " + lock[0] + ", " + lock[1]);
         notifyAll();
     }
     

@@ -8,9 +8,6 @@ package gov.bnl.gums.account;
 
 import gov.bnl.gums.configuration.Configuration;
 
-import java.util.List;
-import java.util.Properties;
-
 /** Defines the logic with which a user will be mapped to a local account.
  * As of now, the logic is a simple certificate subject mapped to a user
  * account. In the future this interface will be extended to map the credential
@@ -44,36 +41,36 @@ public abstract class AccountMapper {
     	this.name = name;
     }
     
-	public void setName(String name) {
-		this.name = name;
-	}
+	public abstract AccountMapper clone(Configuration configuration);
 
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
+	public Configuration getConfiguration() {
+		return configuration;
 	}
 	
 	public String getName() {
 		return name;
 	}
 	
-	public Configuration getConfiguration() {
-		return configuration;
-	}
-
-    /**
+	/**
      * Maps a grid identity to a local account name.
      * @param userDN the certificate DN (i.e. '/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi').
      * @return a user account (i.e. 'atlas').
      */
     public abstract String mapUser(String userDN);
-	
-    public abstract String toString(String bgColor);
 
+    public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	
+    public void setName(String name) {
+		this.name = name;
+	}
+
+    public abstract String toString(String bgColor);
+    
     public String toXML() {
     	return "\t\t<accountMapper\n"+
     		"\t\t\tclassName='"+getClass().getName()+"'\n"+
     		"\t\t\tname='"+name+"'\n";
     }
-    
-    public abstract AccountMapper clone(Configuration configuration);
 }

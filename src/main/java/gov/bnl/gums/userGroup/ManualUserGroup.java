@@ -6,12 +6,8 @@
 
 package gov.bnl.gums.userGroup;
 
-import java.util.Properties;
-
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.ManualUserGroupDB;
-import gov.bnl.gums.persistence.LDAPPersistenceFactory;
-import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.GridUser;
 
 /** A user group that is defined by a list of users stored in some way, allowing
@@ -38,39 +34,37 @@ public class ManualUserGroup extends UserGroup {
 		super(configuration, name);
 	}
     
-    public java.util.List getMemberList() {
-        return getDB().retrieveMembers();
-    }
-    
-    public boolean isInGroup(GridUser user) {
-        return getDB().isMemberInGroup(user);
-    }
-    
-    public void updateMembers() {
-    }
-    
-    private ManualUserGroupDB getDB() {
-    	if (db==null)
-    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualUserGroupDB( getName() );
-    	return db;
-    }
-    
     public void addMember(GridUser user) {
         getDB().addMember(user);
     }
     
-    public boolean removeMember(GridUser user) {
-        return getDB().removeMember(user);
+    public UserGroup clone(Configuration configuration) {
+    	ManualUserGroup userGroup = new ManualUserGroup(configuration, getName());
+    	userGroup.setAccess(getAccess());
+    	userGroup.setPersistenceFactory(persistenceFactory);
+    	return userGroup;
+    }
+    
+    public java.util.List getMemberList() {
+        return getDB().retrieveMembers();
     }
     
     public String getPersistenceFactory() {
         return persistenceFactory;
     }
     
+    public boolean isInGroup(GridUser user) {
+        return getDB().isMemberInGroup(user);
+    }
+    
+    public boolean removeMember(GridUser user) {
+        return getDB().removeMember(user);
+    }
+    
     public void setPersistenceFactory(String persistenceFactory) {
         this.persistenceFactory = persistenceFactory;
     }
-
+    
     public String toString() {
         if (persistenceFactory == null) {
             return "ManualUserGroup: persistenceFactory=null - group='" + getName() + "'";
@@ -78,20 +72,22 @@ public class ManualUserGroup extends UserGroup {
             return "ManualUserGroup: persistenceFactory='" + persistenceFactory + "' - group='" + getName() + "'";
         }
     }
- 
+
     public String toString(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
     }
-    
+ 
     public String toXML() {
     	return super.toXML() +
 		"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
+    }
+    
+    public void updateMembers() {
     }    
     
-    public UserGroup clone(Configuration configuration) {
-    	ManualUserGroup userGroup = new ManualUserGroup(configuration, getName());
-    	userGroup.setAccess(getAccess());
-    	userGroup.setPersistenceFactory(persistenceFactory);
-    	return userGroup;
+    private ManualUserGroupDB getDB() {
+    	if (db==null)
+    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualUserGroupDB( getName() );
+    	return db;
     }
 }

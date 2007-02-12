@@ -91,7 +91,7 @@ public class ConfigurationTest extends TestCase {
         userGroup.setQuery("query");
         userGroup.setServer("server");
         gMap.addUserGroup(userGroup.getName());
-        accountMapper = new MockAccountMapper(conf, "mockAccountMapper");
+        accountMapper = new MockAccountMapper(conf, "mockAccountMapper2");
         conf.addAccountMapper(accountMapper);
         gMap.addAccountMapper(accountMapper.getName());
         assertEquals(2, conf.getGroupToAccountMappings().values().size());

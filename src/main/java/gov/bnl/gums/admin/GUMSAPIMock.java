@@ -14,55 +14,55 @@ import gov.bnl.gums.configuration.Configuration;
  * @author carcassi
  */
 public class GUMSAPIMock implements GUMSAPI {
-    public String generateGridMapfile(String hostname) {
-        return "mapfile";
+    public void addAccountRange(String persistanceManager, String group, String range) {
+    }
+
+    public void backupConfiguration() {
     }
 
     public String generateGrid3UserVoMap(String hostname) {
         return "inverseMap";
     }
 
-    public void updateGroups() {
+    public String generateGridMapfile(String hostname) {
+        return "mapfile";
     }
 
-    public void addAccountRange(String persistanceManager, String group, String range) {
+    public Configuration getConfiguration() {
+    	return null;
     }
 
-    public void mapfileCacheRefresh() {
+    public String getVersion() {
+    	return GUMS.getVersion();
     }
 
-    public String mapUser(String hostname, String userDN, String fqan) {
-        return "account";
+    public void manualGroupAdd(String persistanceManager, String group, String userDN) {
+    }
+    
+    public void manualGroupRemove(String persistanceManager, String group, String userDN) {
+    }
+
+    public void manualMappingAdd(String persistanceManager, String group, String userDN, String account) {
+    }
+
+    public void manualMappingRemove(String persistanceManager, String group, String userDN) {
     }
 
     public String mapAccount(String accountName) {
         return "userDN";
     }
     
-    public void manualMappingRemove(String persistanceManager, String group, String userDN) {
-    }
-
-    public void manualMappingAdd(String persistanceManager, String group, String userDN, String account) {
-    }
-
-    public void manualGroupRemove(String persistanceManager, String group, String userDN) {
-    }
-
-    public void manualGroupAdd(String persistanceManager, String group, String userDN) {
+    public void mapfileCacheRefresh() {
     }
     
-    public Configuration getConfiguration() {
-    	return null;
+    public String mapUser(String hostname, String userDN, String fqan) {
+        return "account";
     }
     
     public void setConfiguration(Configuration configuration) throws Exception {
     }
     
-    public String getVersion() {
-    	return GUMS.getVersion();
-    }
-    
-    public void backupConfiguration() {
+    public void updateGroups() {
     }
     
 }

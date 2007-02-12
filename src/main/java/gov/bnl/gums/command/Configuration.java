@@ -8,12 +8,11 @@ package gov.bnl.gums.command;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.MissingResourceException;
-
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 
 /**
  * @author carcassi
@@ -21,18 +20,47 @@ import org.apache.commons.logging.LogFactory;
 public class Configuration {
     private static Log log = LogFactory.getLog(Configuration.class);
     private static Configuration conf = new Configuration();
+    public static Configuration getInstance() {
+        return conf;
+    }
     private URL locationURL;
     private URL authZLocationURL;
     private boolean direct;
+
     private boolean loaded;
 
+    public URL getGUMSAuthZLocation() {
+        if (!loaded) {
+            loadConf();
+        }
+
+        if (authZLocationURL == null) {
+            throw new RuntimeException(
+                "Couldn't find gums.authz URL within gums-client.properties.");
+        }
+
+        return authZLocationURL;
+    }
+    
     /**
      * TODO: write doc
      *
      * @return TODO: write doc
      */
-    public static Configuration getInstance() {
-        return conf;
+    public URL getGUMSLocation() {
+        if (!loaded) {
+            loadConf();
+        }
+
+        return locationURL;
+    }
+
+    public boolean isDirect() {
+        if (!loaded) {
+            loadConf();
+        }
+
+        return direct;
     }
 
     private void loadConf() {
@@ -81,39 +109,5 @@ public class Configuration {
             throw new RuntimeException("The value in gums.authz '" +
                 location + "' is not a valid url: " + e.getMessage(), e);
         }
-    }
-    
-    public boolean isDirect() {
-        if (!loaded) {
-            loadConf();
-        }
-
-        return direct;
-    }
-
-    /**
-     * TODO: write doc
-     *
-     * @return TODO: write doc
-     */
-    public URL getGUMSLocation() {
-        if (!loaded) {
-            loadConf();
-        }
-
-        return locationURL;
-    }
-
-    public URL getGUMSAuthZLocation() {
-        if (!loaded) {
-            loadConf();
-        }
-
-        if (authZLocationURL == null) {
-            throw new RuntimeException(
-                "Couldn't find gums.authz URL within gums-client.properties.");
-        }
-
-        return authZLocationURL;
     }
 }

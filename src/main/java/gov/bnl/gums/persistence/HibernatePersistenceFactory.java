@@ -10,15 +10,6 @@
 
 package gov.bnl.gums.persistence;
 
-import java.util.Enumeration;
-import java.util.MissingResourceException;
-import java.util.Properties;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
-import net.sf.hibernate.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 import gov.bnl.gums.db.HibernateMappingDB;
@@ -26,6 +17,17 @@ import gov.bnl.gums.db.HibernateUserGroupDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
+
+import java.util.Enumeration;
+import java.util.MissingResourceException;
+import java.util.Properties;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
+
+import net.sf.hibernate.*;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
@@ -49,40 +51,22 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     	log.trace("HibernatePersistenceFactory instanciated");
     }
     
-    public UserGroupDB retrieveUserGroupDB(String name) {
-        return new HibernateUserGroupDB(this, name);
+    public PersistenceFactory clone(Configuration configuration) {
+    	HibernatePersistenceFactory persistenceFactory = new HibernatePersistenceFactory(configuration, getName());
+    	persistenceFactory.setProperties((Properties)getProperties().clone());
+    	return persistenceFactory;
     }
 
-    public ManualUserGroupDB retrieveManualUserGroupDB(String name) {
-        return new HibernateUserGroupDB(this, name);
+    public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
+        return new HibernateMappingDB(this, name);
     }
 
     public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
         return new HibernateMappingDB(this, name);
     }
 
-    public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
-        return new HibernateMappingDB(this, name);
-    }
-    
-    public void setConnectionFromHibernateProperties() {
-        try {
-            setProperties(readHibernateProperties());
-        } catch (MissingResourceException e) {
-            throw new RuntimeException("Couldn't find database configuration file (hibernate.properties)", e);
-        }
-    }
-    
-    private Properties readHibernateProperties() {
-        log.trace("Retrieving hibernate properties from hibernate.properties in the classpath");
-        PropertyResourceBundle prop = (PropertyResourceBundle) ResourceBundle.getBundle("hibernate");
-        Properties prop2 = new Properties();
-        Enumeration keys = prop.getKeys();
-        while (keys.hasMoreElements()) {
-            String key = (String) keys.nextElement();
-            prop2.setProperty(key, prop.getString(key));
-        }
-        return prop2;
+    public ManualUserGroupDB retrieveManualUserGroupDB(String name) {
+        return new HibernateUserGroupDB(this, name);
     }
     
     public synchronized SessionFactory retrieveSessionFactory() {
@@ -91,10 +75,16 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
         return sessions;
     }
     
-    public PersistenceFactory clone(Configuration configuration) {
-    	HibernatePersistenceFactory persistenceFactory = new HibernatePersistenceFactory(configuration, getName());
-    	persistenceFactory.setProperties((Properties)getProperties().clone());
-    	return persistenceFactory;
+    public UserGroupDB retrieveUserGroupDB(String name) {
+        return new HibernateUserGroupDB(this, name);
+    }
+    
+    public void setConnectionFromHibernateProperties() {
+        try {
+            setProperties(readHibernateProperties());
+        } catch (MissingResourceException e) {
+            throw new RuntimeException("Couldn't find database configuration file (hibernate.properties)", e);
+        }
     }
     
     private SessionFactory buildSessionFactory() {
@@ -111,6 +101,18 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
             log.error("Couldn't initialize Hibernate", e);
             throw new RuntimeException("An error occurred while initializing the database environment (hibernate): "+ e.getMessage(), e);
         }
+    }
+    
+    private Properties readHibernateProperties() {
+        log.trace("Retrieving hibernate properties from hibernate.properties in the classpath");
+        PropertyResourceBundle prop = (PropertyResourceBundle) ResourceBundle.getBundle("hibernate");
+        Properties prop2 = new Properties();
+        Enumeration keys = prop.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = (String) keys.nextElement();
+            prop2.setProperty(key, prop.getString(key));
+        }
+        return prop2;
     }
     
 }

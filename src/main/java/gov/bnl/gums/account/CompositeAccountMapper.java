@@ -6,8 +6,6 @@
 
 package gov.bnl.gums.account;
 
-
-
 import gov.bnl.gums.configuration.Configuration;
 
 import java.util.*;
@@ -33,7 +31,6 @@ import java.util.*;
  * @author  Gabriele Carcassi
  */
 public class CompositeAccountMapper extends AccountMapper {
-    
     private List mappers = new ArrayList();
     
     public CompositeAccountMapper() {
@@ -49,15 +46,15 @@ public class CompositeAccountMapper extends AccountMapper {
     }
     
     /**
-     * Assigns the list of mappers. The list must contain
-     * only objects of class AccountMapper.
-     * <p>
-     * The list provided will be copied: further modification of the mappers
-     * parameters won't affect the list inside the object.
-     * @param mappers a List of AccountMapper objects
+     * Adds a mapper at the end of the list of mapper used by this composite.
+     * @param mapper The new mapper to be used only if all the previous mappers failed
      */
-    public void setMappers(List mappers) {
-        this.mappers = new ArrayList(mappers);
+    public void addMapper(AccountMapper mapper) {
+        mappers.add(mapper);
+    }
+    
+    public AccountMapper clone(Configuration configuration) {
+    	return null;
     }
     
     /**
@@ -84,19 +81,19 @@ public class CompositeAccountMapper extends AccountMapper {
     }
     
     /**
-     * Adds a mapper at the end of the list of mapper used by this composite.
-     * @param mapper The new mapper to be used only if all the previous mappers failed
+     * Assigns the list of mappers. The list must contain
+     * only objects of class AccountMapper.
+     * <p>
+     * The list provided will be copied: further modification of the mappers
+     * parameters won't affect the list inside the object.
+     * @param mappers a List of AccountMapper objects
      */
-    public void addMapper(AccountMapper mapper) {
-        mappers.add(mapper);
+    public void setMappers(List mappers) {
+        this.mappers = new ArrayList(mappers);
     }
     
     public String toString(String bgColor) {
     	return ""; 
-    }
-    
-    public AccountMapper clone(Configuration configuration) {
-    	return null;
     }
     
 }
