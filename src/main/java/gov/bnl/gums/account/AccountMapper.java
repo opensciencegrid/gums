@@ -19,6 +19,10 @@ public abstract class AccountMapper {
 	private String name = "";
 	private Configuration configuration = null;
 	
+	static public String getType() {
+		return "abstract";
+	}
+	
 	/**
 	 * This empty constructor needed by XML Digestor
 	 */
@@ -68,9 +72,5 @@ public abstract class AccountMapper {
 
     public abstract String toString(String bgColor);
     
-    public String toXML() {
-    	return "\t\t<accountMapper\n"+
-    		"\t\t\tclassName='"+getClass().getName()+"'\n"+
-    		"\t\t\tname='"+name+"'\n";
-    }
+    public abstract String toXML();
 }

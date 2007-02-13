@@ -33,6 +33,10 @@ public abstract class PersistenceFactory {
     private Properties properties;
     private Configuration configuration;
  
+	static public String getType() {
+		return "abstract";
+	}
+    
 	/**
 	 * This empty constructor needed by XML Digestor
 	 */
@@ -86,22 +90,5 @@ public abstract class PersistenceFactory {
 		this.properties = properties;
 	}
 	
-	public String toXML() {
-    	String retStr = "\t\t<persistenceFactory\n"+
-    		"\t\t\tclassName='"+getClass().getName()+"'\n"+
-    		"\t\t\tname='"+name+"'\n";
-    	
-    	Iterator keyIt = getProperties().keySet().iterator();
-    	while(keyIt.hasNext()) {
-    		String key = (String)keyIt.next();
-    		retStr += "\t\t\t"+key+"='"+getProperties().getProperty(key)+"'\n";
-    	}
-
-    	if (retStr.charAt(retStr.length()-1)=='\n')
-    		retStr = retStr.substring(0, retStr.length()-1);    	
-    	
-    	retStr += "/>\n\n";
-    	
-    	return retStr;
-	}
+	public abstract String toXML();
 }

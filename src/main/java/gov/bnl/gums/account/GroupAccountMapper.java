@@ -22,6 +22,10 @@ public class GroupAccountMapper extends AccountMapper {
     private Log log = LogFactory.getLog(GroupAccountMapper.class);
     private String accountName = "";
     
+	static public String getType() {
+		return "group";
+	}
+    
     public GroupAccountMapper() {
     	super();
     }
@@ -63,7 +67,8 @@ public class GroupAccountMapper extends AccountMapper {
     }      
     
     public String toXML() {
-    	return super.toXML() +
+    	return "\t\t<groupAccountMapper\n"+
+			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\taccountName='"+accountName+"'/>\n\n";
     }
 }

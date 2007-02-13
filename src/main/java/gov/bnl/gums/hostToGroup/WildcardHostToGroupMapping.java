@@ -90,8 +90,7 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
     }        
     
     public String toXML() {
-    	return super.toXML() +
-			"\t\t\twildcard='"+getWildcard()+"'/>\n\n";
+		return null;
     }
     
 }

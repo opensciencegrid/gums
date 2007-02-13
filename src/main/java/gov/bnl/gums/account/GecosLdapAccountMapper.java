@@ -28,6 +28,10 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     static private Log log = LogFactory.getLog(GecosLdapAccountMapper.class);
     private String jndiLdapUrl = "";
 
+	static public String getType() {
+		return "gecosLdap";
+	}
+    
     public GecosLdapAccountMapper() {
     	super();
     }
@@ -67,7 +71,8 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     }
 
     public String toXML() {
-    	return super.toXML() +
+    	return "\t\t<gecosLdapAccountMapper\n"+
+			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tjndiLdapUrl='"+jndiLdapUrl+"'/>\n\n";
     }
 

@@ -22,6 +22,10 @@ public class ManualUserGroup extends UserGroup {
     private ManualUserGroupDB db;
     private String persistenceFactory = "";
     
+	static public String getType() {
+		return "manual";
+	}
+    
     public ManualUserGroup() {
     	super();
     }
@@ -78,7 +82,9 @@ public class ManualUserGroup extends UserGroup {
     }
  
     public String toXML() {
-    	return super.toXML() +
+    	return "\t\t<manualUserGroup\n"+
+		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
+		"\t\t\tname='"+getName()+"'\n"+
 		"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }
     

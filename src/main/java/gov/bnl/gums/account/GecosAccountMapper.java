@@ -30,6 +30,10 @@ public abstract class GecosAccountMapper extends AccountMapper {
     static private Log log = LogFactory.getLog(GecosAccountMapper.class);
     private static Map gecosMaps = new Hashtable();
 
+	static public String getType() {
+		return "gecos";
+	}
+    
     public static String[] parseNameAndSurname(String certificateSubject) {
         int begin = certificateSubject.indexOf("CN=") + 3;
         String CN = certificateSubject.substring(begin);
@@ -80,9 +84,6 @@ public abstract class GecosAccountMapper extends AccountMapper {
         GecosMap map = gecosMap();
         log.trace("GECOS findAccount. Name: " + nameSurname[0] + " - Surname: " + nameSurname[1] + " - GECOSMap: " + gecosMap());
         return map.findAccount(nameSurname[0], nameSurname[1]);
-    }
-    public String toXML() {
-    	return super.toXML();
     }
     
     private GecosMap gecosMap() {

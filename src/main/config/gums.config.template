@@ -4,8 +4,7 @@
 
 <gums version='1.2'>
 	<persistenceFactories>
-		<persistenceFactory
-			className='gov.bnl.gums.persistence.HibernatePersistenceFactory'
+		<hibernatePersistenceFactory
 			name='persistenceFactoryA'
 			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
 			hibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'
@@ -28,13 +27,11 @@
 	</virtualOrganizations>
 
 	<userGroups>
-		<userGroup
-			className='gov.bnl.gums.userGroup.ManualUserGroup'
+		<manualUserGroup
 			name='admins'
 			persistenceFactory='persistenceFactoryA'
 			access='write'/>
-		<userGroup
-			className='gov.bnl.gums.userGroup.VOMSUserGroup' 
+		<vomsUserGroup
 			name='userGroupB'
 			virtualOrganization='virtualOrganizationA'
 			remainderUrl='/atlas/services/VOMSAdmin'
@@ -45,16 +42,13 @@
 	</userGroups>
 	
 	<accountMappers>
-		<accountMapper
-			className='gov.bnl.gums.account.ManualAccountMapper'
+		<manualAccountMapper
 			name='accountMapperA'
 			persistenceFactory='persistenceFactoryA'/>
-		<accountMapper
-			className='gov.bnl.gums.account.GroupAccountMapper'
+		<groupAccountMapper
 			name='accountMapperB'
 			accountName='accountB'/>
-		<accountMapper
-			className='gov.bnl.gums.account.AccountPoolMapper'
+		<accountPoolMapper
 			name='accountMapperC'
 			persistenceFactory='persistenceFactoryA'
 			accountPool='accountC'/>

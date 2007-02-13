@@ -52,4 +52,8 @@ public class MockHostToGroupMapping extends HostToGroupMapping {
     	return null;
     }
     
+    public String toXML(){
+    	return null;
+    }
+    
 }

@@ -22,6 +22,10 @@ public class ManualAccountMapper extends AccountMapper {
     private ManualAccountMapperDB db;
     private String persistenceFactory = "";
     
+	static public String getType() {
+		return "manual";
+	}
+    
     public ManualAccountMapper() {
     	super();
     }
@@ -69,7 +73,8 @@ public class ManualAccountMapper extends AccountMapper {
     }
 
     public String toXML() {
-    	return super.toXML() +
+    	return "\t\t<manualAccountMapper\n"+
+			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }      
     

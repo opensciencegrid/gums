@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.GUMS;
 import gov.bnl.gums.configuration.Configuration;
 
 import java.util.Properties;
@@ -25,11 +26,17 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi
  */
 public class GecosNisAccountMapper extends GecosAccountMapper {
+    static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     static private Log log = LogFactory.getLog(GecosNisAccountMapper.class);
     private String jndiNisUrl = "";
     
+	static public String getType() {
+		return "gecosNIS";
+	}
+    
     public GecosNisAccountMapper() {
     	super();
+        adminLog.warn("The use of gov.bnl.gums.GecosNisAccountMapper is unsupported.");
     }
  
     public GecosNisAccountMapper(Configuration configuration) {
@@ -67,7 +74,8 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     }
 
     public String toXML() {
-    	return super.toXML() +
+    	return "\t\t<gecosNisAccountMapper\n"+
+			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
     }
 

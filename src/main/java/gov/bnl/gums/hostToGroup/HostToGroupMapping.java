@@ -96,16 +96,5 @@ public abstract class HostToGroupMapping {
     	this.name = name;
     }
     
-    public String toXML() {
-    	String retStr = "\t\t<hostToGroupMapping\n"+
-    		"\t\t\tgroupToAccountMappings='";
-    	Iterator it = getGroupToAccountMappings().iterator();
-    	while(it.hasNext()) {
-    		String groupToAccountMapping = (String)it.next();
-    		retStr += groupToAccountMapping + (it.hasNext()?", ":"");
-    	}
-    	retStr += "'\n";
-    	
-    	return retStr;
-    }
+    public abstract String toXML();
 }

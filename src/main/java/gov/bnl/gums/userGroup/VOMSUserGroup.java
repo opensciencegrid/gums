@@ -47,6 +47,10 @@ public class VOMSUserGroup extends UserGroup {
     private String remainderUrl = "";
     private boolean acceptProxyWithoutFQAN = defaultAcceptProxyWithoutFQAN;
 
+	static public String getType() {
+		return "voms";
+	}
+    
     public VOMSUserGroup() {
     	super();
     }    
@@ -334,7 +338,9 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     public String toXML() {
-    	String retStr = super.toXML() +
+    	String retStr = "\t\t<vomsUserGroup\n"+
+		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
+		"\t\t\tname='"+getName()+"'\n"+
         "\t\t\tvirtualOrganization='"+vo+"'\n";
     	if (!remainderUrl.equals(""))
     		retStr += "\t\t\tremainderUrl='"+remainderUrl+"'\n";

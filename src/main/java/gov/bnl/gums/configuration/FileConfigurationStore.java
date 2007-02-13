@@ -59,8 +59,7 @@ public class FileConfigurationStore implements ConfigurationStore {
     			out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n"+
 	    			"<gums version='"+GUMS.getVersion()+"'>\n\n"+
 	    				"\t<persistenceFactories>\n\n"+
-	    					"\t\t<persistenceFactory\n"+
-				    			"\t\t\tclassName='gov.bnl.gums.persistence.HibernatePersistenceFactory'\n"+
+	    					"\t\t<hibernatePersistenceFactory\n"+
 				    			"\t\t\tname='mysql'\n"+
 				    			"\t\t\thibernate.connection.driver_class='com.mysql.jdbc.Driver'\n"+
 				    			"\t\t\thibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'\n"+
@@ -73,8 +72,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 				    			"\t\t\thibernate.c3p0.timeout='180' />\n\n"+
 				    	"\t</persistenceFactories>\n\n"+
 	    				"\t<userGroups>\n\n"+
-				    		"\t\t<userGroup\n"+
-				    			"\t\t\tclassName='gov.bnl.gums.userGroup.ManualUserGroup'\n"+
+				    		"\t\t<manualUserGroup\n"+
 				    			"\t\t\tname='admins'\n"+
 				    			"\t\t\tpersistenceFactory='mysql'\n"+
 				    			"\t\t\taccess='write'/>\n\n"+

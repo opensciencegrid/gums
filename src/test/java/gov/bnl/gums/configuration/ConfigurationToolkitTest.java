@@ -57,14 +57,14 @@ public class ConfigurationToolkitTest extends TestCase {
         String xml = 
         "<gums version='"+GUMS.getVersion()+"'>" +
 	        "<userGroups>" +
-	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='myGroupA' persistenceFactory='mysql' access='read self'/>" +
-	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='myGroupB' persistenceFactory='mysql' access='read all'/>" +
-	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='myGroupC' persistenceFactory='mysql' access='write'/>" +
+	        	"<manualUserGroup name='myGroupA' persistenceFactory='mysql' access='read self'/>" +
+	        	"<manualUserGroup name='myGroupB' persistenceFactory='mysql' access='read all'/>" +
+	        	"<manualUserGroup name='myGroupC' persistenceFactory='mysql' access='write'/>" +
 	        "</userGroups>" +
         "</gums>";
         Digester digester = toolkit.retrieveDigester();
         Configuration conf = new Configuration();
-        conf.addPersistenceFactory( new MySQLPersistenceFactory(conf, "mysql") );
+        conf.addPersistenceFactory( new HibernatePersistenceFactory(conf, "mysql") );
         digester.push(conf);
         Configuration acc = (Configuration) digester.parse(new StringReader(xml));
         assertSame(conf, acc);
@@ -80,38 +80,16 @@ public class ConfigurationToolkitTest extends TestCase {
         assertTrue( ((UserGroup)acc.getReadSelfUserGroups().get(2)).getName().equals("myGroupC") );
     }
 
-    public void testUserGroupWrongClass() throws Exception {
-        String xml = 
-        "<gums version='"+GUMS.getVersion()+"'>" +
-	        "<userGroups>" +
-	        	"<userGroup className='gov.bnl.gums.userGroup.WrongUserGroup' name='myGroup' persistenceFactory='mysql'/>" +
-	        "</userGroups>" +
-        "</gums>";
-        Digester digester = toolkit.retrieveDigester();
-        Configuration conf = new Configuration();
-        MySQLPersistenceFactory factory = new MySQLPersistenceFactory(conf, "mysql");
-        conf.addPersistenceFactory(factory);
-        digester.push(conf);
-        try {
-            Configuration acc = (Configuration) digester.parse(new StringReader(xml));
-        } catch (SAXParseException e) {
-            assertEquals(java.lang.ClassNotFoundException.class, e.getException().getClass());
-            assertEquals("gov.bnl.gums.userGroup.WrongUserGroup", e.getException().getMessage());
-            return;
-        }
-        fail("Configuration had a wrong class but parsing didn't fail");
-    }
-
     public void testUserGroupWrongProperty() throws Exception {
         String xml = 
         "<gums version='"+GUMS.getVersion()+"'>" +
 	        "<userGroups>" +
-	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='myGroup' persistenceFactory='mysql' wrongProp='blah'/>" +
+	        	"<manualUserGroup name='myGroup' persistenceFactory='mysql' wrongProp='blah'/>" +
 	        "</userGroups>" +
         "</gums>";
         Digester digester = toolkit.retrieveDigester();
         Configuration conf = new Configuration();
-        MySQLPersistenceFactory factory = new MySQLPersistenceFactory(conf, "mysql");
+        HibernatePersistenceFactory factory = new HibernatePersistenceFactory(conf, "mysql");
         conf.addPersistenceFactory(factory);
         digester.push(conf);
         try {
@@ -128,8 +106,8 @@ public class ConfigurationToolkitTest extends TestCase {
         String xml = 
         "<gums version='"+GUMS.getVersion()+"'>" +
 	        "<persistenceFactories>" +
-	        	"<persistenceFactory name='mysql' className='gov.bnl.gums.persistence.MySQLPersistenceFactory' jdbcDriver='com.mysql.jdbc.Driver' property.with.dot='test' />" +
-	        "</persistenceFactories>" +
+				getPersistenceFactory("mysql") +
+			"</persistenceFactories>" +
         "</gums>";
         Digester digester = toolkit.retrieveDigester();
         Configuration conf = new Configuration();
@@ -137,19 +115,17 @@ public class ConfigurationToolkitTest extends TestCase {
         Configuration acc = (Configuration) digester.parse(new StringReader(xml));
         assertSame(conf, acc);
         assertNotNull(conf.getPersistenceFactories().get("mysql"));
-        MySQLPersistenceFactory factory = (MySQLPersistenceFactory) conf.getPersistenceFactories().get("mysql");
-        assertEquals("com.mysql.jdbc.Driver", factory.getProperties().getProperty("jdbcDriver"));
-        assertEquals("test", factory.getProperties().getProperty("property.with.dot"));
+        HibernatePersistenceFactory factory = (HibernatePersistenceFactory) conf.getPersistenceFactories().get("mysql");
      }
     
     public void testUserGroupWithPersistenceFactory() throws Exception {
         String xml = 
         "<gums version='"+GUMS.getVersion()+"'>" +
 	        "<persistenceFactories>" +
-	        	"<persistenceFactory name='mysql' className='gov.bnl.gums.persistence.MySQLPersistenceFactory' />" +
+    			getPersistenceFactory("mysql") +
 	        "</persistenceFactories>" +
 	        "<userGroups>" +
-	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='myGroup' persistenceFactory='mysql'/>" +
+	        	"<manualUserGroup name='myGroup' persistenceFactory='mysql'/>" +
 	        "</userGroups>" +
         "</gums>";
         Digester digester = toolkit.retrieveDigester();
@@ -163,7 +139,7 @@ public class ConfigurationToolkitTest extends TestCase {
         String xml = 
         "<gums version='"+GUMS.getVersion()+"'>" +
 	        "<persistenceFactories>" +
-	        	"<persistenceFactory name='mysql' className='gov.bnl.gums.persistence.MySQLPersistenceFactory' />" +
+        		getPersistenceFactory("mysql") +
 	        "</persistenceFactories>" +
 	        "<virtualOrganizations>" +
 	        	"<virtualOrganization name='myvo' persistenceFactory='mysql'/>" +
@@ -180,14 +156,14 @@ public class ConfigurationToolkitTest extends TestCase {
         String xml = 
         "<gums version='"+GUMS.getVersion()+"'>" +
 	        "<persistenceFactories>" +
-	        	"<persistenceFactory name='mysql' className='gov.bnl.gums.persistence.MySQLPersistenceFactory' />" +
+	        	getPersistenceFactory("mysql") +
 	        "</persistenceFactories>" +
 	        "<userGroups>" +
-	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='myUserGroup' persistenceFactory='mysql'/>" +
+	        	"<manualUserGroup name='myUserGroup' persistenceFactory='mysql'/>" +
 	        "</userGroups>" +
 	        "<accountMappers>" +
-	        	"<accountMapper className='gov.bnl.gums.account.ManualAccountMapper' name='myAccountMapper1' persistenceFactory='mysql'/>" +
-	        	"<accountMapper className='gov.bnl.gums.account.AccountPoolMapper' name='myAccountMapper2' accountPool='myPool' persistenceFactory='mysql'/>" +
+	        	"<manualAccountMapper name='myAccountMapper1' persistenceFactory='mysql'/>" +
+	        	"<accountPoolMapper name='myAccountMapper2' accountPool='myPool' persistenceFactory='mysql'/>" +
 	        "</accountMappers>" +        
 	        "<groupToAccountMappings>" +
 	        	"<groupToAccountMapping name='myMapping' userGroups='myUserGroup' accountMappers='myAccountMapper1, myAccountMapper2'/>" +
@@ -215,14 +191,14 @@ public class ConfigurationToolkitTest extends TestCase {
         String xml = 
         "<gums version='"+GUMS.getVersion()+"'>" +
 	        "<persistenceFactories>" +
-	        	"<persistenceFactory name='mysql' className='gov.bnl.gums.persistence.MySQLPersistenceFactory' />" +
+	        	getPersistenceFactory("mysql") +
 	        "</persistenceFactories>" +
 	        "<userGroups>" +
-	        	"<userGroup className='gov.bnl.gums.userGroup.ManualUserGroup' name='myUserGroup' persistenceFactory='mysql' access='read all'/>" +
+	        	"<manualUserGroup name='myUserGroup' persistenceFactory='mysql' access='read all'/>" +
 	        "</userGroups>" +
 	        "<accountMappers>" +
-	        	"<accountMapper className='gov.bnl.gums.account.ManualAccountMapper' name='myAccountMapper1' persistenceFactory='mysql'/>" +
-	        	"<accountMapper className='gov.bnl.gums.account.ManualAccountMapper' name='myAccountMapper2' persistenceFactory='mysql'/>" +
+	        	"<manualAccountMapper name='myAccountMapper1' persistenceFactory='mysql'/>" +
+	        	"<manualAccountMapper name='myAccountMapper2' persistenceFactory='mysql'/>" +
 	        "</accountMappers>" +        
 	        "<groupToAccountMappings>" +
 	        	"<groupToAccountMapping name='atlas' userGroups='myUserGroup' accountMappers='myAccountMapper1, myAccountMapper2'/>" +
@@ -257,7 +233,7 @@ public class ConfigurationToolkitTest extends TestCase {
     public void testHibernateWithPool() throws Exception {
         String xml = "<gums version='"+GUMS.getVersion()+"'>" +
         	"<persistenceFactories>" +
-        		"<persistenceFactory name=\"mysql\" className=\"gov.bnl.gums.persistence.HibernatePersistenceFactory\" hibernate.connection.driver_class=\"com.mysql.jdbc.Driver\" hibernate.dialect=\"net.sf.hibernate.dialect.MySQLDialect\" hibernate.connection.url=\"jdbc:mysql://localhost/GUMS_1_1\" hibernate.connection.username=\"gums\" hibernate.connection.password=\"mysecret\" hibernate.c3p0.min_size=\"3\" hibernate.c3p0.max_size=\"20\" hibernate.c3p0.timeout=\"1800\"/>"+
+        		getPersistenceFactory("mysql") +
         	"</persistenceFactories>" +
         "</gums>";
         Digester digester = toolkit.retrieveDigester();
@@ -268,6 +244,10 @@ public class ConfigurationToolkitTest extends TestCase {
         assertNotNull(conf.getPersistenceFactories().get("mysql"));
         HibernatePersistenceFactory factory = (HibernatePersistenceFactory) conf.getPersistenceFactories().get("mysql");
         assertEquals("3", factory.getProperties().getProperty("hibernate.c3p0.min_size"));
+    }
+    
+    private String getPersistenceFactory(String name) {
+    	return "<hibernatePersistenceFactory name=\""+name+"\" hibernate.connection.driver_class=\"com.mysql.jdbc.Driver\" hibernate.dialect=\"net.sf.hibernate.dialect.MySQLDialect\" hibernate.connection.url=\"jdbc:mysql://localhost/GUMS_1_1\" hibernate.connection.username=\"gums\" hibernate.connection.password=\"mysecret\" hibernate.c3p0.min_size=\"3\" hibernate.c3p0.max_size=\"20\" hibernate.c3p0.timeout=\"1800\"/>";
     }
     
 }

@@ -19,6 +19,7 @@ import gov.bnl.gums.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -57,6 +58,10 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     private List contexts = Collections.synchronizedList(new LinkedList());// *** LDAP connection pool management
     private boolean skipReleaseContext = false;    
     LDAPGroupIDAssigner assigner;
+    
+	static public String getType() {
+		return "ldap";
+	}
     
     public LDAPPersistenceFactory() {
     	super();
@@ -563,6 +568,24 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         assigner = null;
         this.updateGIDdomains = updateGIDdomains;
     }
+    
+	public String toXML() {
+    	String retStr = "\t\t<ldapPersistenceFactory\n"+
+    		"\t\t\tname='"+getName()+"'\n";
+    	
+    	Iterator keyIt = getProperties().keySet().iterator();
+    	while(keyIt.hasNext()) {
+    		String key = (String)keyIt.next();
+    		retStr += "\t\t\t"+key+"='"+getProperties().getProperty(key)+"'\n";
+    	}
+
+    	if (retStr.charAt(retStr.length()-1)=='\n')
+    		retStr = retStr.substring(0, retStr.length()-1);    	
+    	
+    	retStr += "/>\n\n";
+    	
+    	return retStr;
+	}
     
     private String findGID(String domain, String groupname) {
         DirContext context = retrieveContext();

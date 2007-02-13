@@ -37,6 +37,10 @@ public class MySQLPersistenceFactory extends PersistenceFactory {
     private List connections = Collections.synchronizedList(new LinkedList());
     private Map statementCache = new Hashtable();
     
+	static public String getType() {
+		return "mySql";
+	}
+    
     private class GumsDBAccountMapperDB implements ManualAccountMapperDB {
         String userGroup;
         
@@ -484,6 +488,10 @@ public class MySQLPersistenceFactory extends PersistenceFactory {
         } catch (MissingResourceException e) {
             throw new RuntimeException("Couldn't find database configuration file (etc/db.properties)", e);
         }
+    }
+    
+    public String toXML() {
+    	return null;
     }
     
     private void addUser(String userDN, String groupName) {

@@ -31,6 +31,10 @@ public class NISAccountMapper extends AccountMapper {
     private String jndiNisUrl = "";
     private Map nisClients = new Hashtable();
     
+	static public String getType() {
+		return "nis";
+	}
+    
     public static String[] parseNameAndSurname(String certificateSubject) {
         int begin = certificateSubject.indexOf("CN=") + 3;
         String CN = certificateSubject.substring(begin);
@@ -66,12 +70,12 @@ public class NISAccountMapper extends AccountMapper {
 
     public NISAccountMapper() {
     	super();
-        adminLog.warn("The use of gov.bnl.gums.NISAccountMapper is deprecated. Please use gov.bnl.gums.GecosNisAccoutMapper: it provides the same functionalities.");
+        adminLog.warn("The use of gov.bnl.gums.NISAccountMapper is unsupported.");
     }
     
     public NISAccountMapper(Configuration configuration) {
     	super(configuration);
-        adminLog.warn("The use of gov.bnl.gums.NISAccountMapper is deprecated. Please use gov.bnl.gums.GecosNisAccoutMapper: it provides the same functionalities.");
+        adminLog.warn("The use of gov.bnl.gums.NISAccountMapper is unsupported.");
     }
     
     public NISAccountMapper(Configuration configuration, String name) {
@@ -109,7 +113,8 @@ public class NISAccountMapper extends AccountMapper {
     }
 
     public String toXML() {
-    	return super.toXML() +
+    	return "\t\t<nisAccountMapper\n"+
+			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
     }          
     

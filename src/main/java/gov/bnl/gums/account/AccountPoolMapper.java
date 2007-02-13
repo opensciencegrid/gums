@@ -23,6 +23,10 @@ public class AccountPoolMapper extends AccountMapper {
     private String persistenceFactory = "";
     private String accountPool = "";
     
+	static public String getType() {
+		return "pool";
+	}
+    
     public AccountPoolMapper() {
     	super();
     }
@@ -77,7 +81,8 @@ public class AccountPoolMapper extends AccountMapper {
     }
 
     public String toXML() {
-    	return super.toXML() +
+    	return "\t\t<accountPoolMapper\n"+
+			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
     		"\t\t\taccountPool='"+accountPool+"'/>\n\n";
     }

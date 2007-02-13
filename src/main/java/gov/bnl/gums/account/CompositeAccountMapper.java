@@ -33,6 +33,10 @@ import java.util.*;
 public class CompositeAccountMapper extends AccountMapper {
     private List mappers = new ArrayList();
     
+	static public String getType() {
+		return "composite";
+	}
+    
     public CompositeAccountMapper() {
     	super();
     }
@@ -96,4 +100,7 @@ public class CompositeAccountMapper extends AccountMapper {
     	return ""; 
     }
     
+    public String toXML() {
+    	return "";
+    }
 }

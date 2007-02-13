@@ -48,6 +48,10 @@ public class LDAPUserGroup extends UserGroup {
 	private String keyPassword = "";
 	protected ConfigurationStore confStore;
     
+	static public String getType() {
+		return "ldap";
+	}
+	
     public LDAPUserGroup() {
     	super();
     }
@@ -161,7 +165,9 @@ public class LDAPUserGroup extends UserGroup {
     }
     
     public String toXML() {
-    	return super.toXML() +
+    	return "\t\t<ldapUserGroup\n"+
+		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
+		"\t\t\tname='"+getName()+"'\n"+
     	"\t\t\tserver='"+server+"'\n" +
 		"\t\t\tquery='"+query+"'\n" +
 		"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +

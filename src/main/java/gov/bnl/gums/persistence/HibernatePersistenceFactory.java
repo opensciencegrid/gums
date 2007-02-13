@@ -19,6 +19,7 @@ import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
 
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
@@ -37,6 +38,10 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     private Log log = LogFactory.getLog(HibernatePersistenceFactory.class);
     private SessionFactory sessions;
 
+	static public String getType() {
+		return "hibernate";
+	}
+    
     public HibernatePersistenceFactory() {
     	log.trace("HibernatePersistenceFactory instanciated");
     }    
@@ -86,6 +91,24 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
             throw new RuntimeException("Couldn't find database configuration file (hibernate.properties)", e);
         }
     }
+    
+	public String toXML() {
+    	String retStr = "\t\t<hibernatePersistenceFactory\n"+
+    		"\t\t\tname='"+getName()+"'\n";
+    	
+    	Iterator keyIt = getProperties().keySet().iterator();
+    	while(keyIt.hasNext()) {
+    		String key = (String)keyIt.next();
+    		retStr += "\t\t\t"+key+"='"+getProperties().getProperty(key)+"'\n";
+    	}
+
+    	if (retStr.charAt(retStr.length()-1)=='\n')
+    		retStr = retStr.substring(0, retStr.length()-1);    	
+    	
+    	retStr += "/>\n\n";
+    	
+    	return retStr;
+	}
     
     private SessionFactory buildSessionFactory() {
         try {

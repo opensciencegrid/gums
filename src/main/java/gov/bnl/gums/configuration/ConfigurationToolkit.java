@@ -6,8 +6,21 @@
 
 package gov.bnl.gums.configuration;
 
+import gov.bnl.gums.account.AccountPoolMapper;
+import gov.bnl.gums.account.GecosAccountMapper;
+import gov.bnl.gums.account.GecosLdapAccountMapper;
+import gov.bnl.gums.account.GecosNisAccountMapper;
+import gov.bnl.gums.account.GroupAccountMapper;
+import gov.bnl.gums.account.ManualAccountMapper;
+import gov.bnl.gums.account.NISAccountMapper;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.CertificateHostToGroupMapping;
+import gov.bnl.gums.persistence.HibernatePersistenceFactory;
+import gov.bnl.gums.persistence.LDAPPersistenceFactory;
+import gov.bnl.gums.persistence.LocalPersistenceFactory;
+import gov.bnl.gums.userGroup.LDAPUserGroup;
+import gov.bnl.gums.userGroup.ManualUserGroup;
+import gov.bnl.gums.userGroup.VOMSUserGroup;
 import gov.bnl.gums.userGroup.VirtualOrganization;
 
 import java.io.IOException;
@@ -210,10 +223,20 @@ class ConfigurationToolkit {
        
         digester.addSetProperties("gums");
         
-        digester.addObjectCreate("gums/persistenceFactories/persistenceFactory", null, "className");
-        digester.addSetProperties("gums/persistenceFactories/persistenceFactory");
-        digester.addRule("gums/persistenceFactories/persistenceFactory", new PropertiesRule());
-        digester.addSetNext("gums/persistenceFactories/persistenceFactory", "addPersistenceFactory", "gov.bnl.gums.persistence.PersistenceFactory");
+        digester.addObjectCreate("gums/persistenceFactories/hibernatePersistenceFactory", HibernatePersistenceFactory.class);
+        digester.addSetProperties("gums/persistenceFactories/hibernatePersistenceFactory");
+        digester.addRule("gums/persistenceFactories/hibernatePersistenceFactory", new PropertiesRule());
+        digester.addSetNext("gums/persistenceFactories/hibernatePersistenceFactory", "addPersistenceFactory", "gov.bnl.gums.persistence.PersistenceFactory");
+
+        digester.addObjectCreate("gums/persistenceFactories/ldapPersistenceFactory", LDAPPersistenceFactory.class);
+        digester.addSetProperties("gums/persistenceFactories/ldapPersistenceFactory");
+        digester.addRule("gums/persistenceFactories/ldapPersistenceFactory", new PropertiesRule());
+        digester.addSetNext("gums/persistenceFactories/ldapPersistenceFactory", "addPersistenceFactory", "gov.bnl.gums.persistence.PersistenceFactory");
+        
+        digester.addObjectCreate("gums/persistenceFactories/localPersistenceFactory", LocalPersistenceFactory.class);
+        digester.addSetProperties("gums/persistenceFactories/localPersistenceFactory");
+        digester.addRule("gums/persistenceFactories/localPersistenceFactory", new PropertiesRule());
+        digester.addSetNext("gums/persistenceFactories/localPersistenceFactory", "addPersistenceFactory", "gov.bnl.gums.persistence.PersistenceFactory");
 
         digester.addObjectCreate("gums/virtualOrganizations/virtualOrganization", VirtualOrganization.class);
         digester.addSetProperties("gums/virtualOrganizations/virtualOrganization");
@@ -221,17 +244,59 @@ class ConfigurationToolkit {
         digester.addRule("gums/virtualOrganizations/virtualOrganization", new PersistenceFactoryRule());
         digester.addSetNext("gums/virtualOrganizations/virtualOrganization", "addVirtualOrganization", "gov.bnl.gums.userGroup.VirtualOrganization");
         
-        digester.addObjectCreate("gums/userGroups/userGroup", null, "className");
-        digester.addRule("gums/userGroups/userGroup", new PassRule(new String[] {"className", "persistenceFactory", "virtualOrganization"}));
-        digester.addRule("gums/userGroups/userGroup", new PersistenceFactoryRule());
-        digester.addRule("gums/userGroups/userGroup", new VirtualOrganizationRule());
-        digester.addSetNext("gums/userGroups/userGroup", "addUserGroup", "gov.bnl.gums.userGroup.UserGroup");
+        digester.addObjectCreate("gums/userGroups/ldapUserGroup", LDAPUserGroup.class);
+        digester.addRule("gums/userGroups/ldapUserGroup", new PassRule(new String[] {"className", "persistenceFactory", "virtualOrganization"}));
+        digester.addRule("gums/userGroups/ldapUserGroup", new PersistenceFactoryRule());
+        digester.addRule("gums/userGroups/ldapUserGroup", new VirtualOrganizationRule());
+        digester.addSetNext("gums/userGroups/ldapUserGroup", "addUserGroup", "gov.bnl.gums.userGroup.UserGroup");
 
-        digester.addObjectCreate("gums/accountMappers/accountMapper", null, "className");
-        digester.addSetProperties("gums/accountMappers/accountMapper");
-        digester.addRule("gums/accountMappers/accountMapper", new PassRule(new String[] {"className"}));
-        digester.addRule("gums/accountMappers/accountMapper", new PersistenceFactoryRule());
-        digester.addSetNext("gums/accountMappers/accountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
+        digester.addObjectCreate("gums/userGroups/manualUserGroup", ManualUserGroup.class);
+        digester.addRule("gums/userGroups/manualUserGroup", new PassRule(new String[] {"className", "persistenceFactory", "virtualOrganization"}));
+        digester.addRule("gums/userGroups/manualUserGroup", new PersistenceFactoryRule());
+        digester.addRule("gums/userGroups/manualUserGroup", new VirtualOrganizationRule());
+        digester.addSetNext("gums/userGroups/manualUserGroup", "addUserGroup", "gov.bnl.gums.userGroup.UserGroup");
+        
+        digester.addObjectCreate("gums/userGroups/vomsUserGroup", VOMSUserGroup.class);
+        digester.addRule("gums/userGroups/vomsUserGroup", new PassRule(new String[] {"className", "persistenceFactory", "virtualOrganization"}));
+        digester.addRule("gums/userGroups/vomsUserGroup", new PersistenceFactoryRule());
+        digester.addRule("gums/userGroups/vomsUserGroup", new VirtualOrganizationRule());
+        digester.addSetNext("gums/userGroups/vomsUserGroup", "addUserGroup", "gov.bnl.gums.userGroup.UserGroup");
+        
+        digester.addObjectCreate("gums/accountMappers/accountPoolMapper", AccountPoolMapper.class);
+        digester.addSetProperties("gums/accountMappers/accountPoolMapper");
+        digester.addRule("gums/accountMappers/accountPoolMapper", new PersistenceFactoryRule());
+        digester.addSetNext("gums/accountMappers/accountPoolMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
+        
+        digester.addObjectCreate("gums/accountMappers/gecosAccountMapper", GecosAccountMapper.class);
+        digester.addSetProperties("gums/accountMappers/gecosAccountMapper");
+        digester.addRule("gums/accountMappers/gecosAccountMapper", new PersistenceFactoryRule());
+        digester.addSetNext("gums/accountMappers/gecosAccountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
+        
+        digester.addObjectCreate("gums/accountMappers/gecosLdapAccountMapper", GecosLdapAccountMapper.class);
+        digester.addSetProperties("gums/accountMappers/gecosLdapAccountMapper");
+        digester.addRule("gums/accountMappers/gecosLdapAccountMapper", new PersistenceFactoryRule());
+        digester.addSetNext("gums/accountMappers/gecosLdapAccountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
+        
+        digester.addObjectCreate("gums/accountMappers/gecosNisAccountMapper", GecosNisAccountMapper.class);
+        digester.addSetProperties("gums/accountMappers/gecosNisAccountMapper");
+        digester.addRule("gums/accountMappers/gecosNisAccountMapper", new PersistenceFactoryRule());
+        digester.addSetNext("gums/accountMappers/gecosNisAccountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
+
+        digester.addObjectCreate("gums/accountMappers/groupAccountMapper", GroupAccountMapper.class);
+        digester.addSetProperties("gums/accountMappers/groupAccountMapper");
+        digester.addRule("gums/accountMappers/groupAccountMapper", new PersistenceFactoryRule());
+        digester.addSetNext("gums/accountMappers/groupAccountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
+        
+        digester.addObjectCreate("gums/accountMappers/manualAccountMapper", ManualAccountMapper.class);
+        digester.addSetProperties("gums/accountMappers/manualAccountMapper");
+        digester.addRule("gums/accountMappers/manualAccountMapper", new PersistenceFactoryRule());
+        digester.addSetNext("gums/accountMappers/manualAccountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
+        
+        digester.addObjectCreate("gums/accountMappers/nisAccountMapper", NISAccountMapper.class);
+        digester.addSetProperties("gums/accountMappers/nisAccountMapper");
+        digester.addRule("gums/accountMappers/nisAccountMapper", new PassRule(new String[] {"className"}));
+        digester.addRule("gums/accountMappers/nisAccountMapper", new PersistenceFactoryRule());
+        digester.addSetNext("gums/accountMappers/nisAccountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
         
         digester.addObjectCreate("gums/groupToAccountMappings/groupToAccountMapping", GroupToAccountMapping.class);
         digester.addSetProperties("gums/groupToAccountMappings/groupToAccountMapping");
@@ -249,7 +314,7 @@ class ConfigurationToolkit {
         return digester;
     }
     
-    public static boolean validate(String configFile, String schemaFile) throws ParserConfigurationException, SAXException, IOException {
+    public static void validate(String configFile, String schemaFile) throws ParserConfigurationException, SAXException, IOException {
     	System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
     	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         log.trace("DocumentBuilderFactory: "+ factory.getClass().getName());
@@ -263,15 +328,10 @@ class ConfigurationToolkit {
         SimpleErrorHandler errorHandler = new ConfigurationToolkit().new SimpleErrorHandler();
         builder.setErrorHandler( errorHandler );
 
-        Document document = builder.parse(configFile); 
+        builder.parse(configFile); 
         
         if (errorHandler.error)
-        	return false;
-
-        Node rootNode  = document.getFirstChild();
-        log.trace("Root node of config file: "+ rootNode.getNodeName()  );
-        
-        return true;
+        	throw new ParserConfigurationException();
     }
     
     static synchronized Configuration loadConfiguration(String configFile) throws ParserConfigurationException, IOException, SAXException {

@@ -40,10 +40,8 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     	CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping(configuration);
     	if (getDn()!=null)
     		hostToGroupMapping.setDn(getDn());
-    	else if (getCn()!=null)
+    	if (getCn()!=null)
     		hostToGroupMapping.setCn(getCn());
-    	else
-    		hostToGroupMapping.setCn("");
     	Iterator it = getGroupToAccountMappings().iterator();
     	while (it.hasNext()) {
     		String groupToAccountMapping = (String)it.next();
@@ -98,10 +96,17 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     }
     
     public String toXML() {
-    	String retStr = super.toXML();
+    	String retStr = "\t\t<hostToGroupMapping\n"+
+		"\t\t\tgroupToAccountMappings='";
+		Iterator it = getGroupToAccountMappings().iterator();
+		while(it.hasNext()) {
+			String groupToAccountMapping = (String)it.next();
+			retStr += groupToAccountMapping + (it.hasNext()?", ":"");
+		}
+		retStr += "'\n";
     	if (dn != null)
     		retStr += "\t\t\tdn='" + dn + "'";
-    	else
+    	if (cn != null)
     		retStr += "\t\t\tcn='" + (cn!=null?cn:"") + "'";
     	retStr += "/>\n\n";
     	return retStr;

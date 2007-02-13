@@ -19,9 +19,13 @@ import java.util.*;
  */
 public abstract class UserGroup {
 	private String name = "";
-	private String[] accessTypes = {"write", "read all", "read self"};
-	private int accessIndex = 2;
+	protected String[] accessTypes = {"write", "read all", "read self"};
+	protected int accessIndex = 2;
 	private Configuration configuration = null;
+	
+	static public String getType() {
+		return "abstract";
+	}
 	
 	/**
 	 * This empty constructor is needed by XML Digestor
@@ -113,12 +117,7 @@ public abstract class UserGroup {
     
     public abstract String toString(String bgColor);
 
-    public String toXML() {
-    	return "\t\t<userGroup\n"+
-		"\t\t\tclassName='"+getClass().getName()+"'\n" +
-		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
-		"\t\t\tname='"+name+"'\n";
-    }
+    public abstract String toXML();
     
     /** Updates the local list of the users from the source of the group.
      * <p>

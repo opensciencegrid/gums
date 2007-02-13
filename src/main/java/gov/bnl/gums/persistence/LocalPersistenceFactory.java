@@ -33,6 +33,10 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     private LDAPPersistenceFactory ldap;    
     private boolean synchGroups;
 	
+	static public String getType() {
+		return "hibernate";
+	}
+    
     private class LocalAccountPoolMapperDB implements AccountPoolMapperDB {
         
         private AccountPoolMapperDB mysqlDB;
@@ -198,6 +202,24 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 
         this.synchGroups = synchGroups;
     }
+    
+	public String toXML() {
+    	String retStr = "\t\t<localPersistenceFactory\n"+
+    		"\t\t\tname='"+getName()+"'\n";
+    	
+    	Iterator keyIt = getProperties().keySet().iterator();
+    	while(keyIt.hasNext()) {
+    		String key = (String)keyIt.next();
+    		retStr += "\t\t\t"+key+"='"+getProperties().getProperty(key)+"'\n";
+    	}
+
+    	if (retStr.charAt(retStr.length()-1)=='\n')
+    		retStr = retStr.substring(0, retStr.length()-1);    	
+    	
+    	retStr += "/>\n\n";
+    	
+    	return retStr;
+	}
     
     private Properties filterProperties(String prefix) {
         Properties filtered = new Properties();

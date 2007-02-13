@@ -84,6 +84,10 @@ public class GecosAccountMapperTest extends TestCase {
         	return "";
         }
         
+        public String toXML(){
+        	return null;
+        }
+        
         public AccountMapper clone(Configuration configuration) {
         	return null;
         }

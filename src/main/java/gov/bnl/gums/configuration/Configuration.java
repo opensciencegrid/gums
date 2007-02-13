@@ -94,7 +94,7 @@ public class Configuration {
         log.trace("Adding PersistenceManager to the configuration: " + peristenceFactory.getName());
         if (persistenceFactories.get(peristenceFactory.getName())!=null) {
         	log.error("PersistenceFactory " + peristenceFactory.getName() + " already exists");
-        	throw new RuntimeException("PersistenceFactory " + peristenceFactory.getName() + " already exists");
+        	throw new RuntimeException("Persistence factory " + peristenceFactory.getName() + " already exists");
         }
         else {
 	        persistenceFactories.put(peristenceFactory.getName(), peristenceFactory);
