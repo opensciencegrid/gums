@@ -78,10 +78,13 @@ public abstract class PersistenceFactory {
 	public abstract ManualAccountMapperDB retrieveManualAccountMapperDB(String name);
 	
 	public abstract ManualUserGroupDB retrieveManualUserGroupDB(String name);
+	
 	public abstract UserGroupDB retrieveUserGroupDB(String name);
+	
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}

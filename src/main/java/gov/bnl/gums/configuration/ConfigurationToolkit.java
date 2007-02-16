@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.configuration;
 
+import gov.bnl.gums.GUMS;
 import gov.bnl.gums.account.AccountPoolMapper;
 import gov.bnl.gums.account.GecosAccountMapper;
 import gov.bnl.gums.account.GecosLdapAccountMapper;
@@ -33,8 +34,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.digester.*;
 import org.apache.commons.logging.Log;
@@ -72,7 +71,7 @@ class ConfigurationToolkit {
         public void begin(String str, String str1, org.xml.sax.Attributes attributes) throws java.lang.Exception {
             if (attributes.getValue("accountMappers") != null) {
                 Configuration conf = (Configuration) getDigester().getRoot();
-                Object mapping = getDigester().peek();
+                GroupToAccountMapping gTAMapping = (GroupToAccountMapping)getDigester().peek();
                 StringTokenizer tokens = new StringTokenizer(attributes.getValue("accountMappers"), ",");
                 while (tokens.hasMoreTokens()) {
                     String accountMapperName = tokens.nextToken().trim();
@@ -80,7 +79,7 @@ class ConfigurationToolkit {
                     if (accountMapper == null) {
                         throw new IllegalArgumentException("The accountMapper '" + accountMapperName + "' is used within a groupToAccountMapping, but it was not defined.");
                     }
-                    MethodUtils.invokeMethod(mapping, "addAccountMapper", accountMapperName);
+                    MethodUtils.invokeMethod(gTAMapping, "addAccountMapper", accountMapperName);
                 }
             }
         }
@@ -93,7 +92,7 @@ class ConfigurationToolkit {
         public void begin(String str, String str1, org.xml.sax.Attributes attributes) throws java.lang.Exception {
             if (attributes.getValue("groupToAccountMappings") != null) {
                 Configuration conf = (Configuration) getDigester().getRoot();
-                Object mapping = getDigester().peek();
+                Object obj = getDigester().peek();
                 StringTokenizer tokens = new StringTokenizer(attributes.getValue("groupToAccountMappings"), ",");
                 while (tokens.hasMoreTokens()) {
                     String groupToAccountMappingName = tokens.nextToken().trim();
@@ -101,7 +100,7 @@ class ConfigurationToolkit {
                     if (groupToAccountMapping == null) {
                         throw new IllegalArgumentException("The groupToAccountMapping '" + groupToAccountMappingName + "' is used within a hostToGroupMapping, but it was not defined.");
                     }
-                    MethodUtils.invokeMethod(mapping, "addGroupToAccountMapping", groupToAccountMappingName);
+                    MethodUtils.invokeMethod(obj, "addGroupToAccountMapping", groupToAccountMappingName);
                 }
             }
         }
@@ -113,6 +112,7 @@ class ConfigurationToolkit {
     		super(excludes, new String[]{});
     		setIgnoreMissingProperty(false);
     	}
+    	
     }
 
     //  Rule for handling a reference to a persistent Factory
@@ -334,17 +334,31 @@ class ConfigurationToolkit {
         	throw new ParserConfigurationException();
     }
     
-    static synchronized Configuration loadConfiguration(String configFile) throws ParserConfigurationException, IOException, SAXException {
+    public static synchronized Configuration loadConfiguration(String configFile) throws ParserConfigurationException, IOException, SAXException {
     	String schemaFile = configFile+".schema";
-    	String transformFile = configFile+".xls";
-        //if (getVersion(configFile).compareTo(GUMS.getVersion())<0)
-        //	ConfigurationTransform.doTransform(configFile, transformFile);
-		validate(configFile, schemaFile);
+    	String transformFile = configFile+".transform";
+        /*if (getVersion(configFile).compareTo(GUMS.getVersion())<0) {
+            log.trace("Transforming configuration file '" + configFile + "' using transform '" + transformFile);
+        	ConfigurationTransform.doTransform(configFile, transformFile);
+        	Digester digester = retrieveDigester();
+        	Configuration configuration = new Configuration();
+            digester.push(configuration);
+            digester.parse(configFile);
+           	new FileConfigurationStore().setConfiguration(configuration, false);
+           	try {
+				Thread.sleep(20000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }*/
+       	validate(configFile, schemaFile);
     	Digester digester = retrieveDigester();
     	Configuration configuration = new Configuration();
         digester.push(configuration);
         log.trace("Loading the configuration from file '" + configFile + "' using schema '" + schemaFile);
-        return (Configuration) digester.parse(configFile);
+        digester.parse(configFile);
+        return configuration;
     }
     
 }

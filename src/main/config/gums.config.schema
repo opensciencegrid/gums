@@ -36,6 +36,7 @@
 								<xs:element name="localPersistenceFactory">
 									<xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="mysql.jdbcDriver" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.connection.driver_class" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.dialect" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.connection.url" type="xs:string" use="required"/>
@@ -165,7 +166,6 @@
 								<xs:element name="gecosLdapAccountMapper">
 								    <xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
-										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
 										<xs:attribute name="jndiLdapUrl" type="xs:string" use="required"/>
 									</xs:complexType>
 								</xs:element>

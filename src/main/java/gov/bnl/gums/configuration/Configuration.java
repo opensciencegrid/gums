@@ -40,93 +40,71 @@ public class Configuration {
 
     public void addAccountMapper(AccountMapper accountMapper) {
         log.trace("Adding AccountManager to the configuration: " + accountMapper.getName());
-        if (accountMappers.get(accountMapper.getName())!=null) {
-        	log.error("Account mapper " + accountMapper.getName() + " already exists");
-        	throw new RuntimeException("Account mapper " + accountMapper.getName() + " already exists");
-        }
-        else {
-	        accountMappers.put(accountMapper.getName(), accountMapper);
-	        if (accountMapper.getConfiguration()==null)
-	        	accountMapper.setConfiguration(this);
-        }
+        if (accountMappers.get(accountMapper.getName())!=null)
+        	log.warn("Account mapper " + accountMapper.getName() + " replaced with one with same name");
+        accountMappers.put(accountMapper.getName(), accountMapper);
+        if (accountMapper.getConfiguration()==null)
+        	accountMapper.setConfiguration(this);
     }
     
     public void addGroupToAccountMapping(GroupToAccountMapping g2AMapping) {
         log.trace("Adding GroupToAccountMapper to the configuration: " + g2AMapping.getName());
-        if (groupToAccountMappings.get(g2AMapping.getName())!=null) {
-       		log.error("Group to account mapping " + g2AMapping.getName() + " already exists");
-       		throw new RuntimeException("Group to account mapping " + g2AMapping.getName() + " already exists");
+        if (getGroupToAccountMapping(g2AMapping.getName())!=null) {
+        	log.warn("Group to account mapping " + g2AMapping.getName() + " merged with one with same name");
+        	// For the sake of old versions of gums.config that may have duplicate g2AMappings with
+        	// different account mappers, copy over account mappers into new groupToAccountMapping
+        	Iterator it = getGroupToAccountMapping(g2AMapping.getName()).getAccountMappers().iterator();
+        	while (it.hasNext())
+        		g2AMapping.addAccountMapper( new String((String)it.next())); 
         }
-        else {
-	       	groupToAccountMappings.put(g2AMapping.getName(), g2AMapping);
-	        if (g2AMapping.getConfiguration()==null)
-	        	g2AMapping.setConfiguration(this);
-        }
+       	groupToAccountMappings.put(g2AMapping.getName(), g2AMapping);
+        if (g2AMapping.getConfiguration()==null)
+        	g2AMapping.setConfiguration(this);
     }
 
     public void addHostToGroupMapping(HostToGroupMapping h2GMapping) {
         log.trace("Adding HostToGroupMapper to the configuration: " + h2GMapping.getName());
-        if ( getHostToGroupMapping(h2GMapping.getName())!=null ) {
-    		log.error("Host to group mapping " + h2GMapping.getName() + " already exists");
-    		throw new RuntimeException("Host to group mapping " + h2GMapping.getName() + " already exists");
-        }
-        else {
-	        hostToGroupMappings.add(h2GMapping);
-	        if (h2GMapping.getConfiguration()==null)
-	        	h2GMapping.setConfiguration(this);
-        }
+        if ( getHostToGroupMapping(h2GMapping.getName())!=null )
+        	log.warn("Host to group mapping " + h2GMapping.getName() + " replaced with one with same name");
+        hostToGroupMappings.add(h2GMapping);
+        if (h2GMapping.getConfiguration()==null)
+        	h2GMapping.setConfiguration(this);
     }
 
     public void addHostToGroupMapping(int index, HostToGroupMapping h2GMapping) {
         log.trace("Adding HostToGroupMapper to the configuration: " + h2GMapping.getName());
-        if ( getHostToGroupMapping(h2GMapping.getName())!=null ) {
-    		log.warn("Host to group mapping " + h2GMapping.getName() + " already exists");
-        	throw new RuntimeException("Host to group mapping " + h2GMapping.getName() + " already exists");
-    	}
-        else {
-	        hostToGroupMappings.add(index, h2GMapping);
-	        if (h2GMapping.getConfiguration()==null)
-	        	h2GMapping.setConfiguration(this);
-        }
+        if ( getHostToGroupMapping(h2GMapping.getName())!=null )
+    		log.warn("Host to group mapping " + h2GMapping.getName() + " replaced with one with same name");
+        hostToGroupMappings.add(index, h2GMapping);
+        if (h2GMapping.getConfiguration()==null)
+        	h2GMapping.setConfiguration(this);
     }
  
     public void addPersistenceFactory(PersistenceFactory peristenceFactory) {
         log.trace("Adding PersistenceManager to the configuration: " + peristenceFactory.getName());
-        if (persistenceFactories.get(peristenceFactory.getName())!=null) {
-        	log.error("PersistenceFactory " + peristenceFactory.getName() + " already exists");
-        	throw new RuntimeException("Persistence factory " + peristenceFactory.getName() + " already exists");
-        }
-        else {
-	        persistenceFactories.put(peristenceFactory.getName(), peristenceFactory);
-	        if (peristenceFactory.getConfiguration()==null)
-	        	peristenceFactory.setConfiguration(this);
-        }
+        if (persistenceFactories.get(peristenceFactory.getName())!=null)
+        	log.warn("PersistenceFactory " + peristenceFactory.getName() + " replaced with one with same name");
+        persistenceFactories.put(peristenceFactory.getName(), peristenceFactory);
+        if (peristenceFactory.getConfiguration()==null)
+        	peristenceFactory.setConfiguration(this);
     }    
 
     public void addUserGroup(UserGroup userGroup) {
         log.trace("Adding UserGroupManager to the configuration: " + userGroup.getName());
-        if (userGroups.get(userGroup.getName())!=null) {
-        	log.error("User group " + userGroup.getName() + " already exists");
-        	throw new RuntimeException("User group " + userGroup.getName() + " already exists");
-        }
-        else {
-	        userGroups.put(userGroup.getName(), userGroup);
-	        if (userGroup.getConfiguration()==null)
-	        	userGroup.setConfiguration(this);
-        }
+        if (userGroups.get(userGroup.getName())!=null)
+        	log.warn("User group " + userGroup.getName() + " replaced with one with same name");
+        userGroups.put(userGroup.getName(), userGroup);
+        if (userGroup.getConfiguration()==null)
+        	userGroup.setConfiguration(this);
     }      
     
     public void addVirtualOrganization(VirtualOrganization virtualOrganization) {
         log.trace("Adding VO to the configuration: " + virtualOrganization.getName());
-        if (virtualOrganizations.get(virtualOrganization.getName())!=null) {
-        	log.error("Virtual organization " + virtualOrganization.getName() + " already exists");
-        	throw new RuntimeException("Virtual organization " + virtualOrganization.getName() + " already exists");
-        }
-        else {
-	        virtualOrganizations.put(virtualOrganization.getName(), virtualOrganization);
-	        if (virtualOrganization.getConfiguration()==null)
-	        	virtualOrganization.setConfiguration(this);
-        }
+        if (virtualOrganizations.get(virtualOrganization.getName())!=null)
+        	log.warn("Virtual organization " + virtualOrganization.getName() + " replaced with one with same name");
+        virtualOrganizations.put(virtualOrganization.getName(), virtualOrganization);
+        if (virtualOrganization.getConfiguration()==null)
+        	virtualOrganization.setConfiguration(this);
     }
     
     public Object clone() {

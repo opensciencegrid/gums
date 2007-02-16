@@ -107,18 +107,23 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     
     public LocalPersistenceFactory() {
     	super();
-    	log.trace("HibernatePersistenceFactory instanciated");
+        mysql = new HibernatePersistenceFactory();
+        ldap = new LDAPPersistenceFactory();   	
+    	log.trace("LocalPersistenceFactory instanciated");
     }
     
     public LocalPersistenceFactory(Configuration configuration) {
     	super(configuration);
+        mysql = new HibernatePersistenceFactory();
+        ldap = new LDAPPersistenceFactory();   	
+    	log.trace("LocalPersistenceFactory instanciated");
     }
  
     public LocalPersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
-        mysql = new HibernatePersistenceFactory(configuration, name+"_hib");
-        ldap = new LDAPPersistenceFactory(configuration, name+"_mysql");
-    	log.trace("HibernatePersistenceFactory instanciated");
+        mysql = new HibernatePersistenceFactory(configuration, name);
+        ldap = new LDAPPersistenceFactory(configuration, name);  
+    	log.trace("LocalPersistenceFactory instanciated");
     }
     
     public PersistenceFactory clone(Configuration configuration) {
@@ -173,19 +178,11 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     }
     
     public void setConfiguration(Configuration configuration) {
-    	setConfiguration(configuration);
-    	if (getName()!=null) {
-	        mysql = new HibernatePersistenceFactory(getConfiguration(), getName()+"_hib");
-	        ldap = new LDAPPersistenceFactory(getConfiguration(), getName()+"_mysql");   	
-    	}
+    	super.setConfiguration(configuration);
     }
     
     public void setName(String name) {
-    	setName(name);
-    	if (getConfiguration()!=null) {
-	        mysql = new HibernatePersistenceFactory(getConfiguration(), name+"_hib");
-	        ldap = new LDAPPersistenceFactory(getConfiguration(), name+"_mysql");   	
-    	}
+    	super.setName(name);
     }
 
     public void setProperties(Properties properties) {
