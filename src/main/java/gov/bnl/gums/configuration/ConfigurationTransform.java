@@ -62,23 +62,5 @@ public class ConfigurationTransform {
 			e.printStackTrace();
 		}
 	}
-    
-    private static void copyFile(String source, String target) {
-        try {
-			FileInputStream fis  = new FileInputStream(source);
-			FileOutputStream fos = new FileOutputStream(target);
-			byte[] buf = new byte[1024];
-			int i = 0;
-			while((i=fis.read(buf))!=-1)
-			  fos.write(buf, 0, i);
-			fos.write('\n');
-			fis.close();
-			fos.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 }

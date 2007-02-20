@@ -37,7 +37,7 @@ public class Configuration {
     private TreeMap virtualOrganizations = new TreeMap();
     private TreeMap userGroups = new TreeMap();
     private boolean errorOnMissedMapping;
-
+    
     public void addAccountMapper(AccountMapper accountMapper) {
         log.trace("Adding AccountManager to the configuration: " + accountMapper.getName());
         if (accountMappers.get(accountMapper.getName())!=null)

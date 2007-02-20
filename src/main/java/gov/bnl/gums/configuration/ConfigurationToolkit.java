@@ -6,7 +6,6 @@
 
 package gov.bnl.gums.configuration;
 
-import gov.bnl.gums.GUMS;
 import gov.bnl.gums.account.AccountPoolMapper;
 import gov.bnl.gums.account.GecosAccountMapper;
 import gov.bnl.gums.account.GecosLdapAccountMapper;
@@ -172,19 +171,6 @@ class ConfigurationToolkit {
         }
         
     }
-
-    // Rule for handling getting the version - only reads a bit of the entire file
-    private static class VersionRule extends Rule {
-    	public void begin(String str, String str1, org.xml.sax.Attributes attributes) throws java.lang.Exception {
-    		Object digestor = getDigester().peek();
-            for (int nAtt = 0; nAtt < attributes.getLength(); nAtt++) {
-            	String name = attributes.getQName(nAtt);
-                String value = attributes.getValue(nAtt);
-                if (name.equals("version"))
-                	MethodUtils.invokeMethod(digestor, "concat", new Object[] {value});
-            }
-    	}
-    }    
     
     //  Rule for handling a reference to a VO
     private static class VirtualOrganizationRule extends Rule {
@@ -192,13 +178,13 @@ class ConfigurationToolkit {
         public void begin(String str, String str1, org.xml.sax.Attributes attributes) throws java.lang.Exception {
             if (attributes.getValue("virtualOrganization") != null) {
                 Configuration conf = (Configuration) getDigester().getRoot();
-                Object mapper = getDigester().peek();
+                Object obj = getDigester().peek();
                 String virtualOrganizationName = attributes.getValue("virtualOrganization").trim();
                 Object virtualOrganization = conf.getVirtualOrganizations().get(virtualOrganizationName);
                 if (virtualOrganization == null) {
                     throw new IllegalArgumentException("The virtual organization '" + virtualOrganizationName + "' is used, but it was not defined.");
                 }
-                MethodUtils.invokeMethod(mapper, "setVirtualOrganization", new Object[] {virtualOrganizationName});
+                MethodUtils.invokeMethod(obj, "setVirtualOrganization", new Object[] {virtualOrganizationName});
             }
         }
         
@@ -207,13 +193,14 @@ class ConfigurationToolkit {
     public static String getVersion(String filename) throws IOException, SAXException {
         Digester digester = new Digester();
         digester.setValidating(false);
+        digester.addObjectCreate("gums", Version.class);
         digester.addSetProperties("gums");
-        digester.addRule("gums", new VersionRule());
-        digester.push(new String());
         log.trace("Loading the version from configuration file '" + filename + "'");
-        String version = (String) digester.parse(filename);
-        if (version.equals(""))
-        	version = "1.1";
+        digester.parse(filename);
+        String version = ((Version)digester.getRoot()).getVersion();
+        log.trace("Loaded gums.config is version " + version );
+        if (version == null)
+        	return "1.1";
         return version;
     }
     
@@ -337,7 +324,7 @@ class ConfigurationToolkit {
     public static synchronized Configuration loadConfiguration(String configFile) throws ParserConfigurationException, IOException, SAXException {
     	String schemaFile = configFile+".schema";
     	String transformFile = configFile+".transform";
-        /*if (getVersion(configFile).compareTo(GUMS.getVersion())<0) {
+        if (getVersion(configFile).equals("1.1")) {
             log.trace("Transforming configuration file '" + configFile + "' using transform '" + transformFile);
         	ConfigurationTransform.doTransform(configFile, transformFile);
         	Digester digester = retrieveDigester();
@@ -345,13 +332,7 @@ class ConfigurationToolkit {
             digester.push(configuration);
             digester.parse(configFile);
            	new FileConfigurationStore().setConfiguration(configuration, false);
-           	try {
-				Thread.sleep(20000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }*/
+        }
        	validate(configFile, schemaFile);
     	Digester digester = retrieveDigester();
     	Configuration configuration = new Configuration();

@@ -34,14 +34,14 @@
 	</scm-->
 	
   	<build>
-  		<!--testResources>
+  		<testResources>
 	      <testResource>
 	        <directory>src/test/config</directory>
 	        <includes>
 	          <include>**/*</include>
 	        </includes>
 	      </testResource>
-	    </testResources-->
+	    </testResources>
   		<resources>
 	      <resource>
 	        <directory>src/main/java</directory>
