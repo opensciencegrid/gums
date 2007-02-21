@@ -90,31 +90,32 @@ if (request.getParameter("action")==null ||
 	Collection userGroups = configuration.getUserGroups().values();
 
 	out.write(
-"<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
+	"<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
 
 	if(message!=null)
-		out.write( "<tr><td colspan=\"2\">" + message + "</td></tr>" );
+		out.write( 
+		"<tr><td colspan=\"2\">" + message + "</td></tr>" );
 				
 	Iterator userGroupsIt = userGroups.iterator();
 	while(userGroupsIt.hasNext()) {
 		UserGroup userGroup = userGroupsIt.hasNext() ? (UserGroup)userGroupsIt.next() : null;
 		
-		out.write(
-	   	"<tr>"+
-			"<td width=\"50\" valign=\"top\">"+
-				"<form action=\"userGroups.jsp\" method=\"get\">"+
-					"<input type=\"image\" src=\"images/Edit24.gif\" name=\"action\" value=\"edit\">"+
-					"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this user group?'))return false;\">"+
-					"<input type=\"hidden\" name=\"name\" value=\"" + userGroup.getName() + "\">"+
-				"</form>"+
-			"</td>"+
-	  		"<td align=\"left\">"+
-		   		"<table class=\"configElement\" width=\"100%\">"+
-		  			"<tr>"+
-			    		"<td>"+
-				    		"Check if member of user group"+
-				    		" <span style=\"color:blue\">" + userGroup.getName() + "</span>");
-				    		
+%>
+	   	<tr>
+			<td width="50" valign="top">
+				<form action="userGroups.jsp" method="get">
+					<input type="image" src="images/Edit24.gif" name="action" value="edit">
+					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this user group?'))return false;">
+					<input type="hidden" name="name" value="<%=userGroup.getName()%>">
+				</form>
+			</td>
+	  		<td align="left">
+		   		<table class="configElement" width="100%">
+		  			<tr>
+			    		<td>
+				    		Check if member of user group
+				    		 <span style="color:blue"><%=userGroup.getName()%></span>
+<%
 		if (userGroup instanceof ManualUserGroup) {
 			out.write(		" by searching within this group in persistence factory" + 
 							" <span style=\"color:blue\">" + ((ManualUserGroup)userGroup).getPersistenceFactory() + "</span>");
@@ -145,28 +146,27 @@ if (request.getParameter("action")==null ||
 								" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoRole() + "</span>");
 			}
 		}
-
-		out.write(			". Members have <span style=\"color:blue\">" + userGroup.getAccess() + "</span> access to GUMS.");
-		
-		out.write(	
-						"</td>"+
-			      	"</tr>"+
-				"</table>"+
-			"</td>"+
-			"<td width=\"10\"></td>"+		
-		"</tr>");
+%>
+								. Members have <span style="color:blue"><%=userGroup.getAccess()%></span> access to GUMS.
+						</td>
+			      	</tr>
+				</table>
+			</td>
+			<td width="10"></td>	
+		</tr>
+<%
 	}
-
-	out.write(
-		"<tr>"+
-	        "<td colspan=2>"+
-	        	"<form action=\"userGroups.jsp\" method=\"get\">"+
-	        		"<div style=\"text-align: center;\"><button type=\"submit\" name=\"action\" value=\"add\">Add</button></div>"+
-	        	"</form>"+
-	        "</td>"+
-		"</tr>"+
-	  "</table>"+
-"</form>");
+%>
+		<tr>
+	        <td colspan=2>
+	        	<form action="userGroups.jsp" method="get">
+	        		<div style="text-align: center;"><button type="submit" name="action" value="add">Add</button></div>
+	        	</form>
+	        </td>
+		</tr>
+	</table>
+</form>
+<%
 }
 
 else if ("edit".equals(request.getParameter("action"))
@@ -177,10 +177,10 @@ else if ("edit".equals(request.getParameter("action"))
 	
 	UserGroup userGroup = null;
 	
-	ArrayList userGroupClasses = new ArrayList();
-	userGroupClasses.add("gov.bnl.gums.userGroup.LDAPUserGroup");
-	userGroupClasses.add("gov.bnl.gums.userGroup.ManualUserGroup");
-	userGroupClasses.add("gov.bnl.gums.userGroup.VOMSUserGroup");
+	ArrayList userGroupTypes = new ArrayList();
+	userGroupTypes.add(LDAPUserGroup.getType());
+	userGroupTypes.add(ManualUserGroup.getType());
+	userGroupTypes.add(VOMSUserGroup.getType());
 	
 	if ("edit".equals(request.getParameter("action"))) {
 		try {
@@ -204,236 +204,241 @@ else if ("edit".equals(request.getParameter("action"))
 		userGroup = new VOMSUserGroup(configuration);
 	}		
 		
-	out.write(
-"<form action=\"userGroups.jsp\" method=\"get\">"+
-	"<input type=\"hidden\" name=\"action\" value=\"\">"+
-	"<input type=\"hidden\" name=\"originalAction\" value=\""+ 
-		("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action")) +
-	"\">"+
-	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"Check if member of user group"+
-		    "</td>"+
-		    "<td nowrap>");
-
-	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
-		out.write(
-		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (userGroup.getName()!=null ? userGroup.getName() : "") + "\"/>" +
-		    "</td>" +
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-				"myUserGroup"+
-		    "</td>"+
-		"</tr>");
-	else
-		out.write(
-		    	userGroup.getName()+
-		    	"<input type=\"hidden\" name=\"name\" value=\"" + userGroup.getName() + "\"/>" +
-		    "</td>" +
-		"</tr>");		
-
-	out.write(
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"of class "+
-		    "</td>"+
-		    "<td nowrap>"+
-			ConfigurationWebToolkit.createSelectBox("className", 
-				userGroupClasses, 
-				userGroup.getClass().toString().substring(6),
+%>
+<form action="userGroups.jsp" method="get">
+	<input type="hidden" name="action" value="">
+	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"))%>">
+	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		Check if member of user group
+		    </td>
+		    <td nowrap>
+<%
+	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction"))) {
+%>
+		    	<input maxlength="256" size="32" name="name" value="<%=(userGroup.getName()!=null ? userGroup.getName() : "")%>"/>
+		    </td>
+		</tr
+		<tr>
+			<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+				myUserGroup
+		    </td>
+		</tr>
+<%
+	}
+	else {
+%>
+		    	<%=userGroup.getName()%>
+		    	<input type="hidden" name="name" value="<%=userGroup.getName()%>"/>
+		    </td>
+		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		of type 
+		    </td>
+		    <td nowrap>
+			<%=ConfigurationWebToolkit.createSelectBox("type", 
+				userGroupTypes, 
+				userGroup.getType(),
 				"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-				false)+
-		    "</td>"+
-		"</tr>");
-
+				false)%>
+		    </td>
+		</tr>
+<%
+	}
 	if (userGroup instanceof ManualUserGroup) {
-		out.write(	
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"by searching within this group in persistence factory "+
-			"</td>"+
-			"<td>"+ 
-				ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
+%>
+		<tr>
+			<td nowrap style=\"text-align: right;\">
+				by searching within this group in persistence factory
+			</td>
+			<td>
+				<%=ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
 						configuration.getPersistenceFactories().values(), 
 						((ManualUserGroup)userGroup).getPersistenceFactory(),
 						null,
-						configuration.getPersistenceFactories().size()>1)+
-				".</td>"+
-		"</tr>");
-	} else if (userGroup instanceof LDAPUserGroup) {
-		out.write(	
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"by querying LDAP server"+
-			"</td>"+
-			"<td>"+ 
-				"<input maxlength=\"256\" size=\"32\" name=\"server\" value=\"" + ((LDAPUserGroup)userGroup).getServer() + "\"/>"+
-			"</td>"+
-		"</tr>"+
-	    "<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-		    	"grid-vo.nikhef.nl"+
-		    "</td>"+
-		"</tr>"+		
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"with query"+
-			"</td>"+
-			"<td>"+ 
-				"<input maxlength=\"256\" size=\"32\" name=\"query\" value=\"" + ((LDAPUserGroup)userGroup).getQuery() + "\"/>"+
-			"</td>"+
-		"</tr>"+
-	    "<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-		    	"ou=usatlas,o=atlas,dc=eu-datagrid,dc=org"+
-		    "</td>"+
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"and caching results in persistence factory"+
-			"</td>"+
-			"<td>"+ 
-				ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
+						configuration.getPersistenceFactories().size()>1)%>
+			</td>
+		</tr>
+<%
+	} 
+	else if (userGroup instanceof LDAPUserGroup) {
+%>
+		<tr>
+			<td nowrap style="text-align: right;">
+				by querying LDAP server
+			</td>
+			<td> 
+				<input maxlength="256" size="32" name="server" value="<%=((LDAPUserGroup)userGroup).getServer()%>"/>
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	grid-vo.nikhef.nl
+		    </td>
+		</tr>		
+		<tr>
+			<td nowrap style="text-align: right;">
+				with query
+			</td>
+			<td> 
+				<input maxlength="256" size="32" name="query" value="<%=((LDAPUserGroup)userGroup).getQuery()%>"/>
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	ou=usatlas,o=atlas,dc=eu-datagrid,dc=org
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				and caching results in persistence factory
+			</td>
+			<td> 
+				<%=ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
 						configuration.getPersistenceFactories().values(), 
 						((LDAPUserGroup)userGroup).getPersistenceFactory(),
 						null,
-						configuration.getPersistenceFactories().values().size()>1)+
-			".</td>"+
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"Use SSL keystore (optional) "+
-			"</td>"+
-			"<td>"+ 
-				"<input maxlength=\"256\" size=\"64\" name=\"keyStore\" value=\"" + ((LDAPUserGroup)userGroup).getKeyStore() + "\"/>"+
-			"</td>"+
-		"</tr>"+
-	    "<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-		    	"/absolute/path/to/keystore"+
-		    "</td>"+
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"with keystore password (optional) "+
-			"</td>"+
-			"<td>"+ 
-				"<input maxlength=\"256\" size=\"32\" type=\"password\" name=\"keyPassword\" value=\"" + ((LDAPUserGroup)userGroup).getKeyPassword() + "\"/>"+
-			" .</td>"+
-		"</tr>");				
-	} else if (userGroup instanceof VOMSUserGroup) {
-		out.write(	
-			"<tr>"+
-				"<td nowrap style=\"text-align: right;\">"+
-					"by querying virtual organization"+
-				"</td>"+
-				"<td>"+ 
-					ConfigurationWebToolkit.createSelectBox("vo", 
+						configuration.getPersistenceFactories().values().size()>1)%>
+			.</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				Use SSL keystore (optional) 
+			</td>
+			<td> 
+				<input maxlength="256" size="64" name="keyStore" value="<%=((LDAPUserGroup)userGroup).getKeyStore()%>"/>
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	/absolute/path/to/keystore
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				with keystore password (optional)
+			</td>
+			<td> 
+				<input maxlength="256" size="32" type="password" name="keyPassword" value="<%=((LDAPUserGroup)userGroup).getKeyPassword()%>"/>
+			.</td>
+		</tr>	
+<%
+	} 
+	else if (userGroup instanceof VOMSUserGroup) {
+%>
+			<tr>
+				<td nowrap style="text-align: right;">
+					by querying virtual organization
+				</td>
+				<td>"
+					<%=ConfigurationWebToolkit.createSelectBox("vo", 
 							configuration.getVirtualOrganizations().values(), 
 							((VOMSUserGroup)userGroup).getVirtualOrganization(),
 							null,
-							configuration.getVirtualOrganizations().values().size()>1)+
-				"</td>"+
-			"</tr>"+		
-			"<tr>"+
-				"<td nowrap style=\"text-align: right;\">"+
-					"at URL "+
-				"</td>"+
-				"<td>"+ 
-					"{base URL}<input maxlength=\"256\" size=\"32\" name=\"url\" value=\"" + ((VOMSUserGroup)userGroup).getRemainderUrl() + "\"/>"+
-				"</td>"+
-			"</tr>"+
-		    "<tr>"+
-	    		"<td nowrap style=\"text-align: right;\">"+
-		    		"i.e."+
-			    "</td>"+
-			    "<td nowrap>"+
-			    	"/atlas/services/VOMSAdmin"+
-			    "</td>"+
-			"</tr>"+			
-			"<tr>"+
-				"<td nowrap style=\"text-align: right;\">"+
-					"where non-VOMS certificates are"+
-				"</td>"+
-				"<td>"+ 
-					"<select name=\"nVOMS\" onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\">"+
-						"<option " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"selected":"") + ">allowed</option>"+
-						"<option " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"":"selected") + ">not allowed</option>"+
-					"</select>" +
-				"</td>"+
-			"</tr>"+
-			"<tr>"+
-				"<td nowrap style=\"text-align: right;\">"+
-					"and VOMS certificate's VO "+
-				"</td>"+
-				"<td>"+ 
-					"<select name=\"VOMS\" onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\">"+
-						"<option " + (((VOMSUserGroup)userGroup).isIgnoreFQAN()?"selected":"") + ">is ignored</option>"+
-						"<option " + (((VOMSUserGroup)userGroup).isIgnoreFQAN()?"":"selected") + ">must match</option>"+
-					"</select>" + (((VOMSUserGroup)userGroup).isIgnoreFQAN() ? " ." : "") +
-				"</td>"+
-			"</tr>");
+							configuration.getVirtualOrganizations().values().size()>1)%>
+				</td>
+			</tr>
+			<tr>
+				<td nowrap style="text-align: right;">
+					at URL
+				</td>
+				<td>
+					{base URL}<input maxlength="256" size="32" name="url" value="<%=((VOMSUserGroup)userGroup).getRemainderUrl()%>"/>
+				</td>
+			</tr>
+		    <tr>
+	    		<td nowrap style="text-align: right;">
+		    		i.e.
+			    </td>
+			    <td nowrap>
+			    	/atlas/services/VOMSAdmin
+			    </td>
+			</tr>	
+			<tr>
+				<td nowrap style="text-align: right;">
+					where non-VOMS certificates are
+				</td>
+				<td>
+					<select name="nVOMS" onchange="document.forms[0].elements['action'].value='reload';document.forms[0].submit();">
+						<option <%=(((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"selected":"")%>>allowed</option>
+						<option <%=(((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"":"selected")%>>not allowed</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td nowrap style="text-align: right;">
+					and VOMS certificate's VO
+				</td>
+				<td>
+					<select name="VOMS" onchange="document.forms[0].elements['action'].value='reload';document.forms[0].submit();">
+						<option <%=(((VOMSUserGroup)userGroup).isIgnoreFQAN()?"selected":"")%>>is ignored</option>
+						<option <%=(((VOMSUserGroup)userGroup).isIgnoreFQAN()?"":"selected")%>>must match</option>
+					</select><%=(((VOMSUserGroup)userGroup).isIgnoreFQAN() ? " ." : "")%>
+				</td>
+			</tr>
 
-			if( !((VOMSUserGroup)userGroup).isIgnoreFQAN() ) {
-				out.write(
-			"<tr>"+
-				"<td nowrap style=\"text-align: right;\">"+
-					"and group must match (optional)"+
-				"</td>"+
-				"<td>"+ 
-					"<input name=\"group\" value=\"" + ((VOMSUserGroup)userGroup).getVoGroup() + "\"/>"+
-				"</td>"+
-			"</tr>"+
-			"<tr>"+
-				"<td nowrap style=\"text-align: right;\">"+
-					"and role must match (optional)"+
-				"</td>"+
-				"<td>"+ 
-					"<input name=\"role\" value=\"" + ((VOMSUserGroup)userGroup).getVoRole() + "\"/>."+
-				"</td>"+
-			"</tr>");
-			}
+<%
+		if( !((VOMSUserGroup)userGroup).isIgnoreFQAN() ) {
+%>
+			<tr>
+				<td nowrap style="text-align: right;">
+					and group must match (optional)
+				</td>
+				<td>"
+					<input name="group" value="<%=((VOMSUserGroup)userGroup).getVoGroup()%>"/>
+				</td>
+			</tr>
+			<tr>
+				<td nowrap style="text-align: right;">
+					and role must match (optional)
+				</td>
+				<td>"
+					<input name="role" value="<%=((VOMSUserGroup)userGroup).getVoRole()%>"/>.
+				</td>
+			</tr>
+<%
+		}
 	}
+%>
 			
-	out.write(
-			"<tr>"+
-				"<td nowrap style=\"text-align: right;\">"+
-					"Members have "+
-				"</td>"+
-				"<td>"+ 
-					"<select name=\"access\">"+
-						"<option " + (userGroup.getAccess().equals("read self")?"selected":"") + ">read self</option>"+
-						"<option " + (userGroup.getAccess().equals("read all")?"selected":"") + ">read all</option>"+
-						"<option " + (userGroup.getAccess().equals("write")?"selected":"") + ">write</option>"+
-					"</select> access to GUMS."+
-				"</td>"+
-			"</tr>"+
-			"<tr>"+
-	        "<td colspan=2>"+
-				ConfigurationWebToolkit.createDoSubmit(userGroups, request)+
-	        	"<div style=\"text-align: center;\">"+
-	        		"<button type=\"submit\" onclick=\"return doSubmit()\">Save</button>"+
-	        	"</div>"+
-	        "</td>"+
-		"</tr>"+
-	"</table>"+
-"</form>");
+			<tr>
+				<td nowrap style="text-align: right;">
+					Members have 
+				</td>
+				<td>
+					<select name="access">
+						<option <%=(userGroup.getAccess().equals("read self")?"selected":"")%>>read self</option>
+						<option <%=(userGroup.getAccess().equals("read all")?"selected":"")%>>read all</option>
+						<option <%=(userGroup.getAccess().equals("write")?"selected":"")%>>write</option>
+					</select> access to GUMS.
+				</td>
+			</tr>
+			<tr>
+	        <td colspan=2>
+				ConfigurationWebToolkit.createDoSubmit(userGroups, request)
+	        	<div style="text-align: center;">
+	        		<button type="submit" onclick="return doSubmit()">Save</button>
+	        	</div>
+	       </td>
+		</tr>
+	</table>
+</form>
+<%
 }
-
 %>
 
 </div>

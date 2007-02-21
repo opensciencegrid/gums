@@ -99,22 +99,22 @@ if (request.getParameter("action")==null ||
 	while(g2AMappingsIt.hasNext()) {
 		GroupToAccountMapping g2AMapping = g2AMappingsIt.hasNext() ? (GroupToAccountMapping)g2AMappingsIt.next() : null;
 		
-		out.write(
-	   	"<tr>"+
-			"<td width=\"50\" valign=\"top\">"+
-				"<form action=\"groupToAccount.jsp\" method=\"get\">"+
-					"<input type=\"image\" src=\"images/Edit24.gif\" name=\"action\" value=\"edit\">"+
-					"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this group to account mapping?'))return false;\">"+
-					"<input type=\"hidden\" name=\"name\" value=\"" + g2AMapping.getName() + "\">"+
-				"</form>"+
-			"</td>"+
-	  		"<td align=\"left\">"+
-		   		"<table class=\"configElement\" width=\"100%\">"+
-		  			"<tr>"+
-			    		"<td>"+
-				    		"For requests routed to group "+
-				    		"<span style=\"color:blue\">" + g2AMapping.getName() + "</span>");
-				    		
+%>	
+	   	<tr>
+			<td width="50" valign="top">
+				<form action="groupToAccount.jsp" method="get">
+					<input type="image" src="images/Edit24.gif" name="action" value="edit">
+					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this group to account mapping?'))return false;">
+					<input type="hidden" name="name" value="<%=g2AMapping.getName()%>">
+				</form>
+			</td>
+	  		<td align=left>
+		   		<table class="configElement" width="100%">
+		  			<tr>
+			    		<td>
+				    		For requests routed to group
+				    		<span style="color:blue"><%=g2AMapping.getName()%></span>
+<%				    		
 		out.write(			" where user member of user group" + (g2AMapping.getUserGroups().size()>1 ? "s " : " ") );
 		
 		Iterator userGroupsIt = g2AMapping.getUserGroups().iterator();
@@ -142,26 +142,26 @@ if (request.getParameter("action")==null ||
 		
 		if (g2AMapping.getAccountMappers().size()>1)
 			out.write(		" (try in order)");
-			
-		out.write(	
-						".</td>"+
-			      	"</tr>"+
-				"</table>"+
-			"</td>"+
-			"<td width=\"10\"></td>"+		
-		"</tr>");
+%>	
+						.</td>
+			      	</tr>
+				</table>
+			</td>
+			<td width=\"10\"></td>		
+		</tr>
+<%
 	}
-
-	out.write(
-		"<tr>"+
-	        "<td colspan=2>"+
-	        	"<form action=\"groupToAccount.jsp\" method=\"get\">"+
-	        		"<div style=\"text-align: center;\"><button type=\"submit\" name=\"action\" value=\"add\">Add</button></div>"+
-	        	"</form>"+
-	        "</td>"+
-		"</tr>"+
-	  "</table>"+
-"</form>");
+%>
+		<tr>
+	        <td colspan=2>
+	        	<form action="groupToAccount.jsp" method="get">
+	        		<div style="text-align: center;"><button type="submit" name="action" value="add">Add</button></div>
+	        	</form>
+	        </td>
+		</tr>
+	 </table>
+</form>
+<%
 }
 
 else if ("edit".equals(request.getParameter("action"))
@@ -193,45 +193,46 @@ else if ("edit".equals(request.getParameter("action"))
 	else if ("add".equals(request.getParameter("action"))) {
 		g2AMapping = new GroupToAccountMapping(configuration);
 	}
-		
-	out.write(
-"<form action=\"groupToAccount.jsp\" method=\"get\">"+
-	"<input type=\"hidden\" name=\"action\" value=\"\">"+
-	"<input type=\"hidden\" name=\"originalAction\" value=\""+ 
-		("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action")) +
-	"\">"+
-	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"For requests routed to group "+
-		    "</td>"+
-		    "<td nowrap>");
+%>
 
-	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
-		out.write(
-		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (g2AMapping.getName()!=null ? g2AMapping.getName() : "") + "\"/>" +
-		    "</td>" +
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-				"myGroupToAccountMapping"+
-		    "</td>"+
-		"</tr>");
-	else
-		out.write(
-		    	g2AMapping.getName()+
-		    	"<input type=\"hidden\" name=\"name\" value=\"" + g2AMapping.getName() + "\"/>" +
-		    "</td>" +
-		"</tr>");
+<form action="groupToAccount.jsp" method="get">
+	<input type="hidden" name="action" value="">
+	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"))%>">
+	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">"+
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		For requests routed to group
+		    </td>
+		    <td nowrap>
+<%
 
-	out.write(
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">where user member of user group</td>"+
-			"<td>");
-
+	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction"))) {
+%>
+		    	<input maxlength="256" size="32" name="name" value="<%=(g2AMapping.getName()!=null ? g2AMapping.getName() : "")%>"/>
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style=\"text-align: right;\">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+				myGroupToAccountMapping
+		    </td>
+		</tr>
+<%
+	}
+	else {
+%>
+		    	<%=g2AMapping.getName()%>
+		    	<input type="hidden" name="name" value="<%=g2AMapping.getName()%>"/>
+		   </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">where user member of user group</td>
+			<td>
+<%
+	}
+	
 	// Create multiple user groups
 	int counter = 0;
 	if (g2AMapping!=null) {
@@ -255,14 +256,13 @@ else if ("edit".equals(request.getParameter("action"))
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
 			true)+
 			"(try in order)");
-
-	out.write(
-		    "</td>"+
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">route request to account mapper(s)</td>"+
-			"<td>");
-	
+%>
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style=\"text-align: right;\">route request to account mapper(s)</td>
+			<td>
+<%	
 	// Create multiple group to account mappings
 	counter = 0;
 	if (g2AMapping!=null) {
@@ -286,32 +286,31 @@ else if ("edit".equals(request.getParameter("action"))
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
 			true)+
 			"(try in order) .");
-
-	out.write(
-			"</td>"+
-		"</tr>"+
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">Accounting VO (optional - for Grid3-User-VO-Map only) </td>"+
-		    "<td nowrap><input maxlength=\"256\" size=\"32\" name=\"vo\" value=\"" + g2AMapping.getAccountingVo() + "\"/></td>" +
-		"</tr>"+		
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">Accounting Description (optional - for Grid3-User-VO-Map only) </td>"+
-		    "<td nowrap><input maxlength=\"256\" size=\"64\" name=\"desc\" value=\"" + g2AMapping.getAccountingDesc() + "\"/></td>" +
-		"</tr>"+		
-		"<tr>"+
-	        "<td colspan=2>"+
-	        	"<div style=\"text-align: center;\">"+
-				ConfigurationWebToolkit.createDoSubmit(g2AMappings, request)+
-	        	"<div style=\"text-align: center;\">"+
-	        		"<button type=\"submit\" onclick=\"return doSubmit()\">Save</button>"+
-	        	"</div>"+
-	        	"</div>"+
-	        "</td>"+
-		"</tr>"+
-	"</table>"+
-"</form>");
+%>
+			</td>
+		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">Accounting VO (optional - for Grid3-User-VO-Map only) </td>
+		    <td nowrap><input maxlength="256" size="32" name="vo" value="<%=g2AMapping.getAccountingVo()%>"/></td>
+		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">Accounting Description (optional - for Grid3-User-VO-Map only) </td>
+		    <td nowrap><input maxlength="256" size="64" name="desc" value="<%=g2AMapping.getAccountingDesc()%>"/></td>
+		</tr>
+		<tr>
+	        <td colspan=2>
+	        	<div style="text-align: center;">
+				<%=ConfigurationWebToolkit.createDoSubmit(g2AMappings, request)%>
+	        	<div style="text-align: center;">
+	        		<button type="submit" onclick="return doSubmit()">Save</button>
+	        	</div>
+	        	</div>
+	        </td>
+		</tr>
+	</table>
+</form>
+<%
 }
-
 %>
 
 </div>

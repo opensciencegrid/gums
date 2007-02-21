@@ -96,42 +96,43 @@ if (request.getParameter("action")==null ||
 			while (mappingsIt.hasNext()) {
 				HibernateMapping mapping = (HibernateMapping)mappingsIt.next();
 
-				out.write(
-   	"<tr>"+
-		"<td width=\"25\" valign=\"top\">"+
-			"<form action=\"manualAccounts.jsp\" method=\"get\">"+
-				"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this mapping?'))return false;\">"+
-				"<input type=\"hidden\" name=\"dn\" value=\"" + mapping.getDn() + "\">"+
-				"<input type=\"hidden\" name=\"accountMapper\" value=\"" + manualAccountMapper.getName() + "\">"+
-			"</form>"+
-		"</td>"+
-  		"<td align=\"left\">"+
-	   		"<table class=\"userElement\" width=\"100%\">"+
-	  			"<tr>"+
-		    		"<td>"+
-			    		"When mapped by account mapper <span style=\"color:blue\">" + manualAccountMapper.getName() + "</span>," +
-			    		" map user with DN <span style=\"color:blue\">" + mapping.getDn() + "</span>" +
-			    		" to account <span style=\"color:blue\">" + mapping.getAccount() + "</span>." +
-		    		"</td>"+
-	  			"</tr>"+
-			"</table>"+
-		"</td>"+
-		"<td width=\"10\"></td>"+		
-	"</tr>");
+%>
+   	<tr>
+		<td width="25" valign="top">
+			<form action="manualAccounts.jsp" method="get">
+				<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this mapping?'))return false;">
+				<input type="hidden" name="dn" value="<%=mapping.getDn()%>">
+				<input type="hidden" name="accountMapper" value="<%=manualAccountMapper.getName()%>">
+			</form>
+		</td>
+  		<td align="left">"
+	   		<table class="userElement" width="100%">
+	  			<tr>
+		    		<td>
+			    		When mapped by account mapper <span style="color:blue"><%=manualAccountMapper.getName()%></span>,
+			    		map user with DN <span style="color:blue"><%=mapping.getDn()%></span>
+			    		to account <span style="color:blue"><%=mapping.getAccount()%></span>.
+		    		</td>
+	  			</tr>
+			</table>
+		</td>
+		<td width="10"></td>	
+	</tr>
+<%
 			}
 		}
 	}
-
-	out.write(
-	"<tr>"+
-		"<td colspan=2>"+
-			"<form action=\"manualAccounts.jsp\" method=\"get\">"+
-				"<div style=\"text-align: center;\"><button type=\"submit\" name=\"action\" value=\"add\">Add</button></div>"+
-			"</form>"+
-	    "</td>"+
-	"</tr>"+
-  "</table>"+
-"</form>");
+%>
+	<tr>
+		<td colspan=2>
+			<form action="manualAccounts.jsp" method="get">
+				<div style="text-align: center;"><button type="submit" name="action" value="add">Add</button></div>
+			</form>
+	    </td>
+	</tr>
+  </table>
+</form>
+<%
 }
 
 else if ("add".equals(request.getParameter("action"))) {
@@ -146,61 +147,61 @@ else if ("add".equals(request.getParameter("action"))) {
 			manualAccountMappers.add( accountMapper.getName() );
 	}
 		
-	out.write(
-"<form action=\"manualAccounts.jsp\" method=\"get\">"+
-	"<input type=\"hidden\" name=\"action\" value=\"\">"+
-	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"When mapped by account mapper "+
-			"</td>"+
-			"<td>"+ 
-				ConfigurationWebToolkit.createSelectBox("accountMapper", manualAccountMappers, null, null, manualAccountMappers.size()>1)+" ,"+
-			"</td>"+
-		"</tr>"+
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"map user with DN "+
-		    "</td>"+
-		    "<td nowrap>"+
-			    "<input maxlength=\"256\" size=\"64\" name=\"dn\" value=\"\"/>"+
-		    "</td>"+
-		"</tr>"+
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-			    "/DC=org/DC=doegrids/OU=People/CN=John Smith 12345"+
-		    "</td>"+
-		"</tr>"+		
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"to account "+
-			"</td>"+
-			"<td>"+ 
-				"<input maxlength=\"256\" size=\"32\" name=\"account\" value=\"\"/>"+
-			"</td>"+
-		"</tr>"+
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-			    "myAccount"+
-		    "</td>"+
-		"</tr>"+
-		"<tr>"+
-	        "<td colspan=2>"+
-	        	"<div style=\"text-align: center;\">"+
-	        		"<button type=\"submit\" onclick=\"document.forms[0].elements['action'].value='save'; return true;\">Add</button>"+
-	        	"</div>"+
-	        "</td>"+
-		"</tr>"+
-	"</table>"+
-"</form>");
+%>
+<form action="manualAccounts.jsp" method="get">
+	<input type="hidden" name="action" value="">
+	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
+		<tr>
+			<td nowrap style="text-align: right;">
+				When mapped by account mapper 
+			</td>
+			<td>
+				<%=ConfigurationWebToolkit.createSelectBox("accountMapper", manualAccountMappers, null, null, manualAccountMappers.size()>1)%> ,
+			</td>
+		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		map user with DN
+		    </td>
+		    <td nowrap>
+			   <input maxlength="256" size="64" name="dn" value=""/>
+		    </td>
+		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+			    /DC=org/DC=doegrids/OU=People/CN=John Smith 12345
+		    </td>
+		</tr>	
+		<tr>
+			<td nowrap style="text-align: right;">
+				to account 
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="account" value=""/>
+			</td>
+		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+			    myAccount
+		    </td>
+		</tr>
+		<tr>
+	        <td colspan=2>
+	        	<div style="text-align: center;">
+	        		<button type="submit" onclick="document.forms[0].elements['action'].value='save'; return true;">Add</button>
+	        	</div>
+	        </td>
+		</tr>
+	</table>
+</form>
+<%
 }
-
 %>
 
 </div>

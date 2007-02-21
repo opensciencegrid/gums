@@ -94,43 +94,42 @@ if (request.getParameter("action")==null ||
 			Iterator usersIt = users.iterator();
 			while (usersIt.hasNext()) {
 				GridUser user = (GridUser)usersIt.next();
-
-				out.write(
-   	"<tr>"+
-		"<td width=\"25\" valign=\"top\">"+
-			"<form action=\"manualUserGroups.jsp\" method=\"get\">"+
-				"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this user?'))return false;\">"+
-				"<input type=\"hidden\" name=\"dn\" value=\"" + user.getCertificateDN() + "\">"+
-				"<input type=\"hidden\" name=\"userGroup\" value=\"" + manualUserGroup.getName() + "\">"+
-			"</form>"+
-		"</td>"+
-  		"<td align=\"left\">"+
-	   		"<table class=\"userElement\" width=\"100%\">"+
-	  			"<tr>"+
-		    		"<td>"+
-			    		"User with DN <span style=\"color:blue\">" + user.getCertificateDN() + "</span>" +
-//			    		" and FQAN <span style=\"color:blue\">" + (user.getVoFQAN()!=null ? user.getVoFQAN() : "") + "</span>" +
-			    		" is a member of user group <span style=\"color:blue\">" + manualUserGroup.getName() + "</span>." +
-		    		"</td>"+
-	  			"</tr>"+
-			"</table>"+
-		"</td>"+
-		"<td width=\"10\"></td>"+		
-	"</tr>");
+%>
+   	<tr>
+		<td width="25" valign="top">
+			<form action="manualUserGroups.jsp" method="get">
+				<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this user?'))return false;">
+				<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>">
+				<input type="hidden" name="userGroup" value="<%=manualUserGroup.getName()%>">
+			</form>
+		</td>
+  		<td align="left">
+	   		<table class="userElement" width="100%">
+	  			<tr>
+		    		<td>
+			    		User with DN <span style="color:blue"><%=user.getCertificateDN()%></span>
+			    		is a member of user group <span style="color:blue"><%=manualUserGroup.getName()%></span>.
+		    		</td>
+	  			</tr>
+			</table>
+		</td>
+		<td width="10"></td>		
+	</tr>
+<%
 			}
 		}
 	}
-
-	out.write(
-	"<tr>"+
-		"<td colspan=2>"+
-			"<form action=\"manualUserGroups.jsp\" method=\"get\">"+
-				"<div style=\"text-align: center;\"><button type=\"submit\" name=\"action\" value=\"add\">Add</button></div>"+
-			"</form>"+
-	    "</td>"+
-	"</tr>"+
-  "</table>"+
-"</form>");
+%>
+	<tr>
+		<td colspan=2>
+			<form action="manualUserGroups.jsp" method="get">
+				<div style="text-align: center;"><button type="submit" name="action" value="add">Add</button></div>
+			</form>
+	    </td>
+	</tr>
+  </table>
+</form>
+<%
 }
 
 else if ("add".equals(request.getParameter("action"))) {
@@ -144,62 +143,45 @@ else if ("add".equals(request.getParameter("action"))) {
 		if (userGroup instanceof ManualUserGroup)
 			manualUserGroups.add(userGroup.getName());
 	}
-		
-	out.write(
-"<form action=\"manualUserGroups.jsp\" method=\"get\">"+
-	"<input type=\"hidden\" name=\"action\" value=\"\">"+
-	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"User with DN "+
-		    "</td>"+
-		    "<td nowrap>"+
-			    "<input maxlength=\"256\" size=\"64\" name=\"dn\" value=\"\"/>"+
-		    "</td>"+
-		"</tr>"+
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-			    "/DC=org/DC=doegrids/OU=People/CN=John Smith 12345"+
-		    "</td>"+
-		"</tr>"+		
-/*		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"and FQAN "+
-			"</td>"+
-			"<td>"+ 
-				"<input maxlength=\"256\" size=\"32\" name=\"fqan\" value=\"\"/>"+
-			"</td>"+
-		"</tr>"+
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-			    "/myvo/mygroup/Role=test"+
-		    "</td>"+
-		"</tr>"+*/
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"is member of user group "+
-			"</td>"+
-			"<td>"+ 
-				ConfigurationWebToolkit.createSelectBox("userGroup", manualUserGroups, null, null, manualUserGroups.size()>1)+
-			"</td>"+
-		"</tr>"+
-		"<tr>"+
-	        "<td colspan=2>"+
-	        	"<div style=\"text-align: center;\">"+
-	        		"<button type=\"submit\" onclick=\"document.forms[0].elements['action'].value='save'; return true;\">Add</button>"+
-	        	"</div>"+
-	        "</td>"+
-		"</tr>"+
-	"</table>"+
-"</form>");
+%>
+<form action="manualUserGroups.jsp" method="get">
+	<input type="hidden" name="action" value="">
+	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		User with DN 
+		    </td>
+		    <td nowrap>
+			    <input maxlength="256" size="64" name="dn" value=""/>
+		    </td>
+		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+			    /DC=org/DC=doegrids/OU=People/CN=John Smith 12345
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				is member of user group
+			</td>
+			<td>
+				<%=ConfigurationWebToolkit.createSelectBox("userGroup", manualUserGroups, null, null, manualUserGroups.size()>1)%>
+			</td>
+		</tr>
+		<tr>
+	        <td colspan=2>
+	        	<div style="text-align: center;">
+	        		<button type="submit" onclick="document.forms[0].elements['action'].value='save'; return true;">Add</button>
+	        	</div>
+	        </td>
+		</tr>
+	</table>
+</form>
+<%
 }
-
 %>
 
 </div>

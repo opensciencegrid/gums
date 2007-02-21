@@ -74,21 +74,21 @@ public class ConfigurationWebToolkit implements Remote {
 	static public AccountMapper parseAccountMapper(HttpServletRequest request) throws Exception {
 		AccountMapper accountMapper = null;
 		
-		String className = request.getParameter("className");
+		String type = request.getParameter("type");
 		
-		if (className.equals("gov.bnl.gums.account.GroupAccountMapper")) {
+		if (type.equals(GroupAccountMapper.getType())) {
 			accountMapper = new GroupAccountMapper();
 			accountMapper.setName( request.getParameter("name") );
 			if (request.getParameter("accountName")!=null)
 				((GroupAccountMapper)accountMapper).setAccountName( request.getParameter("accountName") );
 		}
-		else if (className.equals("gov.bnl.gums.account.ManualAccountMapper")) {
+		else if (type.equals(ManualAccountMapper.getType())) {
 			accountMapper = new ManualAccountMapper();
 			accountMapper.setName( request.getParameter("name") );
 			if (request.getParameter("persistenceFactory")!=null)
 				((ManualAccountMapper)accountMapper).setPersistenceFactory( request.getParameter("persistenceFactory") );
 		}
-		else if (className.equals("gov.bnl.gums.account.AccountPoolMapper")) {
+		else if (type.equals(AccountPoolMapper.getType())) {
 			accountMapper = new AccountPoolMapper();
 			accountMapper.setName( request.getParameter("name") );
 			if (request.getParameter("accountPool")!=null)
@@ -96,7 +96,7 @@ public class ConfigurationWebToolkit implements Remote {
 			if (request.getParameter("persistenceFactory")!=null)
 				((AccountPoolMapper)accountMapper).setPersistenceFactory( request.getParameter("persistenceFactory") );
 		}
-		else if (className.equals("gov.bnl.gums.account.GecosLdapAccountMapper")) {
+		else if (type.equals(GecosLdapAccountMapper.getType())) {
 			accountMapper = new GecosLdapAccountMapper();
 			accountMapper.setName( request.getParameter("name") );
 			if (request.getParameter("serviceUrl")!=null)
@@ -109,15 +109,15 @@ public class ConfigurationWebToolkit implements Remote {
 	static public UserGroup parseUserGroup(HttpServletRequest request) throws Exception {
 		UserGroup userGroup = null;
 
-		String className = request.getParameter("className");
+		String type = request.getParameter("type");
 		
-		if (className.equals("gov.bnl.gums.userGroup.ManualUserGroup")) {
+		if (type.equals(ManualUserGroup.getType())) {
 			userGroup = new ManualUserGroup();
 			userGroup.setName( request.getParameter("name") );
 			userGroup.setAccess( request.getParameter("access") );
 			if (request.getParameter("persistenceFactory")!=null)
 				((ManualUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory") );
-		} else if (className.equals("gov.bnl.gums.userGroup.LDAPUserGroup")) {
+		} else if (type.equals(LDAPUserGroup.getType())) {
 			userGroup = new LDAPUserGroup();
 			userGroup.setName( request.getParameter("name") );
 			userGroup.setAccess( request.getParameter("access") );
@@ -131,7 +131,7 @@ public class ConfigurationWebToolkit implements Remote {
 				((LDAPUserGroup)userGroup).setQuery( request.getParameter("query") );
 			if (request.getParameter("persistenceFactory")!=null)
 				((LDAPUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory") );
-		} else if (className.equals("gov.bnl.gums.userGroup.VOMSUserGroup")) {
+		} else if (type.equals(VOMSUserGroup.getType())) {
 			userGroup = new VOMSUserGroup();
 			userGroup.setName( request.getParameter("name") );
 			userGroup.setAccess( request.getParameter("access") );
@@ -183,18 +183,18 @@ public class ConfigurationWebToolkit implements Remote {
 		
 		String className = request.getParameter("className");
 		
-		if (className.equals("gov.bnl.gums.persistence.HibernatePersistenceFactory")) {
+		if (className.equals(HibernatePersistenceFactory.getType())) {
 			persistenceFactory = new HibernatePersistenceFactory();
 			persistenceFactory.setName( request.getParameter("name") );
 			((HibernatePersistenceFactory)persistenceFactory).setProperties( getHibernateProperties(persistenceFactory, request, false) );
 		} 
-		else if (className.equals("gov.bnl.gums.persistence.LDAPPersistenceFactory")) {
+		else if (className.equals(LDAPPersistenceFactory.getType())) {
 			persistenceFactory = new LDAPPersistenceFactory();
 			persistenceFactory.setName( request.getParameter("name") );
 			((LDAPPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").equals("true") : false );
 			((LDAPPersistenceFactory)persistenceFactory).setProperties( getLdapProperties(persistenceFactory, request, false) );
 		} 
-		else if (className.equals("gov.bnl.gums.persistence.LocalPersistenceFactory")) {
+		else if (className.equals(LocalPersistenceFactory.getType())) {
 			persistenceFactory = new LocalPersistenceFactory();
 			persistenceFactory.setName( request.getParameter("name") );
 			((LocalPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").equals("true") : false );

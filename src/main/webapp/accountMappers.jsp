@@ -91,31 +91,33 @@ if (request.getParameter("action")==null ||
 	Collection accountMappers = configuration.getAccountMappers().values();
 
 	out.write(
-"<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
+	"<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
 
 	if(message!=null)
-		out.write( "<tr><td colspan=\"2\">" + message + "</td></tr>" );
+		out.write( 
+		"<tr><td colspan=\"2\">" + message + "</td></tr>" );
 				
 	Iterator accountMappersIt = accountMappers.iterator();
 	while(accountMappersIt.hasNext()) {
 		AccountMapper accountMapper = accountMappersIt.hasNext() ? (AccountMapper)accountMappersIt.next() : null;
 		
-		out.write(
-	   	"<tr>"+
-			"<td width=\"50\" valign=\"top\">"+
-				"<form action=\"accountMappers.jsp\" method=\"get\">"+
-					"<input type=\"image\" src=\"images/Edit24.gif\" name=\"action\" value=\"edit\">"+
-					"<input type=\"image\" src=\"images/Remove24.gif\" name=\"action\" value=\"delete\" onclick=\"if(!confirm('Are you sure you want to delete this account mapper?'))return false;\">"+
-					"<input type=\"hidden\" name=\"name\" value=\"" + accountMapper.getName() + "\">"+
-				"</form>"+
-			"</td>"+
-	  		"<td align=\"left\">"+
-		   		"<table class=\"configElement\" width=\"100%\">"+
-		  			"<tr>"+
-			    		"<td>"+
-				    		"For requests routed to account mapper "+
-				    		"<span style=\"color:blue\">" + accountMapper.getName() + "</span>, ");
+%>
+	   	<tr>
+			<td width="50" valign="top">
+				<form action="accountMappers.jsp" method="get">
+					<input type="image" src="images/Edit24.gif" name="action" value="edit">
+					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this account mapper?'))return false;">
+					<input type="hidden" name="name" value="<%=accountMapper.getName()%>">
+				</form>
+			</td>
+	  		<td align="left">
+		   		<table class="configElement" width="100%">
+		  			<tr>
+			    		<td>
+				    		For requests routed to account mapper "+
+				    		<span style="color:blue"><%=accountMapper.getName()%></span>,
 				    		
+<%
 		if (accountMapper instanceof GroupAccountMapper) {
 			out.write(		"map to account " + 
 							"<span style=\"color:blue\">" + ((GroupAccountMapper)accountMapper).getAccountName() + "</span>");
@@ -137,26 +139,26 @@ if (request.getParameter("action")==null ||
 			out.write(		"map to account assigned by JNDI NIS service " + 
 							"<span style=\"color:blue\">" + ((NISAccountMapper)accountMapper).getJndiNisUrl() + "</span>");
 		}	
-		
-		out.write(	
-						".</td>"+
-			      	"</tr>"+
-				"</table>"+
-			"</td>"+
-			"<td width=\"10\"></td>"+		
-		"</tr>");
+%>	
+						.</td>
+			      	</tr>
+				</table>
+			</td>
+			<td width="10"></td>		
+		</tr>
+<%
 	}
-
-	out.write(
-		"<tr>"+
-	        "<td colspan=2>"+
-	        	"<form action=\"accountMappers.jsp\" method=\"get\">"+
-	        		"<div style=\"text-align: center;\"><button type=\"submit\" name=\"action\" value=\"add\">Add</button></div>"+
-	        	"</form>"+
-	        "</td>"+
-		"</tr>"+
-	  "</table>"+
-"</form>");
+%>	
+		<tr>
+	        <td colspan=2>
+	        	<form action="accountMappers.jsp" method="get">
+	        		<div style="text-align: center;"><button type="submit" name="action" value="add">Add</button></div>
+	        	</form>
+	        </td>
+		</tr>
+	  </table>
+</form>
+<%
 }
 
 else if ("edit".equals(request.getParameter("action"))
@@ -167,11 +169,11 @@ else if ("edit".equals(request.getParameter("action"))
 	
 	AccountMapper accountMapper = null;
 	
-	ArrayList accountMapperClasses = new ArrayList();
-	accountMapperClasses.add("gov.bnl.gums.account.GroupAccountMapper");
-	accountMapperClasses.add("gov.bnl.gums.account.ManualAccountMapper");
-	accountMapperClasses.add("gov.bnl.gums.account.AccountPoolMapper");
-	accountMapperClasses.add("gov.bnl.gums.account.GecosLdapAccountMapper");
+	ArrayList accountMapperTypes = new ArrayList();
+	accountMapperTypes.add(GroupAccountMapper.getType());
+	accountMapperTypes.add(ManualAccountMapper.getType());
+	accountMapperTypes.add(AccountPoolMapper.getType());
+	accountMapperTypes.add(GecosLdapAccountMapper.getType());
 	
 	if ("edit".equals(request.getParameter("action"))) {
 		try {
@@ -195,21 +197,24 @@ else if ("edit".equals(request.getParameter("action"))
 		accountMapper = new GroupAccountMapper(configuration);
 	}		
 		
+%>
+<form action="accountMappers.jsp" method="get">
+	<input type="hidden" name="action" value="">
+	<input type="hidden" name="originalAction" value="
+<%
 	out.write(
-"<form action=\"accountMappers.jsp\" method=\"get\">"+
-	"<input type=\"hidden\" name=\"action\" value=\"\">"+
-	"<input type=\"hidden\" name=\"originalAction\" value=\""+ 
-		("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action")) +
-	"\">"+
-	"<table id=\"form\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\" align=\"center\">"+
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"For requests routed to account mapper "+
-		    "</td>"+
-		    "<td nowrap>");
-
-	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
-		out.write(
+		"reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"));
+%>
+	">
+	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		For requests routed to account mapper
+		    </td>
+		    <td nowrap>
+<%
+	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction"))) {
+%>
 		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (accountMapper.getName()!=null ? accountMapper.getName() : "") + "\"/>" +
 		    "</td>" +
 		"</tr>"+
@@ -221,129 +226,134 @@ else if ("edit".equals(request.getParameter("action"))
 				"myAccountMapper"+
 		    "</td>"+
 		"</tr>");
-	else
-		out.write(
-		    	accountMapper.getName()+
-		    	"<input type=\"hidden\" name=\"name\" value=\"" + accountMapper.getName() + "\"/>" +
-		    "</td>" +
-		"</tr>");
-
-	out.write(
-		"<tr>"+
-    		"<td nowrap style=\"text-align: right;\">"+
-	    		"of class "+
-		    "</td>"+
-		    "<td nowrap>"+
-			ConfigurationWebToolkit.createSelectBox("className", 
-				accountMapperClasses, 
-				accountMapper.getClass().toString().substring(6),
+<%
+	}
+	else {
+%>
+		    	<%=accountMapper.getName()%>
+		    	<input type="hidden" name="name" value="<%=accountMapper.getName()%>"/>
+		    </td>
+		</tr>
+		<tr>
+    		<td nowrap style=\"text-align: right;\">
+	    		of type 
+		    </td>
+		    <td nowrap>
+			<%=ConfigurationWebToolkit.createSelectBox("type", 
+				accountMapperTypes, 
+				accountMapper.getType(),
 				"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-				false)+
-		    "</td>"+
-		"</tr>");
-
+				false)%>
+		    </td>
+		</tr>
+<%
+	}
 	if (accountMapper instanceof GroupAccountMapper) {
-		out.write(	
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"map to account"+
-			"</td>"+
-			"<td>"+ 
-				"<input maxlength=\"256\" size=\"32\" name=\"accountName\" value=\"" + ((GroupAccountMapper)accountMapper).getAccountName() + "\"/>"+
-			"</td>"+
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-				"myAccount"+
-		    "</td>"+
-		"</tr>");
+%>
+		<tr>
+			<td nowrap style="text-align: right;">
+				map to account
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="accountName" value="<%=((GroupAccountMapper)accountMapper).getAccountName()%>"/>
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+				myAccount
+		    </td>
+		</tr>
+<%
 	} else if (accountMapper instanceof ManualAccountMapper) {
-		out.write(	
-		"<tr>"+
-			"<td style=\"text-align: right;\">"+
-				"search within this group in persistence factory "+
-			"</td>"+
-			"<td>"+
-				ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
+%>
+		<tr>
+			<td style="text-align: right;">
+				search within this group in persistence factory 
+			</td>
+			<td>
+				<%=ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
 					configuration.getPersistenceFactories().values(), 
 					((ManualAccountMapper)accountMapper).getPersistenceFactory(),
 					null,
-					configuration.getPersistenceFactories().size()>1)+
-			"</td>"+
-		"</tr>");
+					configuration.getPersistenceFactories().size()>1)%>
+			</td>
+		</tr>
+<%
 	} else if (accountMapper instanceof AccountPoolMapper) {
-		out.write(	
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"map to free or previously assigned account within pool"+
-			"</td>"+
-			"<td>"+ 
-				"<input maxlength=\"256\" size=\"32\" name=\"accountPool\" value=\"" + ((AccountPoolMapper)accountMapper).getAccountPool() + "\"/>"+
-			"</td>"+
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-				"myPool"+
-		    "</td>"+
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"in persistence factory"+
-			"</td>"+
-			"<td>"+
-				ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
+%>
+		<tr>
+			<td nowrap style="text-align: right;">
+				map to free or previously assigned account within pool
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="accountPool" value="<%=((AccountPoolMapper)accountMapper).getAccountPool()%>"/>
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+				myPool
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				in persistence factory
+			</td>
+			<td>
+				<%=ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
 						configuration.getPersistenceFactories().values(), 
 						((AccountPoolMapper)accountMapper).getPersistenceFactory(),
 						null,
-						configuration.getPersistenceFactories().size()>1)+
-			"</td>"+
-		"</tr>");
+						configuration.getPersistenceFactories().size()>1)%>
+			</td>
+		</tr>
+<%
 		if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
-			out.write(
-			"<tr>"+
-				"<td colspan=\"2\" nowrap style=\"text-align: center;\">"+
-					"NOTE: After saving, you should also add a range of accounts for this pool (click \"Add Pool Account Range\")"+
-			    "</td>"+
-			"</tr>" );
+%>
+			<tr>
+				<td colspan="2" nowrap style="text-align: center;">
+					NOTE: After saving, you should also add a range of accounts for this pool (click "Add Pool Account Range")
+			    </td>
+			</tr>
+<%
 	} else if (accountMapper instanceof GecosLdapAccountMapper) {
-		out.write(	
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-				"map to account assigned by JNDI LDAP service"+
-			"</td>"+
-			"<td>"+ 
-				"<input maxlength=\"256\" size=\"32\" name=\"serviceUrl\" value=\"" + ((GecosLdapAccountMapper)accountMapper).getJndiLdapUrl() + "\"/>"+
-			"</td>"+
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-				"ldap://localhost/dc=usatlas,dc=bnl,dc=gov"+
-		    "</td>"+
-		"</tr>");
+%>
+		<tr>"+
+			<td nowrap style="text-align: right;">
+				map to account assigned by JNDI LDAP service
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="serviceUrl" value="<%=((GecosLdapAccountMapper)accountMapper).getJndiLdapUrl()%>"/>
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+				ldap://localhost/dc=usatlas,dc=bnl,dc=gov
+		    </td>
+		</tr>
+<%
 	}	
-
-	out.write(
-		"<tr>"+
-	        "<td colspan=2>"+
-				ConfigurationWebToolkit.createDoSubmit(accountMappers, request)+
-	        	"<div style=\"text-align: center;\">"+
-	        		"<button type=\"submit\" onclick=\"return doSubmit()\">Save</button>"+
-	        	"</div>"+
-	        "</td>"+
-		"</tr>"+
-	"</table>"+
-"</form>");
+%>
+		<tr>
+	        <td colspan=2>
+				<%=ConfigurationWebToolkit.createDoSubmit(accountMappers, request)%>
+	        	<div style="text-align: center;">
+	        		<button type="submit" onclick="return doSubmit()">Save</button>
+	        	</div>
+	        </td>"
+		</tr>
+	</table>
+</form>
+<%
 }
-
 %>
 
 </div>
