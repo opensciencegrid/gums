@@ -100,7 +100,7 @@ if (request.getParameter("action")==null ||
 		
 %>
 	   	<tr>
-			<td width="50" valign="top">
+			<td width="55" valign="top">
 				<form action="virtualOrganizations.jsp" method="get">
 					<input type="image" src="images/Edit24.gif" name="action" value="edit">
 					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this virtual organization?'))return false;">
@@ -229,7 +229,7 @@ else if ("edit".equals(request.getParameter("action"))
 			<td nowrap style="text-align: right;">
 				by querying VOMS server at base URL
 			</td>
-			<td>"
+			<td>
 				<input maxlength="256" size="32" name="baseURL" value="<%=virtualOrganization.getBaseUrl()%>"/>(additional path in user group)
 			</td>
 		</tr>

@@ -102,7 +102,7 @@ if (request.getParameter("action")==null ||
 		
 %>
 	   	<tr>
-			<td width="50" valign="top">
+			<td width="55" valign="top">
 				<form action="userGroups.jsp" method="get">
 					<input type="image" src="images/Edit24.gif" name="action" value="edit">
 					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this user group?'))return false;">
@@ -178,9 +178,9 @@ else if ("edit".equals(request.getParameter("action"))
 	UserGroup userGroup = null;
 	
 	ArrayList userGroupTypes = new ArrayList();
-	userGroupTypes.add(LDAPUserGroup.getType());
-	userGroupTypes.add(ManualUserGroup.getType());
-	userGroupTypes.add(VOMSUserGroup.getType());
+	userGroupTypes.add(LDAPUserGroup.getTypeStatic());
+	userGroupTypes.add(ManualUserGroup.getTypeStatic());
+	userGroupTypes.add(VOMSUserGroup.getTypeStatic());
 	
 	if ("edit".equals(request.getParameter("action"))) {
 		try {
@@ -236,6 +236,9 @@ else if ("edit".equals(request.getParameter("action"))
 		    	<input type="hidden" name="name" value="<%=userGroup.getName()%>"/>
 		    </td>
 		</tr>
+<%
+	}
+%>
 		<tr>
     		<td nowrap style="text-align: right;">
 	    		of type 
@@ -249,11 +252,11 @@ else if ("edit".equals(request.getParameter("action"))
 		    </td>
 		</tr>
 <%
-	}
+
 	if (userGroup instanceof ManualUserGroup) {
 %>
 		<tr>
-			<td nowrap style=\"text-align: right;\">
+			<td nowrap style="text-align: right;">
 				by searching within this group in persistence factory
 			</td>
 			<td>
@@ -344,7 +347,7 @@ else if ("edit".equals(request.getParameter("action"))
 				<td nowrap style="text-align: right;">
 					by querying virtual organization
 				</td>
-				<td>"
+				<td>
 					<%=ConfigurationWebToolkit.createSelectBox("vo", 
 							configuration.getVirtualOrganizations().values(), 
 							((VOMSUserGroup)userGroup).getVirtualOrganization(),
@@ -398,7 +401,7 @@ else if ("edit".equals(request.getParameter("action"))
 				<td nowrap style="text-align: right;">
 					and group must match (optional)
 				</td>
-				<td>"
+				<td>
 					<input name="group" value="<%=((VOMSUserGroup)userGroup).getVoGroup()%>"/>
 				</td>
 			</tr>
@@ -406,7 +409,7 @@ else if ("edit".equals(request.getParameter("action"))
 				<td nowrap style="text-align: right;">
 					and role must match (optional)
 				</td>
-				<td>"
+				<td>
 					<input name="role" value="<%=((VOMSUserGroup)userGroup).getVoRole()%>"/>.
 				</td>
 			</tr>
@@ -429,7 +432,7 @@ else if ("edit".equals(request.getParameter("action"))
 			</tr>
 			<tr>
 	        <td colspan=2>
-				ConfigurationWebToolkit.createDoSubmit(userGroups, request)
+				<%=ConfigurationWebToolkit.createDoSubmit(userGroups, request)%>
 	        	<div style="text-align: center;">
 	        		<button type="submit" onclick="return doSubmit()">Save</button>
 	        	</div>

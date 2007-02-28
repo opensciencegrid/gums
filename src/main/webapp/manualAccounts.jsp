@@ -105,7 +105,7 @@ if (request.getParameter("action")==null ||
 				<input type="hidden" name="accountMapper" value="<%=manualAccountMapper.getName()%>">
 			</form>
 		</td>
-  		<td align="left">"
+  		<td align="left">
 	   		<table class="userElement" width="100%">
 	  			<tr>
 		    		<td>

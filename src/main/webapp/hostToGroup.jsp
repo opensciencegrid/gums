@@ -136,7 +136,7 @@ if (request.getParameter("action")==null ||
 			
 %>
 	   	<tr>
-			<td width="50" valign="top">
+			<td width="55" valign="top">
 				<form action="hostToGroup.jsp#<%=cH2GMapping.getName()%>" method="get">
 					<a name="<%=cH2GMapping.getName()%>">
 						<input type="image" src="images/Up24.gif" name="action" value="up">
@@ -222,13 +222,13 @@ else if ("edit".equals(request.getParameter("action"))
 	
 	CertificateHostToGroupMapping cH2GMapping = (CertificateHostToGroupMapping)h2GMapping;
 %>
-<form action="hostToGroup.jsp" method="get">"+
+<form action="hostToGroup.jsp" method="get">
 	<input type="hidden" name="action" value="">
 	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		"For requests from hosts matching
+	    		For requests from hosts matching
 		    </td>
 		    <td nowrap>
 <%

@@ -103,7 +103,7 @@ if (request.getParameter("action")==null ||
 		
 %>
 	   	<tr>
-			<td width="50" valign="top">
+			<td width="55" valign="top">
 				<form action="accountMappers.jsp" method="get">
 					<input type="image" src="images/Edit24.gif" name="action" value="edit">
 					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this account mapper?'))return false;">
@@ -114,7 +114,7 @@ if (request.getParameter("action")==null ||
 		   		<table class="configElement" width="100%">
 		  			<tr>
 			    		<td>
-				    		For requests routed to account mapper "+
+				    		For requests routed to account mapper
 				    		<span style="color:blue"><%=accountMapper.getName()%></span>,
 				    		
 <%
@@ -139,8 +139,9 @@ if (request.getParameter("action")==null ||
 			out.write(		"map to account assigned by JNDI NIS service " + 
 							"<span style=\"color:blue\">" + ((NISAccountMapper)accountMapper).getJndiNisUrl() + "</span>");
 		}	
+		out.write(".");
 %>	
-						.</td>
+						</td>
 			      	</tr>
 				</table>
 			</td>
@@ -170,10 +171,10 @@ else if ("edit".equals(request.getParameter("action"))
 	AccountMapper accountMapper = null;
 	
 	ArrayList accountMapperTypes = new ArrayList();
-	accountMapperTypes.add(GroupAccountMapper.getType());
-	accountMapperTypes.add(ManualAccountMapper.getType());
-	accountMapperTypes.add(AccountPoolMapper.getType());
-	accountMapperTypes.add(GecosLdapAccountMapper.getType());
+	accountMapperTypes.add(GroupAccountMapper.getTypeStatic());
+	accountMapperTypes.add(ManualAccountMapper.getTypeStatic());
+	accountMapperTypes.add(AccountPoolMapper.getTypeStatic());
+	accountMapperTypes.add(GecosLdapAccountMapper.getTypeStatic());
 	
 	if ("edit".equals(request.getParameter("action"))) {
 		try {
@@ -200,12 +201,7 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 <form action="accountMappers.jsp" method="get">
 	<input type="hidden" name="action" value="">
-	<input type="hidden" name="originalAction" value="
-<%
-	out.write(
-		"reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"));
-%>
-	">
+	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
@@ -215,17 +211,17 @@ else if ("edit".equals(request.getParameter("action"))
 <%
 	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction"))) {
 %>
-		    	"<input maxlength=\"256\" size=\"32\" name=\"name\" value=\"" + (accountMapper.getName()!=null ? accountMapper.getName() : "") + "\"/>" +
-		    "</td>" +
-		"</tr>"+
-		"<tr>"+
-			"<td nowrap style=\"text-align: right;\">"+
-	    		"i.e."+
-		    "</td>"+
-		    "<td nowrap>"+
-				"myAccountMapper"+
-		    "</td>"+
-		"</tr>");
+		    	<input maxlength="256" size="32" name="name" value="<%=(accountMapper.getName()!=null ? accountMapper.getName() : "")%>"/>
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+				myAccountMapper
+		    </td>
+		</tr>
 <%
 	}
 	else {
@@ -234,9 +230,12 @@ else if ("edit".equals(request.getParameter("action"))
 		    	<input type="hidden" name="name" value="<%=accountMapper.getName()%>"/>
 		    </td>
 		</tr>
+<%
+	}
+%>
 		<tr>
-    		<td nowrap style=\"text-align: right;\">
-	    		of type 
+    		<td nowrap style="text-align: right;">
+	    		of type
 		    </td>
 		    <td nowrap>
 			<%=ConfigurationWebToolkit.createSelectBox("type", 
@@ -247,7 +246,6 @@ else if ("edit".equals(request.getParameter("action"))
 		    </td>
 		</tr>
 <%
-	}
 	if (accountMapper instanceof GroupAccountMapper) {
 %>
 		<tr>
@@ -315,15 +313,15 @@ else if ("edit".equals(request.getParameter("action"))
 <%
 		if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction")))
 %>
-			<tr>
-				<td colspan="2" nowrap style="text-align: center;">
-					NOTE: After saving, you should also add a range of accounts for this pool (click "Add Pool Account Range")
-			    </td>
-			</tr>
+		<tr>
+			<td colspan="2" nowrap style="text-align: center;">
+				NOTE: After saving, you should also add a range of accounts for this pool (click "Add Pool Account Range")
+		    </td>
+		</tr>
 <%
 	} else if (accountMapper instanceof GecosLdapAccountMapper) {
 %>
-		<tr>"+
+		<tr>
 			<td nowrap style="text-align: right;">
 				map to account assigned by JNDI LDAP service
 			</td>
@@ -348,7 +346,7 @@ else if ("edit".equals(request.getParameter("action"))
 	        	<div style="text-align: center;">
 	        		<button type="submit" onclick="return doSubmit()">Save</button>
 	        	</div>
-	        </td>"
+	        </td>
 		</tr>
 	</table>
 </form>

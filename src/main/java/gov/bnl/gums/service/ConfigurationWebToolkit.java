@@ -76,19 +76,19 @@ public class ConfigurationWebToolkit implements Remote {
 		
 		String type = request.getParameter("type");
 		
-		if (type.equals(GroupAccountMapper.getType())) {
+		if (type.equals(GroupAccountMapper.getTypeStatic())) {
 			accountMapper = new GroupAccountMapper();
 			accountMapper.setName( request.getParameter("name") );
 			if (request.getParameter("accountName")!=null)
 				((GroupAccountMapper)accountMapper).setAccountName( request.getParameter("accountName") );
 		}
-		else if (type.equals(ManualAccountMapper.getType())) {
+		else if (type.equals(ManualAccountMapper.getTypeStatic())) {
 			accountMapper = new ManualAccountMapper();
 			accountMapper.setName( request.getParameter("name") );
 			if (request.getParameter("persistenceFactory")!=null)
 				((ManualAccountMapper)accountMapper).setPersistenceFactory( request.getParameter("persistenceFactory") );
 		}
-		else if (type.equals(AccountPoolMapper.getType())) {
+		else if (type.equals(AccountPoolMapper.getTypeStatic())) {
 			accountMapper = new AccountPoolMapper();
 			accountMapper.setName( request.getParameter("name") );
 			if (request.getParameter("accountPool")!=null)
@@ -96,7 +96,7 @@ public class ConfigurationWebToolkit implements Remote {
 			if (request.getParameter("persistenceFactory")!=null)
 				((AccountPoolMapper)accountMapper).setPersistenceFactory( request.getParameter("persistenceFactory") );
 		}
-		else if (type.equals(GecosLdapAccountMapper.getType())) {
+		else if (type.equals(GecosLdapAccountMapper.getTypeStatic())) {
 			accountMapper = new GecosLdapAccountMapper();
 			accountMapper.setName( request.getParameter("name") );
 			if (request.getParameter("serviceUrl")!=null)
@@ -111,13 +111,13 @@ public class ConfigurationWebToolkit implements Remote {
 
 		String type = request.getParameter("type");
 		
-		if (type.equals(ManualUserGroup.getType())) {
+		if (type.equals(ManualUserGroup.getTypeStatic())) {
 			userGroup = new ManualUserGroup();
 			userGroup.setName( request.getParameter("name") );
 			userGroup.setAccess( request.getParameter("access") );
 			if (request.getParameter("persistenceFactory")!=null)
 				((ManualUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory") );
-		} else if (type.equals(LDAPUserGroup.getType())) {
+		} else if (type.equals(LDAPUserGroup.getTypeStatic())) {
 			userGroup = new LDAPUserGroup();
 			userGroup.setName( request.getParameter("name") );
 			userGroup.setAccess( request.getParameter("access") );
@@ -131,7 +131,7 @@ public class ConfigurationWebToolkit implements Remote {
 				((LDAPUserGroup)userGroup).setQuery( request.getParameter("query") );
 			if (request.getParameter("persistenceFactory")!=null)
 				((LDAPUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory") );
-		} else if (type.equals(VOMSUserGroup.getType())) {
+		} else if (type.equals(VOMSUserGroup.getTypeStatic())) {
 			userGroup = new VOMSUserGroup();
 			userGroup.setName( request.getParameter("name") );
 			userGroup.setAccess( request.getParameter("access") );
@@ -181,20 +181,20 @@ public class ConfigurationWebToolkit implements Remote {
 	static public PersistenceFactory parsePersistenceFactory(HttpServletRequest request) throws Exception {
 		PersistenceFactory persistenceFactory = null;
 		
-		String className = request.getParameter("className");
+		String type = request.getParameter("type");
 		
-		if (className.equals(HibernatePersistenceFactory.getType())) {
+		if (type.equals(HibernatePersistenceFactory.getTypeStatic())) {
 			persistenceFactory = new HibernatePersistenceFactory();
 			persistenceFactory.setName( request.getParameter("name") );
 			((HibernatePersistenceFactory)persistenceFactory).setProperties( getHibernateProperties(persistenceFactory, request, false) );
 		} 
-		else if (className.equals(LDAPPersistenceFactory.getType())) {
+		else if (type.equals(LDAPPersistenceFactory.getTypeStatic())) {
 			persistenceFactory = new LDAPPersistenceFactory();
 			persistenceFactory.setName( request.getParameter("name") );
 			((LDAPPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").equals("true") : false );
 			((LDAPPersistenceFactory)persistenceFactory).setProperties( getLdapProperties(persistenceFactory, request, false) );
 		} 
-		else if (className.equals(LocalPersistenceFactory.getType())) {
+		else if (type.equals(LocalPersistenceFactory.getTypeStatic())) {
 			persistenceFactory = new LocalPersistenceFactory();
 			persistenceFactory.setName( request.getParameter("name") );
 			((LocalPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").equals("true") : false );

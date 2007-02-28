@@ -98,7 +98,7 @@ if (request.getParameter("action")==null ||
 		PersistenceFactory persistenceFactory = persistenceFactoriesIt.hasNext() ? (PersistenceFactory)persistenceFactoriesIt.next() : null;
 %>
 	   	<tr>
-			<td width="50" valign="top">
+			<td width="55" valign="top">
 				<form action="persistenceFactories.jsp" method="get">
 					<input type="image" src="images/Edit24.gif" name="action" value="edit">
 					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this persistence factory?'))return false;">
@@ -136,10 +136,10 @@ if (request.getParameter("action")==null ||
 		
 %>
 						</td>
-			      	</tr>"
+			      	</tr>
 				</table>
 			</td
-			<td width="10"></td>"	
+			<td width="10"></td>
 		</tr>
 <%
 	}
@@ -165,9 +165,9 @@ else if ("edit".equals(request.getParameter("action"))
 	PersistenceFactory persistenceFactory = null;
 
 	ArrayList persistenceFactoryTypes = new ArrayList();
-	persistenceFactoryTypes.add(HibernatePersistenceFactory.getType());
-	persistenceFactoryTypes.add(LDAPPersistenceFactory.getType());
-	persistenceFactoryTypes.add(LocalPersistenceFactory.getType());
+	persistenceFactoryTypes.add(HibernatePersistenceFactory.getTypeStatic());
+	persistenceFactoryTypes.add(LDAPPersistenceFactory.getTypeStatic());
+	persistenceFactoryTypes.add(LocalPersistenceFactory.getTypeStatic());
 	
 	ArrayList authenticationTypes = new ArrayList();
 	authenticationTypes.add("simple");
@@ -228,9 +228,12 @@ else if ("edit".equals(request.getParameter("action"))
 		    	<input type="hidden" name="name" value="<%=persistenceFactory.getName()%>"/>
 		    </td>
 		</tr>
+<%
+	}
+%>
 		<tr>
 			<td nowrap style="text-align: right;">
-	    		of class
+	    		of type
 		    </td>
 		    <td nowrap>
 			<%=ConfigurationWebToolkit.createSelectBox("type", 
@@ -241,7 +244,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    </td>
 		</tr>
 <%	
-		if (persistenceFactory instanceof HibernatePersistenceFactory) {
+	if (persistenceFactory instanceof HibernatePersistenceFactory) {
 %>
 	    <tr>
     		<td nowrap style="text-align: right;">
@@ -282,10 +285,10 @@ else if ("edit".equals(request.getParameter("action"))
 		    <td nowrap>
 		    	<input type="password" maxlength="256" size="32" name="mySqlPassword" value="<%=((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.password")%>"/>
 		    </td>
-		</tr>");
+		</tr>
 <%
-		}
-		else if (persistenceFactory instanceof LDAPPersistenceFactory) {
+	}
+	else if (persistenceFactory instanceof LDAPPersistenceFactory) {
 %>
 		<tr>
     		<td nowrap style="text-align: right;">
@@ -317,11 +320,11 @@ else if ("edit".equals(request.getParameter("action"))
 		    </td>
 		</tr>
 <%
-			if (((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.authentication").equals("simple")) {
+		if (((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.authentication").equals("simple")) {
 %>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		"and principle 
+	    		and principle 
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="64" name="ldapPrincipal" value="<%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.principal")%>"/>
@@ -329,38 +332,35 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 	    <tr>
     		<td nowrap style="text-align: right;">
-	    		"i.e.
+	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	"uid=gumsAdmin,ou=People,dc=racf,dc=bnl,dc=gov
+		    	uid=gumsAdmin,ou=People,dc=racf,dc=bnl,dc=gov
 		    </td>
 		</tr>	
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		"and password 
+	    		and password 
 		    </td>
 		    <td nowrap>
 		    	<input type="password" maxlength="256" size="32" name="ldapCredentials" value="<%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.credentials")%>"/> .
 		    </td>
 		</tr>
 <%
-			}
+		}
 %>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		"Update GID for every access? 
+	    		Update GID for every access? 
 		    </td>
 		    <td nowrap>
-				<select name="synchGroups"><option 
-				<%=(((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"selected":"")%>
-				">true</option><option 
-				<%=(((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"":"selected")%>
-				">false</option></select>
+				<select name="synchGroups"><option <%=(((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"selected":"")%>>true</option>
+				<option<%=(((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"":"selected")%>>false</option></select>
 		    </td>
 		</tr>
 <%
-		}
-		else if (persistenceFactory instanceof LocalPersistenceFactory) {
+	}
+	else if (persistenceFactory instanceof LocalPersistenceFactory) {
 %>
 		<tr>
     		<td nowrap style="text-align: right;">
@@ -432,7 +432,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    </td>
 		</tr>
 <%
-			if (((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.authentication").equals("simple")) {
+		if (((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.authentication").equals("simple")) {
 %>
 		<tr>
     		<td nowrap style="text-align: right;">
@@ -459,7 +459,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    </td>
 		</tr>
 <%
-			}
+		}
 %>
 		<tr>
     		<td nowrap style="text-align: right;">
@@ -473,7 +473,6 @@ else if ("edit".equals(request.getParameter("action"))
 		    </td>
 		</tr>
 <%
-		}
 	}
 %>	
 		<tr>
