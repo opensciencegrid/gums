@@ -34,25 +34,25 @@ public class ManualAccountMapperTest extends TestCase {
     
     public void setUp() {
     	Configuration configuration = new Configuration();
-        ManualAccountMapper mMapper = new ManualAccountMapper(configuration, "manualAccountMapper");
+        ManualAccountMapper mMapper = new ManualAccountMapper(configuration, "myManualAccountMapper");
         configuration.addAccountMapper(mMapper);
-        PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "mock");
+        PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "myMockPersistenceFactory");
         configuration.addPersistenceFactory(persistenceFactory);
         mMapper.setPersistenceFactory( persistenceFactory.getName() );
         mapper = mMapper;
     }
     
     public void testMap() {
-        ((ManualAccountMapper) mapper).createMapping("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "carcassi");
-        assertEquals("carcassi", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
+        ((ManualAccountMapper) mapper).createMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith", "jsmith");
+        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
         assertEquals(null, mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=Evil Persons"));
     }
     
     public void testRemove() {
-        ((ManualAccountMapper) mapper).createMapping("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "carcassi");
-        assertEquals("carcassi", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
-        assertTrue(((ManualAccountMapper) mapper).removeMapping("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
-        assertEquals(null, mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
+        ((ManualAccountMapper) mapper).createMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith", "jsmith");
+        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
+        assertTrue(((ManualAccountMapper) mapper).removeMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
+        assertEquals(null, mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
         assertFalse(((ManualAccountMapper) mapper).removeMapping("/DC=org/DC=doegrids/OU=People/CN=Evil Person"));
         assertEquals(null, mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=Evil Persons"));
     }

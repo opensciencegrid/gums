@@ -8,8 +8,6 @@
 package gov.bnl.gums.db;
 
 
-import java.sql.*;
-import java.util.*;
 import junit.framework.*;
 
 /**
@@ -20,12 +18,12 @@ public class ManualAccountMapperDBTest extends TestCase {
     
     protected ManualAccountMapperDB db;
     
-    public ManualAccountMapperDBTest(java.lang.String testName) {
+    public ManualAccountMapperDBTest(String testName) {
         super(testName);
     }
     
     public static Test suite() {
-        TestSuite suite = new TestSuite(MySQLManualAccountMapperDBTest.class);
+        TestSuite suite = new TestSuite(ManualAccountMapperDBTest.class);
         return suite;
     }
     
@@ -33,24 +31,27 @@ public class ManualAccountMapperDBTest extends TestCase {
         db = new MockManualAccountMapperDB();
     }
     
+    public void tearDown() throws Exception {
+    }
+    
     public void testCreateMapping() {
-        db.createMapping("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "carcassi");
-        assertEquals("carcassi", db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
+        db.createMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith", "jsmith");
+        assertEquals("jsmith", db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
         assertEquals(null, db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=Evil Persons"));
     }
     
     public void testRetrieveMapping() {
-        assertEquals(null, db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
-        db.createMapping("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "carcassi");
-        assertEquals("carcassi", db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
+        assertEquals(null, db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
+        db.createMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith", "jsmith");
+        assertEquals("jsmith", db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
         assertEquals(null, db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=Evil Persons"));
     }
     
     public void testRemoveMapping() {
-        db.createMapping("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "carcassi");
-        assertEquals("carcassi", db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
-        assertTrue(db.removeMapping("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
-        assertEquals(null, db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
+        db.createMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith", "jsmith");
+        assertEquals("jsmith", db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
+        assertTrue(db.removeMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
+        assertEquals(null, db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
         assertFalse(db.removeMapping("/DC=org/DC=doegrids/OU=People/CN=Evil Person"));
         assertEquals(null, db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=Evil Persons"));
     }

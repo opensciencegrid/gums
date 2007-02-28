@@ -23,9 +23,9 @@ public class MockUserGroup extends UserGroup {
     public MockUserGroup(Configuration configuration, String name) {
     	super(configuration, name);
         members = new ArrayList();
-        GridUser carcassi = new GridUser();
-        carcassi.setCertificateDN("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi");
-        members.add(carcassi);
+        GridUser user = new GridUser();
+        user.setCertificateDN("/DC=org/DC=doegrids/OU=People/CN=John Smith");
+        members.add(user);
     }
     
     public java.util.List getMemberList() {

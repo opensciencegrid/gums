@@ -8,6 +8,7 @@
 package gov.bnl.gums.account;
 
 import gov.bnl.gums.configuration.Configuration;
+import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 import junit.framework.*;
 import java.util.Properties;
 import javax.naming.NamingEnumeration;
@@ -30,7 +31,7 @@ public class GecosLdapAccountMapperTest extends TestCase {
 
     protected void setUp() throws Exception {
         mapper = new GecosLdapAccountMapper(new Configuration(), "ldapAccountMapper");
-        mapper.setJndiLdapUrl("ldap://rldap01.rcf.bnl.gov/dc=usatlas,dc=bnl,dc=gov");
+        mapper.setJndiLdapUrl( LDAPPersistenceFactory.readLdapProperties().getProperty("ldap.java.naming.provider.url") );
     }
 
     protected void tearDown() throws Exception {
@@ -44,14 +45,10 @@ public class GecosLdapAccountMapperTest extends TestCase {
 
     public void testMap() {
         GecosMap map = mapper.createMap();
-        String account = map.findAccount("Gabriele", "Carcassi");
-        assertEquals("carcassi", account);
-        account = map.findAccount("Dantong", "Yu");
-        assertEquals("dtyu", account);
-        account = map.findAccount("Wensheng", "Deng");
-        assertEquals("wdeng", account);
-        account = map.findAccount("Paperone", "De Paperoni");
-        assertNull(account);
+        String account = map.findAccount("John", "Smith");
+        assertEquals("jsmith", account);
+        account = map.findAccount("Jane", "Doe");
+        assertEquals("jdoe", account);
     }
     
 }

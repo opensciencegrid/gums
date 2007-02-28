@@ -59,42 +59,42 @@ public class GecosMapTest extends TestCase {
     }
 
     public void testSimpleEntry() {
-        map.addEntry("carcassi", "Gabriele Carcassi");
-        String account = map.findAccount("Gabriele", "Carcassi");
-        assertEquals("carcassi", account);
+        map.addEntry("jsmith", "John Smith");
+        String account = map.findAccount("John", "Smith");
+        assertEquals("jsmith", account);
     }
 
     public void testReverseEntry() {
-        map.addEntry("carcassi", "Gabriele Carcassi");
-        String account = map.findAccount("Carcassi", "Gabriele");
-        assertEquals("carcassi", account);
+        map.addEntry("jsmith", "John Smith");
+        String account = map.findAccount("Smith", "John");
+        assertEquals("jsmith", account);
     }
 
     public void testMultipleReverseEntries() {
-        map.addEntry("carcassi", "Gabriele Carcassi");
-        map.addEntry("carcassi2", "Gabriele Carcassi");
-        String account = map.findAccount("Carcassi", "Gabriele");
+        map.addEntry("jsmith", "John Smith");
+        map.addEntry("jsmith2", "John Smith");
+        String account = map.findAccount("Smith", "John");
         assertNull(account);
     }
 
     public void testMultipleEntries() {
-        map.addEntry("carcassi", "Gabriele Carcassi");
-        map.addEntry("carcassi2", "Gabriele Carcassi");
-        String account = map.findAccount("Gabriele", "Carcassi");
+        map.addEntry("jsmith", "John Smith");
+        map.addEntry("jsmith2", "John Smith");
+        String account = map.findAccount("John", "Smith");
         assertNull(account);
     }
 
     public void testMisspelledName() {
-        map.addEntry("carcassi", "Gabrielle Carcassi");
-        String account = map.findAccount("Gabriele", "Carcassi");
-        assertEquals("carcassi", account);
+        map.addEntry("jsmith", "John Smith");
+        String account = map.findAccount("Jon", "Smith");
+        assertEquals("jsmith", account);
     }
 
     public void testMisspelledNameWithMultipleSurnames() {
-        map.addEntry("carcassi", "Gabriele Carcassi");
-        map.addEntry("gcarcass", "Gabrielle Carcassi");
-        String account = map.findAccount("Gabriele", "Carcassi");
-        assertEquals("carcassi", account);
+        map.addEntry("jsmith", "John Smith");
+        map.addEntry("jsmith2", "Jon Smith");
+        String account = map.findAccount("Jon", "Smith");
+        assertEquals("jsmith2", account);
     }
     
 }

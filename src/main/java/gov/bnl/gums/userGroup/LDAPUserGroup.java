@@ -48,23 +48,19 @@ public class LDAPUserGroup extends UserGroup {
 	private String keyPassword = "";
 	protected ConfigurationStore confStore;
     
-	static public String getType() {
-		return "ldap";
-	}
-	
-    public LDAPUserGroup() {
+	public LDAPUserGroup() {
     	super();
     }
- 
-	public LDAPUserGroup(Configuration configuration) {
+	
+    public LDAPUserGroup(Configuration configuration) {
 		super(configuration);
 	}
-    
+ 
 	public LDAPUserGroup(Configuration configuration, String name) {
 		super(configuration, name);
 	}
     
-    public UserGroup clone(Configuration configuration) {
+	public UserGroup clone(Configuration configuration) {
     	LDAPUserGroup userGroup = new LDAPUserGroup(configuration, getName());
     	userGroup.setPersistenceFactory(persistenceFactory);
     	userGroup.setAccess(getAccess());
@@ -119,6 +115,14 @@ public class LDAPUserGroup extends UserGroup {
     public String getServer() {
         return this.server;
     }
+    
+    public String getType() {
+		return "ldap";
+	}
+    
+    static public String getTypeStatic() {
+		return "ldap";
+	}
     
     public int hashCode() {
         return query.hashCode();

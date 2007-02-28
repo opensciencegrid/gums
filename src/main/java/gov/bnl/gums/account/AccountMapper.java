@@ -19,23 +19,19 @@ public abstract class AccountMapper {
 	private String name = "";
 	private Configuration configuration = null;
 	
-	static public String getType() {
-		return "abstract";
-	}
-	
 	/**
 	 * This empty constructor needed by XML Digestor
 	 */
 	public AccountMapper() {
     }
- 
+	
 	/**
 	 * @param configuration
 	 */
 	public AccountMapper(Configuration configuration) {
     	this.configuration = configuration;
     }
-	
+ 
 	/**
 	 * @param configuration
 	 * @param name
@@ -44,20 +40,28 @@ public abstract class AccountMapper {
     	this.configuration = configuration;
     	this.name = name;
     }
-    
+	
 	public abstract AccountMapper clone(Configuration configuration);
-
+    
 	public Configuration getConfiguration() {
 		return configuration;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
 	
+	public String getType() {
+		return "abstract";
+	}
+	
+	static public String getTypeStatic() {
+		return "abstract";
+	}
+	
 	/**
      * Maps a grid identity to a local account name.
-     * @param userDN the certificate DN (i.e. '/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi').
+     * @param userDN the certificate DN (i.e. '/DC=org/DC=doegrids/OU=People/CN=John Smith').
      * @return a user account (i.e. 'atlas').
      */
     public abstract String mapUser(String userDN);

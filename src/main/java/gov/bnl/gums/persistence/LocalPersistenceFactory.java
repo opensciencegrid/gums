@@ -28,15 +28,6 @@ import org.apache.commons.logging.LogFactory;
  * @author carcassi
  */
 public class LocalPersistenceFactory extends PersistenceFactory {
-    private Log log = LogFactory.getLog(LocalPersistenceFactory.class);
-    private HibernatePersistenceFactory mysql;
-    private LDAPPersistenceFactory ldap;    
-    private boolean synchGroups;
-	
-	static public String getType() {
-		return "hibernate";
-	}
-    
     private class LocalAccountPoolMapperDB implements AccountPoolMapperDB {
         
         private AccountPoolMapperDB mysqlDB;
@@ -104,6 +95,11 @@ public class LocalPersistenceFactory extends PersistenceFactory {
         }
         
     }
+    private Log log = LogFactory.getLog(LocalPersistenceFactory.class);
+    private HibernatePersistenceFactory mysql;    
+    private LDAPPersistenceFactory ldap;
+	
+	private boolean synchGroups;
     
     public LocalPersistenceFactory() {
     	super();
@@ -118,20 +114,20 @@ public class LocalPersistenceFactory extends PersistenceFactory {
         ldap = new LDAPPersistenceFactory();   	
     	log.trace("LocalPersistenceFactory instanciated");
     }
- 
+    
     public LocalPersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
         mysql = new HibernatePersistenceFactory(configuration, name);
         ldap = new LDAPPersistenceFactory(configuration, name);  
     	log.trace("LocalPersistenceFactory instanciated");
     }
-    
+ 
     public PersistenceFactory clone(Configuration configuration) {
     	LocalPersistenceFactory persistenceFactory = new LocalPersistenceFactory(configuration, getName());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	return persistenceFactory;
     }
-
+    
     public Properties getLDAPProperties() {
         return filterProperties("ldap.");
     }
@@ -139,6 +135,14 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     public Properties getMySQLProperties() {
         return filterProperties("mysql.");
     }
+
+    public String getType() {
+		return "local";
+	}
+    
+    static public String getTypeStatic() {
+		return "local";
+	}
 
     /**
      * Getter for property synchGroups.

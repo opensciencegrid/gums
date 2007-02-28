@@ -22,11 +22,7 @@ public class ManualUserGroup extends UserGroup {
     private ManualUserGroupDB db;
     private String persistenceFactory = "";
     
-	static public String getType() {
-		return "manual";
-	}
-    
-    public ManualUserGroup() {
+	public ManualUserGroup() {
     	super();
     }
     
@@ -34,11 +30,11 @@ public class ManualUserGroup extends UserGroup {
     	super(configuration);
     }
     
-	public ManualUserGroup(Configuration configuration, String name) {
+    public ManualUserGroup(Configuration configuration, String name) {
 		super(configuration, name);
 	}
     
-    public void addMember(GridUser user) {
+	public void addMember(GridUser user) {
         getDB().addMember(user);
     }
     
@@ -56,6 +52,14 @@ public class ManualUserGroup extends UserGroup {
     public String getPersistenceFactory() {
         return persistenceFactory;
     }
+    
+    public String getType() {
+		return "manual";
+	}
+    
+    static public String getTypeStatic() {
+		return "manual";
+	}
     
     public boolean isInGroup(GridUser user) {
         return getDB().isMemberInGroup(user);

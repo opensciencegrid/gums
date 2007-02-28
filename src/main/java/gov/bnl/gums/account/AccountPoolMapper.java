@@ -23,18 +23,14 @@ public class AccountPoolMapper extends AccountMapper {
     private String persistenceFactory = "";
     private String accountPool = "";
     
-	static public String getType() {
-		return "pool";
-	}
-    
-    public AccountPoolMapper() {
+	public AccountPoolMapper() {
     	super();
     }
- 
+    
     public AccountPoolMapper(Configuration configuration) {
     	super(configuration);
     }
-    
+ 
     public AccountPoolMapper(Configuration configuration, String name) {
     	super(configuration, name);
     }
@@ -49,19 +45,27 @@ public class AccountPoolMapper extends AccountMapper {
     public String getAccountPool() {
     	return accountPool;
     }
-
+    
     public int getNumberAssigned() {
     	return getDB().retrieveAccountMap().values().size();
-    }    
-    
-    public int getNumberUnassigned() {
-    	return getDB().getNumberUnassignedMappings();
     }
 
+    public int getNumberUnassigned() {
+    	return getDB().getNumberUnassignedMappings();
+    }    
+    
     public String getPersistenceFactory() {
        return persistenceFactory;
     }
-    
+
+    public String getType() {
+		return "pool";
+	}
+ 
+    static public String getTypeStatic() {
+		return "pool";
+	}
+        
     public String mapUser(String userDN) {
         String account = getDB().retrieveAccount(userDN);
         if (account != null) return account;

@@ -16,10 +16,10 @@ import net.sf.hibernate.cfg.*;
  *
  * @author carcassi
  */
-public class DBTestBase extends TestCase {
+public class HibernateDBTestBase extends TestCase {
     SessionFactory sessions;
     
-    public DBTestBase(String testName) {
+    public HibernateDBTestBase(String testName) {
         super(testName);
     }
 
@@ -34,8 +34,14 @@ public class DBTestBase extends TestCase {
         stmt.execute("DELETE FROM MAPPING WHERE MAP='test'");
         session.close();
     }
-
+    
     protected void tearDown() throws java.lang.Exception {
+        Session session = sessions.openSession();
+        Statement stmt = session.connection().createStatement();
+        stmt.execute("DELETE FROM USER WHERE GROUP_NAME='test'");
+        stmt.execute("DELETE FROM MAPPING WHERE MAP='test'");
+        session.close();
+        sessions.close();
     }
     
 }

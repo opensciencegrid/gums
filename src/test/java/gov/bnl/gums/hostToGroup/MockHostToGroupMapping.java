@@ -45,7 +45,7 @@ public class MockHostToGroupMapping extends HostToGroupMapping {
     }
     
     public boolean isInGroup(String hostname) {
-        return hostname.equals("vo.racf.bnl.gov");
+        return hostname.equals("known.site.com");
     }
     
     public HostToGroupMapping clone(Configuration configuration) {

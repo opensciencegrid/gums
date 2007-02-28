@@ -32,24 +32,20 @@ public abstract class PersistenceFactory {
 	private String name;
     private Properties properties;
     private Configuration configuration;
- 
-	static public String getType() {
-		return "abstract";
-	}
     
 	/**
 	 * This empty constructor needed by XML Digestor
 	 */
 	public PersistenceFactory() {
-	}	
+	}
     
 	/**
 	 * @param configuration
 	 */
 	public PersistenceFactory(Configuration configuration) {
 		this.configuration = configuration;
-	}
-	
+	}	
+    
 	/**
 	 * @param configuration
 	 * @param name
@@ -58,19 +54,27 @@ public abstract class PersistenceFactory {
 		this.name = name;
 		this.configuration = configuration;
 	}
-
+	
 	public abstract PersistenceFactory clone(Configuration configuration);
 
 	public Configuration getConfiguration() {
 		return configuration;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-
+	
 	public Properties getProperties() {
 		return properties;
+	}
+
+	public String getType() {
+		return "abstract";
+	}
+	
+    static public String getTypeStatic() {
+		return "abstract";
 	}
 
 	public abstract AccountPoolMapperDB retrieveAccountPoolMapperDB(String name);

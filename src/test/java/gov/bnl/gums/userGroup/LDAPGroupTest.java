@@ -8,6 +8,7 @@
 package gov.bnl.gums.userGroup;
 
 import gov.bnl.gums.configuration.Configuration;
+import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 import gov.bnl.gums.persistence.MockPersistenceFactory;
 import gov.bnl.gums.GridUser;
 
@@ -25,6 +26,9 @@ public class LDAPGroupTest extends TestCase {
     
     UserGroup group;
     Configuration configuration = new Configuration();
+    String server;
+    String query;
+    String principal;
     
     public LDAPGroupTest(java.lang.String testName) {
         super(testName);
@@ -39,31 +43,20 @@ public class LDAPGroupTest extends TestCase {
         LDAPUserGroup ldapGroup = new LDAPUserGroup(configuration, "group1");
         group = ldapGroup;
         ldapGroup.setPersistenceFactory(new MockPersistenceFactory(configuration, "mock").getName());
-        ldapGroup.setServer("grid-vo.nikhef.nl");
-        ldapGroup.setQuery("ou=People,o=atlas,dc=eu-datagrid,dc=org");
+
+        Properties properties = LDAPPersistenceFactory.readLdapProperties();
+        String url = properties.getProperty("ldap.java.naming.provider.url");
+        server = url.substring(url.indexOf("ldap://")).split("/")[0];
+        query = url.substring(url.indexOf("ldap://")).split("/")[1];
+        principal = properties.getProperty("ldap.java.naming.security.principal");
+        ldapGroup.setServer(server);
+        ldapGroup.setQuery(query);
     }
     
     public void testUpdateMembers() {
         group.updateMembers();
-        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi 348273", null)));
-        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Wensheng Deng 90806", null)));
-        assertTrue(group.isInGroup(new GridUser("/C=IT/O=INFN/OU=Personal Certificate/L=Roma 1/CN=Alessandro De Salvo", null)));
-    }
-    
-    public void testUpdateMembers2() {
-        ((LDAPUserGroup) group).setQuery("ou=usatlas,o=atlas,dc=eu-datagrid,dc=org");
-        group.updateMembers();
-        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi 348273", null)));
-        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Wensheng Deng 90806", null)));
-        assertFalse(group.isInGroup(new GridUser("/C=IT/O=INFN/OU=Personal Certificate/L=Roma 1/CN=Alessandro De Salvo/Email=Alessandro.DeSalvo@roma1.infn.it", null)));
-    }
-    
-    public void testUpdateMembers3() {
-        ((LDAPUserGroup) group).setServer("lcg-vo.cern.ch");
-        ((LDAPUserGroup) group).setQuery("ou=lcg1,o=dteam,dc=lcg,dc=org");
-        group.updateMembers();
-        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Dantong Yu 127718", null)));
-        assertFalse(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi 348273", null)));
+        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith 12345", null)));
+        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345", null)));
     }
     
     public void testGetMemberList() {
@@ -96,21 +89,17 @@ public class LDAPGroupTest extends TestCase {
         assertEquals(group1, group2);
     }
     
-    public void testToString() {
-        assertEquals("LDAPGroup: ldap://grid-vo.nikhef.nl/ou=People,o=atlas,dc=eu-datagrid,dc=org", group.toString());
-    }
-    
     public void testRetrieveMap() throws NamingException {
         java.util.Properties jndiProperties = new java.util.Properties();
-        jndiProperties.put("java.naming.provider.url","ldap://lcg-vo.cern.ch");
+        jndiProperties.put("java.naming.provider.url","ldap://"+server);
         jndiProperties.put("java.naming.factory.initial","com.sun.jndi.ldap.LdapCtxFactory");
         javax.naming.directory.DirContext jndiCtx = new javax.naming.directory.InitialDirContext(jndiProperties);
 
         // The group has a member attribute with a list of people of the LDAP present in the VO Group
-        DirContext ctx = (DirContext) jndiCtx.lookup("o=dteam,dc=lcg,dc=org");
+        DirContext ctx = (DirContext) jndiCtx.lookup(principal);
         LDAPUserGroup group = new LDAPUserGroup(configuration, "group1");
         Map map = group.retrievePeopleMap(ctx);
-        assertEquals("/DC=org/DC=doegrids/OU=People/CN=Dantong Yu 127718", map.get("cn=Dantong Yu 127718,ou=People,o=dteam,dc=lcg,dc=org"));
+        assertEquals("/DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345", map.get("cn=Jane Doe 12345"+principal));
     }
     
     public static void main(String[] args) {

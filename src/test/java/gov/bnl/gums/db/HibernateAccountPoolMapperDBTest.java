@@ -18,7 +18,8 @@ import net.sf.hibernate.*;
  * @author carcassi
  */
 public class HibernateAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
-    
+	SessionFactory sessions;
+	
     public HibernateAccountPoolMapperDBTest(String testName) {
         super(testName);
     }
@@ -27,7 +28,7 @@ public class HibernateAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
         HibernatePersistenceFactory hibernate = new HibernatePersistenceFactory(new Configuration(), "hibPers1");
         hibernate.setConnectionFromHibernateProperties();
         db = hibernate.retrieveAccountPoolMapperDB("test");
-        SessionFactory sessions = hibernate.retrieveSessionFactory();
+        sessions = hibernate.retrieveSessionFactory();
         Session session = sessions.openSession();
         Transaction tx = session.beginTransaction();
         Statement stmt = session.connection().createStatement();
@@ -36,6 +37,16 @@ public class HibernateAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
         session.close();
         initDB();
         lastUsedDelay = 1000;
+    }
+    
+    public void tearDown() throws Exception {
+        Session session = sessions.openSession();
+        Transaction tx = session.beginTransaction();
+        Statement stmt = session.connection().createStatement();
+        stmt.execute("DELETE FROM MAPPING where MAP = 'test'");
+        tx.commit();
+        session.close();
+        sessions.close();
     }
 
     public static Test suite() {

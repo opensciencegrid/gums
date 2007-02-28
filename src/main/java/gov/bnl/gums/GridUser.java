@@ -26,7 +26,7 @@ public class GridUser {
     
     /**
      * Creates a new object representing a Grid credential.
-     * @param userDN the DN of the user certificate (i.e. "/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi")
+     * @param userDN the DN of the user certificate (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith")
      * @param fqan The Fully Qualified Attribute name String representation (i.e. "/atlas/production/Role=Leader")
      */
     public GridUser(String userDN, String fqan) {
@@ -62,7 +62,7 @@ public class GridUser {
     
     /**
      * Retrieve the certificate DN of the user.
-     * @return The certificate DN (i.e. "/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi")
+     * @return The certificate DN (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith")
      */
     public String getCertificateDN() {
         return this.certificateDN;

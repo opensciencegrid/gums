@@ -14,7 +14,7 @@ import net.sf.hibernate.*;
  *
  * @author carcassi
  */
-public class HibernateUserTest extends DBTestBase {
+public class HibernateUserTest extends HibernateDBTestBase {
     
     public HibernateUserTest(String testName) {
         super(testName);
@@ -24,15 +24,14 @@ public class HibernateUserTest extends DBTestBase {
         Session sess = sessions.openSession();
         Transaction trans = sess.beginTransaction();
         HibernateUser user = new HibernateUser();
-        user.setDn("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi");
-        user.setGroup("test");
+        user.setDn("/DC=org/DC=doegrids/OU=People/CN=John Smith");
         user.setGroup("test");
         sess.save(user);
         Long id = user.getId();
         trans.commit();
         trans = sess.beginTransaction();
         HibernateUser user2 = (HibernateUser) sess.load(HibernateUser.class, id);
-        assertEquals("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", user2.getDn());
+        assertEquals("/DC=org/DC=doegrids/OU=People/CN=John Smith", user2.getDn());
         sess.delete(user2);
         trans.commit();
         trans = sess.beginTransaction();

@@ -35,46 +35,55 @@ public class ManualUserGroupDBTest extends TestCase {
         db = new MockManualUserGroupDB();
     }
     
+    public void tearDown() throws Exception {
+    	if (db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/group/Role=VoAdmin")))
+    		db.removeMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/group/Role=VoAdmin"));
+    	if (db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)))
+    		db.removeMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
+    	if (db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Jane Doe", null)))
+    		db.removeMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Jane Doe", null));
+    }
+    
     public void testaddMembers() {
-        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
-        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
-        assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "/atlas/group")));
+        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
+        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
+        assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/group")));
     }
     
     public void testaddMemberWithFQAN() {
-        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "/atlas/group/Role=VoAdmin"));
-        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "/atlas/group/Role=VoAdmin")));
-        assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "/atlas/group")));
-        assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
+        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/group/Role=VoAdmin"));
+        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/group/Role=VoAdmin")));
+        assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/group")));
+        assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
     }
     
     public void testIsMemberInGroup() {
-        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
-        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
+        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
+        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
         assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person", null)));
     }
     
     public void testRemoveMember() {
-        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
-        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
-        assertTrue(db.removeMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
-        assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
+        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
+        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
+        assertTrue(db.removeMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
+        assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
         assertFalse(db.removeMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person", null)));
     }
     
     public void testRemoveMemberWithFQAN() {
-        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "/atlas/group/Role=VoAdmin"));
-        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
-        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "/atlas/group/Role=VoAdmin")));
-        assertTrue(db.removeMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "/atlas/group/Role=VoAdmin")));
-        assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "/atlas/group/Role=VoAdmin")));
+        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/group/Role=VoAdmin"));
+        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
+        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/group/Role=VoAdmin")));
+        assertTrue(db.removeMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/group/Role=VoAdmin")));
+        assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/group/Role=VoAdmin")));
         assertFalse(db.removeMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person", null)));
-        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
+        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
     }
     
     public void testRetrieveMembers() {
-        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
-        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Dantong Yu", null));
+        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
+        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Jane Doe", null));
         List members = db.retrieveMembers();
         assertEquals(2, members.size());
         Iterator iter = members.iterator();
@@ -85,7 +94,7 @@ public class ManualUserGroupDBTest extends TestCase {
     }
     
     public void testRetrieveMembersWithFQAN() {
-        GridUser user = new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", "/atlas/group/Role=VoAdmin");
+        GridUser user = new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/group/Role=VoAdmin");
         db.addMember(user);
         List members = db.retrieveMembers();
         assertEquals(1, members.size());
@@ -98,9 +107,9 @@ public class ManualUserGroupDBTest extends TestCase {
     }
     
     public void testDoubleAdd() {
-        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
+        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
         try {
-            db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
+            db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
             fail("Manual group allowed to enter a member twice");
         } catch (Exception e) {
             // Should generate an error

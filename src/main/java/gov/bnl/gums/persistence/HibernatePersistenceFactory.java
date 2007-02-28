@@ -38,19 +38,15 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     private Log log = LogFactory.getLog(HibernatePersistenceFactory.class);
     private SessionFactory sessions;
 
-	static public String getType() {
-		return "hibernate";
-	}
-    
-    public HibernatePersistenceFactory() {
-    	log.trace("HibernatePersistenceFactory instanciated");
-    }    
-
-    public HibernatePersistenceFactory(Configuration configuration) {
-    	super(configuration);
+	public HibernatePersistenceFactory() {
     	log.trace("HibernatePersistenceFactory instanciated");
     }
     
+    public HibernatePersistenceFactory(Configuration configuration) {
+    	super(configuration);
+    	log.trace("HibernatePersistenceFactory instanciated");
+    }    
+
     public HibernatePersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
     	log.trace("HibernatePersistenceFactory instanciated");
@@ -61,6 +57,14 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	return persistenceFactory;
     }
+    
+    public String getType() {
+		return "hibernate";
+	}
+    
+    static public String getTypeStatic() {
+		return "hibernate";
+	}
 
     public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
         return new HibernateMappingDB(this, name);

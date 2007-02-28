@@ -22,32 +22,26 @@ public class ManualAccountMapper extends AccountMapper {
     private ManualAccountMapperDB db;
     private String persistenceFactory = "";
     
-	static public String getType() {
-		return "manual";
-	}
-    
-    public ManualAccountMapper() {
+	public ManualAccountMapper() {
     	super();
     }
- 
+    
     public ManualAccountMapper(Configuration configuration) {
     	super(configuration);
     }
-    
+ 
     public ManualAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
     }
     
-    public String mapUser(String userDN) {
-        return getDB().retrieveMapping(userDN);
+    public AccountMapper clone(Configuration configuration) {
+    	ManualAccountMapper accountMapper = new ManualAccountMapper(configuration, getName());
+    	accountMapper.setPersistenceFactory(persistenceFactory);
+    	return accountMapper;
     }
     
     public void createMapping(String userDN, String account) {
     	getDB().createMapping(userDN, account);
-    }
-    
-    public boolean removeMapping(String userDN) {
-        return getDB().removeMapping(userDN);
     }
     
     public java.util.List getMappings() {
@@ -58,10 +52,20 @@ public class ManualAccountMapper extends AccountMapper {
         return persistenceFactory;
     }
     
-    private ManualAccountMapperDB getDB() {
-    	if (db==null)
-    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualAccountMapperDB( getName() );
-    	return db;
+    public String getType() {
+		return "manual";
+	}
+    
+    static public String getTypeStatic() {
+		return "manual";
+	}
+    
+    public String mapUser(String userDN) {
+        return getDB().retrieveMapping(userDN);
+    }
+    
+    public boolean removeMapping(String userDN) {
+        return getDB().removeMapping(userDN);
     }
     
     public void setPersistenceFactory(String persistanceFactory) {
@@ -78,9 +82,9 @@ public class ManualAccountMapper extends AccountMapper {
 			"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }      
     
-    public AccountMapper clone(Configuration configuration) {
-    	ManualAccountMapper accountMapper = new ManualAccountMapper(configuration, getName());
-    	accountMapper.setPersistenceFactory(persistenceFactory);
-    	return accountMapper;
+    private ManualAccountMapperDB getDB() {
+    	if (db==null)
+    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualAccountMapperDB( getName() );
+    	return db;
     }
 }

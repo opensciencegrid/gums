@@ -28,14 +28,21 @@ import org.apache.commons.logging.*;
 public class NISAccountMapper extends AccountMapper {
     static Log log = LogFactory.getLog(NISAccountMapper.class);
     static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-    private String jndiNisUrl = "";
-    private Map nisClients = new Hashtable();
-    
-	static public String getType() {
+    static public boolean checkSurname(String possibleSurname) {
+        if (Character.isDigit(possibleSurname.charAt(0))) {
+            return false;
+        }
+        if (possibleSurname.charAt(possibleSurname.length() - 1) == '.') {
+            return false;
+        }
+        
+        return true;
+    }
+    static public String getTypeStatic() {
 		return "nis";
 	}
     
-    public static String[] parseNameAndSurname(String certificateSubject) {
+	public static String[] parseNameAndSurname(String certificateSubject) {
         int begin = certificateSubject.indexOf("CN=") + 3;
         String CN = certificateSubject.substring(begin);
         
@@ -57,16 +64,9 @@ public class NISAccountMapper extends AccountMapper {
         return new String[] {name, surname};
     }
     
-    static boolean checkSurname(String possibleSurname) {
-        if (Character.isDigit(possibleSurname.charAt(0))) {
-            return false;
-        }
-        if (possibleSurname.charAt(possibleSurname.length() - 1) == '.') {
-            return false;
-        }
-        
-        return true;
-    }
+    private String jndiNisUrl = "";
+    
+    private Map nisClients = new Hashtable();
 
     public NISAccountMapper() {
     	super();
@@ -95,6 +95,10 @@ public class NISAccountMapper extends AccountMapper {
     public String getJndiNisUrl() {
         return jndiNisUrl;
     }
+    
+    public String getType() {
+		return "nis";
+	}
     
     public String mapUser(String userDN) {
         String[] nameSurname = parseNameAndSurname(userDN);

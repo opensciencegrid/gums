@@ -28,18 +28,14 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     static private Log log = LogFactory.getLog(GecosLdapAccountMapper.class);
     private String jndiLdapUrl = "";
 
-	static public String getType() {
-		return "gecosLdap";
-	}
-    
-    public GecosLdapAccountMapper() {
+	public GecosLdapAccountMapper() {
     	super();
     }
- 
+    
     public GecosLdapAccountMapper(Configuration configuration) {
     	super(configuration);
     }
-    
+ 
     public GecosLdapAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
     }
@@ -57,6 +53,14 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     public String getJndiLdapUrl() {
         return jndiLdapUrl;
     }
+    
+    public String getType() {
+		return "gecosLdap";
+	}
+    
+    static public String getTypeStatic() {
+		return "gecosLdap";
+	}
     
     /**
      * Changes the LDAP server to use.

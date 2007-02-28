@@ -33,18 +33,14 @@ import java.util.*;
 public class CompositeAccountMapper extends AccountMapper {
     private List mappers = new ArrayList();
     
-	static public String getType() {
-		return "composite";
-	}
-    
-    public CompositeAccountMapper() {
+	public CompositeAccountMapper() {
     	super();
     }
-
+    
     public CompositeAccountMapper(Configuration configuration) {
     	super(configuration);
     }
-    
+
     public CompositeAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
     }
@@ -73,6 +69,14 @@ public class CompositeAccountMapper extends AccountMapper {
     public List getMappers() {
         return Collections.unmodifiableList(mappers);
     }
+    
+    public String getType() {
+		return "composite";
+	}
+    
+    static public String getTypeStatic() {
+		return "composite";
+	}
     
     public String mapUser(String userDN) {
         Iterator iter = mappers.iterator();

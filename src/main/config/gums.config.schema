@@ -210,11 +210,6 @@
 							</xs:element>	
 						</xs:sequence>
 					</xs:complexType>
-					<xs:unique name="uniqueHostToGroupMappingDn">
-						<xs:selector xpath="hostToGroupMapping"/>
-						<xs:field xpath="@dn"/>
-						<xs:field xpath="@cn"/>
-					</xs:unique>
 				</xs:element>
 	
 			</xs:sequence>

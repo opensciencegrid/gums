@@ -35,9 +35,9 @@ public class AccountPoolMapperTest extends TestCase {
     
     public void setUp() {
     	Configuration configuration = new Configuration();
-        AccountPoolMapper accountMapper = new AccountPoolMapper(configuration, "accountPoolMapper");
+        AccountPoolMapper accountMapper = new AccountPoolMapper(configuration, "myAccountPoolMapper");
         configuration.addAccountMapper(accountMapper);
-        PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "myGroup");
+        PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "myPersistenceFactory");
         configuration.addPersistenceFactory(persistenceFactory);
         mapper = accountMapper;
         accountMapper.setPersistenceFactory(persistenceFactory.getName());

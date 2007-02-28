@@ -24,7 +24,7 @@ public class ConfigurationTransform {
 	
 	public static void doTransform(String configFile, String transformFile) {
 	    try {
-	    	String configFileOld = configFile + "_oldversion";
+	    	String configFileOld = configFile + "_1.1";
         	moveFile(configFile, configFileOld);
         	
 	        XMLReader reader = XMLReaderFactory.createXMLReader();

@@ -5,8 +5,10 @@
  * Created on May 10, 2005, 11:39 AM
  */
 
-package gov.bnl.gums.account;
+package gov.bnl.gums.unused;
 
+import gov.bnl.gums.account.GecosMap;
+import gov.bnl.gums.account.GecosNisAccountMapper;
 import gov.bnl.gums.configuration.Configuration;
 import junit.framework.*;
 import java.util.Properties;
@@ -18,7 +20,8 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchResult;
 
 /**
- *
+ * If you want to use this junit test, you need to fill in the values for your site below
+ * 
  * @author carcassi
  */
 public class GecosNisAccountMapperTest extends TestCase {

@@ -19,20 +19,16 @@ import java.util.*;
  */
 public abstract class UserGroup {
 	private String name = "";
+	private Configuration configuration = null;
 	protected String[] accessTypes = {"write", "read all", "read self"};
 	protected int accessIndex = 2;
-	private Configuration configuration = null;
-	
-	static public String getType() {
-		return "abstract";
-	}
 	
 	/**
 	 * This empty constructor is needed by XML Digestor
 	 */
 	public UserGroup() {
 	}
-
+	
 	/**
 	 * @param configuration
 	 * @param name
@@ -40,7 +36,7 @@ public abstract class UserGroup {
 	public UserGroup(Configuration configuration) {
 		this.configuration = configuration;
 	}
-	
+
 	/**
 	 * @param configuration
 	 * @param name
@@ -49,17 +45,17 @@ public abstract class UserGroup {
 		this.configuration = configuration;
 		this.name = name;
 	}
-
+	
 	public abstract UserGroup clone(Configuration configuration);
 
 	public String getAccess() {
     	return accessTypes[accessIndex];
     }
-	
+
 	public Configuration getConfiguration() {
 		return configuration;
 	}
-
+	
 	/**
      * Returns the list of user identities that are part of the group.
      * <p>
@@ -73,9 +69,17 @@ public abstract class UserGroup {
      * @return a List of GridUser objects representing the user certificate DN.
      */
     public abstract List getMemberList();
-	
-    public String getName() {
+
+	public String getName() {
 		return name;
+	}
+	
+    public String getType() {
+		return "abstract";
+	}
+    
+    static public String getTypeStatic() {
+		return "abstract";
 	}
     
     public boolean hasReadAllAccess() {

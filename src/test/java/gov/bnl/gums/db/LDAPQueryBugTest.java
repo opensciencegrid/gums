@@ -39,7 +39,7 @@ public class LDAPQueryBugTest extends TestCase {
         factory.setConnectionFromLdapProperties();
         factory.setDefaultGumsOU("ou=GUMS,dc=test");
         UserGroupDB db2 = factory.retrieveUserGroupDB("admins");
-        assertTrue(db2.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi 348273", null)));
+        assertTrue(db2.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith 12345", null)));
     }
     
 }

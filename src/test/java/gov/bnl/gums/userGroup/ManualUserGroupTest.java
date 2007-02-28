@@ -52,20 +52,20 @@ public class ManualUserGroupTest extends TestCase {
     }
     
     public void testAddMember() {
-        ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
-        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
+        ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
+        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
     }
 
     public void testRemoveMember() {
-        ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
-        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
-        assertTrue(((ManualUserGroup) group).removeMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
-        assertFalse(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
+        ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
+        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
+        assertTrue(((ManualUserGroup) group).removeMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
+        assertFalse(group.isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
     }
     
     public void testGetMemberList() {
-        ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
-        ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Dantong Yu", null));
+        ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
+        ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Jane Doe", null));
         List members = group.getMemberList();
         assertTrue(members.size() > 0);
         Iterator iter = members.iterator();

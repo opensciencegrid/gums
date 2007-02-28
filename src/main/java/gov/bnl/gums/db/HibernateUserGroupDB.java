@@ -23,6 +23,7 @@ import java.util.List;
 import net.sf.hibernate.*;
 import net.sf.hibernate.type.StringType;
 import net.sf.hibernate.type.Type;
+import net.sf.hibernate.util.ReflectHelper;
 
 import org.apache.commons.logging.*;
 

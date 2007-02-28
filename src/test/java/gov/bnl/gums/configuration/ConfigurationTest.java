@@ -41,8 +41,8 @@ public class ConfigurationTest extends TestCase {
         assertNotNull(groupToAccountMappings);
         assertEquals(1, groupToAccountMappings.size());
         GroupToAccountMapping gMap = conf.getGroupToAccountMapping( (String)groupToAccountMappings.get(0) );
-        assertTrue((conf.getUserGroup( (String)gMap.getUserGroups().get(0)) ).isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
-        assertEquals("carcassi", conf.getAccountMapper( (String)gMap.getAccountMappers().get(0) ).mapUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
+        assertTrue((conf.getUserGroup( (String)gMap.getUserGroups().get(0)) ).isInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
+        assertEquals("jsmith", conf.getAccountMapper( (String)gMap.getAccountMappers().get(0) ).mapUser("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
     }
     
     static Configuration createSimpleConfiguration() {
@@ -70,7 +70,7 @@ public class ConfigurationTest extends TestCase {
     
     public void testSingleUserGroupCopy() {
         Configuration conf = new Configuration();
-        MySQLPersistenceFactory factory = new MySQLPersistenceFactory(conf, "mysql");
+        HibernatePersistenceFactory factory = new HibernatePersistenceFactory(conf, "mysql");
         conf.addPersistenceFactory(factory);
         GroupToAccountMapping gMap = new GroupToAccountMapping(conf, "group1");
         conf.addGroupToAccountMapping(gMap);

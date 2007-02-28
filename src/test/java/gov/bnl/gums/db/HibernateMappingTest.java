@@ -13,7 +13,7 @@ import net.sf.hibernate.*;
  *
  * @author carcassi
  */
-public class HibernateMappingTest extends DBTestBase {
+public class HibernateMappingTest extends HibernateDBTestBase {
     
     public HibernateMappingTest(String testName) {
         super(testName);
@@ -23,7 +23,7 @@ public class HibernateMappingTest extends DBTestBase {
         Session sess = sessions.openSession();
         Transaction trans = sess.beginTransaction();
         HibernateMapping mapping = new HibernateMapping();
-        mapping.setDn("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi");
+        mapping.setDn("/DC=org/DC=doegrids/OU=People/CN=John Smith");
         mapping.setAccount("usatlas1");
         mapping.setMap("test");
         sess.save(mapping);
@@ -31,7 +31,7 @@ public class HibernateMappingTest extends DBTestBase {
         trans.commit();
         trans = sess.beginTransaction();
         HibernateMapping mapping2 = (HibernateMapping) sess.load(HibernateMapping.class, id);
-        assertEquals("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", mapping2.getDn());
+        assertEquals("/DC=org/DC=doegrids/OU=People/CN=John Smith", mapping2.getDn());
         sess.delete(mapping2);
         trans.commit();
         trans = sess.beginTransaction();

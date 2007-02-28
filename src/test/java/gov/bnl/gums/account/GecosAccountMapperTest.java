@@ -24,7 +24,7 @@ public class GecosAccountMapperTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-         mapper = new GecosAccountMapperImpl(new Configuration(), "accountMapper");
+         mapper = new GecosAccountMapperImpl(new Configuration(), "myAccountMapper");
     }
 
     protected void tearDown() throws Exception {
@@ -37,26 +37,26 @@ public class GecosAccountMapperTest extends TestCase {
     }
     
     public void testMapUser() {
-        assertEquals("carcassi", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
+        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
         assertEquals(null, mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person"));
     }
 
     public void testParsing() {
-        String carcassiDN = "/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi";
-        String[] carcassi = mapper.parseNameAndSurname(carcassiDN);
-        assertEquals("Gabriele", carcassi[0]);
-        assertEquals("Carcassi", carcassi[1]);
-        String[] timThomas = mapper.parseNameAndSurname("/DC=org/DC=doegrids/OU=People/CN=Timothy L. Thomas 324580");
-        assertEquals("Timothy", timThomas[0]);
-        assertEquals("Thomas", timThomas[1]);
-        String[] robGardner = mapper.parseNameAndSurname("/DC=org/DC=doegrids/OU=People/CN=Robert W. Gardner Jr. 669916");
-        assertEquals("Robert", robGardner[0]);
-        assertEquals("Gardner", robGardner[1]);
+        String dn = "/DC=org/DC=doegrids/OU=People/CN=John Smith Jr.";
+        String[] name = mapper.parseNameAndSurname(dn);
+        assertEquals("John", name[0]);
+        assertEquals("Smith", name[1]);
+        name = mapper.parseNameAndSurname("/DC=org/DC=doegrids/OU=People/CN=John Smith 12345");
+        assertEquals("John", name[0]);
+        assertEquals("Smith", name[1]);
+        name = mapper.parseNameAndSurname("/DC=org/DC=doegrids/OU=People/CN=John W. Smith Jr. 6699165");
+        assertEquals("John", name[0]);
+        assertEquals("Smith", name[1]);
     }
     
     public void testCheckSurname() {
-        assertTrue(mapper.checkSurname("Carcassi"));
-        assertFalse(mapper.checkSurname("1234"));
+        assertTrue(mapper.checkSurname("Smith"));
+        assertFalse(mapper.checkSurname("12345"));
         assertFalse(mapper.checkSurname("Jr."));
     }
 
@@ -72,12 +72,12 @@ public class GecosAccountMapperTest extends TestCase {
         
         protected gov.bnl.gums.account.GecosMap createMap() {
             GecosMap map = new GecosMap();
-            map.addEntry("carcassi", "Gabriele Carcassi");
+            map.addEntry("jsmith", "John Smith");
             return map;
         }
 
         protected java.lang.String mapName() {
-            return "testMap";
+            return getName();
         }
         
         public String toString(String bgColor) {

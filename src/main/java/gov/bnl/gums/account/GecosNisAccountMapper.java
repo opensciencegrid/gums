@@ -26,13 +26,13 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi
  */
 public class GecosNisAccountMapper extends GecosAccountMapper {
-    static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     static private Log log = LogFactory.getLog(GecosNisAccountMapper.class);
-    private String jndiNisUrl = "";
-    
-	static public String getType() {
+    static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+    static public String getTypeStatic() {
 		return "gecosNIS";
 	}
+    
+	private String jndiNisUrl = "";
     
     public GecosNisAccountMapper() {
     	super();
@@ -53,42 +53,7 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     	return accountMapper;
     }
     
-    /**
-     * Returns the URL used to describe the NIS server.
-     * @return NIS url according to JNDI NIS driver.
-     */
-    public String getJndiNisUrl() {
-        return jndiNisUrl;
-    }
-    
-    /**
-     * Changes the NIS server to use.
-     * @param jndiNisUrl NIS url according to JNDI NIS driver.
-     */
-    public void setJndiNisUrl(String jndiNisUrl) {
-        this.jndiNisUrl = jndiNisUrl;
-    }
-    
-    public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + jndiNisUrl + "</td>";
-    }
-
-    public String toXML() {
-    	return "\t\t<gecosNisAccountMapper\n"+
-			"\t\t\tname='"+getName()+"'\n"+
-			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
-    }
-
-    /** Prepares the parameters for the JNDI connection.
-     */
-    private Properties retrieveJndiProperties() {
-        Properties jndiProperties = new java.util.Properties();
-        jndiProperties.put("java.naming.provider.url", jndiNisUrl);
-        jndiProperties.put("java.naming.factory.initial","com.sun.jndi.nis.NISCtxFactory");
-        return jndiProperties;
-    }
-
-    protected GecosMap createMap() {
+    public GecosMap createMap() {
         Properties jndiProperties = retrieveJndiProperties();
         int nTries = 5;
         Exception lastException = null;
@@ -136,6 +101,45 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
             throw new RuntimeException("Couldn't retrieve NIS maps from " + jndiNisUrl, lastException);
         }
         return null;
+    }
+    
+    /**
+     * Returns the URL used to describe the NIS server.
+     * @return NIS url according to JNDI NIS driver.
+     */
+    public String getJndiNisUrl() {
+        return jndiNisUrl;
+    }
+    
+    public String getType() {
+		return "gecosNIS";
+	}
+    
+    /**
+     * Changes the NIS server to use.
+     * @param jndiNisUrl NIS url according to JNDI NIS driver.
+     */
+    public void setJndiNisUrl(String jndiNisUrl) {
+        this.jndiNisUrl = jndiNisUrl;
+    }
+
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + jndiNisUrl + "</td>";
+    }
+
+    public String toXML() {
+    	return "\t\t<gecosNisAccountMapper\n"+
+			"\t\t\tname='"+getName()+"'\n"+
+			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
+    }
+
+    /** Prepares the parameters for the JNDI connection.
+     */
+    private Properties retrieveJndiProperties() {
+        Properties jndiProperties = new java.util.Properties();
+        jndiProperties.put("java.naming.provider.url", jndiNisUrl);
+        jndiProperties.put("java.naming.factory.initial","com.sun.jndi.nis.NISCtxFactory");
+        return jndiProperties;
     }      
     
     protected String mapName() {

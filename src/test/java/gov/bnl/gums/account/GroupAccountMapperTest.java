@@ -28,13 +28,12 @@ public class GroupAccountMapperTest extends TestCase {
     }
     
     public void setUp() {
-        GroupAccountMapper gMapper = new GroupAccountMapper(new Configuration(), "groupAccountMapper");
-        mapper = gMapper;
-        gMapper.setAccountName("myGroup");
+    	mapper = new GroupAccountMapper(new Configuration(), "myGroupAccountMapper");
+        ((GroupAccountMapper)mapper).setAccountName("myGroup");
     }
     
     public void testMapUser() {
-        assertEquals("myGroup", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi"));
+        assertEquals("myGroup", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
         assertEquals("myGroup", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person"));
     }
     

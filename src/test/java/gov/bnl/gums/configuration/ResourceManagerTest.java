@@ -49,27 +49,27 @@ public class ResourceManagerTest extends TestCase {
     }
     
     public void testMap() {
-        assertEquals("carcassi", man.map("vo.racf.bnl.gov", new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
-        assertNull(man.map("vo.racf.bnl.gov", new GridUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person", null)));
-        assertNull(man.map("unknown.machine.bnl.gov", new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null)));
+        assertEquals("jsmith", man.map("known.site.com", new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
+        assertNull(man.map("known.site.com", new GridUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person", null)));
+        assertNull(man.map("unknown.site.com", new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
     }
     
     public void testGenerateGrid3UserVoMap() {
-        String map = man.generateGrid3UserVoMap("vo.racf.bnl.gov");
+        String map = man.generateGrid3UserVoMap("known.site.com");
         String expectedMap = "#User-VO map\n" +
                 "# #comment line, format of each regular line line: account VO\n" +
                 "# Next 2 lines with VO names, same order, all lowercase, with case (lines starting with #voi, #VOc)\n" +
                 "#voi mock\n" +
                 "#VOc mock\n" +
                 "#---- accounts for vo: mockUserGroup ----#\n" +
-                "carcassi mock\n";
+                "jsmith mock\n";
         assertEquals("grid3-user-vo-map generated incorrectly", expectedMap, map);
     }
     
     public void testGenerateGridMapfile() {
-        String mapfile = man.generateGridMapfile("vo.racf.bnl.gov");
+        String mapfile = man.generateGridMapfile("known.site.com");
         String expectedGridmap = "#---- members of vo: mockUserGroup ----#\n" +
-        "\"/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi\" carcassi\n";
+        "\"/DC=org/DC=doegrids/OU=People/CN=John Smith\" jsmith\n";
         assertEquals("Grid mapfile generated incorrectly", 
         expectedGridmap,
         mapfile);
@@ -81,9 +81,8 @@ public class ResourceManagerTest extends TestCase {
         PersistenceFactory persistenceFactory = new MockPersistenceFactory(conf, "testUserGroup");
         conf.addPersistenceFactory(persistenceFactory);
         userGroup.setPersistenceFactory(persistenceFactory.getName());
-        userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi", null));
-        userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Dantong Yu", null));
-        userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Jason Smith", null));
+        userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
+        userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Jane Doe", null));
 
         GroupAccountMapper groupAccountMapper = new GroupAccountMapper(conf, "test");
         conf.addAccountMapper(groupAccountMapper);
@@ -96,15 +95,12 @@ public class ResourceManagerTest extends TestCase {
 
         ((HostToGroupMapping)conf.getHostToGroupMappings().get(0)).addGroupToAccountMapping(groupToAccountMapping.getName());
 
-        String mapfile = man.generateGridMapfile("vo.racf.bnl.gov");
+        String mapfile = man.generateGridMapfile("known.site.com");
         String expectedGridmap = "#---- members of vo: mockUserGroup ----#\n" +
-        "\"/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi\" carcassi\n" +
+        "\"/DC=org/DC=doegrids/OU=People/CN=John Smith\" jsmith\n" +
         "#---- members of vo: testUserGroup ----#\n" +
-        "\"/DC=org/DC=doegrids/OU=People/CN=Dantong Yu\" test\n" +
-        "\"/DC=org/DC=doegrids/OU=People/CN=Jason Smith\" test\n";
-        assertEquals("Grid mapfile generated incorrectly", 
-        expectedGridmap,
-        mapfile);
+        "\"/DC=org/DC=doegrids/OU=People/CN=Jane Doe\" test\n";
+        assertEquals("Grid mapfile generated incorrectly", expectedGridmap, mapfile);
     }
     
     public void testUpdate() {
