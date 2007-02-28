@@ -146,7 +146,6 @@
 				            <excludes>
 					            <exclude>**/*VOMS*Test*</exclude>
 				                <exclude>**/*LDAP*Test*</exclude>
-				                <exclude>**/*Ldap*Test*</exclude>		                
 					            <exclude>**/unused/*</exclude>
 					            <exclude>**/.svn</exclude>
 				            </excludes>

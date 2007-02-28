@@ -22,10 +22,10 @@ import javax.naming.directory.SearchResult;
  *
  * @author carcassi
  */
-public class GecosLdapAccountMapperTest extends TestCase {
+public class GecosLDAPAccountMapperTest extends TestCase {
     GecosLdapAccountMapper mapper;
     
-    public GecosLdapAccountMapperTest(String testName) {
+    public GecosLDAPAccountMapperTest(String testName) {
         super(testName);
     }
 
@@ -38,7 +38,7 @@ public class GecosLdapAccountMapperTest extends TestCase {
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite(GecosLdapAccountMapperTest.class);
+        TestSuite suite = new TestSuite(GecosLDAPAccountMapperTest.class);
         
         return suite;
     }
