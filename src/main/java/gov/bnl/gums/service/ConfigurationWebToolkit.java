@@ -15,8 +15,6 @@ import gov.bnl.gums.userGroup.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.hibernate.collection.Map;
-
 import java.rmi.Remote;
 import java.util.Collection;
 import java.util.Iterator;
