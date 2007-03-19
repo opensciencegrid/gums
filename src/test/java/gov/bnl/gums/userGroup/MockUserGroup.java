@@ -24,7 +24,7 @@ public class MockUserGroup extends UserGroup {
     	super(configuration, name);
         members = new ArrayList();
         GridUser user = new GridUser();
-        user.setCertificateDN("/DC=org/DC=doegrids/OU=People/CN=John Smith");
+        user.setCertificateDN("/DC=org/DC=griddev/OU=People/CN=John Smith");
         members.add(user);
     }
     

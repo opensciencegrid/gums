@@ -33,8 +33,8 @@ public class GroupAccountMapperTest extends TestCase {
     }
     
     public void testMapUser() {
-        assertEquals("myGroup", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
-        assertEquals("myGroup", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person"));
+        assertEquals("myGroup", mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals("myGroup", mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=Evil Person"));
     }
     
 }

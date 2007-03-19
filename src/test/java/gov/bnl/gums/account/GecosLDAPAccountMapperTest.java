@@ -9,6 +9,7 @@ package gov.bnl.gums.account;
 
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
+import gov.bnl.gums.persistence.LDAPPersistenceFactoryTest;
 import junit.framework.*;
 import java.util.Properties;
 import javax.naming.NamingEnumeration;
@@ -31,7 +32,7 @@ public class GecosLDAPAccountMapperTest extends TestCase {
 
     protected void setUp() throws Exception {
         mapper = new GecosLdapAccountMapper(new Configuration(), "ldapAccountMapper");
-        mapper.setJndiLdapUrl( LDAPPersistenceFactory.readLdapProperties().getProperty("ldap.java.naming.provider.url") );
+        mapper.setJndiLdapUrl( LDAPPersistenceFactoryTest.readLdapProperties().getProperty("ldap.java.naming.provider.url") );
     }
 
     protected void tearDown() throws Exception {

@@ -37,19 +37,19 @@ public class GecosAccountMapperTest extends TestCase {
     }
     
     public void testMapUser() {
-        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
-        assertEquals(null, mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person"));
+        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals(null, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=Evil Person"));
     }
 
     public void testParsing() {
-        String dn = "/DC=org/DC=doegrids/OU=People/CN=John Smith Jr.";
+        String dn = "/DC=org/DC=griddev/OU=People/CN=John Smith Jr.";
         String[] name = mapper.parseNameAndSurname(dn);
         assertEquals("John", name[0]);
         assertEquals("Smith", name[1]);
-        name = mapper.parseNameAndSurname("/DC=org/DC=doegrids/OU=People/CN=John Smith 12345");
-        assertEquals("John", name[0]);
-        assertEquals("Smith", name[1]);
-        name = mapper.parseNameAndSurname("/DC=org/DC=doegrids/OU=People/CN=John W. Smith Jr. 6699165");
+        name = mapper.parseNameAndSurname("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345");
+        assertEquals("Jane", name[0]);
+        assertEquals("Doe", name[1]);
+        name = mapper.parseNameAndSurname("/DC=org/DC=griddev/OU=People/CN=John W. Smith Jr. 12345");
         assertEquals("John", name[0]);
         assertEquals("Smith", name[1]);
     }

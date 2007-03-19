@@ -210,21 +210,28 @@ public class LDAPUserGroup extends UserGroup {
         return list;
     }
 
+    private Properties retrieveProperties() {
+        Properties properties = new java.util.Properties();
+        properties.put(Context.PROVIDER_URL, "ldap://"+server);
+        properties.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
+        properties.put(Context.SECURITY_PROTOCOL, "simple");
+        //properties.put(Context.SECURITY_AUTHENTICATION, "EXTERNAL");
+        //System.setProperty("javax.net.ssl.keyStore",keyStore);
+        //System.setProperty("javax.net.ssl.keyStorePassword",keyPassword);
+        return properties;
+    }
+    
     /**
      * Returns the list of member retrieved from the LDAP server. The members are not saved in the database.
      * Must be synchronized since the System properties are being set
      * @return A list of VOEntry objects representing the members.
      */
     private synchronized List retrieveMembers() {
-        java.util.Properties jndiProperties = new java.util.Properties();
-        jndiProperties.put("java.naming.provider.url","ldap://"+server);
-        jndiProperties.put("java.naming.factory.initial","com.sun.jndi.ldap.LdapCtxFactory");
-        System.setProperty("javax.net.ssl.keyStore",getKeyStore());
-        System.setProperty("javax.net.ssl.keyStorePassword",getKeyPassword());
-        log.info("Retrieving members from '" + jndiProperties.getProperty("java.naming.provider.url") +
+        java.util.Properties properties = retrieveProperties();
+        log.info("Retrieving members from '" + properties.getProperty("java.naming.provider.url") +
                  "'  '" + query + "'");
         try {
-            javax.naming.directory.DirContext jndiCtx = new javax.naming.directory.InitialDirContext(jndiProperties);
+            javax.naming.directory.DirContext jndiCtx = new javax.naming.directory.InitialDirContext(properties);
             if (query.startsWith("ou=People,")) {
                 String voRoot = query.substring(query.indexOf(',')+1);
                 DirContext rootCtx = (DirContext) jndiCtx.lookup(voRoot);

@@ -11,6 +11,7 @@ import gov.bnl.gums.GUMS;
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.UserGroupDB;
+import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 
 import java.net.URL;
 import java.util.*;

@@ -46,22 +46,22 @@ public class AccountPoolMapperTest extends TestCase {
     public void testMapUser() {
         int i = 0;
         Set accounts = new HashSet();
-        String account = mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=User "+i);
+        String account = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User "+i);
         while (account != null) {
             i++;
             assertFalse(accounts.contains(account));
             accounts.add(account);
-            account = mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=User "+i);
+            account = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User "+i);
         }
     }
     
     public void testMapUser2() {
-        String account1 = mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=User 1");
-        String account2 = mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=User 2");
-        assertEquals(account1, mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=User 1"));
-        assertEquals(account2, mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=User 2"));
-        assertEquals(account2, mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=User 2"));
-        assertEquals(account1, mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=User 1"));
+        String account1 = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User 1");
+        String account2 = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User 2");
+        assertEquals(account1, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User 1"));
+        assertEquals(account2, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User 2"));
+        assertEquals(account2, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User 2"));
+        assertEquals(account1, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User 1"));
     }
     
 }

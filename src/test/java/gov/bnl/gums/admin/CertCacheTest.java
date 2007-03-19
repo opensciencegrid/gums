@@ -26,8 +26,8 @@ public class CertCacheTest extends TestCase {
     }
     
     public void testDNConversion() {
-        String commaDN = "CN=John (Test) Smith 12345, OU=People, DC=doegrids, DC=org";
-        String DN = "/DC=org/DC=doegrids/OU=People/CN=John (Test) Smith 12345";
+        String commaDN = "CN=John (Test) Smith 12345, OU=People, DC=griddev, DC=org";
+        String DN = "/DC=org/DC=griddev/OU=People/CN=John (Test) Smith 12345";
         assertEquals(DN, CertToolkit.convertDN(commaDN));
     }
 }

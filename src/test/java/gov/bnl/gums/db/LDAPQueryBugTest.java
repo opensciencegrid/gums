@@ -15,6 +15,7 @@ import junit.framework.*;
 import gov.bnl.gums.*;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
+import gov.bnl.gums.persistence.LDAPPersistenceFactoryTest;
 import net.sf.hibernate.*;
 import org.apache.commons.logging.*;
 
@@ -36,10 +37,10 @@ public class LDAPQueryBugTest extends TestCase {
     
     public void testAdmins() {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
-        factory.setConnectionFromLdapProperties();
+        factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
         factory.setDefaultGumsOU("ou=GUMS,dc=test");
         UserGroupDB db2 = factory.retrieveUserGroupDB("admins");
-        assertTrue(db2.isMemberInGroup(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith 12345", null)));
+        assertTrue(db2.isMemberInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
     }
     
 }

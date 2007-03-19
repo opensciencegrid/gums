@@ -24,14 +24,14 @@ public class HibernateUserTest extends HibernateDBTestBase {
         Session sess = sessions.openSession();
         Transaction trans = sess.beginTransaction();
         HibernateUser user = new HibernateUser();
-        user.setDn("/DC=org/DC=doegrids/OU=People/CN=John Smith");
+        user.setDn("/DC=org/DC=griddev/OU=People/CN=John Smith");
         user.setGroup("test");
         sess.save(user);
         Long id = user.getId();
         trans.commit();
         trans = sess.beginTransaction();
         HibernateUser user2 = (HibernateUser) sess.load(HibernateUser.class, id);
-        assertEquals("/DC=org/DC=doegrids/OU=People/CN=John Smith", user2.getDn());
+        assertEquals("/DC=org/DC=griddev/OU=People/CN=John Smith", user2.getDn());
         sess.delete(user2);
         trans.commit();
         trans = sess.beginTransaction();

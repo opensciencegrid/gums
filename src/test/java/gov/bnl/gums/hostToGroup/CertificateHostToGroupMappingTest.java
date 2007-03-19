@@ -40,61 +40,61 @@ public class CertificateHostToGroupMappingTest extends TestCase {
 
     public void testAnyServiceOnMachine() {
         group.setCn("*/www.atlasgrid.bnl.gov");
-        assertTrue(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=grid-monitoring/www.atlasgrid.bnl.gov"));
-        assertTrue(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/www.atlasgrid.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/atlasgrid.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/atlasgrid13.usatlas.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
+        assertTrue(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=grid-monitoring/www.atlasgrid.bnl.gov"));
+        assertTrue(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/www.atlasgrid.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/atlasgrid.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/atlasgrid13.usatlas.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
         assertFalse(group.isInGroup("/DC=org/DC=doegrods/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
     }
 
     public void testAnyHostService() {
         group.setCn("host/*,host/*.*,host/*.*.*,host/*.*.*.*");
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=grid-monitoring/www.atlasgrid.bnl.gov"));
-        assertTrue(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/www.atlasgrid.bnl.gov"));
-        assertTrue(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/atlasgrid.bnl.gov"));
-        assertTrue(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/atlasgrid13.usatlas.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=grid-monitoring/www.atlasgrid.bnl.gov"));
+        assertTrue(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/www.atlasgrid.bnl.gov"));
+        assertTrue(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/atlasgrid.bnl.gov"));
+        assertTrue(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/atlasgrid13.usatlas.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
         assertFalse(group.isInGroup("/DC=org/DC=doegrods/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
     }
 
     public void testUsatlasHosts() {
         group.setCn("*.usatlas.bnl.gov");
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=grid-monitoring/www.atlasgrid.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/www.atlasgrid.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/atlasgrid.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/atlasgrid13.usatlas.bnl.gov"));
-        assertTrue(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=grid-monitoring/www.atlasgrid.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/www.atlasgrid.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/atlasgrid.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/atlasgrid13.usatlas.bnl.gov"));
+        assertTrue(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
         assertTrue(group.isInGroup("/DC=org/DC=doegrods/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
     }
 
     public void testDnAnyServiceOnMachine() {
-        group.setDn("/DC=org/DC=doegrids/OU=Services/CN=*/www.atlasgrid.bnl.gov");
-        assertTrue(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=grid-monitoring/www.atlasgrid.bnl.gov"));
-        assertTrue(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/www.atlasgrid.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/atlasgrid.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/atlasgrid13.usatlas.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
+        group.setDn("/DC=org/DC=griddev/OU=Services/CN=*/www.atlasgrid.bnl.gov");
+        assertTrue(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=grid-monitoring/www.atlasgrid.bnl.gov"));
+        assertTrue(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/www.atlasgrid.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/atlasgrid.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/atlasgrid13.usatlas.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
         assertFalse(group.isInGroup("/DC=org/DC=doegrods/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
     }
 
     public void testDnAnyHostService() {
-        group.setDn("/DC=org/DC=doegrids/OU=Services/CN=host/*,/DC=org/DC=doegrids/OU=Services/CN=host/*.*,/DC=org/DC=doegrids/OU=Services/CN=host/*.*.*,/DC=org/DC=doegrids/OU=Services/CN=host/*.*.*.*");
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=grid-monitoring/www.atlasgrid.bnl.gov"));
-        assertTrue(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/www.atlasgrid.bnl.gov"));
-        assertTrue(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/atlasgrid.bnl.gov"));
-        assertTrue(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/atlasgrid13.usatlas.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
+        group.setDn("/DC=org/DC=griddev/OU=Services/CN=host/*,/DC=org/DC=griddev/OU=Services/CN=host/*.*,/DC=org/DC=griddev/OU=Services/CN=host/*.*.*,/DC=org/DC=griddev/OU=Services/CN=host/*.*.*.*");
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=grid-monitoring/www.atlasgrid.bnl.gov"));
+        assertTrue(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/www.atlasgrid.bnl.gov"));
+        assertTrue(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/atlasgrid.bnl.gov"));
+        assertTrue(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/atlasgrid13.usatlas.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
         assertFalse(group.isInGroup("/DC=org/DC=doegrods/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
     }
 
     public void testDnUsatlasHosts() {
-        group.setDn("/DC=org/DC=doegrids/OU=Services/CN=*.usatlas.bnl.gov");
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=grid-monitoring/www.atlasgrid.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/www.atlasgrid.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/atlasgrid.bnl.gov"));
-        assertFalse(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=host/atlasgrid13.usatlas.bnl.gov"));
-        assertTrue(group.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
+        group.setDn("/DC=org/DC=griddev/OU=Services/CN=*.usatlas.bnl.gov");
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=grid-monitoring/www.atlasgrid.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/www.atlasgrid.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/atlasgrid.bnl.gov"));
+        assertFalse(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=host/atlasgrid13.usatlas.bnl.gov"));
+        assertTrue(group.isInGroup("/DC=org/DC=griddev/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
         assertFalse(group.isInGroup("/DC=org/DC=doegrods/OU=Services/CN=atlasgrid13.usatlas.bnl.gov"));
     }
     

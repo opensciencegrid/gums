@@ -224,7 +224,7 @@ public class ConfigurationToolkitTest extends TestCase {
         assertEquals(1, hostToGroupMapping.getGroupToAccountMappings().size());
         assertEquals("atlas", (String)hostToGroupMapping.getGroupToAccountMappings().get(0));
         CertificateHostToGroupMapping certificateHostToGroupMapping = (CertificateHostToGroupMapping) hostToGroupMappings.get(1);
-        assertTrue(certificateHostToGroupMapping.isInGroup("/DC=org/DC=doegrids/OU=Services/CN=stargrid01.rhic.bnl.gov"));
+        assertTrue(certificateHostToGroupMapping.isInGroup("/DC=org/DC=griddev/OU=Services/CN=stargrid01.rhic.bnl.gov"));
         assertFalse(certificateHostToGroupMapping.isInGroup("atlasgrid01.usatlas.bnl.gov"));
         assertEquals(2, certificateHostToGroupMapping.getGroupToAccountMappings().size());
         assertEquals("rhic", (String)certificateHostToGroupMapping.getGroupToAccountMappings().get(0));

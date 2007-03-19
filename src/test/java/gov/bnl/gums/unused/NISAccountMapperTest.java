@@ -36,16 +36,16 @@ public class NISAccountMapperTest extends TestCase {
     }
     
     public void testMapUser() {
-        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
-        assertEquals(null, mapper.mapUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person"));
+        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals(null, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=Evil Person"));
     }
     
     public void testNameSurnameFromCertificateSubject() {
-        String dn = "/DC=org/DC=doegrids/OU=People/CN=John Smith";
+        String dn = "/DC=org/DC=griddev/OU=People/CN=John Smith";
         String[] name = mapper.parseNameAndSurname(dn);
         assertEquals("John", name[0]);
         assertEquals("Smith", name[1]);
-        name = mapper.parseNameAndSurname("/DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345");
+        name = mapper.parseNameAndSurname("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345");
         assertEquals("Jane", name[0]);
         assertEquals("Doe", name[1]);
     }

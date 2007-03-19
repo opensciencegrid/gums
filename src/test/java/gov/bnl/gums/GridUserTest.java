@@ -25,43 +25,43 @@ public class GridUserTest extends TestCase {
     }
     
     public void testEquals() {
-        GridUser a = new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null);
-        GridUser b = new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null);
+        GridUser a = new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null);
+        GridUser b = new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null);
         assertEquals(a, b);
         assertEquals(b, a);
     }
     
     public void testEquals2() {
-        GridUser a = new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null);
-        GridUser b = new GridUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person", null);
+        GridUser a = new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null);
+        GridUser b = new GridUser("/DC=org/DC=griddev/OU=People/CN=Evil Person", null);
         assertFalse(a.equals(b));
         assertFalse(b.equals(a));
     }
     
     public void testEquals3() {
-        GridUser a = new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/users/Role=admin/Capability=important");
-        GridUser b = new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/users/Role=admin/Capability=important");
+        GridUser a = new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/myGroup/mySubGroup/Role=admin/Capability=important");
+        GridUser b = new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/myGroup/mySubGroup/Role=admin/Capability=important");
         assertEquals(a, b);
         assertEquals(b, a);
     }
     
     public void testEquals4() {
-        GridUser a = new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/users/Role=admin/Capability=important");
-        GridUser b = new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null);
+        GridUser a = new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/myGroup/mySubGroup/Role=admin/Capability=important");
+        GridUser b = new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null);
         assertFalse(a.equals(b));
         assertFalse(b.equals(a));
     }
     
     public void testEquals5() {
-        GridUser a = new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/users/Role=admin/Capability=important");
-        GridUser b = new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", "/atlas/users/Role=user");
+        GridUser a = new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/myGroup/mySubGroup/Role=admin/Capability=important");
+        GridUser b = new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/myGroup/mySubGroup/Role=user");
         assertFalse(a.equals(b));
         assertFalse(b.equals(a));
     }
     
     public void testEquals6() {
         GridUser a = new GridUser(null, null);
-        GridUser b = new GridUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person", null);
+        GridUser b = new GridUser("/DC=org/DC=griddev/OU=People/CN=Evil Person", null);
         assertFalse(a.equals(b));
         assertFalse(b.equals(a));
     }

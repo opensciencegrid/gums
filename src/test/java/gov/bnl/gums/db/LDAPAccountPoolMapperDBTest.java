@@ -12,6 +12,7 @@ import junit.framework.*;
 import gov.bnl.gums.*;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
+import gov.bnl.gums.persistence.LDAPPersistenceFactoryTest;
 import net.sf.hibernate.*;
 import org.apache.commons.logging.*;
 
@@ -27,7 +28,7 @@ public class LDAPAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
 
     public void setUp() throws Exception {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
-        factory.setConnectionFromLdapProperties();
+        factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
         factory.setDefaultGumsOU("ou=GUMS,dc=test");
         try {
             factory.destroyMap("testManual", "map=testManual,ou=GUMS,dc=test");

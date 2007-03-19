@@ -28,8 +28,8 @@ import org.apache.commons.logging.LogFactory;
  * @author carcassi
  */
 public class LocalPersistenceFactory extends PersistenceFactory {
-    private class LocalAccountPoolMapperDB implements AccountPoolMapperDB {
-        
+    
+	private class LocalAccountPoolMapperDB implements AccountPoolMapperDB {
         private AccountPoolMapperDB mysqlDB;
         private String group;
         private List secondaryGroups;

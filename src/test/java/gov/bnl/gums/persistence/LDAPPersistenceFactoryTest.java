@@ -9,11 +9,18 @@ package gov.bnl.gums.persistence;
 
 import junit.framework.*;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
+
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
+
+import org.apache.commons.logging.LogFactory;
+
 import gov.bnl.gums.*;
 import gov.bnl.gums.configuration.Configuration;
 
@@ -31,9 +38,21 @@ public class LDAPPersistenceFactoryTest extends TestCase {
         this.configuration = configuration;
     }
 
+    static public Properties readLdapProperties() {
+    	LogFactory.getLog(LDAPPersistenceFactory.class).trace("Retrieving LDAP properties from ldap.properties in the classpath");
+        PropertyResourceBundle prop = (PropertyResourceBundle) ResourceBundle.getBundle("ldap");
+        Properties prop2 = new Properties();
+        Enumeration keys = prop.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = (String) keys.nextElement();
+            prop2.setProperty(key, prop.getString(key));
+        }
+        return prop2;
+    }
+    
     protected void setUp() throws java.lang.Exception {
         factory = new LDAPPersistenceFactory(configuration, getName());
-        factory.setConnectionFromLdapProperties();
+        factory.setProperties(readLdapProperties());
         factory.setDefaultGumsOU("ou=GUMS,dc=test");
         try {
         factory.getLDAPContext().destroySubcontext("group=test,ou=GUMS,dc=test");
@@ -70,27 +89,27 @@ public class LDAPPersistenceFactoryTest extends TestCase {
     
     public void testAddMapEntry() {
         factory.createMap("test", "map=test,ou=GUMS,dc=test");
-        factory.addMapEntry("/DC=org/DC=doegrids/OU=People/CN=John Smith 1234", "grid001", "test",  "map=test,ou=GUMS,dc=test");
+        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "grid001", "test",  "map=test,ou=GUMS,dc=test");
     }
     
     public void testRemoveMapEntry() {
         factory.createMap("test", "map=test,ou=GUMS,dc=test");
-        factory.addMapEntry("/DC=org/DC=doegrids/OU=People/CN=John Smith 12345", "grid001", "test",  "map=test,ou=GUMS,dc=test");
-        factory.addMapEntry("/DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345", "grid001", "test",  "map=test,ou=GUMS,dc=test");
-        factory.removeMapEntry("/DC=org/DC=doegrids/OU=People/CN=John Smith 12345", "test",  "map=test,ou=GUMS,dc=test");
+        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "grid001", "test",  "map=test,ou=GUMS,dc=test");
+        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "grid001", "test",  "map=test,ou=GUMS,dc=test");
+        factory.removeMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test",  "map=test,ou=GUMS,dc=test");
     }
     
     public void testAddUserGroupEntry() {
         factory.createUserGroup("test", "group=test,ou=GUMS,dc=test");
-        factory.addUserGroupEntry("/DC=org/DC=doegrids/OU=People/CN=John Smith 12345", "test", "group=test,ou=GUMS,dc=test");
-        factory.addUserGroupEntry("/DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345", "test", "group=test,ou=GUMS,dc=test");
+        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test,ou=GUMS,dc=test");
+        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test,ou=GUMS,dc=test");
     }
     
     public void testRemoveUserGroupEntry() {
         factory.createUserGroup("test", "group=test,ou=GUMS,dc=test");
-        factory.addUserGroupEntry("/DC=org/DC=doegrids/OU=People/CN=John Smith 12345", "test", "group=test,ou=GUMS,dc=test");
-        factory.addUserGroupEntry("/DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345", "test", "group=test,ou=GUMS,dc=test");
-        factory.removeUserGroupEntry("/DC=org/DC=doegrids/OU=People/CN=John Smith 12345", "test", "group=test,ou=GUMS,dc=test");
+        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test,ou=GUMS,dc=test");
+        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test,ou=GUMS,dc=test");
+        factory.removeUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test,ou=GUMS,dc=test");
     }
     
 //    public static void main(String[] args) {
@@ -107,7 +126,7 @@ public class LDAPPersistenceFactoryTest extends TestCase {
 ////        ManualUserGroupDB db = factory.retrieveManualUserGroupDB("atlasDev");
 ////        System.out.println(db.retrieveMembers());
 ////        db.addMember(new GridUser("aTest",null));
-////        db.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi 12345",null));
+////        db.addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=Gabriele Carcassi 12345",null));
 ////        DirContext context = factory.retrieveContext();
 ////        try {
 ////            System.out.println(context.getNameInNamespace());

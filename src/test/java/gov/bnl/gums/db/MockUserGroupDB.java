@@ -23,7 +23,7 @@ public class MockUserGroupDB implements UserGroupDB {
     public MockUserGroupDB() {
         currentMembers = new ArrayList();
         GridUser user = new GridUser();
-        user.setCertificateDN("/DC=org/DC=doegrids/OU=People/CN=John Smith");
+        user.setCertificateDN("/DC=org/DC=griddev/OU=People/CN=John Smith");
         currentMembers.add(user);
     }
     

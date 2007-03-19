@@ -10,6 +10,7 @@ import gov.bnl.gums.configuration.Configuration;
 
 import java.util.Properties;
 
+import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -84,6 +85,10 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
         Properties jndiProperties = new java.util.Properties();
         jndiProperties.put("java.naming.provider.url", jndiLdapUrl);
         jndiProperties.put("java.naming.factory.initial","com.sun.jndi.ldap.LdapCtxFactory");
+        jndiProperties.put(Context.SECURITY_PROTOCOL, "simple");
+        //jndiProperties.put(Context.SECURITY_AUTHENTICATION, "EXTERNAL");
+        //System.setProperty("javax.net.ssl.keyStore",keyStore);
+        //System.setProperty("javax.net.ssl.keyStorePassword",keyPassword);
         return jndiProperties;
     }
 

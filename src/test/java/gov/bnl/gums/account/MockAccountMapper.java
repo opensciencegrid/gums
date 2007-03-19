@@ -28,20 +28,20 @@ public class MockAccountMapper extends AccountMapper {
     }
     
     public String mapUser(String userDN) {
-        if (userDN.equals("/DC=org/DC=doegrids/OU=People/CN=John Smith"))
+        if (userDN.equals("/DC=org/DC=griddev/OU=People/CN=John Smith"))
             return "jsmith";
         return null;
     }
     
     public boolean containsMap(String userDN, String accountName) {
-    	return userDN.equals("/DC=org/DC=doegrids/OU=People/CN=John Smith") && accountName.equals("jsmith");
+    	return userDN.equals("/DC=org/DC=griddev/OU=People/CN=John Smith") && accountName.equals("jsmith");
     }
     
     public List inverseMap(String accountName) {
         if (accountName.equals("jsmith")) {
         	ArrayList users = new ArrayList();
         	GridUser user = new GridUser();
-        	user.setCertificateDN("/DC=org/DC=doegrids/OU=People/CN=John Smith");
+        	user.setCertificateDN("/DC=org/DC=griddev/OU=People/CN=John Smith");
         	users.add(user);
             return users;
         }

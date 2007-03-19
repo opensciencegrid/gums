@@ -42,33 +42,33 @@ public class AccountPoolMapperDBTest extends TestCase {
     
     public void tearDown() throws Exception {
         for (int i = 0; i < 10; i++) {
-        	if (db.retrieveAccount("/DC=org/DC=doegrids/OU=People/CN=User "+i)!=null)
-        		db.unassignUser("/DC=org/DC=doegrids/OU=People/CN=User "+i);
+        	if (db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=User "+i)!=null)
+        		db.unassignUser("/DC=org/DC=griddev/OU=People/CN=User "+i);
         }
     }
     
     public void testAssignAccount() {
-        String account = db.assignAccount("/DC=org/DC=doegrids/OU=People/CN=John Smith");
-        assertEquals(account, db.retrieveAccount("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
-        assertEquals(account, db.retrieveAccountMap().get("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
+        String account = db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith");
+        assertEquals(account, db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals(account, db.retrieveAccountMap().get("/DC=org/DC=griddev/OU=People/CN=John Smith"));
     }
     
     public void testUnassignAccount() {
-        String account = db.assignAccount("/DC=org/DC=doegrids/OU=People/CN=John Smith");
-        assertEquals(account, db.retrieveAccount("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
-        db.unassignUser("/DC=org/DC=doegrids/OU=People/CN=John Smith");
-        assertNull(db.retrieveAccount("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
+        String account = db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith");
+        assertEquals(account, db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        db.unassignUser("/DC=org/DC=griddev/OU=People/CN=John Smith");
+        assertNull(db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
     }
     
     public void testLastUsedOn() throws Exception {
         try {
-            String account = db.assignAccount("/DC=org/DC=doegrids/OU=People/CN=John Smith");
-            assertEquals(account, db.retrieveAccount("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
+            String account = db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith");
+            assertEquals(account, db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
             Thread.sleep(lastUsedDelay);
             Date date = new Date();
             Thread.sleep(lastUsedDelay);
             assertEquals(1, db.retrieveUsersNotUsedSince(date).size());
-            db.retrieveAccount("/DC=org/DC=doegrids/OU=People/CN=John Smith");
+            db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=John Smith");
             assertEquals(0, db.retrieveUsersNotUsedSince(date).size());
         } catch (UnsupportedOperationException e) {
             // Operation can be not supported
@@ -77,27 +77,27 @@ public class AccountPoolMapperDBTest extends TestCase {
     
     public void testFillPool() throws Exception {
         int n = 0;
-        while (db.assignAccount("/DC=org/DC=doegrids/OU=People/CN=User "+n) != null) {
+        while (db.assignAccount("/DC=org/DC=griddev/OU=People/CN=User "+n) != null) {
             n++;
         }
         assertEquals(10, n);
         for (int i = 0; i < n; i++) {
-            db.unassignUser("/DC=org/DC=doegrids/OU=People/CN=User "+i);
+            db.unassignUser("/DC=org/DC=griddev/OU=People/CN=User "+i);
         }
         for (int i = 0; i < n; i++) {
-            db.assignAccount("/DC=org/DC=doegrids/OU=People/CN=User "+i);
+            db.assignAccount("/DC=org/DC=griddev/OU=People/CN=User "+i);
         }
-        assertNull(db.assignAccount("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
+        assertNull(db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
     }
     
     public void testAddAccount() throws Exception {
         int n = 0;
-        while (db.assignAccount("/DC=org/DC=doegrids/OU=People/CN=User "+n) != null) {
+        while (db.assignAccount("/DC=org/DC=griddev/OU=People/CN=User "+n) != null) {
             n++;
         }
         assertEquals(10, n);
         db.addAccount("newAccount");
-        assertEquals("newAccount", db.assignAccount("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
+        assertEquals("newAccount", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
         
         try {
             db.addAccount("newAccount");
@@ -105,7 +105,7 @@ public class AccountPoolMapperDBTest extends TestCase {
             // exception was thrown as supposed to
         }
         
-        db.unassignUser("/DC=org/DC=doegrids/OU=People/CN=John Smith");
+        db.unassignUser("/DC=org/DC=griddev/OU=People/CN=John Smith");
         
         try {
             db.addAccount("newAccount");

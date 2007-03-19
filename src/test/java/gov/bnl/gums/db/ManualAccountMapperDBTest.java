@@ -35,25 +35,25 @@ public class ManualAccountMapperDBTest extends TestCase {
     }
     
     public void testCreateMapping() {
-        db.createMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith", "jsmith");
-        assertEquals("jsmith", db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
-        assertEquals(null, db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=Evil Persons"));
+        db.createMapping("/DC=org/DC=griddev/OU=People/CN=John Smith", "jsmith");
+        assertEquals("jsmith", db.retrieveMapping("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals(null, db.retrieveMapping("/DC=org/DC=griddev/OU=People/CN=Evil Persons"));
     }
     
     public void testRetrieveMapping() {
-        assertEquals(null, db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
-        db.createMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith", "jsmith");
-        assertEquals("jsmith", db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
-        assertEquals(null, db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=Evil Persons"));
+        assertEquals(null, db.retrieveMapping("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        db.createMapping("/DC=org/DC=griddev/OU=People/CN=John Smith", "jsmith");
+        assertEquals("jsmith", db.retrieveMapping("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals(null, db.retrieveMapping("/DC=org/DC=griddev/OU=People/CN=Evil Persons"));
     }
     
     public void testRemoveMapping() {
-        db.createMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith", "jsmith");
-        assertEquals("jsmith", db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
-        assertTrue(db.removeMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
-        assertEquals(null, db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=John Smith"));
-        assertFalse(db.removeMapping("/DC=org/DC=doegrids/OU=People/CN=Evil Person"));
-        assertEquals(null, db.retrieveMapping("/DC=org/DC=doegrids/OU=People/CN=Evil Persons"));
+        db.createMapping("/DC=org/DC=griddev/OU=People/CN=John Smith", "jsmith");
+        assertEquals("jsmith", db.retrieveMapping("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertTrue(db.removeMapping("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals(null, db.retrieveMapping("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertFalse(db.removeMapping("/DC=org/DC=griddev/OU=People/CN=Evil Person"));
+        assertEquals(null, db.retrieveMapping("/DC=org/DC=griddev/OU=People/CN=Evil Persons"));
     }
     
 }

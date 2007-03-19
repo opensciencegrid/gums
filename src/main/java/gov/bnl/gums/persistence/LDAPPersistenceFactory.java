@@ -18,14 +18,10 @@ import gov.bnl.gums.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.MissingResourceException;
 import java.util.Properties;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import javax.naming.NameNotFoundException;
@@ -52,17 +48,6 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     static public String getTypeStatic() {
 		return "ldap";
 	}
-    static public Properties readLdapProperties() {
-    	LogFactory.getLog(LDAPPersistenceFactory.class).trace("Retrieving LDAP properties from ldap.properties in the classpath");
-        PropertyResourceBundle prop = (PropertyResourceBundle) ResourceBundle.getBundle("ldap");
-        Properties prop2 = new Properties();
-        Enumeration keys = prop.getKeys();
-        while (keys.hasMoreElements()) {
-            String key = (String) keys.nextElement();
-            prop2.setProperty(key, prop.getString(key));
-        }
-        return prop2;
-    }
     
     private Log log = LogFactory.getLog(LDAPPersistenceFactory.class);
     private Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
@@ -88,7 +73,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     
     /** Adds a userDN -> account mapping entry in the "map=mapName" LDAP map.
      * 
-     * @param userDN the certificate DN of the user (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith 12345")
+     * @param userDN the certificate DN of the user (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith")
      * @param account the account to whith to map the DN (i.e. "carcassi")
      * @param mapName the name of the map (i.e. "usatlasSpecialMap")
      * @param mapDN the map DN (i.e. "map=usatlasSpecialMap")
@@ -169,7 +154,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     
     /** Adds a certificate DN to the group "group=groupName".
      * 
-     * @param userDN the certificate DN of the user (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith 12345")
+     * @param userDN the certificate DN of the user (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith")
      * @param groupName the name of the group (i.e. "usatlas")
      * @param groupDN the group DN (i.e. "group=usatlas")
      */
@@ -521,19 +506,6 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public UserGroupDB retrieveUserGroupDB(String name) {
         log.trace("Creating LDAP UserGroupDB '" + name + "'");
         return new LDAPUserGroupDB(this, name);
-    }
-
-    /**
-     * Retrieves the JNDI properties to be used to create the LDAP context
-     * by looking at the ldap.properties file in the classpath. This is mainly
-     * used for unit testing.
-     */
-    public void setConnectionFromLdapProperties() {
-        try {
-            setProperties(readLdapProperties());
-        } catch (MissingResourceException e) {
-            throw new RuntimeException("Couldn't find LDAP configuration file (ldap.properties)", e);
-        }
     }
 
     /**

@@ -49,9 +49,9 @@ public class ResourceManagerTest extends TestCase {
     }
     
     public void testMap() {
-        assertEquals("jsmith", man.map("known.site.com", new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
-        assertNull(man.map("known.site.com", new GridUser("/DC=org/DC=doegrids/OU=People/CN=Evil Person", null)));
-        assertNull(man.map("unknown.site.com", new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null)));
+        assertEquals("jsmith", man.map("known.site.com", new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+        assertNull(man.map("known.site.com", new GridUser("/DC=org/DC=griddev/OU=People/CN=Evil Person", null)));
+        assertNull(man.map("unknown.site.com", new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
     }
     
     public void testGenerateGrid3UserVoMap() {
@@ -69,7 +69,7 @@ public class ResourceManagerTest extends TestCase {
     public void testGenerateGridMapfile() {
         String mapfile = man.generateGridMapfile("known.site.com");
         String expectedGridmap = "#---- members of vo: mockUserGroup ----#\n" +
-        "\"/DC=org/DC=doegrids/OU=People/CN=John Smith\" jsmith\n";
+        "\"/DC=org/DC=griddev/OU=People/CN=John Smith\" jsmith\n";
         assertEquals("Grid mapfile generated incorrectly", 
         expectedGridmap,
         mapfile);
@@ -81,8 +81,8 @@ public class ResourceManagerTest extends TestCase {
         PersistenceFactory persistenceFactory = new MockPersistenceFactory(conf, "testUserGroup");
         conf.addPersistenceFactory(persistenceFactory);
         userGroup.setPersistenceFactory(persistenceFactory.getName());
-        userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=John Smith", null));
-        userGroup.addMember(new GridUser("/DC=org/DC=doegrids/OU=People/CN=Jane Doe", null));
+        userGroup.addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null));
+        userGroup.addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null));
 
         GroupAccountMapper groupAccountMapper = new GroupAccountMapper(conf, "test");
         conf.addAccountMapper(groupAccountMapper);
@@ -97,9 +97,9 @@ public class ResourceManagerTest extends TestCase {
 
         String mapfile = man.generateGridMapfile("known.site.com");
         String expectedGridmap = "#---- members of vo: mockUserGroup ----#\n" +
-        "\"/DC=org/DC=doegrids/OU=People/CN=John Smith\" jsmith\n" +
+        "\"/DC=org/DC=griddev/OU=People/CN=John Smith\" jsmith\n" +
         "#---- members of vo: testUserGroup ----#\n" +
-        "\"/DC=org/DC=doegrids/OU=People/CN=Jane Doe\" test\n";
+        "\"/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345\" test\n";
         assertEquals("Grid mapfile generated incorrectly", expectedGridmap, mapfile);
     }
     
