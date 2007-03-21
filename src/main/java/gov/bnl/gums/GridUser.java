@@ -31,7 +31,7 @@ public class GridUser {
      */
     public GridUser(String userDN, String fqan) {
         setCertificateDN(userDN);
-        if (fqan != null)
+        if (fqan!=null && fqan.length()>0)
             setVoFQAN(new FQAN(fqan));
     }
     

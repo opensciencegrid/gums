@@ -32,7 +32,7 @@ public class GecosLDAPAccountMapperTest extends TestCase {
 
     protected void setUp() throws Exception {
         mapper = new GecosLdapAccountMapper(new Configuration(), "ldapAccountMapper");
-        mapper.setJndiLdapUrl( LDAPPersistenceFactoryTest.readLdapProperties().getProperty("ldap.java.naming.provider.url") );
+        mapper.setJndiLdapUrl( LDAPPersistenceFactoryTest.readLdapProperties().getProperty("java.naming.provider.url") );
     }
 
     protected void tearDown() throws Exception {

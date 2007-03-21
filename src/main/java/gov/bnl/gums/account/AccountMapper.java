@@ -16,6 +16,10 @@ import gov.bnl.gums.configuration.Configuration;
  * @author  Gabriele Carcassi
  */
 public abstract class AccountMapper {
+	static public String getTypeStatic() {
+		return "abstract";
+	}
+	
 	private String name = "";
 	private Configuration configuration = null;
 	
@@ -24,14 +28,14 @@ public abstract class AccountMapper {
 	 */
 	public AccountMapper() {
     }
-	
+ 
 	/**
 	 * @param configuration
 	 */
 	public AccountMapper(Configuration configuration) {
     	this.configuration = configuration;
     }
- 
+	
 	/**
 	 * @param configuration
 	 * @param name
@@ -40,22 +44,18 @@ public abstract class AccountMapper {
     	this.configuration = configuration;
     	this.name = name;
     }
-	
-	public abstract AccountMapper clone(Configuration configuration);
     
+	public abstract AccountMapper clone(Configuration configuration);
+
 	public Configuration getConfiguration() {
 		return configuration;
 	}
-
+	
 	public String getName() {
 		return name;
 	}
 	
 	public String getType() {
-		return "abstract";
-	}
-	
-	static public String getTypeStatic() {
 		return "abstract";
 	}
 	

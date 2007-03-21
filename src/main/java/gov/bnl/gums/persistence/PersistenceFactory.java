@@ -29,7 +29,11 @@ import java.util.Properties;
  * @author  Gabriele Carcassi
  */
 public abstract class PersistenceFactory {
-	private String name;
+    static public String getTypeStatic() {
+		return "abstract";
+	}
+    
+    private String name;
     private Properties properties;
     private Configuration configuration;
     
@@ -70,10 +74,6 @@ public abstract class PersistenceFactory {
 	}
 
 	public String getType() {
-		return "abstract";
-	}
-	
-    static public String getTypeStatic() {
 		return "abstract";
 	}
 

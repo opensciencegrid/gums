@@ -36,8 +36,13 @@ import org.edg.security.voms.service.admin.*;
  * @author  Gabriele Carcassi
  */
 public class VOMSUserGroup extends UserGroup {
-	private static final boolean defaultAcceptProxyWithoutFQAN = true;
-	private static final String defaultMatchFQAN = "ignore";
+	static private final boolean defaultAcceptProxyWithoutFQAN = true;
+	static private final String defaultMatchFQAN = "ignore";
+	
+    static public String getTypeStatic() {
+		return "voms";
+	}
+    
     private Log log = LogFactory.getLog(VOMSUserGroup.class);
     private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     private String vo = "";
@@ -46,21 +51,22 @@ public class VOMSUserGroup extends UserGroup {
     private String fqan = "";
     private String matchFQAN = defaultMatchFQAN;
     private String remainderUrl = "";
-    private boolean acceptProxyWithoutFQAN = defaultAcceptProxyWithoutFQAN;
 
-	public VOMSUserGroup() {
-    	super();
-    }
+	private boolean acceptProxyWithoutFQAN = defaultAcceptProxyWithoutFQAN;
     
-    public VOMSUserGroup(Configuration configuration) {
-		super(configuration);
-	}    
+    public VOMSUserGroup() {
+    	super();
+    }    
  
+	public VOMSUserGroup(Configuration configuration) {
+		super(configuration);
+	}
+    
 	public VOMSUserGroup(Configuration configuration, String name) {
 		super(configuration, name);
 	}
     
-	public UserGroup clone(Configuration configuration) {
+    public UserGroup clone(Configuration configuration) {
     	VOMSUserGroup userGroup = new VOMSUserGroup(configuration, getName());
     	userGroup.setAccess(getAccess());
     	userGroup.setVirtualOrganization(getVirtualOrganization());
@@ -99,10 +105,6 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     public String getType() {
-		return "voms";
-	}
-    
-    static public String getTypeStatic() {
 		return "voms";
 	}
     
@@ -166,23 +168,14 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     public boolean isInGroup(GridUser user) {
-        // If the user comes in without FQAN, either we accept proxies without
-        // it or we kick him out right away
-        if ((user.getVoFQAN() == null) && !isAcceptProxyWithoutFQAN()) {
-            
-            // FIXME To achieve complete backward compatibility with GUMS 1.0,
-            // if the voGroup is null and the user comes in with no Proxy
-            // we still allow him in.
-            // We should remove this in versions after 1.1
-            if ((voGroup.equals("")) && (voRole.equals(""))) {
-                return getVoDB().isMemberInGroup(user);
-            }
+        // If the user comes in without FQAN and we don't accept proxies without fqan,
+        // kick him out right away
+        if (user.getVoFQAN()==null && !isAcceptProxyWithoutFQAN())
             return false;
-        }
         
-        // If the user comes in wihout FQAN, but we accept proxies without it,
+        // If the user comes in without FQAN and we accept proxies without it,
         // we simply check whether the DN is in the database
-        if ((user.getVoFQAN().equals("")) && isAcceptProxyWithoutFQAN()) {
+        if (user.getVoFQAN()==null && isAcceptProxyWithoutFQAN()) {
             if (getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan)))
                 return true;
             return false;
@@ -197,6 +190,12 @@ public class VOMSUserGroup extends UserGroup {
                 return false;
         }
 
+        // If we match the group, we make sure the VO starts with the group
+        if ("group".equals(getMatchFQAN())) {
+            if (!user.getVoFQAN().toString().startsWith(voGroup))
+                return false;
+        }
+
         // If we match the vo, we check the vo is the same
         if ("vo".equals(getMatchFQAN())) {
             FQAN theFQAN = new FQAN(fqan);
@@ -204,12 +203,6 @@ public class VOMSUserGroup extends UserGroup {
                 return false;
         }
         
-        // If we match the group, we make sure the VO starts with the group
-        if ("group".equals(getMatchFQAN())) {
-            if (!user.getVoFQAN().toString().startsWith(voGroup))
-                return false;
-        }
-
         // FQAN matches, let's look up if the DN is in the db
         // If not, he's kicked out
         return getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan));
@@ -243,15 +236,6 @@ public class VOMSUserGroup extends UserGroup {
     public void setVirtualOrganization(String vo) {
     	this.vo = vo;
     }
-
-    /**
-     * Changes the role to be retrieved within the VO group.
-     * @param voRole The role name in the VOMS server (i.e. myrole), or "" for no role
-     */
-    public void setVirtualOrganizationRole(String voRole) {
-        this.voRole = voRole;
-        prepareFQAN();
-    }
     
     /**
      * Changes the VO group.
@@ -268,6 +252,7 @@ public class VOMSUserGroup extends UserGroup {
      */
     public void setVoRole(String voRole) {
         this.voRole = voRole;
+        prepareFQAN();
     }
 
     public String toString() {
@@ -312,9 +297,7 @@ public class VOMSUserGroup extends UserGroup {
     }
 
     private void prepareFQAN() {
-        if (voGroup.equals("")) {
-            fqan = null;
-        } else {
+        if (!voGroup.equals("")) {
             if (voRole.equals("")) {
                 fqan = voGroup;
             } else {
@@ -332,13 +315,14 @@ public class VOMSUserGroup extends UserGroup {
             "' sslKey='" + System.getProperty("sslKey") +
             "' sslKeyPasswd set:" + (System.getProperty("sslKeyPasswd")!=null) +
             " sslCAFiles='" + System.getProperty("sslCAFiles") + "'" ); 
+            System.setProperty("axis.socketSecureFactory", "org.edg.security.trustmanager.axis.AXISSocketFactory");
             VOMSAdmin voms = getVOMSAdmin();
         	org.edg.security.voms.service.User[] users = null;
-            if (!voRole.equals("") && !voGroup.equals("")) {
-                users = voms.listUsersWithRole("/atlas/usatlas", "Role=software");
-            } else if (!voGroup.equals("")){
-                users = voms.listMembers(getVoGroup());
-            }
+            if (voRole.equals("")) {
+                users = voms.listMembers( !getVoGroup().equals("")?getVoGroup():null );
+            } else {
+                users = voms.listUsersWithRole( !getVoGroup().equals("")?getVoGroup():null, "Role=" + getVoRole());
+            }        	
             if (users.length > 0) {
                 log.trace("Retrieved " + users.length + " users. First is: '" + users[0].getDN());
             } else {
@@ -347,7 +331,8 @@ public class VOMSUserGroup extends UserGroup {
             System.setProperties(p);
             List entries = new ArrayList();
             for (int n=0; n< users.length; n++) {
-                entries.add(new GridUser(users[n].getDN(), fqan));
+            	GridUser gridUser = new GridUser(users[n].getDN(), fqan);
+                entries.add(gridUser);
             }
             return entries;
         } catch (Throwable e) {

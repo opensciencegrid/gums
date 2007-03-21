@@ -35,7 +35,11 @@ import org.apache.commons.logging.LogFactory;
  * @author carcassi
  */
 public class HibernatePersistenceFactory extends PersistenceFactory {
-    private Log log = LogFactory.getLog(HibernatePersistenceFactory.class);
+    static public String getTypeStatic() {
+		return "hibernate";
+	}
+	
+	private Log log = LogFactory.getLog(HibernatePersistenceFactory.class);
     private SessionFactory sessions;
 
 	public HibernatePersistenceFactory() {
@@ -62,10 +66,6 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 		return "hibernate";
 	}
     
-    static public String getTypeStatic() {
-		return "hibernate";
-	}
-
     public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
         return new HibernateMappingDB(this, name);
     }

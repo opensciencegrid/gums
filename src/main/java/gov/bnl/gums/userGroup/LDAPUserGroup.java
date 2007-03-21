@@ -37,6 +37,10 @@ import org.apache.commons.logging.*;
  * @author  carcassi
  */
 public class LDAPUserGroup extends UserGroup {
+    static public String getTypeStatic() {
+		return "ldap";
+	}
+	
     private Log log = LogFactory.getLog(LDAPUserGroup.class);
     private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     private UserGroupDB db;
@@ -117,10 +121,6 @@ public class LDAPUserGroup extends UserGroup {
     }
     
     public String getType() {
-		return "ldap";
-	}
-    
-    static public String getTypeStatic() {
 		return "ldap";
 	}
     
@@ -228,8 +228,7 @@ public class LDAPUserGroup extends UserGroup {
      */
     private synchronized List retrieveMembers() {
         java.util.Properties properties = retrieveProperties();
-        log.info("Retrieving members from '" + properties.getProperty("java.naming.provider.url") +
-                 "'  '" + query + "'");
+        log.info("Retrieving members from '" + properties.getProperty("java.naming.provider.url") + "'  '" + query + "'");
         try {
             javax.naming.directory.DirContext jndiCtx = new javax.naming.directory.InitialDirContext(properties);
             if (query.startsWith("ou=People,")) {

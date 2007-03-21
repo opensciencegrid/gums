@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 public class GecosNisAccountMapper extends GecosAccountMapper {
     static private Log log = LogFactory.getLog(GecosNisAccountMapper.class);
     static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+    
     static public String getTypeStatic() {
 		return "gecosNIS";
 	}

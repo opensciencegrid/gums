@@ -19,17 +19,21 @@ import gov.bnl.gums.db.ManualAccountMapperDB;
  * @author  Gabriele Carcassi
  */
 public class ManualAccountMapper extends AccountMapper {
-    private ManualAccountMapperDB db;
-    private String persistenceFactory = "";
+    static public String getTypeStatic() {
+		return "manual";
+	}
     
-	public ManualAccountMapper() {
+    private ManualAccountMapperDB db;
+	private String persistenceFactory = "";
+    
+    public ManualAccountMapper() {
     	super();
     }
-    
+ 
     public ManualAccountMapper(Configuration configuration) {
     	super(configuration);
     }
- 
+    
     public ManualAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
     }
@@ -53,10 +57,6 @@ public class ManualAccountMapper extends AccountMapper {
     }
     
     public String getType() {
-		return "manual";
-	}
-    
-    static public String getTypeStatic() {
 		return "manual";
 	}
     

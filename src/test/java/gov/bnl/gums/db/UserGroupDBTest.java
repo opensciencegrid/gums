@@ -42,14 +42,14 @@ public class UserGroupDBTest extends TestCase {
     
     protected void initDB() {
         List mockUsers = new ArrayList();
-        mockUsers.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null));
-        mockUsers.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null));
+        mockUsers.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole"));
+        mockUsers.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "/griddev/subgriddev/Role=griddevrole"));
         db.loadUpdatedList(mockUsers);
     }
     
     public void testIsMemberInGroup() {
-        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
-        assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=Evil Person", null)));
+        assertTrue(db.isMemberInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
+        assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=Evil Person", "/griddev/subgriddev/Role=griddevrole")));
         assertFalse(db.isMemberInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/myGroup/mySubGroup")));
     }
     
@@ -68,25 +68,25 @@ public class UserGroupDBTest extends TestCase {
         assertNull(db.retrieveRemovedMembers());
         
         List newMemberList = new ArrayList();
-        newMemberList.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null));
-        newMemberList.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jason Smith", null));
+        newMemberList.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole"));
+        newMemberList.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jason Smith", "/griddev/subgriddev/Role=griddevrole"));
         db.loadUpdatedList(newMemberList);
         List newMembers = db.retrieveNewMembers();
         List removedMembers = db.retrieveRemovedMembers();
         assertEquals(1, newMembers.size());
-        assertEquals("GridID[/DC=org/DC=griddev/OU=People/CN=Jason Smith]", newMembers.get(0).toString());
+        assertEquals("GridID[/DC=org/DC=griddev/OU=People/CN=Jason Smith, /griddev/subgriddev/Role=griddevrole]", newMembers.get(0).toString());
         assertEquals(0, removedMembers.size());
         
         newMemberList = new ArrayList();
-        newMemberList.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null));
-        newMemberList.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null));
+        newMemberList.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "/griddev/subgriddev/Role=griddevrole"));
+        newMemberList.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole"));
         db.loadUpdatedList(newMemberList);
         newMembers = db.retrieveNewMembers();
         removedMembers = db.retrieveRemovedMembers();
         assertEquals(1, newMembers.size());
-        assertEquals("GridID[/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345]", newMembers.get(0).toString());
+        assertEquals("GridID[/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345, /griddev/subgriddev/Role=griddevrole]", newMembers.get(0).toString());
         assertEquals(1, removedMembers.size());
-        assertEquals("GridID[/DC=org/DC=griddev/OU=People/CN=Jason Smith]", removedMembers.get(0).toString());
+        assertEquals("GridID[/DC=org/DC=griddev/OU=People/CN=Jason Smith, /griddev/subgriddev/Role=griddevrole]", removedMembers.get(0).toString());
     }
 
 }

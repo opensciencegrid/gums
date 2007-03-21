@@ -27,16 +27,21 @@ import org.apache.commons.logging.LogFactory;
  */
 public class GecosLdapAccountMapper extends GecosAccountMapper {
     static private Log log = LogFactory.getLog(GecosLdapAccountMapper.class);
-    private String jndiLdapUrl = "";
+    
+    static public String getTypeStatic() {
+		return "gecosLdap";
+	}
 
-	public GecosLdapAccountMapper() {
+	private String jndiLdapUrl = "";
+    
+    public GecosLdapAccountMapper() {
     	super();
     }
-    
+ 
     public GecosLdapAccountMapper(Configuration configuration) {
     	super(configuration);
     }
- 
+    
     public GecosLdapAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
     }
@@ -56,10 +61,6 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     }
     
     public String getType() {
-		return "gecosLdap";
-	}
-    
-    static public String getTypeStatic() {
 		return "gecosLdap";
 	}
     
@@ -85,10 +86,7 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
         Properties jndiProperties = new java.util.Properties();
         jndiProperties.put("java.naming.provider.url", jndiLdapUrl);
         jndiProperties.put("java.naming.factory.initial","com.sun.jndi.ldap.LdapCtxFactory");
-        jndiProperties.put(Context.SECURITY_PROTOCOL, "simple");
-        //jndiProperties.put(Context.SECURITY_AUTHENTICATION, "EXTERNAL");
-        //System.setProperty("javax.net.ssl.keyStore",keyStore);
-        //System.setProperty("javax.net.ssl.keyStorePassword",keyPassword);
+        jndiProperties.put(Context.SECURITY_PROTOCOL, "none");
         return jndiProperties;
     }
 
@@ -99,7 +97,7 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
         int i = 0;
         for (; i < nTries; i++) {
             GecosMap map = new GecosMap();
-            log.debug("Attemp " + i + " to retrieve map for '" + jndiLdapUrl + "'");
+            log.debug("Attempt " + i + " to retrieve map for '" + jndiLdapUrl + "'");
             try {
                 DirContext jndiCtx = new InitialDirContext(jndiProperties);
                 NamingEnumeration nisMap = jndiCtx.search("ou=People", "(cn=*)", null);

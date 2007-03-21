@@ -19,10 +19,14 @@ import gov.bnl.gums.GridUser;
  * @author  Gabriele Carcassi
  */
 public class ManualUserGroup extends UserGroup {
-    private ManualUserGroupDB db;
-    private String persistenceFactory = "";
+    static public String getTypeStatic() {
+		return "manual";
+	}
     
-	public ManualUserGroup() {
+    private ManualUserGroupDB db;
+	private String persistenceFactory = "";
+    
+    public ManualUserGroup() {
     	super();
     }
     
@@ -30,11 +34,11 @@ public class ManualUserGroup extends UserGroup {
     	super(configuration);
     }
     
-    public ManualUserGroup(Configuration configuration, String name) {
+	public ManualUserGroup(Configuration configuration, String name) {
 		super(configuration, name);
 	}
     
-	public void addMember(GridUser user) {
+    public void addMember(GridUser user) {
         getDB().addMember(user);
     }
     
@@ -54,10 +58,6 @@ public class ManualUserGroup extends UserGroup {
     }
     
     public String getType() {
-		return "manual";
-	}
-    
-    static public String getTypeStatic() {
 		return "manual";
 	}
     

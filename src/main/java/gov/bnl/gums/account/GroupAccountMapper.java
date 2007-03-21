@@ -19,36 +19,36 @@ import org.apache.commons.logging.LogFactory;
  * @author  Gabriele Carcassi
  */
 public class GroupAccountMapper extends AccountMapper {
-    private Log log = LogFactory.getLog(GroupAccountMapper.class);
-    private String accountName = "";
+    static public String getTypeStatic() {
+		return "group";
+	}
     
-	public GroupAccountMapper() {
+    private Log log = LogFactory.getLog(GroupAccountMapper.class);
+	private String accountName = "";
+    
+    public GroupAccountMapper() {
     	super();
     }
-    
+
     public GroupAccountMapper(Configuration configuration) {
     	super(configuration);
     }
-
+    
     public GroupAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
     }
-    
+
     public AccountMapper clone(Configuration configuration) {
     	GroupAccountMapper accountMapper = new GroupAccountMapper(configuration, getName());
     	accountMapper.setAccountName(accountName);
     	return accountMapper;
     }
-
-    public String getAccountName() {
-		return accountName;
-	}
 	
-	public String getType() {
-		return "group";
+	public String getAccountName() {
+		return accountName;
 	}    
 	
-    static public String getTypeStatic() {
+    public String getType() {
 		return "group";
 	}
     

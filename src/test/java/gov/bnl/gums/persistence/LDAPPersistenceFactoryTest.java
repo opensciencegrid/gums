@@ -33,6 +33,11 @@ public class LDAPPersistenceFactoryTest extends TestCase {
     LDAPPersistenceFactory factory;
     Configuration configuration;
     
+    public LDAPPersistenceFactoryTest() {
+        super("test");
+        this.configuration = new Configuration();
+    }
+    
     public LDAPPersistenceFactoryTest(Configuration configuration, String testName) {
         super(testName);
         this.configuration = configuration;

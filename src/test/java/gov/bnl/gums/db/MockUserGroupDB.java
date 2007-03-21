@@ -22,8 +22,7 @@ public class MockUserGroupDB implements UserGroupDB {
     /** Creates a new instance of MockUserGroupDB */
     public MockUserGroupDB() {
         currentMembers = new ArrayList();
-        GridUser user = new GridUser();
-        user.setCertificateDN("/DC=org/DC=griddev/OU=People/CN=John Smith");
+        GridUser user = new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole");
         currentMembers.add(user);
     }
     

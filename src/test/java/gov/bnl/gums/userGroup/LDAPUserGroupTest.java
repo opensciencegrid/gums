@@ -50,10 +50,9 @@ public class LDAPUserGroupTest extends TestCase {
         configuration.addPersistenceFactory(persistenceFactory);
 
         Properties properties = LDAPPersistenceFactoryTest.readLdapProperties();
-        String url = properties.getProperty("ldap.java.naming.provider.url");
+        String url = properties.getProperty("java.naming.provider.url");
         server = url.substring("ldap://".length()).split("/")[0];
         query = url.substring("ldap://".length()).split("/")[1];
-        principal = properties.getProperty("ldap.java.naming.security.principal");
         ldapGroup.setServer(server);
         ldapGroup.setQuery(query);
     }

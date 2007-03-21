@@ -28,9 +28,13 @@ import org.apache.commons.logging.*;
  */
 public abstract class GecosAccountMapper extends AccountMapper {
     static private Log log = LogFactory.getLog(GecosAccountMapper.class);
-    private static Map gecosMaps = new Hashtable();
+    static private Map gecosMaps = new Hashtable();
 
-	public static String[] parseNameAndSurname(String certificateSubject) {
+	static public String getTypeStatic() {
+		return "gecos";
+	}
+    
+    public static String[] parseNameAndSurname(String certificateSubject) {
         int begin = certificateSubject.indexOf("CN=") + 3;
         String CN = certificateSubject.substring(begin);
         
@@ -76,10 +80,6 @@ public abstract class GecosAccountMapper extends AccountMapper {
     }
     
     public String getType() {
-		return "gecos";
-	}
-    
-    static public String getTypeStatic() {
 		return "gecos";
 	}
     

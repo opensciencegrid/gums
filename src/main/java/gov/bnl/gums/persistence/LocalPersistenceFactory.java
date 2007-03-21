@@ -28,6 +28,9 @@ import org.apache.commons.logging.LogFactory;
  * @author carcassi
  */
 public class LocalPersistenceFactory extends PersistenceFactory {
+    static public String getTypeStatic() {
+		return "local";
+	}
     
 	private class LocalAccountPoolMapperDB implements AccountPoolMapperDB {
         private AccountPoolMapperDB mysqlDB;
@@ -140,10 +143,6 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		return "local";
 	}
     
-    static public String getTypeStatic() {
-		return "local";
-	}
-
     /**
      * Getter for property synchGroups.
      * @return Value of property synchGroups.
