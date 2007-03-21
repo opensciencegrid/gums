@@ -37,18 +37,8 @@ public class Version extends RemoteCommand {
         return options;
     }
 
-    protected void execute(org.apache.commons.cli.CommandLine cmd)
-        throws Exception {
-        File dir = new File("../lib");
-        String[] files = dir.list();
-        for (int nFile = 0; nFile < files.length; nFile++) {
-            if (files[nFile].startsWith("gums-client-")) {
-                System.out.println("GUMS client version " + files[nFile].substring(12, files[nFile].length() - 4));
-                return;
-            }
-        }
-        System.out.println("Couldn't determine GUMS client version. Sorry...");
-        System.exit(-1);
+    protected void execute(org.apache.commons.cli.CommandLine cmd) throws Exception {
+    	System.out.println("GUMS version " + getGums().getVersion());
     }
     
 }
