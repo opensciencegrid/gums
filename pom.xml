@@ -105,6 +105,9 @@
 	<profiles>
 		<profile>
 			<id>standard-test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<!-- Only tests that do not require other services (best practice for JUnit) -->
 			<build>
 				<plugins>
@@ -161,8 +164,12 @@
 		</profile>		
 		<profile>
 			<id>external-test</id>
-			<!-- Standard and Local tests plus those that rely on external servers.  Requires 
-				ldap.properties be present and correctly configured within the src/test/config directory -->
+			<!-- Standard and Local tests plus those that rely on an external voms and ldap server.  Requires 
+				voms.properties and ldap.properties be present and correctly
+				configured within the src/test/config directory.  The voms server should be named griddev and 
+				contain group /griddev/subgriddev, role griddevRole, and users belonging to that group and role of
+				/DC=org/DC=griddev/OU=People/CN=John Smith and /DC=org/DC=griddev/OU=People/CN=Jane Doe 12345.
+				-->
 			<build>
 				<plugins>
 				    <plugin>
