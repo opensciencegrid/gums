@@ -24,5 +24,5 @@ CREATE TABLE `MAPPING` (
 
 CREATE INDEX complete ON MAPPING (MAP(10), DN(70));
 
-INSERT INTO USER (ID, GROUP_NAME, DN) VALUES (100, 'admin', '/DC=org/DC=doegrids/OU=People/CN=Jay Packard 335585');
-INSERT INTO USER (ID, GROUP_NAME, DN) VALUES (101, 'admin', '/DC=org/DC=doegrids/OU=People/CN=John R. Hover 47116');
+INSERT INTO USER (ID, GROUP_NAME, DN) VALUES (100, 'admins', '/DC=org/DC=doegrids/OU=People/CN=Jay Packard 335585');
+INSERT INTO USER (ID, GROUP_NAME, DN) VALUES (101, 'admins', '/DC=org/DC=doegrids/OU=People/CN=John R. Hover 47116');
