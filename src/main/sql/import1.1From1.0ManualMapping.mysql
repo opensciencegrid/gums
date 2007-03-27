@@ -1,0 +1,1 @@
+INSERT INTO GUMS_1_1.MAPPING SELECT mappingID as ID, userGroup as MAP, userDN as DN, account as ACCOUNT FROM GUMS_1_0.UserAccountMapping WHERE isNull(endDate) AND userGroup="@GROUP@";
