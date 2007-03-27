@@ -29,9 +29,9 @@ public class LDAPManualAccountMapperDBTest extends ManualAccountMapperDBTest {
     public void setUp() throws Exception {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
-        factory.setDefaultGumsOU("ou=GUMS,dc=test");
+        factory.setDefaultGumsOU("ou=GUMS,dc=griddev,dc=org");
         try {
-            factory.destroyMap("testManual", "map=testManual,ou=GUMS,dc=test");
+            factory.destroyMap("testManual", "map=testManual,ou=GUMS,dc=griddev,dc=org");
         } catch (Exception e) {
             e.printStackTrace();
         }

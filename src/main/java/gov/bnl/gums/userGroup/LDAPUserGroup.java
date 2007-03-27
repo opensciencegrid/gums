@@ -214,10 +214,7 @@ public class LDAPUserGroup extends UserGroup {
         Properties properties = new java.util.Properties();
         properties.put(Context.PROVIDER_URL, "ldap://"+server);
         properties.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
-        properties.put(Context.SECURITY_PROTOCOL, "simple");
-        //properties.put(Context.SECURITY_AUTHENTICATION, "EXTERNAL");
-        //System.setProperty("javax.net.ssl.keyStore",keyStore);
-        //System.setProperty("javax.net.ssl.keyStorePassword",keyPassword);
+        properties.put(Context.SECURITY_PROTOCOL, "none");
         return properties;
     }
     

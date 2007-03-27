@@ -23,7 +23,9 @@ public class MockUserGroupDB implements UserGroupDB {
     public MockUserGroupDB() {
         currentMembers = new ArrayList();
         GridUser user = new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole");
+        GridUser user2 = new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "/griddev/subgriddev/Role=griddevrole");
         currentMembers.add(user);
+        currentMembers.add(user2);
     }
     
     public boolean isMemberInGroup(GridUser dn) {

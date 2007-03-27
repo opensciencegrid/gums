@@ -1,0 +1,194 @@
+#!/bin/sh
+
+# Detects where gums is installed and puts the directory
+# name in ScriptPath. Then cd to that directory.
+
+ScriptPath=""
+CommandPath=`dirname $0`
+if [ $CommandPath = "." ]
+then
+
+    # The command path is the current directory:
+    # check if file is really here
+
+    if [ ! -e "$0" ]
+    then
+        # The command is not in the current directory:
+        # must have used the path.
+        # Locating with which.
+
+        WhichFull=`which $0`
+        WhichPath=`dirname $WhichFull`
+        ScriptPath=$WhichPath
+        GumsPath=`dirname $ScriptPath`
+    else
+        # It was really the current directory
+        ScriptPath=$CommandPath
+        GumsPath=".."
+    fi
+else
+    ScriptPath=$CommandPath
+    GumsPath=`dirname $ScriptPath`
+fi
+
+cd $ScriptPath
+
+usage() {
+	echo "Upgrades GUMS configuration and database from 1.0. to 1.1. Database and configuration files are assumed on localhost"
+	echo "Usage:    --socket <MySQL socket> [optional]"
+	echo "          --noprompt [Don't prompt user, optional]"
+	echo "          --help [Print this message]"
+	exit -1;
+}
+
+#-------------------------------------------
+#
+# Setup global variables
+#
+#-------------------------------------------
+USER=""
+SERVER=""
+PASSWORD=""
+PROMPT=1
+SOCKET=""
+SHOW_USAGE=0
+MYSQLPARAM=""
+GUMSCONFIG="../var/war/WEB-INF/classes/gums.config"
+OLDGUMSCONFIG="../var/war/WEB-INF/classes/gums.1.0.config"
+
+# This script is not compatible with Java 1.5. You will need to add a xalan.jar
+# in your classpass. Take xalan.jar, put it in the same directory of the
+# script and switch to the following definition
+#XSLTCLASS="-cp xalan.jar org.apache.xalan.xslt.Process"
+XSLTCLASS="org.apache.xalan.xslt.Process"
+
+echo Gathering information from $GUMSCONFIG
+
+USER=`java $XSLTCLASS -IN $GUMSCONFIG -XSL ../var/xslt/listConnectionParamsFrom1.0.xsl | head -n 1`
+PASSWORD=`java $XSLTCLASS -IN $GUMSCONFIG -XSL ../var/xslt/listConnectionParamsFrom1.0.xsl | tail -n 2 | head -n 1`
+SERVER=`java $XSLTCLASS -IN $GUMSCONFIG -XSL ../var/xslt/listConnectionParamsFrom1.0.xsl | tail -n 1 | head -n 1`
+
+USERGROUPS=`java $XSLTCLASS -IN $GUMSCONFIG -XSL ../var/xslt/listUserGroupFrom1.0.xsl | sort -u`
+POOLS=`java $XSLTCLASS -IN $GUMSCONFIG -XSL ../var/xslt/listPoolFrom1.0.xsl | sort -u`
+MANUALMAPPINGS=`java $XSLTCLASS -IN $GUMSCONFIG -XSL ../var/xslt/listManualMappingFrom1.0.xsl | sort -u`
+
+
+#-------------------------------------------
+#
+# Parse command line
+#
+#-------------------------------------------
+while [ $# -gt 0 ]
+do
+  case "$1" in 
+	  --noprompt) PROMPT=0;;
+      --socket)   SOCKET="$2";   shift;;
+      --help)     usage;;
+      -help)     usage;;
+      -h)         usage;;
+      *)          echo "Invalid parameter '$1'"; usage;;
+  esac
+  shift
+done
+
+if [ "$SHOW_USAGE" -eq 1 ]
+then
+	echo ""
+	usage
+fi
+
+#-------------------------------------------
+#
+# Construct MySQL parameters
+#
+#-------------------------------------------
+if [ "$PROMPT" -eq 1 ]
+then
+	MYSQLPARAM="-p"
+else
+	# When the root doesn't have a password
+	# (like in the VDT setup), -u root doesn't
+	# cause a prompt.
+	MYSQLPARAM="-u root"
+fi
+
+if [ -n "$SOCKET" ]
+then
+	MYSQLPARAM="${MYSQLPARAM} -S $SOCKET"
+fi
+
+#-------------------------------------------
+#
+# Verify what we are about to do
+#
+#-------------------------------------------
+if [ "$PROMPT" -eq 1 ]
+then
+	echo Upgrading GUMS 1.0 database and configuration file with the following parameters:
+	echo GUMS mysql user: \"$USER\"
+	echo GUMS server host: \"$SERVER\"
+        echo Manual User Groups: \"$USERGROUPS\"
+        echo Manual Mappings: \"$MANUALMAPPINGS\"
+        echo Pools: \"$POOLS\"
+	echo
+	echo "Is this correct? (Enter 'yes' to proceed)"
+
+	read response
+	if [ "$response" != "yes" ]
+		then
+		exit -1
+	fi
+fi
+
+#-------------------------------------------
+#
+# Setup the MySQL Database
+#
+#-------------------------------------------
+echo
+echo "Creating new database (the old database is not touched):"
+if [ "$PROMPT" -eq 1 ]
+then
+	echo Enter the root mysql password
+fi
+
+cat ../var/sql/setupDatabase.mysql       \
+  | /bin/sed -e s/@USER@/$USER/g         \
+             -e s/@SERVER@/$SERVER/g     \
+             -e s/@PASSWORD@/$PASSWORD/g \
+  | mysql $MYSQLPARAM
+
+echo "Moving data to new database"
+
+for i in `java $XSLTCLASS -IN $GUMSCONFIG -XSL ../var/xslt/listUserGroupFrom1.0.xsl | sort -u`
+do
+cat ../var/sql/import1.1From1.0UserGroup.mysql       \
+  | /bin/sed -e s/@GROUP@/$i/g                       \
+  | mysql $MYSQLPARAM
+done
+
+for i in `java $XSLTCLASS -IN $GUMSCONFIG -XSL ../var/xslt/listPoolFrom1.0.xsl | sort -u`
+do
+cat ../var/sql/import1.1From1.0Pool.mysql            \
+  | /bin/sed -e s/@GROUP@/$i/g                       \
+  | mysql $MYSQLPARAM
+done
+
+for i in `java $XSLTCLASS -IN $GUMSCONFIG -XSL ../var/xslt/listManualMappingFrom1.0.xsl | sort -u`
+do
+cat ../var/sql/import1.1From1.0ManualMapping.mysql   \
+  | /bin/sed -e s/@GROUP@/$i/g                       \
+  | mysql $MYSQLPARAM
+done
+
+
+#-------------------------------------------
+#
+# Create the gums.config
+#
+#-------------------------------------------
+echo Backing up $GUMSCONFIG  to $OLDGUMSCONFIG
+cp $GUMSCONFIG $OLDGUMSCONFIG
+
+echo Converting gums configuration
+java $XSLTCLASS -IN $OLDGUMSCONFIG -XSL ../var/xslt/upgradeConfig1.1From1.0.xsl -OUT $GUMSCONFIG

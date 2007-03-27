@@ -83,8 +83,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         try {
             try {
                 ModificationItem[] mods = new ModificationItem[1];
-                mods[0] = new ModificationItem(context.ADD_ATTRIBUTE,
-                    new BasicAttribute("user", userDN));
+                mods[0] = new ModificationItem(context.ADD_ATTRIBUTE, new BasicAttribute("user", userDN));
                 context.modifyAttributes("account=" + account + "," + mapDN, mods);
                 log.trace("Added user '" + userDN + "' / account '" + account + "' to map '" + mapName + "' at '" + mapDN + "' (account entry present)");
             } catch (NameNotFoundException e) {

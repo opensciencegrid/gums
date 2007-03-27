@@ -75,7 +75,7 @@ public class UserGroupDBTest extends TestCase {
         List removedMembers = db.retrieveRemovedMembers();
         assertEquals(1, newMembers.size());
         assertEquals("GridID[/DC=org/DC=griddev/OU=People/CN=Jason Smith, /griddev/subgriddev/Role=griddevrole]", newMembers.get(0).toString());
-        assertEquals(0, removedMembers.size());
+        assertEquals(1, removedMembers.size());
         
         newMemberList = new ArrayList();
         newMemberList.add(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "/griddev/subgriddev/Role=griddevrole"));

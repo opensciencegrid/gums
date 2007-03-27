@@ -52,7 +52,8 @@ public class LDAPUserGroupTest extends TestCase {
         Properties properties = LDAPPersistenceFactoryTest.readLdapProperties();
         String url = properties.getProperty("java.naming.provider.url");
         server = url.substring("ldap://".length()).split("/")[0];
-        query = url.substring("ldap://".length()).split("/")[1];
+        principal = url.substring("ldap://".length()).split("/")[1];
+        query = "ou=People," + principal;
         ldapGroup.setServer(server);
         ldapGroup.setQuery(query);
     }
@@ -74,25 +75,6 @@ public class LDAPUserGroupTest extends TestCase {
         }
     }
     
-    public void testEquals() {
-        MockPersistenceFactory factory = new MockPersistenceFactory(configuration, "test");
-        LDAPUserGroup group1 = new LDAPUserGroup(configuration, "group1");
-        LDAPUserGroup group2 = new LDAPUserGroup(configuration, "group2");
-        assertEquals(group1, group2);
-        group1.setPersistenceFactory(factory.getName());
-        group2.setPersistenceFactory(factory.getName());
-        assertEquals(group1, group2);
-        group1.setServer("testServer");
-        assertFalse(group1.equals(group2));
-        group2.setServer("testServer");
-        assertEquals(group1, group2);
-        group1.setQuery("query1");
-        group2.setQuery("query2");
-        assertFalse(group1.equals(group2));
-        group2.setQuery("query1");
-        assertEquals(group1, group2);
-    }
-    
     public void testRetrieveMap() throws NamingException {
         java.util.Properties jndiProperties = new java.util.Properties();
         jndiProperties.put("java.naming.provider.url","ldap://"+server);
@@ -103,7 +85,7 @@ public class LDAPUserGroupTest extends TestCase {
         DirContext ctx = (DirContext) jndiCtx.lookup(principal);
         LDAPUserGroup group = new LDAPUserGroup(configuration, "group1");
         Map map = group.retrievePeopleMap(ctx);
-        assertEquals("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", map.get("cn=Jane Doe 12345"+principal));
+        assertEquals("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", map.get("cn=Jane Doe 12345,"+query));
     }
     
 }

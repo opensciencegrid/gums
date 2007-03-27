@@ -35,7 +35,7 @@ public class LDAPGroupIDAssignerTest extends TestCase {
     protected void setUp() throws Exception {
         factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
-        factory.setUpdateGIDdomains("dc=test");
+        factory.setUpdateGIDdomains("dc=griddev,dc=org");
         assigner = factory.retrieveAssigner();
     }
 

@@ -38,7 +38,7 @@ public class LDAPQueryBugTest extends TestCase {
     public void testAdmins() {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
-        factory.setDefaultGumsOU("ou=GUMS,dc=test");
+        factory.setDefaultGumsOU("ou=GUMS,dc=griddev,dc=org");
         UserGroupDB db2 = factory.retrieveUserGroupDB("admins");
         assertTrue(db2.isMemberInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
     }
