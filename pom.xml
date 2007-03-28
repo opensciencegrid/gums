@@ -62,25 +62,34 @@
 						<phase>compile</phase>
 						<configuration>
 							<tasks>
-								<mkdir dir="target/scripts"/>
-				                <copy todir="target/scripts">
-				                	<fileset dir="src/main/scripts/"/>
-				                </copy>
-				                <mkdir dir="target/config"/>
-				                <copy todir="target/config">
-				                	<fileset dir="src/main/config/"/>
-				                </copy>
+				                <mkdir dir="target/scripts"/>
+				                <unzip dest="target/scripts">
+				                    <fileset dir="${settings.localRepository}/gums/gums-core">
+        								<include name="**/gums-core-*.jar"/>
+								    </fileset>
+									<patternset>
+										<include name="addAdmin"/>
+										<include name="setupDatabase"/>
+									</patternset>
+				                </unzip>  	
 				                <mkdir dir="target/sql"/>
-				                <copy todir="target/sql">
-				                	<fileset dir="src/main/sql/"/>
-				                </copy>
-				                <mkdir dir="target/xslt"/>
-				                <copy todir="target/xslt">
-				                	<fileset dir="src/main/xslt/"/>
-				                </copy>
-				                <copy todir="target/classes/">
-				                	<fileset includes="*" dir="../gums-core/src/main/config/"/>
-				                </copy>
+				                <unzip dest="target/sql">
+				                    <fileset dir="${settings.localRepository}/gums/gums-core">
+        								<include name="**/gums-core-*.jar"/>
+								    </fileset>
+									<patternset>
+										<include name="*.mysql"/>
+									</patternset>
+				                </unzip>  				                
+				                <unzip dest="target/classes">
+				                    <fileset dir="${settings.localRepository}/gums/gums-core">
+        								<include name="**/gums-core-*.jar"/>
+								    </fileset>
+									<patternset>
+										<include name="gums.*"/>
+										<include name="log4j.*"/>
+									</patternset>
+				                </unzip>          
 				                <copyfile src="target/classes/gums.config.template" dest="target/classes/gums.config" forceoverwrite="no"/>
 				                <copyfile src="target/classes/log4j.properties.template" dest="target/classes/log4j.properties" forceoverwrite="no"/>
 							</tasks>
