@@ -49,6 +49,15 @@
 	          <include>**/*.xml</include>
 	        </includes>
 	      </resource>
+	      <resource>
+	        <directory>src/main/config</directory>
+	      </resource>
+	      <resource>
+			<directory>src/main/sql</directory>
+	      </resource>
+	      <resource>
+			<directory>src/main/scripts</directory>
+	      </resource>
 	    </resources>
 		<plugins>
    			<plugin>
