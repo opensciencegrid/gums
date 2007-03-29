@@ -84,6 +84,7 @@ public class NISAccountMapper extends AccountMapper {
     
     public AccountMapper clone(Configuration configuration) {
     	NISAccountMapper accountMapper = new NISAccountMapper(configuration, getName());
+    	accountMapper.setDescription(getDescription());
     	accountMapper.setJndiNisUrl(jndiNisUrl);
     	return accountMapper;
     }
@@ -119,6 +120,7 @@ public class NISAccountMapper extends AccountMapper {
     public String toXML() {
     	return "\t\t<nisAccountMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
+			"\t\t\tdescription='"+getDescription()+"'\n"+
 			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
     }          
     

@@ -11,6 +11,7 @@
 								<xs:element name="hibernatePersistenceFactory">
 									<xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="hibernate.connection.driver_class" type="xs:string"/>
 										<xs:attribute name="hibernate.dialect" type="xs:string"/>
 										<xs:attribute name="hibernate.connection.url" type="xs:string"/>
@@ -25,17 +26,20 @@
 								<xs:element name="ldapPersistenceFactory">
 									<xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="synchGroups" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.provider.url" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.factory.initial" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.security.authentication" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.security.principal" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.security.credentials" type="xs:string" use="required"/>
-										<xs:attribute name="synchGroups" type="xs:string" use="required"/>
 									</xs:complexType>
 								</xs:element>	
 								<xs:element name="localPersistenceFactory">
 									<xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="synchGroups" type="xs:string"/>
 										<xs:attribute name="mysql.hibernate.connection.driver_class" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.dialect" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.connection.url" type="xs:string" use="required"/>
@@ -50,7 +54,6 @@
 										<xs:attribute name="ldap.java.naming.security.authentication" type="xs:string" use="required"/>
 										<xs:attribute name="ldap.java.naming.security.principal" type="xs:string" use="required"/>
 										<xs:attribute name="ldap.java.naming.security.credentials" type="xs:string" use="required"/>
-										<xs:attribute name="synchGroups" type="xs:string"/>
 									</xs:complexType>
 								</xs:element>			
 							</xs:choice>				
@@ -68,6 +71,7 @@
 							<xs:element name="virtualOrganization" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:attribute name="name" type="xs:string" use="required"/>
+									<xs:attribute name="description" type="xs:string"/>
 									<xs:attribute name="baseUrl" type="xs:string" use="required"/>
 									<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
 									<xs:attribute name="sslCertfile" type="xs:string"/>
@@ -91,6 +95,7 @@
 								<xs:element name="manualUserGroup">
 									<xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
 										<xs:attribute name="access" type="xs:string"/>
 									</xs:complexType>
@@ -98,6 +103,7 @@
 								<xs:element name="vomsUserGroup">
 									<xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="acceptProxyWithoutFQAN" type="xs:boolean" use="required"/>
 										<xs:attribute name="matchFQAN" type="xs:string" use="required"/>
 										<xs:attribute name="virtualOrganization" type="xs:string" use="required"/>
@@ -110,6 +116,7 @@
 								<xs:element name="ldapUserGroup">
 									<xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
 										<xs:attribute name="access" type="xs:string"/>
 										<xs:attribute name="server" type="xs:string"/>
@@ -134,6 +141,7 @@
 								<xs:element name="accountPoolMapper">
 								    <xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
 										<xs:attribute name="accountPool" type="xs:string" use="required"/>
 									</xs:complexType>
@@ -141,30 +149,35 @@
 								<xs:element name="manualAccountMapper">
 								    <xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
 									</xs:complexType>
 								</xs:element>
 								<xs:element name="groupAccountMapper">
 								    <xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="accountName" type="xs:string" use="required"/>
 									</xs:complexType>
 								</xs:element>
 								<xs:element name="gecosNisAccountMapper">
 								    <xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="jndiNisUrl" type="xs:string" use="required"/>
 									</xs:complexType>
 								</xs:element>
 								<xs:element name="nisAccountMapper">
 								    <xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="jndiNisUrl" type="xs:string" use="required"/>
 									</xs:complexType>
 								</xs:element>
 								<xs:element name="gecosLdapAccountMapper">
 								    <xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="jndiLdapUrl" type="xs:string" use="required"/>
 									</xs:complexType>
 								</xs:element>
@@ -183,6 +196,7 @@
 							<xs:element name="groupToAccountMapping" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:attribute name="name" type="xs:string" use="required"/>
+									<xs:attribute name="description" type="xs:string"/>
 									<xs:attribute name="userGroups" type="xs:string" use="required"/>
 									<xs:attribute name="accountMappers" type="xs:string" use="required"/>
 									<xs:attribute name="accountingVo" type="xs:string"/>
@@ -204,6 +218,7 @@
 								<xs:complexType>
 									<xs:attribute name="dn" type="xs:string"/>
 									<xs:attribute name="cn" type="xs:string"/>
+									<xs:attribute name="description" type="xs:string"/>
 									<xs:attribute name="groupToAccountMappings" type="xs:string" use="required"/>
 								</xs:complexType>
 							</xs:element>	

@@ -207,6 +207,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 
     public PersistenceFactory clone(Configuration configuration) {
     	LDAPPersistenceFactory persistenceFactory = new LDAPPersistenceFactory(configuration, getName());
+    	persistenceFactory.setDescription(getDescription());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
     	return persistenceFactory;
@@ -558,6 +559,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public String toXML() {
     	String retStr = "\t\t<ldapPersistenceFactory\n"+
     		"\t\t\tname='"+getName()+"'\n"+
+    		"\t\t\tdescription='"+getDescription()+"'\n"+
     		"\t\t\tsynchGroups='"+synchGroups+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();

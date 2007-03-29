@@ -33,7 +33,8 @@ public abstract class PersistenceFactory {
 		return "abstract";
 	}
     
-    private String name;
+    private String name = "";
+	private String description = "";
     private Properties properties;
     private Configuration configuration;
     
@@ -64,6 +65,10 @@ public abstract class PersistenceFactory {
 	public Configuration getConfiguration() {
 		return configuration;
 	}
+	
+	public String getDescription() {
+		return description;
+	}
 
 	public String getName() {
 		return name;
@@ -88,6 +93,10 @@ public abstract class PersistenceFactory {
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
+	
+    public void setDescription(String description) {
+    	this.description = description;
+    }
 	
 	public void setName(String name) {
 		this.name = name;

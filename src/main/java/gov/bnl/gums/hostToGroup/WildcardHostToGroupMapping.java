@@ -47,6 +47,7 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
     
     public HostToGroupMapping clone(Configuration configuration) {
     	WildcardHostToGroupMapping hostToGroupMapping = new WildcardHostToGroupMapping(configuration, getName());
+    	hostToGroupMapping.setDescription(getDescription());
     	hostToGroupMapping.setWildcard(getWildcard());
     	Iterator it = getGroupToAccountMappings().iterator();
     	while (it.hasNext()) {

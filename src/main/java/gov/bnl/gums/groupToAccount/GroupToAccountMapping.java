@@ -28,6 +28,7 @@ public class GroupToAccountMapping {
     private ArrayList userGroups = new ArrayList();
     private ArrayList accountMappers = new ArrayList();
     private String name = "";
+	private String description = "";
     private String accountingVo = "";
     private String accountingDesc = "";
     private Configuration configuration = null;
@@ -72,6 +73,7 @@ public class GroupToAccountMapping {
 	
     public GroupToAccountMapping clone(Configuration configuration) {
     	GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping(configuration, name);
+    	groupToAccountMapping.setDescription(getDescription());
     	groupToAccountMapping.setAccountingVo(accountingVo);
     	groupToAccountMapping.setAccountingDesc(accountingDesc);
     	Iterator it = getUserGroups().iterator();
@@ -126,6 +128,10 @@ public class GroupToAccountMapping {
 		return configuration;
 	}
     
+	public String getDescription() {
+		return description;
+	}
+	
     /**
      * Getter for property name.
      * @return Value of property name.
@@ -164,6 +170,10 @@ public class GroupToAccountMapping {
 		this.configuration = configuration;
 	}
     
+    public void setDescription(String description) {
+    	this.description = description;
+    }
+    
     public void setName(String name) {
 		this.name = name;
 	}
@@ -171,6 +181,7 @@ public class GroupToAccountMapping {
     public String toXML() {
     	String retStr = "\t\t<groupToAccountMapping\n"+
 		"\t\t\tname='"+name+"'\n"+
+		"\t\t\tdescription='"+getDescription()+"'\n"+
 		"\t\t\taccountingVo='"+accountingVo+"'\n"+
 		"\t\t\taccountingDesc='"+accountingDesc+"'\n"+
 		"\t\t\tuserGroups='";

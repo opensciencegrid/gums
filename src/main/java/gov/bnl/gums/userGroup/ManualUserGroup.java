@@ -44,6 +44,7 @@ public class ManualUserGroup extends UserGroup {
     
     public UserGroup clone(Configuration configuration) {
     	ManualUserGroup userGroup = new ManualUserGroup(configuration, getName());
+    	userGroup.setDescription(getDescription());
     	userGroup.setAccess(getAccess());
     	userGroup.setPersistenceFactory(persistenceFactory);
     	return userGroup;
@@ -89,6 +90,7 @@ public class ManualUserGroup extends UserGroup {
     	return "\t\t<manualUserGroup\n"+
 		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tname='"+getName()+"'\n"+
+		"\t\t\tdescription='"+getDescription()+"'\n"+
 		"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }
     

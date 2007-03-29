@@ -127,6 +127,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
  
     public PersistenceFactory clone(Configuration configuration) {
     	LocalPersistenceFactory persistenceFactory = new LocalPersistenceFactory(configuration, getName());
+    	persistenceFactory.setDescription(getDescription());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	return persistenceFactory;
     }
@@ -206,6 +207,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 	public String toXML() {
     	String retStr = "\t\t<localPersistenceFactory\n"+
     		"\t\t\tname='"+getName()+"'\n"+
+    		"\t\t\tdescription='"+getDescription()+"'\n"+
     		"\t\t\tsynchGroups='"+synchGroups+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();

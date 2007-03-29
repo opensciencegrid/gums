@@ -58,6 +58,7 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     
     public PersistenceFactory clone(Configuration configuration) {
     	HibernatePersistenceFactory persistenceFactory = new HibernatePersistenceFactory(configuration, getName());
+    	persistenceFactory.setDescription(getDescription());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	return persistenceFactory;
     }
@@ -98,7 +99,8 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     
 	public String toXML() {
     	String retStr = "\t\t<hibernatePersistenceFactory\n"+
-    		"\t\t\tname='"+getName()+"'\n";
+    		"\t\t\tname='"+getName()+"'\n"+
+    		"\t\t\tdescription='"+getDescription()+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();
     	while(keyIt.hasNext()) {

@@ -143,6 +143,10 @@ class ConfigurationToolkit {
                 log.trace("Adding " + name + " " + value + " property");
                 if (name.equals("name"))
                     MethodUtils.invokeMethod(digestor, "setName", new Object[] {value});
+                else if (name.equals("description"))
+                    MethodUtils.invokeMethod(digestor, "setDescription", new Object[] {value});
+                else if (name.equals("synchGroups"))
+                    MethodUtils.invokeMethod(digestor, "setSynchGroups", new Object[] {new Boolean(value.equals("true"))});
                 else if (!name.equals("className"))
                 	properties.setProperty(name, value);
             }

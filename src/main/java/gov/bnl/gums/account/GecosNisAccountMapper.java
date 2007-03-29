@@ -50,6 +50,7 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     
     public AccountMapper clone(Configuration configuration) {
     	GecosNisAccountMapper accountMapper = new GecosNisAccountMapper(configuration, getName());
+    	accountMapper.setDescription(getDescription());
     	accountMapper.setJndiNisUrl(jndiNisUrl);
     	return accountMapper;
     }
@@ -131,6 +132,7 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     public String toXML() {
     	return "\t\t<gecosNisAccountMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
+			"\t\t\tdescription='"+getDescription()+"'\n"+
 			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
     }
 

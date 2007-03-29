@@ -66,6 +66,7 @@ public class LDAPUserGroup extends UserGroup {
     
 	public UserGroup clone(Configuration configuration) {
     	LDAPUserGroup userGroup = new LDAPUserGroup(configuration, getName());
+    	userGroup.setDescription(getDescription());
     	userGroup.setPersistenceFactory(persistenceFactory);
     	userGroup.setAccess(getAccess());
     	userGroup.setKeyPassword(getKeyPassword());
@@ -172,6 +173,7 @@ public class LDAPUserGroup extends UserGroup {
     	return "\t\t<ldapUserGroup\n"+
 		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tname='"+getName()+"'\n"+
+		"\t\t\tdescription='"+getDescription()+"'\n"+
     	"\t\t\tserver='"+server+"'\n" +
 		"\t\t\tquery='"+query+"'\n" +
 		"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +

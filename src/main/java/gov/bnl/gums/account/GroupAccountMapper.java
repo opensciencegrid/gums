@@ -40,6 +40,7 @@ public class GroupAccountMapper extends AccountMapper {
 
     public AccountMapper clone(Configuration configuration) {
     	GroupAccountMapper accountMapper = new GroupAccountMapper(configuration, getName());
+    	accountMapper.setDescription(getDescription());
     	accountMapper.setAccountName(accountName);
     	return accountMapper;
     }
@@ -73,6 +74,7 @@ public class GroupAccountMapper extends AccountMapper {
     public String toXML() {
     	return "\t\t<groupAccountMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
+			"\t\t\tdescription='"+getDescription()+"'\n"+
 			"\t\t\taccountName='"+accountName+"'/>\n\n";
     }
 }

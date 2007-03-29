@@ -41,6 +41,7 @@ public class AccountPoolMapper extends AccountMapper {
     
     public AccountMapper clone(Configuration configuration) {
     	AccountPoolMapper accountMapper = new AccountPoolMapper(configuration, getName());
+    	accountMapper.setDescription(getDescription());
     	accountMapper.setAccountPool(accountPool);
     	accountMapper.setPersistenceFactory(persistenceFactory);
     	return accountMapper;
@@ -87,6 +88,7 @@ public class AccountPoolMapper extends AccountMapper {
     public String toXML() {
     	return "\t\t<accountPoolMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
+			"\t\t\tdescription='"+getDescription()+"'\n"+
 			"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
     		"\t\t\taccountPool='"+accountPool+"'/>\n\n";
     }

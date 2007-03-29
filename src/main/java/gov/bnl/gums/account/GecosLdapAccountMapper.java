@@ -48,6 +48,7 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     
     public AccountMapper clone(Configuration configuration) {
     	GecosLdapAccountMapper accountMapper = new GecosLdapAccountMapper(configuration, getName());
+    	accountMapper.setDescription(getDescription());
     	accountMapper.setJndiLdapUrl(jndiLdapUrl);
     	return accountMapper;
     }
@@ -79,6 +80,7 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     public String toXML() {
     	return "\t\t<gecosLdapAccountMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
+			"\t\t\tdescription='"+getDescription()+"'\n"+
 			"\t\t\tjndiLdapUrl='"+jndiLdapUrl+"'/>\n\n";
     }
 

@@ -40,6 +40,7 @@ public class ManualAccountMapper extends AccountMapper {
     
     public AccountMapper clone(Configuration configuration) {
     	ManualAccountMapper accountMapper = new ManualAccountMapper(configuration, getName());
+    	accountMapper.setDescription(getDescription());
     	accountMapper.setPersistenceFactory(persistenceFactory);
     	return accountMapper;
     }
@@ -79,6 +80,7 @@ public class ManualAccountMapper extends AccountMapper {
     public String toXML() {
     	return "\t\t<manualAccountMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
+			"\t\t\tdescription='"+getDescription()+"'\n"+
 			"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }      
     

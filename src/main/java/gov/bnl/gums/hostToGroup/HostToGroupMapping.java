@@ -29,6 +29,7 @@ public abstract class HostToGroupMapping {
     private List groupToAccountMappers = new ArrayList();
     private Configuration configuration = null;
     private String name = "";
+	private String description = "";
     
 	/**
 	 * This empty constructor needed by XML Digestor
@@ -75,6 +76,10 @@ public abstract class HostToGroupMapping {
     	return configuration;
     }
     
+	public String getDescription() {
+		return description;
+	}
+    
     /** Returns the list of group mapping associated with this mapping.
      * @return A list of GroupMapper objects.
      */
@@ -91,6 +96,10 @@ public abstract class HostToGroupMapping {
     public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
+    
+    public void setDescription(String description) {
+    	this.description = description;
+    }
     
     public void setName(String name) {
     	this.name = name;

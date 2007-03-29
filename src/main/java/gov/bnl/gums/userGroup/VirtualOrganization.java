@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 public class VirtualOrganization {
     private Log log = LogFactory.getLog(VOMSUserGroup.class);
 	private String name = "";
+	private String description = "";
     private String baseUrl = "";
     private String sslKey = "";
     private String sslCertfile = "";
@@ -42,6 +43,7 @@ public class VirtualOrganization {
 	 
 	public VirtualOrganization clone(Configuration configuration) {
     	VirtualOrganization virtualOrganization = new VirtualOrganization(configuration, name);
+    	virtualOrganization.setDescription(getDescription());
     	virtualOrganization.setBaseUrl(baseUrl);
     	virtualOrganization.setSslKey(sslKey);
     	virtualOrganization.setSslCertfile(sslCertfile);
@@ -61,6 +63,10 @@ public class VirtualOrganization {
 	
 	public Configuration getConfiguration() {
 		return configuration;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 	
 	public UserGroupDB getDB() {
@@ -123,6 +129,10 @@ public class VirtualOrganization {
 		this.configuration = configuration;
 	}
     
+    public void setDescription(String description) {
+    	this.description = description;
+    }
+    
     public void setName(String name) {
 		this.name = name;
 	}
@@ -170,6 +180,7 @@ public class VirtualOrganization {
     public String toXML() {
     	String retStr = "\t\t<virtualOrganization\n"+
 		"\t\t\tname='"+name+"'\n"+
+		"\t\t\tdescription='"+getDescription()+"'\n"+
 		"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n"+
 		"\t\t\tbaseUrl='"+baseUrl+"'\n";
     	if (sslKey != null)

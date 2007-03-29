@@ -19,6 +19,7 @@ import java.util.*;
  */
 public abstract class UserGroup {
 	private String name = "";
+	private String description = "";
 	private Configuration configuration = null;
 	protected String[] accessTypes = {"write", "read all", "read self"};
 	protected int accessIndex = 2;
@@ -54,6 +55,10 @@ public abstract class UserGroup {
 
 	public Configuration getConfiguration() {
 		return configuration;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 	
 	/**
@@ -114,6 +119,10 @@ public abstract class UserGroup {
     public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
+    
+    public void setDescription(String description) {
+    	this.description = description;
+    }
     
     public void setName(String name) {
 		this.name = name;

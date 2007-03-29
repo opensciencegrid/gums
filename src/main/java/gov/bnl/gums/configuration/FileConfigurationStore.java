@@ -61,6 +61,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 	    				"\t<persistenceFactories>\n\n"+
 	    					"\t\t<hibernatePersistenceFactory\n"+
 				    			"\t\t\tname='mysql'\n"+
+				    			"\t\t\tdescription=''\n"+
 				    			"\t\t\thibernate.connection.driver_class='com.mysql.jdbc.Driver'\n"+
 				    			"\t\t\thibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'\n"+
 				    			"\t\t\thibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_1'\n"+
@@ -74,6 +75,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 	    				"\t<userGroups>\n\n"+
 				    		"\t\t<manualUserGroup\n"+
 				    			"\t\t\tname='admins'\n"+
+				    			"\t\t\tdescription=''\n"+
 				    			"\t\t\tpersistenceFactory='mysql'\n"+
 				    			"\t\t\taccess='write'/>\n\n"+
 	    				"\t</userGroups>\n\n"+

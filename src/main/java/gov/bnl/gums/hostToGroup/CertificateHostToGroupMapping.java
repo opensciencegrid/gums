@@ -38,6 +38,7 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
 
     public HostToGroupMapping clone(Configuration configuration) {
     	CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping(configuration);
+    	hostToGroupMapping.setDescription(getDescription());
     	if (getDn()!=null)
     		hostToGroupMapping.setDn(getDn());
     	if (getCn()!=null)
@@ -103,7 +104,8 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
 			String groupToAccountMapping = (String)it.next();
 			retStr += groupToAccountMapping + (it.hasNext()?", ":"");
 		}
-		retStr += "'\n";
+		retStr += "'\n"+
+    	"\t\t\tdescription='"+getDescription()+"'\n";
     	if (dn != null)
     		retStr += "\t\t\tdn='" + dn + "'";
     	if (cn != null)

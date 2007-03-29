@@ -8,6 +8,7 @@
 		      <xsl:if test="@className = 'gov.bnl.gums.hibernate.HibernatePersistenceFactory'">
 		        <hibernatePersistenceFactory
 		        	name='{@name}'
+		        	description=''
 					hibernate.connection.driver_class='{@hibernate.connection.driver_class}'
 					hibernate.dialect='{@hibernate.dialect}'
 					hibernate.connection.url='{@hibernate.connection.url}'
@@ -22,6 +23,7 @@
   		      <xsl:if test="@className = 'gov.bnl.gums.MySQLPersistenceFactory'">
 		        <hibernatePersistenceFactory
 		        	name='{@name}'
+		        	description=''
 					hibernate.connection.driver_class='com.mysql.jdbc.Driver'
 					hibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'
 					hibernate.connection.url='{@jdbcUrl}'
@@ -36,6 +38,7 @@
   		      <xsl:if test="@className = 'gov.bnl.gums.LDAPPersistenceFactory'">
 		        <ldapPersistenceFactory
 		        	name='{@name}'
+		        	description=''
 					java.naming.provider.url='{@java.naming.provider.url}'
 					java.naming.factory.initial='{@java.naming.factory.initial}'
 					java.naming.security.authentication='{@java.naming.security.authentication}'
@@ -47,6 +50,7 @@
   		      <xsl:if test="@className = 'gov.bnl.gums.BNLPersistenceFactory'">
 		        <localPersistenceFactory
 		        	name='{@name}'
+		        	description=''
 		        	mysql.jdbcDriver='{@mysql.jdbcDriver}'
 					mysql.hibernate.connection.driver_class='{@mysql.hibernate.connection.driver_class}'
 					mysql.hibernate.dialect='{@mysql.hibernate.dialect}'
@@ -73,6 +77,7 @@
 		      <xsl:if test="@className = 'gov.bnl.gums.VOMSGroup'">
 		        <virtualOrganization
 					name='{@url}'
+		        	description=''
 					baseUrl='{@url}'
 					persistenceFactory='{@persistenceFactory}'
 					sslCertfile='{@sslCertfile}'
@@ -89,6 +94,7 @@
 		      <xsl:if test="@className = 'gov.bnl.gums.AccountPoolMapper'">
 		        <accountPoolMapper
 					name='{@name}'
+		        	description=''
 					persistenceFactory='{@persistenceFactory}'
 					accountPool='{@name}'
 				/>
@@ -96,30 +102,35 @@
 				<xsl:if test="@className = 'gov.bnl.gums.ManualAccountMapper'">
 					<manualAccountMapper
 						name='{@name}'
+		        		description=''
 						persistenceFactory='{@persistenceFactory}'
 				    />
 				</xsl:if>
 				<xsl:if test="@className = 'gov.bnl.gums.GroupAccountMapper'">
 				    <groupAccountMapper
 						name='{@groupName}'
+						description=''
 						accountName='{@groupName}'
 				    />
 				</xsl:if>
 				<xsl:if test="@className = 'gov.bnl.gums.GecosLdapAccountMapper'">
 				    <gecosLdapAccountMapper
 						name='{translate(@jndiLdapUrl,",","_")}'
+						description=''
 						jndiLdapUrl='{@jndiLdapUrl}'
 				    />
 				</xsl:if>
 				<xsl:if test="@className = 'gov.bnl.gums.GecosNisAccountMapper'">
 				    <gecosNisAccountMapper
 						name='{translate(@jndiNisUrl,",","_")}'
+						description=''
 						jndiNisUrl='{@jndiNisUrl}'
 				    />
 				</xsl:if>
 				<xsl:if test="@className = 'gov.bnl.gums.NISAccountMapper'">
 				    <nisAccountMapper
 						name='{translate(@jndiNisUrl,",","_")}'
+						description=''
 						jndiNisUrl='{@jndiNisUrl}'
 				    />
 				</xsl:if>
@@ -128,6 +139,7 @@
 		      <xsl:if test="@className = 'gov.bnl.gums.AccountPoolMapper'">
 		        <accountPoolMapper
 					name='{@name}'
+					description=''
 					persistenceFactory='{@persistenceFactory}'
 					accountPool='{@name}'
 				/>
@@ -135,30 +147,35 @@
 			<xsl:if test="@className = 'gov.bnl.gums.ManualAccountMapper'">
 		        <manualAccountMapper
 					name='{@name}'
+					description=''
 					persistenceFactory='{@persistenceFactory}'
 		        />
 		      </xsl:if>
 		      <xsl:if test="@className = 'gov.bnl.gums.GroupAccountMapper'">
 		        <groupAccountMapper
 					name='{@groupName}'
+					description=''
 					accountName='{@groupName}'
 		        />
 		      </xsl:if>
 		      <xsl:if test="@className = 'gov.bnl.gums.GecosLdapAccountMapper'">
 		        <gecosLdapAccountMapper
 					name='{translate(@jndiLdapUrl,",","_")}'
+					description=''
 					jndiLdapUrl='{@jndiLdapUrl}'
 		        />
 		      </xsl:if>
 		      <xsl:if test="@className = 'gov.bnl.gums.GecosNisAccountMapper'">
 		        <gecosNisAccountMapper
 					name='{translate(@jndiNisUrl,",","_")}'
+					description=''
 					jndiNisUrl='{@jndiNisUrl}'
 		        />
 		      </xsl:if>
 		      <xsl:if test="@className = 'gov.bnl.gums.NISAccountMapper'">
 		        <nisAccountMapper
 					name='{translate(@jndiNisUrl,",","_")}'
+					description=''
 					jndiNisUrl='{@jndiNisUrl}'
 		        />
 		      </xsl:if>
@@ -169,6 +186,7 @@
 			<xsl:for-each select="gums/adminUserGroup">
 				<manualUserGroup
 					name='{@name}'
+					description=''
 					persistenceFactory='{@persistenceFactory}'
 					access='write'
 				/>
@@ -177,6 +195,7 @@
 				<xsl:if test="@className = 'gov.bnl.gums.VOMSGroup'">
 			        <vomsUserGroup
 						name='{@name}'
+						description=''
 						acceptProxyWithoutFQAN='{@acceptProxyWithoutFQAN}'
 						matchFQAN='{@matchFQAN}'
 						virtualOrganization='{@url}'
@@ -189,6 +208,7 @@
 				<xsl:if test="@className = 'gov.bnl.gums.LDAPGroup'">
 					<ldapUserGroup
 						name='{@name}'
+						description=''
 						persistenceFactory='{@persistenceFactory}'
 						access='read self'
 						server='{@server}'
@@ -200,6 +220,7 @@
 				<xsl:if test="@className = 'gov.bnl.gums.ManualUserGroup'">
 					<manualUserGroup
 						name='{@name}'
+						description=''
 						persistenceFactory='{@persistenceFactory}'
 						access='write'
 					/>
@@ -211,6 +232,7 @@
     		<xsl:for-each select="gums/groupMappings/groupMapping/accountMapping">
     			<groupToAccountMapping
 					name='{../@name}'
+					description=''
 					accountingVo='{../@accountingVo}'
 					accountingDesc='{../@accountingDesc}'
 					userGroups='{../userGroup/@name}'
@@ -220,6 +242,7 @@
 		    <xsl:for-each select="gums/groupMappings/groupMapping/compositeAccountMapping/accountMapping">
     			<groupToAccountMapping
 					name='{../../@name}'
+					description=''
 					accountingVo='{../../@accountingVo}'
 					accountingDesc='{../../@accountingDesc}'
 					userGroups='{../../userGroup/@name}'
@@ -233,18 +256,21 @@
     			<xsl:if test="@className = 'gov.bnl.gums.CertificateHostGroup' and @dn">
 	    			<hostToGroupMapping
 						dn='{@dn}'
+						description=''
 				    	groupToAccountMappings='{@groups}'
 					/>
 				</xsl:if>
     			<xsl:if test="@className = 'gov.bnl.gums.CertificateHostGroup' and @cn">
 	    			<hostToGroupMapping
 						cn='{@cn}'
+						description=''
 				    	groupToAccountMappings='{@groups}'
 					/>
 				</xsl:if>
     			<xsl:if test="@className = 'gov.bnl.gums.WildcardHostGroup'">
 	    			<hostToGroupMapping
 						cn='{@wildcard}'
+						description=''
 				    	groupToAccountMappings='{@groups}'					
 				    />
 				</xsl:if>				

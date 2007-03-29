@@ -68,6 +68,7 @@ public class VOMSUserGroup extends UserGroup {
     
     public UserGroup clone(Configuration configuration) {
     	VOMSUserGroup userGroup = new VOMSUserGroup(configuration, getName());
+    	userGroup.setDescription(getDescription());
     	userGroup.setAccess(getAccess());
     	userGroup.setVirtualOrganization(getVirtualOrganization());
     	userGroup.setVoRole(getVoRole());
@@ -267,6 +268,7 @@ public class VOMSUserGroup extends UserGroup {
     	String retStr = "\t\t<vomsUserGroup\n"+
 		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tname='"+getName()+"'\n"+
+		"\t\t\tdescription='"+getDescription()+"'\n"+
         "\t\t\tvirtualOrganization='"+vo+"'\n";
     	if (!remainderUrl.equals(""))
     		retStr += "\t\t\tremainderUrl='"+remainderUrl+"'\n";

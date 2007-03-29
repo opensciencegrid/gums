@@ -21,6 +21,7 @@ public abstract class AccountMapper {
 	}
 	
 	private String name = "";
+	private String description = "";
 	private Configuration configuration = null;
 	
 	/**
@@ -51,6 +52,10 @@ public abstract class AccountMapper {
 		return configuration;
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -73,6 +78,10 @@ public abstract class AccountMapper {
     public void setName(String name) {
 		this.name = name;
 	}
+    
+    public void setDescription(String description) {
+    	this.description = description;
+    }
 
     public abstract String toString(String bgColor);
     
