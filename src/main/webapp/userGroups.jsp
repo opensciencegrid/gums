@@ -113,41 +113,59 @@ if (request.getParameter("action")==null ||
 		   		<table class="configElement" width="100%">
 		  			<tr>
 			    		<td>
-				    		Check if member of user group
-				    		 <span style="color:blue"><%=userGroup.getName()%></span>
+				    		user group:
+				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
+				    			<%=userGroup.getName()%>
+				    		</a><br>
 <%
 		if (userGroup instanceof ManualUserGroup) {
-			out.write(		" by searching within this group in persistence factory" + 
-							" <span style=\"color:blue\">" + ((ManualUserGroup)userGroup).getPersistenceFactory() + "</span>");
+%>
+							persistence factory:
+							<a href="persistenceFactories.jsp?action=edit&name=<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>">
+								<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>
+							</a><br>
+<%
 		} else if (userGroup instanceof LDAPUserGroup) {
-			out.write(		" by querying LDAP server"+ 
-							" <span style=\"color:blue\">" + ((LDAPUserGroup)userGroup).getServer() + "</span>"+
-							" with query "+ 
-							" <span style=\"color:blue\">" + ((LDAPUserGroup)userGroup).getQuery() + "</span>"+
-							" and caching results in persistence factory "+ 
-							" <span style=\"color:blue\">" + ((LDAPUserGroup)userGroup).getPersistenceFactory() + "</span>.");
+%>
+							LDAP server: <%=((LDAPUserGroup)userGroup).getServer()%><br>	
+							query: <%=((LDAPUserGroup)userGroup).getQuery()%><br>
+							persistence factory:
+							<a href="persistenceFactories.jsp?action=edit&name=<%=((LDAPUserGroup)userGroup).getPersistenceFactory()%>">
+								<%=((LDAPUserGroup)userGroup).getPersistenceFactory()%>
+							</a><br>
+<%
 		} else if (userGroup instanceof VOMSUserGroup) {
-			out.write(		" by querying virtual organization " + "<span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVirtualOrganization() + "</span>");
+%>
+							virtual organization:
+							<a href="virtualOrganizations.jsp?action=edit&name=<%=((VOMSUserGroup)userGroup).getVirtualOrganization()%>">
+								<%=((VOMSUserGroup)userGroup).getVirtualOrganization()%>
+							</a><br>							
+<%
+			if ( !((VOMSUserGroup)userGroup).getRemainderUrl().equals("") ) {
+%>
+							URL: {base url}<%=((VOMSUserGroup)userGroup).getRemainderUrl()%><br>
+<%
+			}
+			
+			out.write(	"non-VOMS certificates are " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "" : "not ") + "accepted<br>");
 
-			if ( !((VOMSUserGroup)userGroup).getRemainderUrl().equals("") )
-				out.write(	" at URL <span style=\"font-style:italic\">{base URL}</span><span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getRemainderUrl() + "</span>");
-
-			out.write(	" where non-VOMS certificates are " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "<span style=\"color:blue\">" : "<span style=\"color:blue\">not ") + "accepted</span>");
-
-			out.write(	" and VOMS certificate's VO " + (!((VOMSUserGroup)userGroup).isIgnoreFQAN() ? "<span style=\"color:blue\">must match" : "<span style=\"color:blue\">is ignored") + "</span>");
+			out.write(	"certificate's VO " + (!((VOMSUserGroup)userGroup).isIgnoreFQAN() ? "must match" : "is ignored") + "<br>");
 
 			if( !((VOMSUserGroup)userGroup).isIgnoreFQAN() ) {
-				if ( !((VOMSUserGroup)userGroup).getVoGroup().equals("") )
-					out.write(	" and group must match " + 
-								" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoGroup() + "</span>");
-		
-				if ( !((VOMSUserGroup)userGroup).getVoRole().equals("") )
-					out.write(	" and role must match " + 
-								" <span style=\"color:blue\">" + ((VOMSUserGroup)userGroup).getVoRole() + "</span>");
+				if ( !((VOMSUserGroup)userGroup).getVoGroup().equals("") ) {
+%>
+					certificate must match group: <%=((VOMSUserGroup)userGroup).getVoGroup()%><br>
+<%
+				}		
+				if ( !((VOMSUserGroup)userGroup).getVoRole().equals("") ) {
+%>
+					certificate must match role: <%=((VOMSUserGroup)userGroup).getVoRole()%><br>
+<%
+				}
 			}
 		}
 %>
-								. Members have <span style="color:blue"><%=userGroup.getAccess()%></span> access to GUMS.
+								access: <%=userGroup.getAccess()%>
 						</td>
 			      	</tr>
 				</table>

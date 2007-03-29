@@ -111,29 +111,33 @@ if (request.getParameter("action")==null ||
 			    		<td>
 <%		    		
 		if (persistenceFactory instanceof HibernatePersistenceFactory) {
-			out.write(	"Store user information in hibernate persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span>"+
-						" at MySQL URL " + "<span style=\"color:blue\">" + 
-    					((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url") +
-    					"</span>" );
+%>
+				    		hibernate persistence factory:
+				    		<a href="persistenceFactories.jsp?action=edit&name=<%=persistenceFactory.getName()%>">
+				    			<%=persistenceFactory.getName()%>
+				    		</a><br>
+				    		MySQL URL: <%=((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url")%>
+<%
 		}
 		else if (persistenceFactory instanceof LDAPPersistenceFactory) {
-			out.write(	"Store user information in LDAP persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span>"+
-						" at LDAP URL " + "<span style=\"color:blue\">" + 
-    					((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url") +
-    					"</span>." +
-    					(((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?" Update GID":" Do not update GID") + " with every access.");
+%>
+				    		LDAP persistence factory:
+				    		<a href="persistenceFactories.jsp?action=edit&name=<%=persistenceFactory.getName()%>">
+				    			<%=persistenceFactory.getName()%>
+				    		</a><br>
+				    		LDAP URL: <%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url")%>
+<%
 		}
 		else if (persistenceFactory instanceof LocalPersistenceFactory) {
-			out.write( 	"Store user information in local persistence factory <span style=\"color:blue\">" + persistenceFactory.getName() + "</span>"+
-						" at MySQL URL " + "<span style=\"color:blue\">"+ 
-    					((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.url")+
-    					"</span>"+
-    					" and LDAP URL " + "<span style=\"color:blue\">"+ 
-    					((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.provider.url")+
-    					"</span>."+
-    					(((LocalPersistenceFactory)persistenceFactory).isSynchGroups()?" Update GID":" Do not update GID") + " with every access.");
+%>
+				    		local persistence factory:
+				    		<a href="persistenceFactories.jsp?action=edit&name=<%=persistenceFactory.getName()%>">
+				    			<%=persistenceFactory.getName()%>
+				    		</a><br>
+				    		MySQL URL: <%=((LocalPersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url")%>
+				    		LDAP URL: <%=((LocalPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url")%>
+<%
 		}
-		
 %>
 						</td>
 			      	</tr>

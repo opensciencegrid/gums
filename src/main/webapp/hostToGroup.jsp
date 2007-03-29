@@ -151,24 +151,23 @@ if (request.getParameter("action")==null ||
 		   		<table class="<%=(cH2GMapping.getName().equals(movedName)?"configMovedElement":"configElement")%>" width="100%">
 		  			<tr>
 			    		<td>
-				    		For requests from hosts matching
-				    		<span style="color:blue"><%=cH2GMapping.getName()%></span>, 
-				    		route request to group<%=(cH2GMapping.getGroupToAccountMappings().size()>1?"s":"")%>
+							host to group mapper:
+							<a href="hostToGroup.jsp?action=edit&name=<%=cH2GMapping.getName()%>">
+								<%=cH2GMapping.getName()%>
+							</a><br>
 <%
-			
-			Iterator g2AMappingsIt = cH2GMapping.getGroupToAccountMappings().iterator();
-			while(g2AMappingsIt.hasNext())
-			{
-				String g2AMapping = (String)g2AMappingsIt.next();
-				out.write( "<span style=\"color:blue\">"+g2AMapping+"</span>" );
-				if( g2AMappingsIt.hasNext() )
-					out.write(", ");
-			}
-			
-			if (cH2GMapping.getGroupToAccountMappings().size()>1)
-%>						
-							(try in order)
-						.</td>
+		out.write(			"group" + (cH2GMapping.getGroupToAccountMappings().size()>1 ? "s: " : ": ") );
+		
+		Iterator g2AMappingsIt = cH2GMapping.getGroupToAccountMappings().iterator();
+		while(g2AMappingsIt.hasNext())
+		{
+			String g2AMapping = (String)g2AMappingsIt.next();
+			out.write( "<a href=\"groupToAccount.jsp?action=edit&name=" + g2AMapping + "\">" + g2AMapping + "</a>" );
+			if( g2AMappingsIt.hasNext() )
+				out.write(", ");
+		}
+%>
+						</td>
 			      	</tr>
 				</table>
 			</td>

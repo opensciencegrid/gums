@@ -112,38 +112,36 @@ if (request.getParameter("action")==null ||
 		   		<table class="configElement" width="100%">
 		  			<tr>
 			    		<td>
-				    		For requests routed to group
-				    		<span style="color:blue"><%=g2AMapping.getName()%></span>
+							group to account mapper:
+							<a href="groupToAccount.jsp?action=edit&name=<%=g2AMapping.getName()%>">
+								<%=g2AMapping.getName()%>
+							</a><br>			    		
 <%				    		
-		out.write(			" where user member of user group" + (g2AMapping.getUserGroups().size()>1 ? "s " : " ") );
+		out.write(			"user group" + (g2AMapping.getUserGroups().size()>1 ? "s: " : ": ") );
 		
 		Iterator userGroupsIt = g2AMapping.getUserGroups().iterator();
 		while(userGroupsIt.hasNext())
 		{
 			String userGroup = (String)userGroupsIt.next();
-			out.write( "<span style=\"color:blue\">"+userGroup+"</span>" );
+			out.write( "<a href=\"userGroups.jsp?action=edit&name=" + userGroup + "\">" + userGroup + "</a>" );
 			if( userGroupsIt.hasNext() )
 				out.write(", ");
 		}
+%>
+		<br>
+<%
+		out.write(			"account mapper" + (g2AMapping.getAccountMappers().size()>1 ? "s: " : ": ") );
 		
-		if (g2AMapping.getUserGroups().size()>1)
-			out.write(		" (try in order)");
-				
-		out.write(			", route request to account mapper" + (g2AMapping.getAccountMappers().size()>1 ? "s " : " ") );
-
 		Iterator accountMappersIt = g2AMapping.getAccountMappers().iterator();
 		while(accountMappersIt.hasNext())
 		{
 			String accountMapper = (String)accountMappersIt.next();
-			out.write( "<span style=\"color:blue\">"+accountMapper+"</span>" );
+			out.write( "<a href=\"accountMappers.jsp?action=edit&name=" + accountMapper + "\">" + accountMapper + "</a>" );
 			if( accountMappersIt.hasNext() )
 				out.write(", ");
 		}
-		
-		if (g2AMapping.getAccountMappers().size()>1)
-			out.write(		" (try in order)");
 %>	
-						.</td>
+						</td>
 			      	</tr>
 				</table>
 			</td>

@@ -111,36 +111,28 @@ if (request.getParameter("action")==null ||
 		   		<table class="configElement" width="100%">
 		  			<tr>
 			    		<td>
-				    		Check if member of virtual organization
-				    		<span style="color:blue"><%=virtualOrganization.getName()%></span>
-							by querying VOMS server at base URL <span style="color:blue"><%=virtualOrganization.getBaseUrl()%></span> (additional path specified in user group)
-							and caching results in persistence factory
-							<span style="color:blue"><%=virtualOrganization.getPersistenceFactory()%></span>
+				    		virtual organization:
+				    		<a href="virtualOrganization.jsp?action=edit&name=<%=virtualOrganization.getName()%>">
+				    			<%=virtualOrganization.getName()%>
+				    		</a><br>			    		
+				    		VOMS server: <%=virtualOrganization.getBaseUrl()%>{remainder url}<br>	
+							persistence factory:
+				    		<a href="persistenceFactories.jsp?action=edit&name=<%=virtualOrganization.getPersistenceFactory()%>">
+				    			<%=virtualOrganization.getPersistenceFactory()%>
+				    		</a><br>
 <%
-		if ( !( virtualOrganization.getSslKey().equals("") && virtualOrganization.getSslCertfile().equals("") && virtualOrganization.getSslCAFiles().equals("") ) )
-			out.write(		" using" );
-							
 		if ( !virtualOrganization.getSslKey().equals("") ) {
-			out.write(		" SSL key <span style=\"color:blue\">" + virtualOrganization.getSslKey() + "</span>");
-			if ( !virtualOrganization.getSslCertfile().equals("") && !virtualOrganization.getSslCAFiles().equals("") )
-				out.write(	
-							"," );
-			else if ( !virtualOrganization.getSslCertfile().equals("") || !virtualOrganization.getSslCAFiles().equals("") )
-				out.write(	
-							" and" );
+			out.write(		"SSL key " + virtualOrganization.getSslKey() + "<br>" );
 		}
 
 		if ( !virtualOrganization.getSslCertfile().equals("") ) {
-			out.write(	" SSL certificate file <span style=\"color:blue\">" + virtualOrganization.getSslCertfile() + "</span>");
-			if ( !virtualOrganization.getSslCAFiles().equals("") )
-				out.write(	
-							" and" );
+			out.write(		"SSL certificate file " + virtualOrganization.getSslCertfile() + "<br>");
 		}
 
 		if ( !virtualOrganization.getSslCAFiles().equals("") )
-			out.write(		" SSL CA files <span style=\"color:blue\">" + virtualOrganization.getSslCAFiles() + "</span>");
+			out.write(		"SSL CA files " + virtualOrganization.getSslCAFiles() + "<br>");
 %>						
-						.</td>
+						</td>
 			      	</tr>
 				</table>
 			</td>

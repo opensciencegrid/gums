@@ -1,1 +1,0 @@
-INSERT INTO GUMS_1_1.USER SELECT userID as ID, userGroup as GROUP_NAME, userDN as DN, userFQAN as FQAN FROM GUMS_1_0.User WHERE isNull(removalDate) AND userGroup="@GROUP@";

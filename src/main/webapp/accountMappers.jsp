@@ -114,32 +114,35 @@ if (request.getParameter("action")==null ||
 		   		<table class="configElement" width="100%">
 		  			<tr>
 			    		<td>
-				    		For requests routed to account mapper
-				    		<span style="color:blue"><%=accountMapper.getName()%></span>,
-				    		
+				    		account mapper:
+				    		<a href="accountMappers.jsp?action=edit&name=<%=accountMapper.getName()%>">
+				    			<%=accountMapper.getName()%>
+				    		</a><br>			    		
 <%
 		if (accountMapper instanceof GroupAccountMapper) {
-			out.write(		"map to account " + 
-							"<span style=\"color:blue\">" + ((GroupAccountMapper)accountMapper).getAccountName() + "</span>");
+			out.write(		"account: " + ((GroupAccountMapper)accountMapper).getAccountName() );
 		} else if (accountMapper instanceof ManualAccountMapper) {
-			out.write(		"search within this group in persistence factory "+
-							"<span style=\"color:blue\">" + ((ManualAccountMapper)accountMapper).getPersistenceFactory() + "</span>");
+%>
+				    		persistence factory:
+				    		<a href="persistenceFactories.jsp?action=edit&name=<%=((ManualAccountMapper)accountMapper).getPersistenceFactory()%>">
+				    			<%=((ManualAccountMapper)accountMapper).getPersistenceFactory()%>
+				    		</a><br>	
+<%
 		} else if (accountMapper instanceof AccountPoolMapper) {
-			out.write(		"map to free or previously assigned account within pool " + 
-							"<span style=\"color:blue\">" + ((AccountPoolMapper)accountMapper).getAccountPool() + "</span> "+
-							"in persistence factory "+
-							"<span style=\"color:blue\">" + ((AccountPoolMapper)accountMapper).getPersistenceFactory() + "</span>");
+%>
+							pool: <%=((AccountPoolMapper)accountMapper).getAccountPool()%><br>
+				    		persistence factory:
+				    		<a href="persistenceFactories.jsp?action=edit&name=<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>">
+				    			<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>
+				    		</a><br>
+<%
 		} else if (accountMapper instanceof GecosLdapAccountMapper) {
-			out.write(		"map to account assigned by JNDI LDAP service " + 
-							"<span style=\"color:blue\">" + ((GecosLdapAccountMapper)accountMapper).getJndiLdapUrl() + "</span>");
+			out.write(		"JNDI LDAP service: " + ((GecosLdapAccountMapper)accountMapper).getJndiLdapUrl() );
 		} else if (accountMapper instanceof GecosNisAccountMapper) {
-			out.write(		"map to account assigned by JNDI NIS service " + 
-							"<span style=\"color:blue\">" + ((GecosNisAccountMapper)accountMapper).getJndiNisUrl() + "</span>");
+			out.write(		"JNDI NIS service: " + ((GecosNisAccountMapper)accountMapper).getJndiNisUrl() );
 		} else if (accountMapper instanceof NISAccountMapper) {
-			out.write(		"map to account assigned by JNDI NIS service " + 
-							"<span style=\"color:blue\">" + ((NISAccountMapper)accountMapper).getJndiNisUrl() + "</span>");
+			out.write(		"JNDI NIS service: " + ((NISAccountMapper)accountMapper).getJndiNisUrl() );
 		}	
-		out.write(".");
 %>	
 						</td>
 			      	</tr>
