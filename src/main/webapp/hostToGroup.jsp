@@ -32,12 +32,22 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure">Error getting configuration: <%= e.getMessage() %></div></p>
-</div>
-<%@include file="bottomNav.jspf"%>
-</body>
-</html>
+	<p><div class="failure">Error getting configuration: <%= e.getMessage() %></div></p>
+	</div>
+	<%@include file="bottomNav.jspf"%>
+	</body>
+	</html>
 
+<%
+	return;
+}
+if (configuration.getGroupToAccountMappings().size()==0) {
+%>
+	<p><div class="failure">You must first create a "group to account" element.</div></p>
+	</div>
+	<%@include file="bottomNav.jspf"%>
+	</body>
+	</html>
 <%
 	return;
 }
@@ -155,6 +165,7 @@ if (request.getParameter("action")==null ||
 							<a href="hostToGroup.jsp?action=edit&name=<%=cH2GMapping.getName()%>">
 								<%=cH2GMapping.getName()%>
 							</a><br>
+							description: <%=cH2GMapping.getDescription()%><br>	
 <%
 		out.write(			"group" + (cH2GMapping.getGroupToAccountMappings().size()>1 ? "s: " : ": ") );
 		
@@ -259,6 +270,14 @@ else if ("edit".equals(request.getParameter("action"))
 	}
 %>
 		<tr>
+			<td nowrap style="text-align: right;">
+	    		with description:
+		    </td>
+		    <td nowrap>
+				<input name="description" size="64" value="<%=cH2GMapping.getDescription()%>"/>
+		    </td>
+		</tr>	
+		<tr>
 			<td nowrap style="text-align: right;">route request to group(s)</td>
 			<td>
 <%
@@ -274,7 +293,7 @@ else if ("edit".equals(request.getParameter("action"))
 					configuration.getGroupToAccountMappings().values(), 
 					(String)g2AMappingsIt.next(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-					true) );
+					counter!=0) );
 			counter++;
 		}
 	}
@@ -283,7 +302,7 @@ else if ("edit".equals(request.getParameter("action"))
 			configuration.getGroupToAccountMappings().values(), 
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-			true)+
+			counter!=0)+
 			"(try in order)");
 %>	
 			</td>

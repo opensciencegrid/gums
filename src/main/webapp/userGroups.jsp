@@ -113,20 +113,26 @@ if (request.getParameter("action")==null ||
 		   		<table class="configElement" width="100%">
 		  			<tr>
 			    		<td>
-				    		user group:
-				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
-				    			<%=userGroup.getName()%>
-				    		</a><br>
 <%
 		if (userGroup instanceof ManualUserGroup) {
 %>
-							persistence factory:
+				    		manual user group:
+				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
+				    			<%=userGroup.getName()%>
+				    		</a><br>
+				    		description: <%=userGroup.getDescription()%><br>	
+				    		persistence factory:
 							<a href="persistenceFactories.jsp?action=edit&name=<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>">
 								<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>
 							</a><br>
 <%
 		} else if (userGroup instanceof LDAPUserGroup) {
 %>
+				    		LDAP user group:
+				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
+				    			<%=userGroup.getName()%>
+				    		</a><br>
+				    		description: <%=userGroup.getDescription()%><br>	
 							LDAP server: <%=((LDAPUserGroup)userGroup).getServer()%><br>	
 							query: <%=((LDAPUserGroup)userGroup).getQuery()%><br>
 							persistence factory:
@@ -136,10 +142,15 @@ if (request.getParameter("action")==null ||
 <%
 		} else if (userGroup instanceof VOMSUserGroup) {
 %>
+				    		VOMS user group:
+				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
+				    			<%=userGroup.getName()%>
+				    		</a><br>
+				    		description: <%=userGroup.getDescription()%><br>	
 							virtual organization:
 							<a href="virtualOrganizations.jsp?action=edit&name=<%=((VOMSUserGroup)userGroup).getVirtualOrganization()%>">
 								<%=((VOMSUserGroup)userGroup).getVirtualOrganization()%>
-							</a><br>							
+							</a><br>			
 <%
 			if ( !((VOMSUserGroup)userGroup).getRemainderUrl().equals("") ) {
 %>
@@ -258,6 +269,14 @@ else if ("edit".equals(request.getParameter("action"))
 	}
 %>
 		<tr>
+			<td nowrap style="text-align: right;">
+	    		with description:
+		    </td>
+		    <td nowrap>
+				<input name="description" size="64" value="<%=userGroup.getDescription()%>"/>
+		    </td>
+		</tr>	
+		<tr>
     		<td nowrap style="text-align: right;">
 	    		of type 
 		    </td>
@@ -282,7 +301,7 @@ else if ("edit".equals(request.getParameter("action"))
 						configuration.getPersistenceFactories().values(), 
 						((ManualUserGroup)userGroup).getPersistenceFactory(),
 						null,
-						configuration.getPersistenceFactories().size()>1)%>
+						false)%>
 			</td>
 		</tr>
 <%
@@ -330,7 +349,7 @@ else if ("edit".equals(request.getParameter("action"))
 						configuration.getPersistenceFactories().values(), 
 						((LDAPUserGroup)userGroup).getPersistenceFactory(),
 						null,
-						configuration.getPersistenceFactories().values().size()>1)%>
+						false)%>
 			.</td>
 		</tr>
 		<tr>
@@ -370,7 +389,7 @@ else if ("edit".equals(request.getParameter("action"))
 							configuration.getVirtualOrganizations().values(), 
 							((VOMSUserGroup)userGroup).getVirtualOrganization(),
 							null,
-							configuration.getVirtualOrganizations().values().size()>1)%>
+							false)%>
 				</td>
 			</tr>
 			<tr>

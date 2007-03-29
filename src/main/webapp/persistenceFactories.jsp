@@ -116,7 +116,8 @@ if (request.getParameter("action")==null ||
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=persistenceFactory.getName()%>">
 				    			<%=persistenceFactory.getName()%>
 				    		</a><br>
-				    		MySQL URL: <%=((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url")%>
+				    		description: <%=persistenceFactory.getDescription()%><br>	
+				    		MySQL URL: <%=((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url")%><br>
 <%
 		}
 		else if (persistenceFactory instanceof LDAPPersistenceFactory) {
@@ -125,7 +126,8 @@ if (request.getParameter("action")==null ||
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=persistenceFactory.getName()%>">
 				    			<%=persistenceFactory.getName()%>
 				    		</a><br>
-				    		LDAP URL: <%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url")%>
+				    		description: <%=persistenceFactory.getDescription()%><br>	
+				    		LDAP URL: <%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url")%><br>
 <%
 		}
 		else if (persistenceFactory instanceof LocalPersistenceFactory) {
@@ -134,8 +136,9 @@ if (request.getParameter("action")==null ||
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=persistenceFactory.getName()%>">
 				    			<%=persistenceFactory.getName()%>
 				    		</a><br>
-				    		MySQL URL: <%=((LocalPersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url")%>
-				    		LDAP URL: <%=((LocalPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url")%>
+				    		description: <%=persistenceFactory.getDescription()%><br>
+				    		MySQL URL: <%=((LocalPersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url")%><br>
+				    		LDAP URL: <%=((LocalPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url")%><br>
 <%
 		}
 %>
@@ -235,6 +238,14 @@ else if ("edit".equals(request.getParameter("action"))
 <%
 	}
 %>
+		<tr>
+			<td nowrap style="text-align: right;">
+	    		with description:
+		    </td>
+		    <td nowrap>
+				<input name="description" size="64" value="<%=persistenceFactory.getDescription()%>"/>
+		    </td>
+		</tr>	
 		<tr>
 			<td nowrap style="text-align: right;">
 	    		of type
@@ -459,7 +470,7 @@ else if ("edit".equals(request.getParameter("action"))
 	    		and password
 		    </td>
 		    <td nowrap>
-		    	<input type="ldapCredentials" maxlength="256" size="32" name="ldapCredentials" value="<%=((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.credentials")%>"/> .
+		    	<input type="password" maxlength="256" size="32" name="ldapCredentials" value="<%=((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.credentials")%>"/> .
 		    </td>
 		</tr>
 <%

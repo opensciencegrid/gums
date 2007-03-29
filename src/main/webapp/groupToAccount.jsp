@@ -41,6 +41,26 @@ try {
 <%
 	return;
 }
+if (configuration.getUserGroups().size()==0) {
+%>
+	<p><div class="failure">You must first create a user group.</div></p>
+	</div>
+	<%@include file="bottomNav.jspf"%>
+	</body>
+	</html>
+<%
+	return;
+}
+if (configuration.getAccountMappers().size()==0) {
+%>
+	<p><div class="failure">You must first create an account mapper.</div></p>
+	</div>
+	<%@include file="bottomNav.jspf"%>
+	</body>
+	</html>
+<%
+	return;
+}
 %>
 
 <p>
@@ -115,7 +135,8 @@ if (request.getParameter("action")==null ||
 							group to account mapper:
 							<a href="groupToAccount.jsp?action=edit&name=<%=g2AMapping.getName()%>">
 								<%=g2AMapping.getName()%>
-							</a><br>			    		
+							</a><br>
+							description: <%=g2AMapping.getDescription()%><br>		    		
 <%				    		
 		out.write(			"user group" + (g2AMapping.getUserGroups().size()>1 ? "s: " : ": ") );
 		
@@ -229,6 +250,14 @@ else if ("edit".equals(request.getParameter("action"))
 	}
 %>
 		<tr>
+			<td nowrap style="text-align: right;">
+	    		with description:
+		    </td>
+		    <td nowrap>
+				<input name="description" size="64" value="<%=g2AMapping.getDescription()%>"/>
+		    </td>
+		</tr>	
+		<tr>
 			<td nowrap style="text-align: right;">where user member of user group</td>
 			<td>
 <%
@@ -245,7 +274,7 @@ else if ("edit".equals(request.getParameter("action"))
 					configuration.getUserGroups().values(), 
 					(String)userGroupsIt.next(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-					true) );
+					counter!=0) );
 			counter++;
 		}
 	}
@@ -254,7 +283,7 @@ else if ("edit".equals(request.getParameter("action"))
 			configuration.getUserGroups().values(), 
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-			true)+
+			counter!=0)+
 			"(try in order)");
 %>
 		    </td>
@@ -284,7 +313,7 @@ else if ("edit".equals(request.getParameter("action"))
 			configuration.getAccountMappers().values(), 
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-			true)+
+			counter!=0)+
 			"(try in order) .");
 %>
 			</td>

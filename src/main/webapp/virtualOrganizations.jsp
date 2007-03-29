@@ -114,7 +114,8 @@ if (request.getParameter("action")==null ||
 				    		virtual organization:
 				    		<a href="virtualOrganization.jsp?action=edit&name=<%=virtualOrganization.getName()%>">
 				    			<%=virtualOrganization.getName()%>
-				    		</a><br>			    		
+				    		</a><br>			    	
+				    		description: <%=virtualOrganization.getDescription()%><br>		
 				    		VOMS server: <%=virtualOrganization.getBaseUrl()%>{remainder url}<br>	
 							persistence factory:
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=virtualOrganization.getPersistenceFactory()%>">
@@ -219,6 +220,14 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
 			<td nowrap style="text-align: right;">
+	    		with description:
+		    </td>
+		    <td nowrap>
+				<input name="description" size="64" value="<%=virtualOrganization.getDescription()%>"/>
+		    </td>
+		</tr>	
+		<tr>
+			<td nowrap style="text-align: right;">
 				by querying VOMS server at base URL
 			</td>
 			<td>
@@ -242,7 +251,7 @@ else if ("edit".equals(request.getParameter("action"))
 						configuration.getPersistenceFactories().values(), 
 						virtualOrganization.getPersistenceFactory(),
 						null,
-						configuration.getPersistenceFactories().values().size()>1)%>
+						false)%>
 			</td>
 		</tr>
 		<tr>
