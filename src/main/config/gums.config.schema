@@ -30,13 +30,12 @@
 										<xs:attribute name="java.naming.security.authentication" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.security.principal" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.security.credentials" type="xs:string" use="required"/>
-										<xs:attribute name="synchGroups" type="xs:string"/>
+										<xs:attribute name="synchGroups" type="xs:string" use="required"/>
 									</xs:complexType>
 								</xs:element>	
 								<xs:element name="localPersistenceFactory">
 									<xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
-										<xs:attribute name="mysql.jdbcDriver" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.connection.driver_class" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.dialect" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.connection.url" type="xs:string" use="required"/>

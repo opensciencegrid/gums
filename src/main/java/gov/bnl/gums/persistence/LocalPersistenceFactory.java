@@ -205,7 +205,8 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     
 	public String toXML() {
     	String retStr = "\t\t<localPersistenceFactory\n"+
-    		"\t\t\tname='"+getName()+"'\n";
+    		"\t\t\tname='"+getName()+"'\n"+
+    		"\t\t\tsynchGroups='"+synchGroups+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();
     	while(keyIt.hasNext()) {

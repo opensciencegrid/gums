@@ -557,7 +557,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     
     public String toXML() {
     	String retStr = "\t\t<ldapPersistenceFactory\n"+
-    		"\t\t\tname='"+getName()+"'\n";
+    		"\t\t\tname='"+getName()+"'\n"+
+    		"\t\t\tsynchGroups='"+synchGroups+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();
     	while(keyIt.hasNext()) {
