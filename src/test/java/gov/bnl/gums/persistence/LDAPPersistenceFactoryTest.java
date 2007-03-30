@@ -85,36 +85,37 @@ public class LDAPPersistenceFactoryTest extends TestCase {
     }
     
     public void testCreateUserGroup() {
-        factory.createUserGroup("test", "group=test,ou=GUMS,dc=griddev,dc=org");
+//        factory.createUserGroup("test", "group=test,ou=GUMS");
     }
     
     public void testCreateMap() {
-        factory.createMap("test", "map=test,ou=GUMS,dc=griddev,dc=org");
+ //       factory.createMap("test", "map=test,ou=GUMS");
     }
     
     public void testAddMapEntry() {
-        factory.createMap("test", "map=test,ou=GUMS,dc=test");
-        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "grid001", "test",  "map=test,ou=GUMS,dc=griddev,dc=org");
+//        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "grid001", "test",  "map=test,ou=GUMS");
+//        factory.createAccountInMap("grid002", "test", "map=test,ou=GUMS");
+//        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "grid002", "test", "map=test,ou=GUMS");
+    }
+
+    public void testAddUserSecondaryGroupEntry() {
+//    	factory.addToSecondaryGroup("grid001", "test");
+    	factory.addToSecondaryGroup("cn=griddevGroup,ou=Group", "jsmith", "test");
     }
     
     public void testRemoveMapEntry() {
-        factory.createMap("test", "map=test,ou=GUMS,dc=test");
-        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "grid001", "test",  "map=test,ou=GUMS,dc=griddev,dc=org");
-        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "grid001", "test",  "map=test,ou=GUMS,dc=griddev,dc=org");
-        factory.removeMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test",  "map=test,ou=GUMS,dc=test");
+        factory.removeMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test",  "map=test,ou=GUMS");
+        factory.removeMapEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test",  "map=test,ou=GUMS");
     }
-    
+
     public void testAddUserGroupEntry() {
-        factory.createUserGroup("test", "group=test,ou=GUMS,dc=test");
-        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test,ou=GUMS,dc=griddev,dc=org");
-        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test,ou=GUMS,dc=griddev,dc=org");
+//        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test,ou=GUMS");
+//        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test,ou=GUMS");
     }
     
     public void testRemoveUserGroupEntry() {
-        factory.createUserGroup("test", "group=test,ou=GUMS,dc=test");
-        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test,ou=GUMS,dc=griddev,dc=org");
-        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test,ou=GUMS,dc=griddev,dc=org");
-        factory.removeUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test,ou=GUMS,dc=griddev,dc=org");
+//        factory.removeUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test,ou=GUMS");
+//        factory.removeUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test,ou=GUMS");
     }
     
 //    public static void main(String[] args) {

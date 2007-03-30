@@ -67,7 +67,7 @@ public class ResourceManagerTest extends TestCase {
     }
     
     public void testGenerateGridMapfile() {
-        String mapfile = man.generateGridMapfile("known.site.com");
+        String mapfile = man.generateGridMapfile("known.site.com", false);
         String expectedGridmap = "#---- members of vo: mockUserGroup ----#\n" +
         "\"/DC=org/DC=griddev/OU=People/CN=John Smith\" jsmith\n";
         assertEquals("Grid mapfile generated incorrectly", 
@@ -95,7 +95,7 @@ public class ResourceManagerTest extends TestCase {
 
         ((HostToGroupMapping)conf.getHostToGroupMappings().get(0)).addGroupToAccountMapping(groupToAccountMapping.getName());
 
-        String mapfile = man.generateGridMapfile("known.site.com");
+        String mapfile = man.generateGridMapfile("known.site.com", false);
         String expectedGridmap = "#---- members of vo: mockUserGroup ----#\n" +
         "\"/DC=org/DC=griddev/OU=People/CN=John Smith\" jsmith\n" +
         "#---- members of vo: testUserGroup ----#\n" +

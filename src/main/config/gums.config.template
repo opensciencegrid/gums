@@ -20,10 +20,10 @@
 	<virtualOrganizations>
 	    <virtualOrganization
 			name='virtualOrganizationA'
-			baseUrl='https://vo.racf.bnl.gov:8443/voms'
+			baseUrl='https://griddev01.racf.bnl.gov:8443/voms'
 			persistenceFactory='persistenceFactoryA' 
-			sslCertfile='/etc/grid-security/gumscert.pem'
-			sslKey='/etc/grid-security/gumskey.pem'/>
+			sslCertfile='/etc/grid-security/hostcert.pem'
+			sslKey='/etc/grid-security/hostkey.pem'/>
 	</virtualOrganizations>
 
 	<userGroups>
@@ -34,11 +34,11 @@
 		<vomsUserGroup
 			name='userGroupB'
 			virtualOrganization='virtualOrganizationA'
-			remainderUrl='/atlas/services/VOMSAdmin'
+			remainderUrl='/griddev/services/VOMSAdmin'
 			acceptProxyWithoutFQAN='true'
 			matchFQAN='exact'
-			voGroup='/atlas/usatlas'
-			voRole='software'/>	
+			voGroup='/griddev/subgriddev'
+			voRole='griddevRole'/>	
 	</userGroups>
 	
 	<accountMappers>

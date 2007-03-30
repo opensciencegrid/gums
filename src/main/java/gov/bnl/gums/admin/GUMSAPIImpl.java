@@ -98,9 +98,13 @@ public class GUMSAPIImpl implements GUMSAPI {
     }
     
     public String generateGridMapfile(String hostname) {
+    	return generateGridMapfile(hostname, false);
+    }
+    
+    public String generateGridMapfile(String hostname, boolean includeFQAN) {
         try {
             if (hasReadAllAccess(currentUser())) {
-                String map = gums().getResourceManager().generateGridMapfile(hostname);
+                String map = gums().getResourceManager().generateGridMapfile(hostname, includeFQAN);
                 gumsResourceAdminLog.info(logUserAccess() + "Generated mapfile for host '" + hostname + "': " + map);
                 return map;
             } else {
@@ -113,7 +117,7 @@ public class GUMSAPIImpl implements GUMSAPI {
         } catch (RuntimeException e) {
             gumsResourceAdminLog.error(logUserAccess() + "Failed to generate mapfile for host '" + hostname + "' - " + e.getMessage());
             throw e;
-        }
+        }   	
     }
     
     public Configuration getConfiguration() {

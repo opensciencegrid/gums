@@ -48,8 +48,7 @@ public class LDAPUserGroup extends UserGroup {
     private Configuration conf;
     private String server = "";
     private String query = "";
-    private String keyStore = "";
-	private String keyPassword = "";
+    private String certDNField = "description";
 	protected ConfigurationStore confStore;
     
 	public LDAPUserGroup() {
@@ -69,10 +68,9 @@ public class LDAPUserGroup extends UserGroup {
     	userGroup.setDescription(getDescription());
     	userGroup.setPersistenceFactory(persistenceFactory);
     	userGroup.setAccess(getAccess());
-    	userGroup.setKeyPassword(getKeyPassword());
-    	userGroup.setKeyStore(getKeyStore());
     	userGroup.setQuery(getQuery());
     	userGroup.setServer(getServer());
+    	userGroup.setCertDNField(certDNField);
     	return userGroup;
     }
     
@@ -89,12 +87,8 @@ public class LDAPUserGroup extends UserGroup {
         return false;
     }
     
-    public String getKeyPassword() {
-    	return keyPassword;
-    }
-    
-    public String getKeyStore() {
-    	return keyStore;
+    public String getCertDNField() {
+        return certDNField;
     }
     
     public java.util.List getMemberList() {
@@ -133,16 +127,12 @@ public class LDAPUserGroup extends UserGroup {
         return getDB().isMemberInGroup(user);
     }
     
-    public void setKeyPassword(String keyPassword) {
-    	this.keyPassword = keyPassword;
-    }
-    
-    public void setKeyStore(String keyStore) {
-    	this.keyStore = keyStore;
-    }
-    
     public void setPersistenceFactory(String persistenceFactory) {
         this.persistenceFactory = persistenceFactory;
+    }
+    
+    public void setCertDNField(String certDNField) {
+    	this.certDNField = certDNField;
     }
     
     /**
@@ -176,9 +166,8 @@ public class LDAPUserGroup extends UserGroup {
 		"\t\t\tdescription='"+getDescription()+"'\n"+
     	"\t\t\tserver='"+server+"'\n" +
 		"\t\t\tquery='"+query+"'\n" +
-		"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
-		"\t\t\tkeyStore='"+keyStore+"'\n" +
-		"\t\t\tkeyPassword='"+keyPassword+"'/>\n\n";
+		"\t\t\tquery='"+certDNField+"'\n" +
+		"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }
     
     public void updateMembers() {
@@ -279,7 +268,7 @@ public class LDAPUserGroup extends UserGroup {
     }    
     
     Map retrievePeopleMap(DirContext ldap) throws javax.naming.NamingException {
-        NamingEnumeration people = ldap.search("ou=People", "(description=subject=*)", null);
+        NamingEnumeration people = ldap.search("ou=People", "("+certDNField+"=*)", null);
         Map map = new Hashtable();
         while (people.hasMore()) {
             SearchResult person = (SearchResult) people.next();
@@ -289,7 +278,7 @@ public class LDAPUserGroup extends UserGroup {
                 ldapDN = ldapDN + ",ou=People," + ldap.getNameInNamespace();
             }
             
-            String certDN = (String) personAtts.get("description").get();
+            String certDN = (String) personAtts.get(certDNField).get();
             if (certDN.startsWith("subject=")) {
                 certDN = certDN.substring(8);
             }

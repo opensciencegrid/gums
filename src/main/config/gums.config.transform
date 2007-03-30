@@ -213,8 +213,6 @@
 						access='read self'
 						server='{@server}'
 						query='{@query}'
-						keyStore='{@keyStore}'
-						keyPassword='{@keyPassword}'
 					/>
 				</xsl:if>
 				<xsl:if test="@className = 'gov.bnl.gums.ManualUserGroup'">

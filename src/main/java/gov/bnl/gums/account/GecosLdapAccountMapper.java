@@ -33,6 +33,8 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
 	}
 
 	private String jndiLdapUrl = "";
+	private String gecosField = "gecos";
+	private String accountField = "uid";
     
     public GecosLdapAccountMapper() {
     	super();
@@ -50,7 +52,17 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     	GecosLdapAccountMapper accountMapper = new GecosLdapAccountMapper(configuration, getName());
     	accountMapper.setDescription(getDescription());
     	accountMapper.setJndiLdapUrl(jndiLdapUrl);
+    	accountMapper.setGecosField(gecosField);
+    	accountMapper.setAccountField(accountField);
     	return accountMapper;
+    }
+    
+    public String getAccountField() {
+    	return accountField;
+    }
+    
+    public String getGecosField() {
+    	return gecosField;
     }
     
     /**
@@ -64,6 +76,14 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     public String getType() {
 		return "gecosLdap";
 	}
+    
+    public void setAccountField(String accountField) {
+    	this.accountField = accountField;
+    }
+    
+    public void setGecosField(String gecosField) {
+    	this.gecosField = gecosField;
+    }
     
     /**
      * Changes the LDAP server to use.
@@ -81,7 +101,10 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     	return "\t\t<gecosLdapAccountMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tdescription='"+getDescription()+"'\n"+
-			"\t\t\tjndiLdapUrl='"+jndiLdapUrl+"'/>\n\n";
+			"\t\t\tjndiLdapUrl='"+jndiLdapUrl+"'/>\n\n"+
+    		"\t\t\tgecosField='"+gecosField+"'\n"+
+			"\t\t\taccountField='"+accountField+"'\n";
+
     }
 
     private Properties retrieveJndiProperties() {
@@ -107,8 +130,8 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
                 while (nisMap.hasMore()) {
                     SearchResult res = (SearchResult) nisMap.next();
                     Attributes atts = res.getAttributes();
-                    String username = (String) atts.get("uid").get();
-                    Attribute gecosAtt = atts.get("gecos");
+                    String username = (String) atts.get(accountField).get();
+                    Attribute gecosAtt = atts.get(gecosField);
                     if (gecosAtt != null) {
                         String gecos = gecosAtt.get().toString();
                         map.addEntry(username, gecos);

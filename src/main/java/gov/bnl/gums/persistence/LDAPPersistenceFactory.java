@@ -115,7 +115,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * @param groupname the secondary group name (i.e. "usatlas")
      */
     public void addToSecondaryGroup(String username, String groupname) {
-        addToSecondaryGroup(null, username, groupname);
+        addToSecondaryGroup("ou=Group", username, groupname);
     }
     
     /** Adds the username to the given secondary group. It expects the domain to be
@@ -133,7 +133,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
             DirContext subcontext = getDomainContext(context, domain);
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            NamingEnumeration result = subcontext.search("cn=usatlas, ou=Group", "(memberUid={0})", new Object[] {username}, ctrls);
+            NamingEnumeration result = subcontext.search("{0}", "(memberUid={1})", new Object[] {domain, username}, ctrls);
             if (result.hasMore()) return;
             ModificationItem[] mods = new ModificationItem[1];
             mods[0] = new ModificationItem(subcontext.ADD_ATTRIBUTE,
@@ -329,6 +329,10 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         return this.defaultGumsOU;
     }
     
+    public List getDomains() {
+    	return domains;
+    }
+    
     /** Returns a Context ready to be used (taken from the pool).
      * This is the entry point for the pool, and it can be used
      * by test cases to prepare the LDAP server.
@@ -506,6 +510,10 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public UserGroupDB retrieveUserGroupDB(String name) {
         log.trace("Creating LDAP UserGroupDB '" + name + "'");
         return new LDAPUserGroupDB(this, name);
+    }
+    
+    public void setDomains(List domains) {
+    	this.domains = domains;
     }
 
     /**

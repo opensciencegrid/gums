@@ -105,9 +105,9 @@ public class ResourceManager {
     
     /** Generates a grid mapfile for a given host and prints it to out.
      */
-    public String generateGridMapfile(String hostname) {
+    public String generateGridMapfile(String hostname, boolean includeFQAN) {
         String mapfile;
-        mapfile = generateGridMapfileImpl(hostname);
+        mapfile = generateGridMapfileImpl(hostname, includeFQAN);
         return mapfile;
     }
     
@@ -163,7 +163,7 @@ public class ResourceManager {
      * @todo usersInMap should be a sorted list to make things faster, but
      * no ready made implementation was found.
      */
-    private String generateGridMapfile(HostToGroupMapping h2GMapping) {
+    private String generateGridMapfile(HostToGroupMapping h2GMapping, boolean includeFQAN) {
     	Configuration conf = h2GMapping.getConfiguration();
         Iterator iter = h2GMapping.getGroupToAccountMappings().iterator();
         List usersInMap = new ArrayList();
@@ -193,7 +193,12 @@ public class ResourceManager {
 		                        gridMapfileBuffer.append('"');
 		                        gridMapfileBuffer.append(user.getCertificateDN() );
 		                        gridMapfileBuffer.append('"' );
-		                        gridMapfileBuffer.append(' ' );
+		                        if (includeFQAN) {
+			                        gridMapfileBuffer.append(" \"");
+			                        gridMapfileBuffer.append(user.getVoFQAN() );
+			                        gridMapfileBuffer.append('"' );		                        	
+		                        }
+		                        gridMapfileBuffer.append(' ');
 		                        gridMapfileBuffer.append(username );
 		                        gridMapfileBuffer.append("\n");
 		                        usersInMap.add(user.getCertificateDN());
@@ -209,11 +214,11 @@ public class ResourceManager {
         return finalGridmapfile;
     }
     
-    private String generateGridMapfileImpl(String hostname) {
+    private String generateGridMapfileImpl(String hostname, boolean generateGridMapfile) {
         Configuration conf = gums.getConfiguration();
         HostToGroupMapping host2GroupMapper = host2GroupMapping(conf, hostname);
         if (host2GroupMapper == null) return null;
-        String mapfile = generateGridMapfile(host2GroupMapper);
+        String mapfile = generateGridMapfile(host2GroupMapper, generateGridMapfile);
         return mapfile;
     }
     
