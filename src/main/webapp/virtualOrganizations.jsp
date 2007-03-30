@@ -111,13 +111,13 @@ if (request.getParameter("action")==null ||
 		   		<table class="configElement" width="100%">
 		  			<tr>
 			    		<td>
-				    		virtual organization:
+				    		Virtual organization:
 				    		<a href="virtualOrganization.jsp?action=edit&name=<%=virtualOrganization.getName()%>">
 				    			<%=virtualOrganization.getName()%>
 				    		</a><br>			    	
-				    		description: <%=virtualOrganization.getDescription()%><br>		
+				    		Description: <%=virtualOrganization.getDescription()%><br>		
 				    		VOMS server: <%=virtualOrganization.getBaseUrl()%>{remainder url}<br>	
-							persistence factory:
+							Persistence factory:
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=virtualOrganization.getPersistenceFactory()%>">
 				    			<%=virtualOrganization.getPersistenceFactory()%>
 				    		</a><br>

@@ -107,8 +107,8 @@ if (request.getParameter("action")==null ||
 	   		<table class="userElement" width="100%">
 	  			<tr>
 		    		<td>
-			    		User with DN <span style="color:blue"><%=user.getCertificateDN()%></span>
-			    		is a member of user group <span style="color:blue"><%=manualUserGroup.getName()%></span>.
+			    		DN: <%=user.getCertificateDN()%><br>
+			    		user group: <a href="userGroups.jsp?name=<%=manualUserGroup.getName()%>&action=edit"><%=manualUserGroup.getName()%></a><br>
 		    		</td>
 	  			</tr>
 			</table>

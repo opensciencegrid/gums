@@ -161,13 +161,13 @@ if (request.getParameter("action")==null ||
 		   		<table class="<%=(cH2GMapping.getName().equals(movedName)?"configMovedElement":"configElement")%>" width="100%">
 		  			<tr>
 			    		<td>
-							host to group mapper:
+							Host to group mapper:
 							<a href="hostToGroup.jsp?action=edit&name=<%=cH2GMapping.getName()%>">
 								<%=cH2GMapping.getName()%>
 							</a><br>
-							description: <%=cH2GMapping.getDescription()%><br>	
+							Description: <%=cH2GMapping.getDescription()%><br>	
 <%
-		out.write(			"group" + (cH2GMapping.getGroupToAccountMappings().size()>1 ? "s: " : ": ") );
+		out.write(			"Group" + (cH2GMapping.getGroupToAccountMappings().size()>1 ? "s: " : ": ") );
 		
 		Iterator g2AMappingsIt = cH2GMapping.getGroupToAccountMappings().iterator();
 		while(g2AMappingsIt.hasNext())

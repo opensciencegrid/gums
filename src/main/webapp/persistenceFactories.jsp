@@ -112,11 +112,11 @@ if (request.getParameter("action")==null ||
 <%		    		
 		if (persistenceFactory instanceof HibernatePersistenceFactory) {
 %>
-				    		hibernate persistence factory:
+				    		Hibernate persistence factory:
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=persistenceFactory.getName()%>">
 				    			<%=persistenceFactory.getName()%>
 				    		</a><br>
-				    		description: <%=persistenceFactory.getDescription()%><br>	
+				    		Description: <%=persistenceFactory.getDescription()%><br>	
 				    		MySQL URL: <%=((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url")%><br>
 <%
 		}
@@ -126,17 +126,17 @@ if (request.getParameter("action")==null ||
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=persistenceFactory.getName()%>">
 				    			<%=persistenceFactory.getName()%>
 				    		</a><br>
-				    		description: <%=persistenceFactory.getDescription()%><br>	
+				    		Description: <%=persistenceFactory.getDescription()%><br>	
 				    		LDAP URL: <%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url")%><br>
 <%
 		}
 		else if (persistenceFactory instanceof LocalPersistenceFactory) {
 %>
-				    		local persistence factory:
+				    		Local persistence factory:
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=persistenceFactory.getName()%>">
 				    			<%=persistenceFactory.getName()%>
 				    		</a><br>
-				    		description: <%=persistenceFactory.getDescription()%><br>
+				    		Description: <%=persistenceFactory.getDescription()%><br>
 				    		MySQL URL: <%=((LocalPersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url")%><br>
 				    		LDAP URL: <%=((LocalPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url")%><br>
 <%

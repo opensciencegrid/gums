@@ -132,13 +132,13 @@ if (request.getParameter("action")==null ||
 		   		<table class="configElement" width="100%">
 		  			<tr>
 			    		<td>
-							group to account mapper:
+							Group to account mapper:
 							<a href="groupToAccount.jsp?action=edit&name=<%=g2AMapping.getName()%>">
 								<%=g2AMapping.getName()%>
 							</a><br>
-							description: <%=g2AMapping.getDescription()%><br>		    		
+							Description: <%=g2AMapping.getDescription()%><br>		    		
 <%				    		
-		out.write(			"user group" + (g2AMapping.getUserGroups().size()>1 ? "s: " : ": ") );
+		out.write(			"User group" + (g2AMapping.getUserGroups().size()>1 ? "s: " : ": ") );
 		
 		Iterator userGroupsIt = g2AMapping.getUserGroups().iterator();
 		while(userGroupsIt.hasNext())
@@ -151,7 +151,7 @@ if (request.getParameter("action")==null ||
 %>
 		<br>
 <%
-		out.write(			"account mapper" + (g2AMapping.getAccountMappers().size()>1 ? "s: " : ": ") );
+		out.write(			"Account mapper" + (g2AMapping.getAccountMappers().size()>1 ? "s: " : ": ") );
 		
 		Iterator accountMappersIt = g2AMapping.getAccountMappers().iterator();
 		while(accountMappersIt.hasNext())

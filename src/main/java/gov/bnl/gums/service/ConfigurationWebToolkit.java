@@ -105,6 +105,10 @@ public class ConfigurationWebToolkit implements Remote {
 			accountMapper.setDescription( request.getParameter("description").trim() );
 			if (request.getParameter("serviceUrl")!=null)
 				((GecosLdapAccountMapper)accountMapper).setJndiLdapUrl( request.getParameter("serviceUrl").trim() );
+			if (request.getParameter("gecos")!=null)
+				((GecosLdapAccountMapper)accountMapper).setGecosField( request.getParameter("gecos").trim() );
+			if (request.getParameter("account")!=null)
+				((GecosLdapAccountMapper)accountMapper).setAccountField( request.getParameter("account").trim() );
 		}
 
 		return accountMapper;
@@ -137,6 +141,8 @@ public class ConfigurationWebToolkit implements Remote {
 				((LDAPUserGroup)userGroup).setQuery( request.getParameter("query").trim() );
 			if (request.getParameter("persistenceFactory")!=null)
 				((LDAPUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory").trim() );
+			if (request.getParameter("certDNField")!=null)
+				((LDAPUserGroup)userGroup).setCertDNField( request.getParameter("certDNField").trim() );
 		} else if (type.equals(VOMSUserGroup.getTypeStatic())) {
 			userGroup = new VOMSUserGroup();
 			userGroup.setName( request.getParameter("name").trim() );

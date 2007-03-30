@@ -117,33 +117,33 @@ if (request.getParameter("action")==null ||
 <%
 		if (accountMapper instanceof GroupAccountMapper) {
 %>
-						    group account mapper:
+						    Group account mapper:
 				    		<a href="accountMappers.jsp?action=edit&name=<%=accountMapper.getName()%>">
 				    			<%=accountMapper.getName()%>
 				    		</a><br>
-				    		description: <%=accountMapper.getDescription()%><br>	
+				    		Description: <%=accountMapper.getDescription()%><br>	
 <%
 		} else if (accountMapper instanceof ManualAccountMapper) {
 %>
-				    		manual account mapper:
+				    		Manual account mapper:
 				    		<a href="accountMappers.jsp?action=edit&name=<%=accountMapper.getName()%>">
 				    			<%=accountMapper.getName()%>
 				    		</a><br>	
-				    		description: <%=accountMapper.getDescription()%><br>	
-				    		persistence factory:
+				    		Description: <%=accountMapper.getDescription()%><br>	
+				    		Persistence factory:
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=((ManualAccountMapper)accountMapper).getPersistenceFactory()%>">
 				    			<%=((ManualAccountMapper)accountMapper).getPersistenceFactory()%>
 				    		</a><br>	
 <%
 		} else if (accountMapper instanceof AccountPoolMapper) {
 %>
-				    		account pool mapper:
+				    		Account pool mapper:
 				    		<a href="accountMappers.jsp?action=edit&name=<%=accountMapper.getName()%>">
 				    			<%=accountMapper.getName()%>
 				    		</a><br>	
-				    		description: <%=accountMapper.getDescription()%><br>	
-							pool: <%=((AccountPoolMapper)accountMapper).getAccountPool()%><br>
-				    		persistence factory:
+				    		Description: <%=accountMapper.getDescription()%><br>	
+							Pool: <%=((AccountPoolMapper)accountMapper).getAccountPool()%><br>
+				    		Persistence factory:
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>">
 				    			<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>
 				    		</a><br>
@@ -154,7 +154,7 @@ if (request.getParameter("action")==null ||
 				    		<a href="accountMappers.jsp?action=edit&name=<%=accountMapper.getName()%>">
 				    			<%=accountMapper.getName()%>
 				    		</a><br>	
-				    		description: <%=accountMapper.getDescription()%><br>	
+				    		Description: <%=accountMapper.getDescription()%><br>	
 							JNDI LDAP service: <%=((GecosLdapAccountMapper)accountMapper).getJndiLdapUrl()%>
 <%
 		} else if (accountMapper instanceof GecosNisAccountMapper) {
@@ -163,7 +163,7 @@ if (request.getParameter("action")==null ||
 				    		<a href="accountMappers.jsp?action=edit&name=<%=accountMapper.getName()%>">
 				    			<%=accountMapper.getName()%>
 				    		</a><br>	
-				    		description: <%=accountMapper.getDescription()%><br>	
+				    		Description: <%=accountMapper.getDescription()%><br>	
 							JNDI NIS service: <%=((GecosNisAccountMapper)accountMapper).getJndiNisUrl()%>
 <%
 		} else if (accountMapper instanceof NISAccountMapper) {
@@ -172,7 +172,7 @@ if (request.getParameter("action")==null ||
 				    		<a href="accountMappers.jsp?action=edit&name=<%=accountMapper.getName()%>">
 				    			<%=accountMapper.getName()%>
 				    		</a><br>	
-				    		description: <%=accountMapper.getDescription()%><br>	
+				    		Description: <%=accountMapper.getDescription()%><br>	
 							JNDI NIS service: <%=((NISAccountMapper)accountMapper).getJndiNisUrl()%>
 <%
 		}	
@@ -321,7 +321,7 @@ else if ("edit".equals(request.getParameter("action"))
 					((ManualAccountMapper)accountMapper).getPersistenceFactory(),
 					null,
 					false)%>
-			</td>
+			</td> .
 		</tr>
 <%
 	} else if (accountMapper instanceof AccountPoolMapper) {
@@ -351,7 +351,7 @@ else if ("edit".equals(request.getParameter("action"))
 						configuration.getPersistenceFactories().values(), 
 						((AccountPoolMapper)accountMapper).getPersistenceFactory(),
 						null,
-						false)%>
+						false)%> .
 			</td>
 		</tr>
 <%
@@ -370,7 +370,7 @@ else if ("edit".equals(request.getParameter("action"))
 				map to account assigned by JNDI LDAP service
 			</td>
 			<td>
-				<input maxlength="256" size="32" name="serviceUrl" value="<%=((GecosLdapAccountMapper)accountMapper).getJndiLdapUrl()%>"/>
+				<input maxlength="256" size="32" name="serviceUrl" value="<%=((GecosLdapAccountMapper)accountMapper).getJndiLdapUrl()%>"/> .
 			</td>
 		</tr>
 		<tr>
@@ -379,6 +379,38 @@ else if ("edit".equals(request.getParameter("action"))
 		    </td>
 		    <td nowrap>
 				ldap://localhost/dc=usatlas,dc=bnl,dc=gov
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				Look for name in LDAP field 
+			</td>
+			<td> 
+				<input maxlength="256" size="16" name="gecosField" value="<%=((GecosLdapAccountMapper)accountMapper).getGecosField()%>"/> .
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	gecos
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				Look for account in LDAP field 
+			</td>
+			<td> 
+				<input maxlength="256" size="16" name="accountField" value="<%=((GecosLdapAccountMapper)accountMapper).getAccountField()%>"/> .
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	uid
 		    </td>
 		</tr>
 <%

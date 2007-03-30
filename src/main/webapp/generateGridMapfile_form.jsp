@@ -38,6 +38,10 @@ Generates the grid-mapfile relative to the given service.
         <td>/DC=org/DC=doegrids/OU=Services/CN=mygk.site.com</td>
       </tr>
       <tr>
+        <td style="text-align: right;">include extended attributes (FQAN): </td>
+        <td><input type="checkbox" name="fqan"></td>
+      </tr>      
+      <tr>
         <td colspan="2" rowspan="1">
         <div style="text-align: center;"><button type="submit">Generate Grid-Mapfile</button></div>
         </td>

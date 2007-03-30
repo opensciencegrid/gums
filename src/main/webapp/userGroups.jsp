@@ -116,12 +116,12 @@ if (request.getParameter("action")==null ||
 <%
 		if (userGroup instanceof ManualUserGroup) {
 %>
-				    		manual user group:
+				    		Manual user group:
 				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
 				    			<%=userGroup.getName()%>
 				    		</a><br>
-				    		description: <%=userGroup.getDescription()%><br>	
-				    		persistence factory:
+				    		Description: <%=userGroup.getDescription()%><br>	
+				    		Persistence factory:
 							<a href="persistenceFactories.jsp?action=edit&name=<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>">
 								<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>
 							</a><br>
@@ -132,10 +132,10 @@ if (request.getParameter("action")==null ||
 				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
 				    			<%=userGroup.getName()%>
 				    		</a><br>
-				    		description: <%=userGroup.getDescription()%><br>	
+				    		Description: <%=userGroup.getDescription()%><br>	
 							LDAP server: <%=((LDAPUserGroup)userGroup).getServer()%><br>	
-							query: <%=((LDAPUserGroup)userGroup).getQuery()%><br>
-							persistence factory:
+							Query: <%=((LDAPUserGroup)userGroup).getQuery()%><br>
+							Persistence factory:
 							<a href="persistenceFactories.jsp?action=edit&name=<%=((LDAPUserGroup)userGroup).getPersistenceFactory()%>">
 								<%=((LDAPUserGroup)userGroup).getPersistenceFactory()%>
 							</a><br>
@@ -146,8 +146,8 @@ if (request.getParameter("action")==null ||
 				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
 				    			<%=userGroup.getName()%>
 				    		</a><br>
-				    		description: <%=userGroup.getDescription()%><br>	
-							virtual organization:
+				    		Description: <%=userGroup.getDescription()%><br>	
+							Virtual organization:
 							<a href="virtualOrganizations.jsp?action=edit&name=<%=((VOMSUserGroup)userGroup).getVirtualOrganization()%>">
 								<%=((VOMSUserGroup)userGroup).getVirtualOrganization()%>
 							</a><br>			
@@ -158,19 +158,19 @@ if (request.getParameter("action")==null ||
 <%
 			}
 			
-			out.write(	"non-VOMS certificates are " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "" : "not ") + "accepted<br>");
+			out.write(	"Non-VOMS certificates are " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "" : "not ") + "accepted<br>");
 
-			out.write(	"certificate's VO " + (!((VOMSUserGroup)userGroup).isIgnoreFQAN() ? "must match" : "is ignored") + "<br>");
+			out.write(	"VOMS certificate's VO " + (!((VOMSUserGroup)userGroup).isIgnoreFQAN() ? "must match" : "is ignored") + "<br>");
 
 			if( !((VOMSUserGroup)userGroup).isIgnoreFQAN() ) {
 				if ( !((VOMSUserGroup)userGroup).getVoGroup().equals("") ) {
 %>
-					certificate must match group: <%=((VOMSUserGroup)userGroup).getVoGroup()%><br>
+					VOMS certificate must match group: <%=((VOMSUserGroup)userGroup).getVoGroup()%><br>
 <%
 				}		
 				if ( !((VOMSUserGroup)userGroup).getVoRole().equals("") ) {
 %>
-					certificate must match role: <%=((VOMSUserGroup)userGroup).getVoRole()%><br>
+					VOMS certificate must match role: <%=((VOMSUserGroup)userGroup).getVoRole()%><br>
 <%
 				}
 			}
@@ -301,7 +301,7 @@ else if ("edit".equals(request.getParameter("action"))
 						configuration.getPersistenceFactories().values(), 
 						((ManualUserGroup)userGroup).getPersistenceFactory(),
 						null,
-						false)%>
+						false)%> .
 			</td>
 		</tr>
 <%
@@ -354,10 +354,10 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				Use SSL keystore (optional) 
+				Look for cert. DN in LDAP field 
 			</td>
 			<td> 
-				<input maxlength="256" size="64" name="keyStore" value="<%=((LDAPUserGroup)userGroup).getKeyStore()%>"/>
+				<input maxlength="256" size="16" name="certDNField" value="<%=((LDAPUserGroup)userGroup).getCertDNField()%>"/> .
 			</td>
 		</tr>
 	    <tr>
@@ -365,17 +365,9 @@ else if ("edit".equals(request.getParameter("action"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	/absolute/path/to/keystore
+		    	description
 		    </td>
 		</tr>
-		<tr>
-			<td nowrap style="text-align: right;">
-				with keystore password (optional)
-			</td>
-			<td> 
-				<input maxlength="256" size="32" type="password" name="keyPassword" value="<%=((LDAPUserGroup)userGroup).getKeyPassword()%>"/>
-			.</td>
-		</tr>	
 <%
 	} 
 	else if (userGroup instanceof VOMSUserGroup) {
@@ -447,7 +439,7 @@ else if ("edit".equals(request.getParameter("action"))
 					and role must match (optional)
 				</td>
 				<td>
-					<input name="role" value="<%=((VOMSUserGroup)userGroup).getVoRole()%>"/>.
+					<input name="role" value="<%=((VOMSUserGroup)userGroup).getVoRole()%>"/> .
 				</td>
 			</tr>
 <%

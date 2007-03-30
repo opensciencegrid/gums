@@ -109,9 +109,9 @@ if (request.getParameter("action")==null ||
 	   		<table class="userElement" width="100%">
 	  			<tr>
 		    		<td>
-			    		When mapped by account mapper <span style="color:blue"><%=manualAccountMapper.getName()%></span>,
-			    		map user with DN <span style="color:blue"><%=mapping.getDn()%></span>
-			    		to account <span style="color:blue"><%=mapping.getAccount()%></span>.
+			    		DN: <%=mapping.getDn()%><br>
+			    		account mapper: <a href="accountMappers.jsp?name=<%=manualAccountMapper.getName()%>&action=edit"><%=manualAccountMapper.getName()%></a><br>
+			    		account: <%=mapping.getAccount()%><br>
 		    		</td>
 	  			</tr>
 			</table>
