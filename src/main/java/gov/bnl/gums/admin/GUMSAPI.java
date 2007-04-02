@@ -30,7 +30,7 @@ public interface GUMSAPI extends Remote {
     
     String generateGridMapfile(String hostname);
     
-    String generateGridMapfile(String hostname, boolean includeFQAN);
+    String generateVoGridMapfile(String hostname);
     
     Configuration getConfiguration();
     

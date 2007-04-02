@@ -98,13 +98,28 @@ public class GUMSAPIImpl implements GUMSAPI {
     }
     
     public String generateGridMapfile(String hostname) {
-    	return generateGridMapfile(hostname, false);
-    }
-    
-    public String generateGridMapfile(String hostname, boolean includeFQAN) {
         try {
             if (hasReadAllAccess(currentUser())) {
-                String map = gums().getResourceManager().generateGridMapfile(hostname, includeFQAN);
+                String map = gums().getResourceManager().generateGridMapfile(hostname, false);
+                gumsResourceAdminLog.info(logUserAccess() + "Generated mapfile for host '" + hostname + "': " + map);
+                return map;
+            } else {
+                throw new AuthorizationDeniedException();
+            }
+        } catch (AuthorizationDeniedException e) {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to generate mapfile for host '" + hostname + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Unauthorized access to generate mapfile for host '" + hostname + "'");
+            throw e;
+        } catch (RuntimeException e) {
+            gumsResourceAdminLog.error(logUserAccess() + "Failed to generate mapfile for host '" + hostname + "' - " + e.getMessage());
+            throw e;
+        }   
+    }
+    
+    public String generateVoGridMapfile(String hostname) {
+        try {
+            if (hasReadAllAccess(currentUser())) {
+                String map = gums().getResourceManager().generateGridMapfile(hostname, true);
                 gumsResourceAdminLog.info(logUserAccess() + "Generated mapfile for host '" + hostname + "': " + map);
                 return map;
             } else {

@@ -28,7 +28,7 @@ public class GUMSAPIMock implements GUMSAPI {
         return "mapfile";
     }
     
-    public String generateGridMapfile(String hostname, boolean includeFQAN) {
+    public String generateVoGridMapfile(String hostname) {
         return "mapfile";
     }
 
