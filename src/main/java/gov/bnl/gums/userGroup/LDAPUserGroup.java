@@ -166,7 +166,7 @@ public class LDAPUserGroup extends UserGroup {
 		"\t\t\tdescription='"+getDescription()+"'\n"+
     	"\t\t\tserver='"+server+"'\n" +
 		"\t\t\tquery='"+query+"'\n" +
-		"\t\t\tquery='"+certDNField+"'\n" +
+		"\t\t\tcertDNField='"+certDNField+"'\n" +
 		"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }
     
