@@ -115,7 +115,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * @param groupname the secondary group name (i.e. "usatlas")
      */
     public void addToSecondaryGroup(String username, String groupname) {
-        addToSecondaryGroup("ou=Group", username, groupname);
+        addToSecondaryGroup(null, username, groupname);
     }
     
     /** Adds the username to the given secondary group. It expects the domain to be
@@ -133,12 +133,12 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
             DirContext subcontext = getDomainContext(context, domain);
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            NamingEnumeration result = subcontext.search("{0}", "(memberUid={1})", new Object[] {domain, username}, ctrls);
+            NamingEnumeration result;
+           	result = subcontext.search("cn="+groupname+",ou=Group", "(memberUid={0})", new Object[] {username}, ctrls);
             if (result.hasMore()) return;
             ModificationItem[] mods = new ModificationItem[1];
             mods[0] = new ModificationItem(subcontext.ADD_ATTRIBUTE,
                 new BasicAttribute("memberUid", username));
-            
             subcontext.modifyAttributes("cn="+groupname+",ou=Group", mods);
             log.trace("Added secondary group to user - user '" + username + "' to group '" + groupname + "' at '" + domain + "'");
         } catch (Exception e) {

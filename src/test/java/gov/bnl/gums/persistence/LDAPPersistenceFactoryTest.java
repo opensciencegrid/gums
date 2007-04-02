@@ -121,9 +121,10 @@ public class LDAPPersistenceFactoryTest extends TestCase {
         factory.removeUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test,ou=GUMS");
     }
 
- //   public void testAddToSecondaryGroupEntry() {
- //   	factory.addToSecondaryGroup("cn=griddevGroup,ou=Group", "jsmith", "test");
- //   }
+    public void testAddToSecondaryGroupEntry() {
+    	factory.addToSecondaryGroup("jsmith", "griddevGroup");
+    	factory.addToSecondaryGroup("jdoe", "griddevGroup");
+    }
     
 //    public static void main(String[] args) {
 //        LDAPPersistenceFactory factory = new LDAPPersistenceFactory();

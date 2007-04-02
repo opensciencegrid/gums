@@ -33,13 +33,23 @@ public class LDAPManualUserGroupDBTest extends ManualUserGroupDBTest {
     public void setUp() throws Exception {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
-        factory.setDefaultGumsOU("ou=GUMS,dc=griddev,dc=org");
+        factory.setDefaultGumsOU("ou=GUMS");
         try {
-            factory.getLDAPContext().destroySubcontext("group=testManual");
+            factory.getLDAPContext().destroySubcontext("group=testManualUserGroup,ou=GUMS");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        db = factory.retrieveManualUserGroupDB("testManual");
+        db = factory.retrieveManualUserGroupDB("testManualUserGroup");
+    }
+    
+    public void tearDown() {
+    	LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
+        factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
+    	try {
+    		factory.getLDAPContext().destroySubcontext("group=testManualUserGroup,ou=GUMS");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
 }

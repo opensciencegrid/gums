@@ -215,7 +215,7 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
         try {
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.ONELEVEL_SCOPE);
-            NamingEnumeration result = context.search(mapDN, "(!(user=*))", null, ctrls);
+            NamingEnumeration result = context.search(mapDN, "(user=*)", null, ctrls);
             while (result.hasMore()) {
                 SearchResult res = (SearchResult) result.next();
                 Attributes atts = res.getAttributes();
