@@ -22,7 +22,10 @@
 <%
 	String result = null;
 	try {
-		result = gums.generateGridMapfile(hostname, fqan!=null); 
+		if(fqan!=null)
+			result = gums.generateVoGridMapfile(hostname); 
+		else
+			result = gums.generateGridMapfile(hostname); 
 %>
 
 <p>Grid-mapfile for <%= hostname %>: </p>
