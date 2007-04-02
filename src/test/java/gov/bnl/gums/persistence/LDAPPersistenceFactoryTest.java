@@ -60,12 +60,12 @@ public class LDAPPersistenceFactoryTest extends TestCase {
         factory.setProperties(readLdapProperties());
         factory.setDefaultGumsOU("ou=GUMS,dc=griddev,dc=org");
         try {
-        factory.getLDAPContext().destroySubcontext("group=test,ou=GUMS,dc=griddev,dc=org");
+        factory.getLDAPContext().destroySubcontext("group=test");
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
-        factory.destroyMap("test", "map=test,ou=GUMS,dc=griddev,dc=org");
+        factory.destroyMap("test", "map=test");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,38 +85,45 @@ public class LDAPPersistenceFactoryTest extends TestCase {
     }
     
     public void testCreateUserGroup() {
-//        factory.createUserGroup("test", "group=test,ou=GUMS");
+        factory.createUserGroup("test", "group=test");
     }
     
     public void testCreateMap() {
- //       factory.createMap("test", "map=test,ou=GUMS");
+    	factory.createMap("test", "map=test");
     }
     
     public void testAddMapEntry() {
-//        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "grid001", "test",  "map=test,ou=GUMS");
-//        factory.createAccountInMap("grid002", "test", "map=test,ou=GUMS");
-//        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "grid002", "test", "map=test,ou=GUMS");
+    	factory.createMap("test", "map=test");
+        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "grid001", "test",  "map=test");
+        factory.createAccountInMap("grid002", "test", "map=test,ou=GUMS");
+        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "grid002", "test", "map=test");
     }
 
-    public void testAddUserSecondaryGroupEntry() {
-//    	factory.addToSecondaryGroup("grid001", "test");
-    	factory.addToSecondaryGroup("cn=griddevGroup,ou=Group", "jsmith", "test");
-    }
-    
     public void testRemoveMapEntry() {
-        factory.removeMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test",  "map=test,ou=GUMS");
-        factory.removeMapEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test",  "map=test,ou=GUMS");
+    	factory.createMap("test", "map=test");
+        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "grid001", "test",  "map=test");
+        factory.addMapEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "grid002", "test",  "map=test");
+        factory.removeMapEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test",  "map=test");
+        factory.removeMapEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test",  "map=test");
     }
 
     public void testAddUserGroupEntry() {
-//        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test,ou=GUMS");
-//        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test,ou=GUMS");
+        factory.createUserGroup("test", "group=test");
+        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test");
+        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test");
     }
     
     public void testRemoveUserGroupEntry() {
-//        factory.removeUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test,ou=GUMS");
-//        factory.removeUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test,ou=GUMS");
+        factory.createUserGroup("test", "group=test");
+        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test");
+        factory.addUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test");
+        factory.removeUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=John Smith", "test", "group=test");
+        factory.removeUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test");
     }
+
+ //   public void testAddToSecondaryGroupEntry() {
+ //   	factory.addToSecondaryGroup("cn=griddevGroup,ou=Group", "jsmith", "test");
+ //   }
     
 //    public static void main(String[] args) {
 //        LDAPPersistenceFactory factory = new LDAPPersistenceFactory();

@@ -523,7 +523,6 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * @param baseDN the GUMS base DN (defaults to "ou=GUMS")
      */
     public void setDefaultGumsOU(String defaultGumsOU)   {
-
         this.defaultGumsOU = defaultGumsOU;
     }
     

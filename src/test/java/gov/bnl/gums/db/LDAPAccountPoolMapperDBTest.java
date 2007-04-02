@@ -31,7 +31,7 @@ public class LDAPAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
         factory.setDefaultGumsOU("ou=GUMS,dc=griddev,dc=org");
         try {
-            factory.destroyMap("testManual", "map=testManual,ou=GUMS,dc=griddev,dc=org");
+            factory.destroyMap("testManual", "map=testManual");
         } catch (Exception e) {
             e.printStackTrace();
         }
