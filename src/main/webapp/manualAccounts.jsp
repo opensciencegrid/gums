@@ -172,7 +172,7 @@ else if ("add".equals(request.getParameter("action"))) {
 	    		i.e.
 		    </td>
 		    <td nowrap>
-			    /DC=org/DC=doegrids/OU=People/CN=John Smith 12345
+			    /DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345
 		    </td>
 		</tr>	
 		<tr>

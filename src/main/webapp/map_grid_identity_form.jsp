@@ -45,7 +45,7 @@ Determines the local account used for the grid identity on a specific service.
       </tr>
       <tr>
         <td style="text-align: right;">i.e.</td>
-        <td>/DC=org/DC=doegrids/OU=People/CN=John Smith 12345</td>
+        <td>/DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345</td>
       </tr>
       <tr>
         <td style="text-align: right;">VOMS FQAN for user:<br>

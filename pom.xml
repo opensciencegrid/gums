@@ -268,7 +268,7 @@
         </dependency>
         <dependency>
             <groupId>opensaml</groupId>
-            <artifactId>opensaml-renamed</artifactId>
+            <artifactId>opensaml</artifactId>
             <version>1.0.1</version>
         </dependency>
         <dependency>

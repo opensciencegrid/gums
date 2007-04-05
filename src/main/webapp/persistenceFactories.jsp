@@ -240,7 +240,7 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
 			<td nowrap style="text-align: right;">
-	    		with description:
+	    		with description
 		    </td>
 		    <td nowrap>
 				<input name="description" size="64" value="<%=persistenceFactory.getDescription()%>"/>
