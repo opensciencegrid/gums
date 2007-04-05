@@ -64,6 +64,7 @@
                   					<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-logging/commons-logging/1.0.3"/>
 							    </copy>
 								<ant antfile="ant.xml" target="createClientStub" inheritRefs="true"/>
+								<delete dir="target/temp"/>
 							</tasks>
 						</configuration>
 						<goals>
@@ -100,7 +101,7 @@
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/glite/glite-security-util-java/1.0.0dev"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/glite/glite-security-trustmanager/1.6.3dev"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/opensciencegrid/privilege/1.0.1"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/opensaml/opensaml-renamed/1.0.1"/>
+							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/opensaml/opensaml/1.0.1"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xml-security/xmlsec/1.1.0"/>
 							    </copy>
 								<copy filtering="on" todir="target/lib/endorsed">
@@ -116,9 +117,13 @@
 				                <copy todir="target/config">
 				                	<fileset dir="src/main/config/"/>
 				                </copy>
+				                <chmod file="target/scripts/gums-client" perm="ug+x"/>
+				                <chmod file="target/scripts/gums-client-cron" perm="ug+x"/>
 								<copy filtering="on" todir="target/lib">
 									<fileset includes="*.jar" dir="target"/>
 								</copy>
+								<mkdir dir="target/var"/>
+								<mkdir dir="target/var/log"/>
 							</tasks>
 						</configuration>
 						<goals>
@@ -317,7 +322,7 @@
         </dependency>
         <dependency>
             <groupId>opensaml</groupId>
-            <artifactId>opensaml-renamed</artifactId>
+            <artifactId>opensaml</artifactId>
             <version>1.0.1</version>
         </dependency>
         <dependency>
