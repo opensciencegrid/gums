@@ -132,7 +132,7 @@ class ConfigurationToolkit {
         
     }
     
-    private static class PropertiesRule extends Rule {
+    private static class PersistencePropertiesRule extends Rule {
         
         public void begin(String str, String str1, org.xml.sax.Attributes attributes) throws java.lang.Exception {
             Object digestor = getDigester().peek();
@@ -147,6 +147,10 @@ class ConfigurationToolkit {
                     MethodUtils.invokeMethod(digestor, "setDescription", new Object[] {value});
                 else if (name.equals("synchGroups"))
                     MethodUtils.invokeMethod(digestor, "setSynchGroups", new Object[] {new Boolean(value.equals("true"))});
+                else if (name.equals("caCertFile"))
+                    MethodUtils.invokeMethod(digestor, "setCaCertFile", new Object[] {value});
+                else if (name.equals("trustStorePassword"))
+                    MethodUtils.invokeMethod(digestor, "setTrustStorePassword", new Object[] {value});
                 else if (!name.equals("className"))
                 	properties.setProperty(name, value);
             }
@@ -216,17 +220,17 @@ class ConfigurationToolkit {
         
         digester.addObjectCreate("gums/persistenceFactories/hibernatePersistenceFactory", HibernatePersistenceFactory.class);
         digester.addSetProperties("gums/persistenceFactories/hibernatePersistenceFactory");
-        digester.addRule("gums/persistenceFactories/hibernatePersistenceFactory", new PropertiesRule());
+        digester.addRule("gums/persistenceFactories/hibernatePersistenceFactory", new PersistencePropertiesRule());
         digester.addSetNext("gums/persistenceFactories/hibernatePersistenceFactory", "addPersistenceFactory", "gov.bnl.gums.persistence.PersistenceFactory");
 
         digester.addObjectCreate("gums/persistenceFactories/ldapPersistenceFactory", LDAPPersistenceFactory.class);
         digester.addSetProperties("gums/persistenceFactories/ldapPersistenceFactory");
-        digester.addRule("gums/persistenceFactories/ldapPersistenceFactory", new PropertiesRule());
+        digester.addRule("gums/persistenceFactories/ldapPersistenceFactory", new PersistencePropertiesRule());
         digester.addSetNext("gums/persistenceFactories/ldapPersistenceFactory", "addPersistenceFactory", "gov.bnl.gums.persistence.PersistenceFactory");
         
         digester.addObjectCreate("gums/persistenceFactories/localPersistenceFactory", LocalPersistenceFactory.class);
         digester.addSetProperties("gums/persistenceFactories/localPersistenceFactory");
-        digester.addRule("gums/persistenceFactories/localPersistenceFactory", new PropertiesRule());
+        digester.addRule("gums/persistenceFactories/localPersistenceFactory", new PersistencePropertiesRule());
         digester.addSetNext("gums/persistenceFactories/localPersistenceFactory", "addPersistenceFactory", "gov.bnl.gums.persistence.PersistenceFactory");
 
         digester.addObjectCreate("gums/virtualOrganizations/virtualOrganization", VirtualOrganization.class);

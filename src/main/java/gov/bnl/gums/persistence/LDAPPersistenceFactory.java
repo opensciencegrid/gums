@@ -1,3 +1,4 @@
+
 /*
  * LDAPPersistenceFactory.java
  *
@@ -16,14 +17,31 @@ import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
 import gov.bnl.gums.*;
 
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.KeyStore.Entry;
+import java.security.KeyStore.ProtectionParameter;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import javax.naming.Context;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -36,6 +54,7 @@ import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,6 +76,9 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     private boolean synchGroups;
     private List contexts = Collections.synchronizedList(new LinkedList());// *** LDAP connection pool management    
 	private boolean skipReleaseContext = false;
+	private String trustStore = System.getProperty("java.home")+"/lib/security/cacerts";
+	private String trustStorePassword = "";
+	private String caCertFile = "";
     LDAPGroupIDAssigner assigner;
     
     public LDAPPersistenceFactory() {
@@ -208,6 +230,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public PersistenceFactory clone(Configuration configuration) {
     	LDAPPersistenceFactory persistenceFactory = new LDAPPersistenceFactory(configuration, getName());
     	persistenceFactory.setDescription(getDescription());
+    	persistenceFactory.setCaCertFile(getCaCertFile());
+    	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
     	return persistenceFactory;
@@ -331,6 +355,14 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     
     public List getDomains() {
     	return domains;
+    }
+    
+    public String getCaCertFile() {
+    	return caCertFile;
+    }
+    
+    public String getTrustStorePassword() {
+    	return trustStorePassword;
     }
     
     /** Returns a Context ready to be used (taken from the pool).
@@ -526,6 +558,20 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         this.defaultGumsOU = defaultGumsOU;
     }
     
+    public void setCaCertFile(String caCertFile) {
+       	System.setProperty("javax.net.ssl.trustStore", trustStore );
+    	this.caCertFile = caCertFile;
+    	if (!trustStorePassword.equals(""))
+    		addCertToTrustStore();
+    }
+
+    public void setTrustStorePassword(String trustStorePassword) {
+       	System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword );
+        this.trustStorePassword = trustStorePassword;
+    	if (!caCertFile.equals(""))
+    		addCertToTrustStore();
+    }
+    
     // *** gid management
     
     /**
@@ -537,7 +583,18 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         if (properties.getProperty("java.naming.factory.initial") == null) {
             properties.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
         }
-    	super.setProperties(properties);
+        
+        // For JUnit test only
+        if (properties.getProperty("caCertFile")!=null) {
+        	setCaCertFile(properties.getProperty("caCertFile"));
+        	properties.remove("caCertFile");
+        }
+        if (properties.getProperty("trustStorePassword")!=null) {
+        	setTrustStorePassword(properties.getProperty("trustStorePassword"));
+        	properties.remove("trustStorePassword");
+        }
+
+        super.setProperties(properties);
     }
     
     /**
@@ -567,7 +624,9 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	String retStr = "\t\t<ldapPersistenceFactory\n"+
     		"\t\t\tname='"+getName()+"'\n"+
     		"\t\t\tdescription='"+getDescription()+"'\n"+
-    		"\t\t\tsynchGroups='"+synchGroups+"'\n";
+    		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
+			"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
+			"\t\t\ttrustStorePassword='"+trustStorePassword+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();
     	while(keyIt.hasNext()) {
@@ -582,6 +641,28 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	
     	return retStr;
 	}
+    
+    private void addCertToTrustStore() {
+    	X509Certificate cert = null;
+    	try {
+			InputStream inStream = new FileInputStream(caCertFile);
+			CertificateFactory cf = CertificateFactory.getInstance("X.509");
+			cert = (X509Certificate)cf.generateCertificate(inStream);
+			inStream.close();
+		} catch (Exception e) {
+            log.error("Cannot open " + caCertFile, e);
+            adminLog.error("Cannot open " + caCertFile + ": " + e.getMessage());
+            return;
+		}
+		try {
+			KeyStore ks = KeyStore.getInstance("JKS");
+			ks.load(new FileInputStream(trustStore), trustStorePassword.toCharArray());
+			ks.setCertificateEntry("gumsLdapCa", cert);
+		} catch (Exception e) {
+            log.error("Couldn't put " + caCertFile + "into trust store", e);
+            adminLog.error("Couldn't put " + caCertFile + "into trust store: " + e.getMessage() );
+		}
+    }
     
     private String findGID(String domain, String groupname) {
         DirContext context = retrieveContext();

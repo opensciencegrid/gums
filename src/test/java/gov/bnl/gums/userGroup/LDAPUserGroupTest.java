@@ -51,8 +51,8 @@ public class LDAPUserGroupTest extends TestCase {
 
         Properties properties = LDAPPersistenceFactoryTest.readLdapProperties();
         String url = properties.getProperty("java.naming.provider.url");
-        server = url.substring("ldap://".length()).split("/")[0];
-        principal = url.substring("ldap://".length()).split("/")[1];
+        server = url.substring(url.indexOf("//")+2).split("/")[0].split(":")[0];
+        principal = url.substring(url.indexOf("//")+2).split("/")[1];
         query = "ou=People," + principal;
         ldapGroup.setServer(server);
         ldapGroup.setQuery(query);
