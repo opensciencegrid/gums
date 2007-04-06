@@ -118,7 +118,8 @@
 				                	<fileset dir="src/main/config/"/>
 				                </copy>
 				                <chmod file="target/scripts/gums-client" perm="ug+x"/>
-				                <chmod file="target/scripts/gums-client-cron" perm="ug+x"/>
+				                <chmod file="target/scripts/gums-host" perm="ug+x"/>
+				                <chmod file="target/scripts/gums-host-cron" perm="ug+x"/>
 								<copy filtering="on" todir="target/lib">
 									<fileset includes="*.jar" dir="target"/>
 								</copy>
