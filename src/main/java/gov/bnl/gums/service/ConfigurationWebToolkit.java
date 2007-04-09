@@ -208,6 +208,8 @@ public class ConfigurationWebToolkit implements Remote {
 			persistenceFactory.setName( request.getParameter("name").trim() );
 			persistenceFactory.setDescription( request.getParameter("description").trim() );
 			((LDAPPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
+			((LDAPPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
+			((LDAPPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
 			((LDAPPersistenceFactory)persistenceFactory).setProperties( getLdapProperties(persistenceFactory, request, false) );
 		} 
 		else if (type.equals(LocalPersistenceFactory.getTypeStatic())) {
@@ -215,6 +217,8 @@ public class ConfigurationWebToolkit implements Remote {
 			persistenceFactory.setName( request.getParameter("name").trim() );
 			persistenceFactory.setDescription( request.getParameter("description").trim() );
 			((LocalPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
+			((LocalPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
+			((LocalPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
 			Properties properties = getHibernateProperties(persistenceFactory, request, true);
 			properties.putAll(getLdapProperties(persistenceFactory, request, true));
 			((LocalPersistenceFactory)persistenceFactory).setProperties( properties );

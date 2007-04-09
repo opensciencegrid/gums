@@ -25,7 +25,7 @@
       <parameter name="className" value="gov.bnl.gums.service.GUMSAuthZService"/>
       <parameter name="wsdlPortType" value="SAMLRequestPortType"/>
       <parameter name="allowedMethods" value="*"/>
-      <parameter name="scope" value="Session"/>
+      <parameter name="scope" value="Request"/>
 
       <typeMapping
         xmlns:ns="http://www.gridforum.org/namespaces/2004/03/ogsa-authz/saml"

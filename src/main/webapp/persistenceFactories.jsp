@@ -137,8 +137,8 @@ if (request.getParameter("action")==null ||
 				    			<%=persistenceFactory.getName()%>
 				    		</a><br>
 				    		Description: <%=persistenceFactory.getDescription()%><br>
-				    		MySQL URL: <%=((LocalPersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url")%><br>
-				    		LDAP URL: <%=((LocalPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url")%><br>
+				    		MySQL URL: <%=((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.url")%><br>
+				    		LDAP URL: <%=((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.provider.url")%><br>
 <%
 		}
 %>
@@ -274,7 +274,7 @@ else if ("edit".equals(request.getParameter("action"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	jdbc:mysql://localhost.localdomain:3306/GUMS_1_1
+		    	jdbc:mysql://localhost:3306/GUMS_1_1
 		    </td>
 		</tr>
 		<tr>
@@ -323,23 +323,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>	
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		with authentication type 
-		    </td>
-		    <td nowrap>
-				<%=ConfigurationWebToolkit.createSelectBox("ldapAuthentication", 
-					authenticationTypes, 
-					((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.authentication"),
-					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-					false)+
-					(((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.authentication").equals("simple") ? "" : ".")%>
-		    </td>
-		</tr>
-<%
-		if (((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.authentication").equals("simple")) {
-%>
-		<tr>
-    		<td nowrap style="text-align: right;">
-	    		and principle 
+	    		with LDAP principle 
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="64" name="ldapPrincipal" value="<%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.principal")%>"/>
@@ -355,15 +339,44 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>	
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		and password 
+	    		and LDAP password 
 		    </td>
 		    <td nowrap>
 		    	<input type="password" maxlength="256" size="32" name="ldapCredentials" value="<%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.credentials")%>"/> .
 		    </td>
 		</tr>
-<%
-		}
-%>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		using CA certificate file (SSL only)
+		    </td>
+		    <td nowrap>
+		    	<input maxlength="256" size="64" name="caCertFile" value="<%=((LDAPPersistenceFactory)persistenceFactory).getCaCertFile()%>"/>
+		    </td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	/etc/grid-security/certificates/1c3f2ca8.0
+		    </td>
+		</tr>			
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		and trust store password (SSL only)
+		    </td>
+		    <td nowrap>
+		    	<input type="password" maxlength="256" size="32" name="tsPassword" value="<%=((LDAPPersistenceFactory)persistenceFactory).getTrustStorePassword()%>"/> .
+		    </td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	changeit
+		    </td>
+		</tr>	
 		<tr>
     		<td nowrap style="text-align: right;">
 	    		Update GID for every access? 
@@ -390,12 +403,12 @@ else if ("edit".equals(request.getParameter("action"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	jdbc:mysql://localhost.localdomain:3306/GUMS_1_1
+		    	jdbc:mysql://localhost:3306/GUMS_1_1
 		    </td>
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		with username 
+	    		with MySQL username 
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="32" name="mySqlUsername" value="<%=((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.username")%>"/>
@@ -411,7 +424,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		and password 
+	    		and MySQL password 
 		    </td>
 		    <td nowrap>
 		    	<input type="password" maxlength="256" size="32" name="mySqlPassword" value="<%=((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.password")%>"/>
@@ -435,23 +448,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		with authentication type 
-		    </td>
-		    <td nowrap>
-				<%=ConfigurationWebToolkit.createSelectBox("ldapAuthentication", 
-					authenticationTypes, 
-					((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.authentication"),
-					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-					false)+
-					(((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.authentication").equals("simple") ? "" : ".")%>
-		    </td>
-		</tr>
-<%
-		if (((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.authentication").equals("simple")) {
-%>
-		<tr>
-    		<td nowrap style="text-align: right;">
-	    		and principle
+	    		with LDAP principle
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="64" name="ldapPrincipal" value="<%=((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.principal")%>"/>
@@ -467,15 +464,44 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>			
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		and password
+	    		and LDAP password
 		    </td>
 		    <td nowrap>
 		    	<input type="password" maxlength="256" size="32" name="ldapCredentials" value="<%=((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.credentials")%>"/> .
 		    </td>
 		</tr>
-<%
-		}
-%>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		using CA certificate file (SSL only)
+		    </td>
+		    <td nowrap>
+		    	<input maxlength="256" size="64" name="caCertFile" value="<%=((LocalPersistenceFactory)persistenceFactory).getCaCertFile()%>"/>
+		    </td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	/etc/grid-security/certificates/1c3f2ca8.0
+		    </td>
+		</tr>			
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		and trust store password (SSL only)
+		    </td>
+		    <td nowrap>
+		    	<input type="password" maxlength="256" size="32" name="tsPassword" value="<%=((LocalPersistenceFactory)persistenceFactory).getTrustStorePassword()%>"/> .
+		    </td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	changeit
+		    </td>
+		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
 	    		Update GID for every access? 
