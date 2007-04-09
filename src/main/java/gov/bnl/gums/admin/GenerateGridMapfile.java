@@ -18,9 +18,9 @@ public class GenerateGridMapfile extends GenerateMap {
      */
     public GenerateGridMapfile() {
         syntax = "[-f FILENAME] [SERVICEDN]";
-        description = "Generates the grid-mapfile for a service/host. " +
-            "When using ./bin/gums, SERVICEDN must be specified. " +
-            "When using ./bin/gums-host, SERVICEDN defaults to the host certificate DN.";
+        description = "Generates the grid-mapfile for a service/host. ";
+//            "When using ./bin/gums, SERVICEDN must be specified. " +
+//            "When using ./bin/gums-host, SERVICEDN defaults to the host certificate DN.";
     }
 
     protected String generateMap(String hostname) throws Exception {

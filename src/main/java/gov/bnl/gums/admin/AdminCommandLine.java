@@ -22,6 +22,8 @@ public class AdminCommandLine extends GUMSCommandLine {
             "Generate grid3-user-vo-map.txt for a given service/host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateGridMapfile",
             "Generate grid-mapfile for a given service/host.");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateVoGridMapfile",
+        	"Generate a VO grid-mapfile for a given service/host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.ManualGroupAdd",
             "Includes a DN in a group.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.ManualGroupRemove",

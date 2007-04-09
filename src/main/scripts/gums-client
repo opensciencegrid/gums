@@ -44,14 +44,14 @@ ENDORSED="../lib/endorsed"
 
 # defaults for the security code
 CERTDIR=${X509_CERT_DIR-/etc/grid-security/certificates}
-USER_CERT=/etc/grid-security/hostcert.pem
-USER_KEY=/etc/grid-security/hostkey.pem
+USER_CERT=${X509_USER_CERT}
+USER_KEY=${X509_USER_KEY}
 
 SECURITY_OPTS="-Daxis.socketSecureFactory=org.glite.security.trustmanager.axis.AXISSocketFactory \
 -DsslCAFiles=$CERTDIR/*.0 \
 -DsslCertfile=$USER_CERT -DsslKey=$USER_KEY"
 
-java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp $CLASSPATH gov.bnl.gums.admin.AdminCommandLine "$@"
+java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp ../config:$CLASSPATH gov.bnl.gums.admin.AdminCommandLine "$@"
 RETURN=$?
 chmod 600 ../var/log/*`whoami`*
 exit $RETURN

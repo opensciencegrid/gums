@@ -51,7 +51,7 @@ KEY=/etc/grid-security/hostkey.pem
 SECURITY_OPTS="-Daxis.socketSecureFactory=org.glite.security.trustmanager.axis.AXISSocketFactory 
 -DsslCAFiles=$CERTDIR/*.0 -DsslCertFile=$CERT -DsslKey=$KEY"
 
-java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp $CLASSPATH gov.bnl.gums.admin.HostCommandLine "$@"
+java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp ../config:$CLASSPATH gov.bnl.gums.admin.HostCommandLine "$@"
 RETURN=$?
 chmod 600 ../var/log/*`whoami`*
 exit $RETURN

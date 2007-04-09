@@ -37,14 +37,12 @@ public class MapAccount extends RemoteCommand {
 	    }
 	
 	    String accountName = cmd.getArgs()[0];
-	
-	    for (int nArg = 2; nArg < cmd.getArgs().length; nArg++) {
-	        String dN = getGums().mapAccount(accountName);
-	        if (dN == null) {
-	            System.err.println("No map was found for account " + accountName);
-	            System.exit(-1);
-	        }
-	        System.out.println(accountName);
-	    }
+
+        String dN = getGums().mapAccount(accountName);
+        if (dN == null) {
+            System.err.println("No map was found for account " + accountName);
+            System.exit(-1);
+        }
+        System.out.println(accountName);
 	}
 }
