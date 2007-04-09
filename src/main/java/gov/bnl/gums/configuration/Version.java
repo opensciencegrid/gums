@@ -2,7 +2,7 @@ package gov.bnl.gums.configuration;
 
 /**
  * Simple class needed by digester to parse version from configuration file
- * @author jpackard
+ * @author Jay Packard
  *
  */
 public class Version {

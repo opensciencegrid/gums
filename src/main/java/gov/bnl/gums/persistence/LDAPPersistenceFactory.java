@@ -663,8 +663,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 			ks.store(fos, trustStorePassword.toCharArray());
 			fos.close();
 		} catch (Exception e) {
-            log.error("Couldn't put " + caCertFile + "into trust store", e);
-            adminLog.error("Couldn't put " + caCertFile + "into trust store: " + e.getMessage() );
+            log.error("Couldn't put " + caCertFile + " into trust store", e);
+            adminLog.error("Couldn't put " + caCertFile + " into trust store: " + e.getMessage() );
 		}
     }
     
