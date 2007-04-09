@@ -231,7 +231,7 @@ else if ("edit".equals(request.getParameter("action"))
 				by querying VOMS server at base URL
 			</td>
 			<td>
-				<input maxlength="256" size="32" name="baseURL" value="<%=virtualOrganization.getBaseUrl()%>"/>(additional path in user group)
+				<input maxlength="256" size="32" name="baseURL" value="<%=virtualOrganization.getBaseUrl()%>"/>{remainder URL}
 			</td>
 		</tr>
 	    <tr>
