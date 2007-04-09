@@ -101,7 +101,7 @@ public abstract class AbstractCommand {
             execute(cmd);
         } catch (AxisFault e) {
             if (e.getCause() != null) {
-                log.info("An error accoured when connection to GUMS", e);
+                log.info("An error ocurred when connection to GUMS", e);
 
                 if (e.getCause() instanceof ConnectException) {
                     System.err.println(

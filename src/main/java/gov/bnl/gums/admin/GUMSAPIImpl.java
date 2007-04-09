@@ -45,27 +45,34 @@ public class GUMSAPIImpl implements GUMSAPI {
     }
     
     public void addAccountRange(String persistenceManager, String groupName, String range) {
-        String firstAccount = range.substring(0, range.indexOf('-'));
-        String lastAccountN = range.substring(range.indexOf('-') + 1);
-        String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
-        String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
-        int nFirstAccount = Integer.parseInt(firstAccountN);
-        int nLastAccount = Integer.parseInt(lastAccountN);
-
-        StringBuffer last = new StringBuffer(firstAccount);
-        String nLastAccountString = Integer.toString(nLastAccount);
-        last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
-        
-        System.out.println("Adding accounts between '" + firstAccount + "' and '" + last.toString() + "' to pool '" + groupName + "'");
-        
-        StringBuffer buf = new StringBuffer(firstAccount);
-        int len = firstAccount.length();
-        for (int account = nFirstAccount; account <= nLastAccount; account++) {
-            String nAccount = Integer.toString(account);
-            buf.replace(len - nAccount.length(), len, nAccount);
-            addPoolAccount(persistenceManager, groupName, buf.toString());
-            System.out.println(buf.toString() + " added");
-        }
+    	if (hasWriteAccess(currentUser())) {
+	        String firstAccount = range.substring(0, range.indexOf('-'));
+	        String lastAccountN = range.substring(range.indexOf('-') + 1);
+	        String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
+	        String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
+	        int nFirstAccount = Integer.parseInt(firstAccountN);
+	        int nLastAccount = Integer.parseInt(lastAccountN);
+	
+	        StringBuffer last = new StringBuffer(firstAccount);
+	        String nLastAccountString = Integer.toString(nLastAccount);
+	        last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
+	        
+	        System.out.println("Adding accounts between '" + firstAccount + "' and '" + last.toString() + "' to pool '" + groupName + "'");
+	        
+	        StringBuffer buf = new StringBuffer(firstAccount);
+	        int len = firstAccount.length();
+	        for (int account = nFirstAccount; account <= nLastAccount; account++) {
+	            String nAccount = Integer.toString(account);
+	            buf.replace(len - nAccount.length(), len, nAccount);
+	            addPoolAccount(persistenceManager, groupName, buf.toString());
+	            System.out.println(buf.toString() + " added");
+	        }
+    	}
+		else {
+	        gumsResourceAdminLog.info(logUserAccess() + "Failed to add account range because user doesn't have write access");
+			siteLog.info(logUserAccess() + "Failed to add account range because user doesn't have write access");
+			throw new AuthorizationDeniedException();
+		}
     }
     
     public void backupConfiguration() {
@@ -80,7 +87,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     public String generateGrid3UserVoMap(String hostname) {
         try {
-            if (hasReadAllAccess(currentUser())) {
+            if (hasReadAllAccess(currentUser(), hostname)) {
                 String map = gums().getResourceManager().generateGrid3UserVoMap(hostname);
                 gumsResourceAdminLog.info(logUserAccess() + "Generated grid3 vo-user map for host '" + hostname + "': " + map);
                 return map;
@@ -99,7 +106,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     public String generateGridMapfile(String hostname) {
         try {
-            if (hasReadAllAccess(currentUser())) {
+            if (hasReadAllAccess(currentUser(), hostname)) {
                 String map = gums().getResourceManager().generateGridMapfile(hostname, false);
                 gumsResourceAdminLog.info(logUserAccess() + "Generated mapfile for host '" + hostname + "': " + map);
                 return map;
@@ -118,7 +125,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     public String generateVoGridMapfile(String hostname) {
         try {
-            if (hasReadAllAccess(currentUser())) {
+            if (hasReadAllAccess(currentUser(), hostname)) {
                 String map = gums().getResourceManager().generateGridMapfile(hostname, true);
                 gumsResourceAdminLog.info(logUserAccess() + "Generated mapfile for host '" + hostname + "': " + map);
                 return map;
@@ -239,7 +246,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     public String mapAccount(String accountName) {
         try {
-            if (hasReadAllAccess(currentUser())) {
+            if (hasReadAllAccess(currentUser(), null)) {
                 String DNs = gums().getResourceManager().mapAccount(accountName);
                 gumsResourceAdminLog.info(logUserAccess() + "Mapped the account '" + accountName + "' to '" + DNs + "'");
                 return DNs;
@@ -275,7 +282,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     public String mapUser(String hostname, String userDN, String fqan) {
         try {
-            if ( (hasReadSelfAccess(currentUser()) && currentUser().getCertificateDN().equals(userDN)) || hasReadAllAccess(currentUser())) {
+            if ( (hasReadSelfAccess(currentUser()) && currentUser().getCertificateDN().equals(userDN)) || hasReadAllAccess(currentUser(), hostname)) {
                 String username = gums().getResourceManager().map(hostname, new GridUser(userDN, fqan));
                 gumsResourceAdminLog.info(logUserAccess() + "Mapped on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' to '" + username + "'");
                 return username;
@@ -321,6 +328,7 @@ public class GUMSAPIImpl implements GUMSAPI {
             throw e;
         }
     }
+    
     private void addPoolAccount(String persistanceManager, String group, String username) {
         try {
             if (hasWriteAccess(currentUser())) {
@@ -365,20 +373,6 @@ public class GUMSAPIImpl implements GUMSAPI {
         return gums;
     }    
     
-    private boolean hasReadAllAccess(GridUser user) {
-        if (user == null) return false;
-        if (gums().getConfiguration().getReadAllUserGroups() == null)
-            return false;
-        Collection readAllUserGroups = gums().getConfiguration().getReadAllUserGroups();
-        Iterator it = readAllUserGroups.iterator();
-        while (it.hasNext()) {
-        	UserGroup userGroupManager = (UserGroup)it.next();
-        	if (userGroupManager.isInGroup(user))
-        		return true;
-        }
-        return false;
-    }
-
     private boolean hasReadSelfAccess(GridUser currentUser) {
         if (currentUser == null) return false;
         if (gums().getConfiguration().getReadSelfUserGroups() == null)
@@ -390,6 +384,22 @@ public class GUMSAPIImpl implements GUMSAPI {
         	if (userGroupManager.isInGroup(currentUser))
         		return true;
         }
+        return false;
+    }
+
+    private boolean hasReadAllAccess(GridUser user, String hostname) {
+        if (user == null) return false;
+        if (gums().getConfiguration().getReadAllUserGroups() != null) {
+	        Collection readAllUserGroups = gums().getConfiguration().getReadAllUserGroups();
+	        Iterator it = readAllUserGroups.iterator();
+	        while (it.hasNext()) {
+	        	UserGroup userGroupManager = (UserGroup)it.next();
+	        	if (userGroupManager.isInGroup(user))
+	        		return true;
+	        }
+        }
+        if (hostname!=null)
+        	return user.getCertificateDN().indexOf(hostname) != -1;
         return false;
     }
     
