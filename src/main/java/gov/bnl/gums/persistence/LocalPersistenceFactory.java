@@ -32,6 +32,11 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		return "local";
 	}
     
+    private Log log = LogFactory.getLog(LocalPersistenceFactory.class);
+    private HibernatePersistenceFactory mysql;    
+    private LDAPPersistenceFactory ldap;
+	private boolean synchGroups = false;
+    
 	private class LocalAccountPoolMapperDB implements AccountPoolMapperDB {
         private AccountPoolMapperDB mysqlDB;
         private String group;
@@ -98,12 +103,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
         }
         
     }
-    private Log log = LogFactory.getLog(LocalPersistenceFactory.class);
-    private HibernatePersistenceFactory mysql;    
-    private LDAPPersistenceFactory ldap;
 	
-	private boolean synchGroups;
-    
     public LocalPersistenceFactory() {
     	super();
         mysql = new HibernatePersistenceFactory();
@@ -132,6 +132,10 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     	return persistenceFactory;
     }
     
+    public String getCaCertFile() {
+    	return ldap.getCaCertFile();
+    }
+    
     public Properties getLDAPProperties() {
         return filterProperties("ldap.");
     }
@@ -139,7 +143,11 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     public Properties getMySQLProperties() {
         return filterProperties("mysql.");
     }
-
+    
+    public String getTrustStorePassword() {
+    	return ldap.getTrustStorePassword();
+    }
+    
     public String getType() {
 		return "local";
 	}
@@ -149,7 +157,6 @@ public class LocalPersistenceFactory extends PersistenceFactory {
      * @return Value of property synchGroups.
      */
     public boolean isSynchGroups() {
-
         return this.synchGroups;
     }
 
@@ -181,6 +188,10 @@ public class LocalPersistenceFactory extends PersistenceFactory {
         return mysql.retrieveUserGroupDB(name);
     }
     
+    public void setCaCertFile(String caCertFile) {
+        ldap.setCaCertFile( caCertFile );
+    }
+    
     public void setConfiguration(Configuration configuration) {
     	super.setConfiguration(configuration);
     }
@@ -194,21 +205,22 @@ public class LocalPersistenceFactory extends PersistenceFactory {
         mysql.setProperties(getMySQLProperties());
         ldap.setProperties(getLDAPProperties());
     }
-
-    /**
-     * Setter for property synchGroups.
-     * @param synchGroups New value of property synchGroups.
-     */
+    
     public void setSynchGroups(boolean synchGroups) {
-
-        this.synchGroups = synchGroups;
+    	this.synchGroups = synchGroups;
     }
+
+    public void setTrustStorePassword(String trustStorePassword) {
+        ldap.setTrustStorePassword(trustStorePassword);
+    }    
     
 	public String toXML() {
     	String retStr = "\t\t<localPersistenceFactory\n"+
     		"\t\t\tname='"+getName()+"'\n"+
     		"\t\t\tdescription='"+getDescription()+"'\n"+
-    		"\t\t\tsynchGroups='"+synchGroups+"'\n";
+    		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
+    		"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
+    		"\t\t\ttrustStorePassword='"+getTrustStorePassword()+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();
     	while(keyIt.hasNext()) {

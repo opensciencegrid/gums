@@ -39,18 +39,23 @@
 		        <ldapPersistenceFactory
 		        	name='{@name}'
 		        	description=''
+					synchGroups='{@synchGroups}'
+		        	caCertFile=''
+		        	trustStorePassword=''
 					java.naming.provider.url='{@java.naming.provider.url}'
 					java.naming.factory.initial='{@java.naming.factory.initial}'
 					java.naming.security.authentication='{@java.naming.security.authentication}'
 					java.naming.security.principal='{@java.naming.security.principal}'
 					java.naming.security.credentials='{@java.naming.security.credentials}'
-					synchGroups='{@synchGroups}'
 		        />
 		      </xsl:if>
   		      <xsl:if test="@className = 'gov.bnl.gums.BNLPersistenceFactory'">
 		        <localPersistenceFactory
 		        	name='{@name}'
 		        	description=''
+					synchGroups='{@synchGroups}'
+		        	caCertFile=''
+		        	trustStorePassword=''
 		        	mysql.jdbcDriver='{@mysql.jdbcDriver}'
 					mysql.hibernate.connection.driver_class='{@mysql.hibernate.connection.driver_class}'
 					mysql.hibernate.dialect='{@mysql.hibernate.dialect}'
@@ -66,7 +71,6 @@
 					ldap.java.naming.security.authentication='{@ldap.java.naming.security.authentication}'
 					ldap.java.naming.security.principal='{@ldap.java.naming.security.principal}'
 					ldap.java.naming.security.credentials='{@ldap.java.naming.security.credentials}'
-					synchGroups='{@synchGroups}'
 		        />
 		      </xsl:if>		      
 		    </xsl:for-each>

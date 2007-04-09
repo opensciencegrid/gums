@@ -20,6 +20,7 @@ import gov.bnl.gums.*;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -655,9 +656,12 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
             return;
 		}
 		try {
-			KeyStore ks = KeyStore.getInstance("JKS");
+			KeyStore ks = KeyStore.getInstance("jks");
 			ks.load(new FileInputStream(trustStore), trustStorePassword.toCharArray());
-			ks.setCertificateEntry("gumsLdapCa", cert);
+			ks.setCertificateEntry("gumsldapda", cert);
+			FileOutputStream fos = new FileOutputStream(trustStore);
+			ks.store(fos, trustStorePassword.toCharArray());
+			fos.close();
 		} catch (Exception e) {
             log.error("Couldn't put " + caCertFile + "into trust store", e);
             adminLog.error("Couldn't put " + caCertFile + "into trust store: " + e.getMessage() );

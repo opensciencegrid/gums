@@ -219,17 +219,31 @@ public class FileConfigurationStore implements ConfigurationStore {
     
     private void copyFile(String source, String target) {
         try {
-			FileInputStream fis  = new FileInputStream(source);
-			FileOutputStream fos = new FileOutputStream(target);
-			byte[] buf = new byte[1024];
-			int i = 0;
-			while((i=fis.read(buf))!=-1)
-			  fos.write(buf, 0, i);
-			fis.close();
-			fos.close();
+        	if (System.getProperty("os.name").indexOf("Linux")!=-1) {
+        		 // This will preserve soft links
+    			String[] cpArgs = new String[4];
+    			cpArgs[0] = "/bin/cp";
+    			cpArgs[1] = "-f";
+    			cpArgs[2] = source;
+    			cpArgs[3] = target;
+				if (Runtime.getRuntime().exec(cpArgs).waitFor() != 0)
+					throw new RuntimeException("Error writing file");
+        	}
+        	else {
+				FileInputStream fis  = new FileInputStream(source);
+				FileOutputStream fos = new FileOutputStream(target);
+				byte[] buf = new byte[1024];
+				int i = 0;
+				while((i=fis.read(buf))!=-1)
+				  fos.write(buf, 0, i);
+				fis.close();
+				fos.close();
+        	}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}

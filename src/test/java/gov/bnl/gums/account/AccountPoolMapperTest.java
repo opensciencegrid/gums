@@ -34,6 +34,7 @@ public class AccountPoolMapperTest extends TestCase {
     }
     
     public void setUp() {
+    	System.getProperty("os.name");
     	Configuration configuration = new Configuration();
         AccountPoolMapper accountMapper = new AccountPoolMapper(configuration, "myAccountPoolMapper");
         configuration.addAccountMapper(accountMapper);
