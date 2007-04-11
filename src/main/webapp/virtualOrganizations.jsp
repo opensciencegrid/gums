@@ -121,18 +121,6 @@ if (request.getParameter("action")==null ||
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=virtualOrganization.getPersistenceFactory()%>">
 				    			<%=virtualOrganization.getPersistenceFactory()%>
 				    		</a><br>
-<%
-		if ( !virtualOrganization.getSslKey().equals("") ) {
-			out.write(		"SSL key " + virtualOrganization.getSslKey() + "<br>" );
-		}
-
-		if ( !virtualOrganization.getSslCertfile().equals("") ) {
-			out.write(		"SSL certificate file " + virtualOrganization.getSslCertfile() + "<br>");
-		}
-
-		if ( !virtualOrganization.getSslCAFiles().equals("") )
-			out.write(		"SSL CA files " + virtualOrganization.getSslCAFiles() + "<br>");
-%>						
 						</td>
 			      	</tr>
 				</table>
