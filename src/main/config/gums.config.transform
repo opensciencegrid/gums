@@ -56,7 +56,6 @@
 					synchGroups='{@synchGroups}'
 		        	caCertFile=''
 		        	trustStorePassword=''
-		        	mysql.jdbcDriver='{@mysql.jdbcDriver}'
 					mysql.hibernate.connection.driver_class='{@mysql.hibernate.connection.driver_class}'
 					mysql.hibernate.dialect='{@mysql.hibernate.dialect}'
 					mysql.hibernate.connection.url='{@mysql.hibernate.connection.url}'

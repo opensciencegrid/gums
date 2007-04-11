@@ -101,9 +101,9 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     	return "\t\t<gecosLdapAccountMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tdescription='"+getDescription()+"'\n"+
-			"\t\t\tjndiLdapUrl='"+jndiLdapUrl+"'/>\n\n"+
+			"\t\t\tjndiLdapUrl='"+jndiLdapUrl+"'\n"+
     		"\t\t\tgecosField='"+gecosField+"'\n"+
-			"\t\t\taccountField='"+accountField+"'\n";
+			"\t\t\taccountField='"+accountField+"'/>\n\n";
 
     }
 
