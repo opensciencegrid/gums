@@ -15,18 +15,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class Configuration {
-    private static Log log = LogFactory.getLog(Configuration.class);
-    private static Configuration conf = new Configuration();
-    public static Configuration getInstance() {
+	static private Log log = LogFactory.getLog(Configuration.class);
+	static private Configuration conf = new Configuration();
+	
+	static public Configuration getInstance() {
         return conf;
     }
+	
     private URL locationURL;
     private URL authZLocationURL;
     private boolean direct;
-
     private boolean loaded;
 
     public URL getGUMSAuthZLocation() {

@@ -17,29 +17,29 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class GUMSCommandLine {
-    public static String command = "gums";
-    private static Log log = LogFactory.getLog(GUMSCommandLine.class);
-    private static Map commands = new Hashtable();
-    private static SortedMap commandDescriptions = new TreeMap();
+	static public String command = "gums";
+	static private Log log = LogFactory.getLog(GUMSCommandLine.class);
+	static private Map commands = new Hashtable();
+	static private SortedMap commandDescriptions = new TreeMap();
 
-    public static void addCommand(String className, String description) {
+	static public void addCommand(String className, String description) {
         String command = CommandLineToolkit.getCommandName(className);
 
         commands.put(command, className);
         commandDescriptions.put(command, description);
     }
 
-    public static void clearCommands() {
+	static public void clearCommands() {
         commands = new Hashtable();
     }
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+	static public void main(String[] args) {
         if (args.length == 0) {
             printHelp();
             System.exit(1);
@@ -62,7 +62,7 @@ public class GUMSCommandLine {
         System.exit(retCode);
     }
 
-    public static void printHelp() {
+	static public void printHelp() {
         System.out.println("usage: " + command + " command [command-options] ");
         System.out.println("Commands:");
 
@@ -79,7 +79,7 @@ public class GUMSCommandLine {
         System.out.println("  " + command + " command --help");
     }
 
-    public static int runCommand(String command, String[] args) {
+	static public int runCommand(String command, String[] args) {
         String className = (String) commands.get(command);
 
         if (className == null) {

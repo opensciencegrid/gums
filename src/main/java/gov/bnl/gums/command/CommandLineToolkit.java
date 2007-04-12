@@ -6,10 +6,10 @@
 package gov.bnl.gums.command;
 
 /**
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class CommandLineToolkit {
-    public static String getCommandName(String className) {
+	static public String getCommandName(String className) {
         className = className.substring(className.lastIndexOf('.') + 1);
 
         StringBuffer buffer = new StringBuffer(className);

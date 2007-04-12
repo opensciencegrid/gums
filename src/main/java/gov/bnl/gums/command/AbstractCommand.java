@@ -19,11 +19,16 @@ import org.apache.commons.logging.LogFactory;
 import org.glite.security.trustmanager.ContextWrapper;
 
 /**
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public abstract class AbstractCommand {
-    protected static AbstractCommand command;
-    private Log log = LogFactory.getLog(AbstractCommand.class);
+	static protected AbstractCommand command;
+
+    static public void main(String[] args) {
+        command.execute(args);
+    }
+    
+	private Log log = LogFactory.getLog(AbstractCommand.class);
     private String clientDN;
     private boolean usingProxy;
     protected String commandName;
@@ -31,10 +36,6 @@ public abstract class AbstractCommand {
     protected String description;
     protected boolean failOnArguments;
     
-    public static void main(String[] args) {
-        command.execute(args);
-    }
-
     /**
      * Creates a new AbstractWebCommand object.
      */
