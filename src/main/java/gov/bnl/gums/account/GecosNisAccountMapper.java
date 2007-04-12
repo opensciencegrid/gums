@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
 
 /** Matches the DN with the account information retrieved from a NIS server.
  *
- * @author Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class GecosNisAccountMapper extends GecosAccountMapper {
     static private Log log = LogFactory.getLog(GecosNisAccountMapper.class);

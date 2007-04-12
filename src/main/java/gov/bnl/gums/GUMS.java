@@ -9,7 +9,6 @@ package gov.bnl.gums;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.configuration.ConfigurationStore;
 import gov.bnl.gums.configuration.FileConfigurationStore;
-import gov.bnl.gums.configuration.ResourceManager;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,7 +22,7 @@ import org.apache.commons.logging.*;
  * instanciating an object of this class, and use it to reach the rest of the
  * functionalities.
  *
- * @author  Gabriele Carcassi
+ * @author  Gabriele Carcassi, Jay Packard
  */
 public class GUMS {
     static final public String siteAdminLog = "gums.siteAdmin";
@@ -31,12 +30,13 @@ public class GUMS {
     static final public String version = "1.2";
     static private Log log = LogFactory.getLog(GUMS.class);
     static private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-    private static Timer timer;
+    static private Timer timer;
     
-    public static String getVersion() {
+    static public String getVersion() {
     	return version;
     }
-    private static synchronized void startUpdateThread(final GUMS gums) {
+    
+    static private synchronized void startUpdateThread(final GUMS gums) {
         // If JNDI property is set, run the update every x minutes
         if (timer == null) {
             try {
@@ -67,10 +67,9 @@ public class GUMS {
             }
         }
     }
+    
     private Configuration conf;
-    
     private ResourceManager resMan = new ResourceManager(this);
-    
     protected ConfigurationStore confStore;
     
     /** Creates and initilializes a new instance of GUMS. */
@@ -132,7 +131,7 @@ public class GUMS {
 	        else
 	        	throw new RuntimeException("cannot write configuration because it is read-only");
     	} catch(Exception e) {
-    		throw new RuntimeException("cannot write configuration" + e.getMessage());
+    		throw new RuntimeException("cannot write configuration: " + e.getMessage());
     	}
     }
 }

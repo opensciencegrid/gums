@@ -1,5 +1,5 @@
 /*
- * NisClient.java
+ * GecosMap.java
  *
  * Created on March 25, 2004, 4:11 PM
  */
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 /** Retrieves the map from the NIS server and provide a logic to match name and
  * surname to an account.
  *
- * @author  Gabriele Carcassi
+ * @author  Gabriele Carcassi, Jay Packard
  */
 public class GecosMap {
     private Log log = LogFactory.getLog(NISClient.class);

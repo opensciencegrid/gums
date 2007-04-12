@@ -16,7 +16,7 @@ import gov.bnl.gums.db.ManualAccountMapperDB;
  * <p>
  * This class will provide also configurable data caching.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class ManualAccountMapper extends AccountMapper {
     static public String getTypeStatic() {

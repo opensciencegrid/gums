@@ -23,7 +23,7 @@ import java.util.*;
  * systems exist. For example, all the machines in the 130.199.*.* subnet,
  * or all machines in the usatlas.bnl.gov subdomain.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public abstract class HostToGroupMapping {
     private List groupToAccountMappers = new ArrayList();

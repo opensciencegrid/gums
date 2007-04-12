@@ -13,7 +13,7 @@ import gov.bnl.gums.configuration.Configuration;
  * account. In the future this interface will be extended to map the credential
  * of a full proxy (DN, vo, role, group) to a user and group account.
  *
- * @author  Gabriele Carcassi
+ * @author  Gabriele Carcassi, Jay Packard
  */
 public abstract class AccountMapper {
 	static public String getTypeStatic() {

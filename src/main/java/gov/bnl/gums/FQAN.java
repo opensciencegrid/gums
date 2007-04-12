@@ -23,10 +23,10 @@ import java.util.regex.Pattern;
  * the one contained in the specification, as it cointained some small errors.
  * It matches the description of the syntax of the document.
  *
- * @author  Gabriele Carcassi
+ * @author  Gabriele Carcassi, Jay Packard
  */
 public class FQAN {
-    private static Pattern fqanPattern = Pattern.compile("/[\\w-\\.]+(/[\\w-\\.]+)*(/Role=[\\w-\\.]+)?(/Capability=[\\w-\\.]+)?");
+	static private Pattern fqanPattern = Pattern.compile("/[\\w-\\.]+(/[\\w-\\.]+)*(/Role=[\\w-\\.]+)?(/Capability=[\\w-\\.]+)?");
     private String fqan;
     private String vo;
     private String group;

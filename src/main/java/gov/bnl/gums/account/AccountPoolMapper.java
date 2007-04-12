@@ -16,7 +16,7 @@ import gov.bnl.gums.db.AccountPoolMapperDB;
  * particular user. Accounts are never deleted from the pool
  *
  * @todo should implement caching?
- * @author  Gabriele Carcassi
+ * @author  Gabriele Carcassi, Jay Packard
  */
 public class AccountPoolMapper extends AccountMapper {
     static public String getTypeStatic() {

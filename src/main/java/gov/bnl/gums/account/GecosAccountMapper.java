@@ -1,5 +1,5 @@
 /*
- * NISAccountMapper.java
+ * GecosAccountMapper.java
  *
  * Created on May 25, 2004, 2:25 PM
  */
@@ -24,7 +24,7 @@ import org.apache.commons.logging.*;
  * CompositeAccountMapper in which a ManualAccountMapper comes first. This allows
  * to override those user mapping that are not satisfying.
  *
- * @author Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public abstract class GecosAccountMapper extends AccountMapper {
     static private Log log = LogFactory.getLog(GecosAccountMapper.class);

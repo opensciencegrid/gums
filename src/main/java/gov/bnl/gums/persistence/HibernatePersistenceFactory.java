@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  *
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class HibernatePersistenceFactory extends PersistenceFactory {
     static public String getTypeStatic() {

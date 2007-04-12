@@ -11,7 +11,7 @@ import gov.bnl.gums.configuration.Configuration;
 
 /**
  *
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class GUMSAPIMock implements GUMSAPI {
     public void addAccountRange(String persistanceManager, String group, String range) {

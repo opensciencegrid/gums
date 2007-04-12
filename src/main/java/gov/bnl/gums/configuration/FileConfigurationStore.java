@@ -34,9 +34,40 @@ import org.apache.commons.logging.*;
  * taken from the classpath. The file will be reloaded as soon as if it changes,
  * on demand (no polling).
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class FileConfigurationStore implements ConfigurationStore {
+    static public void copyFile(String source, String target) {
+        try {
+        	if (System.getProperty("os.name").indexOf("Linux")!=-1) {
+				// This will preserve soft links
+				String[] cpArgs = new String[4];
+				cpArgs[0] = "/bin/cp";
+				cpArgs[1] = "-f";
+				cpArgs[2] = source;
+				cpArgs[3] = target;
+				if (Runtime.getRuntime().exec(cpArgs).waitFor() != 0)
+					throw new RuntimeException("Error copying file");
+        	}
+        	else {
+				FileInputStream fis  = new FileInputStream(source);
+				FileOutputStream fos = new FileOutputStream(target);
+				byte[] buf = new byte[1024];
+				int i = 0;
+				while((i=fis.read(buf))!=-1)
+				  fos.write(buf, 0, i);
+				fis.close();
+				fos.close();
+        	}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
     private Log log = LogFactory.getLog(FileConfigurationStore.class);
     private Log gumsSiteAdminLog = LogFactory.getLog(GUMS.siteAdminLog);
     private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
@@ -118,12 +149,17 @@ public class FileConfigurationStore implements ConfigurationStore {
             throw new RuntimeException("Configuration has not been loaded");
         
         log.debug("Attempting to store configuration");
-        URL confURL = getConfURL();
-        BufferedWriter out;
-
-        String tempGumsConfigFile = confURL.getPath()+"~";
-       	out = new BufferedWriter(new FileWriter(tempGumsConfigFile));
+        String configPath;
+        if (filename != null)
+        	configPath = filename;
+        else
+        	configPath = getConfURL().getPath();
         
+        String tempGumsConfigPath = configPath+"~";
+
+        BufferedWriter out;
+        out = new BufferedWriter(new FileWriter(tempGumsConfigPath));
+       	
         out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n");
         
         out.write("<gums version='"+GUMS.getVersion()+"'>\n\n");
@@ -202,51 +238,20 @@ public class FileConfigurationStore implements ConfigurationStore {
         if (filename != null)
         	copyFile(filename, filename+"_old");
         else 
-        	copyFile(confURL.getPath(), confURL.getPath()+"_old");
-        
+        	copyFile(configPath,configPath+"_old");
+
         // copy temp file to gums.config
         if (filename != null) {
         	DateFormat format = new SimpleDateFormat("yyyyMMdd_HHmm");
-        	copyFile(tempGumsConfigFile, filename + (backup?"."+format.format(new Date()):""));
+        	copyFile(tempGumsConfigPath, filename + (backup?"."+format.format(new Date()):""));
         }
         else 
-        	copyFile(tempGumsConfigFile, confURL.getPath());
-        
+        	copyFile(tempGumsConfigPath, configPath);
+
         // delete temp file
-        new File(tempGumsConfigFile).delete();
+        new File(tempGumsConfigPath).delete();
        
     }
-    
-    private void copyFile(String source, String target) {
-        try {
-        	if (System.getProperty("os.name").indexOf("Linux")!=-1) {
-        		 // This will preserve soft links
-    			String[] cpArgs = new String[4];
-    			cpArgs[0] = "/bin/cp";
-    			cpArgs[1] = "-f";
-    			cpArgs[2] = source;
-    			cpArgs[3] = target;
-				if (Runtime.getRuntime().exec(cpArgs).waitFor() != 0)
-					throw new RuntimeException("Error writing file");
-        	}
-        	else {
-				FileInputStream fis  = new FileInputStream(source);
-				FileOutputStream fos = new FileOutputStream(target);
-				byte[] buf = new byte[1024];
-				int i = 0;
-				while((i=fis.read(buf))!=-1)
-				  fos.write(buf, 0, i);
-				fis.close();
-				fos.close();
-        	}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
     
     private Date lastModification() {
         try {

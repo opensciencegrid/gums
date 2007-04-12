@@ -22,7 +22,7 @@ import gov.bnl.gums.configuration.Configuration;
  * This class is used by the Hostname mapping to hold a series of group/accountmapping
  * pairs.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class GroupToAccountMapping {
     private ArrayList userGroups = new ArrayList();

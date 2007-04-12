@@ -33,7 +33,7 @@ import org.edg.security.voms.service.admin.*;
  *
  * @todo Should refactor with LDAPGroup, and provide a PersistanceCachedGroup
  * since they both share local site buffering functionality
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class VOMSUserGroup extends UserGroup {
 	static private final boolean defaultAcceptProxyWithoutFQAN = true;

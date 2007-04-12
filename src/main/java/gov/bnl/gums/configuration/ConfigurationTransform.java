@@ -18,49 +18,38 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.InputSource;
 
+/**
+ *
+ * @author Jay Packard
+ */
 public class ConfigurationTransform {
-    private static Log log = LogFactory.getLog(FileConfigurationStore.class);
-    private static Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+	static private Log log = LogFactory.getLog(FileConfigurationStore.class);
+	static private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
 	
-	public static void doTransform(String configFile, String transformFile) {
+	static public void doTransform(String configFile, String transformFile) {
 	    try {
-	    	String configFileOld = configFile + "_1.1";
-        	moveFile(configFile, configFileOld);
+	    	String configFileTemp = configFile + "~";
         	
 	        XMLReader reader = XMLReaderFactory.createXMLReader();
-	        Source source = new SAXSource(reader, new InputSource(configFileOld));
+	        Source source = new SAXSource(reader, new InputSource(configFile));
 
-	        StreamResult result = new StreamResult(configFile);
+	        StreamResult result = new StreamResult(configFileTemp);
 	        Source style = new StreamSource(transformFile);
 
 	        TransformerFactory transFactory = TransformerFactory.newInstance();
 	        Transformer trans = transFactory.newTransformer(style);
 	        
 	        trans.transform(source, result);
+
+	    	String configFileOldVersion = configFile + "_1.1";
+
+	        FileConfigurationStore.copyFile(configFile, configFileOldVersion);
+	        FileConfigurationStore.copyFile(configFileTemp, configFile);
 	     } catch (Exception e) {
 	        gumsResourceAdminLog.fatal("Could not convert older version of gums.config: " + e.getMessage());
 	        log.info("Could not convert older version of gums.config.", e);
 	        throw new RuntimeException("The configuration wasn't read properly");	    	 
 	     }  	
-	}
-	
-    private static void moveFile(String source, String target) {
-        try {
-			FileInputStream fis  = new FileInputStream(source);
-			FileOutputStream fos = new FileOutputStream(target);
-			byte[] buf = new byte[1024];
-			int i = 0;
-			while((i=fis.read(buf))!=-1)
-			  fos.write(buf, 0, i);
-			fos.write('\n');
-			fis.close();
-			fos.close();
-			new File(source).delete();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

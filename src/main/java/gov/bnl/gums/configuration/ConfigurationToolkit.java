@@ -13,6 +13,7 @@ import gov.bnl.gums.account.GecosNisAccountMapper;
 import gov.bnl.gums.account.GroupAccountMapper;
 import gov.bnl.gums.account.ManualAccountMapper;
 import gov.bnl.gums.account.NISAccountMapper;
+import gov.bnl.gums.admin.CertCache;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.CertificateHostToGroupMapping;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
@@ -41,10 +42,10 @@ import org.apache.commons.logging.LogFactory;
 /** Contains the logic on how to parse an XML configuration file to create a
  * correctly built Configuration object.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 class ConfigurationToolkit {
-    private static Log log = LogFactory.getLog(ConfigurationToolkit.class); 
+	static private Log log = LogFactory.getLog(ConfigurationToolkit.class); 
     
     public class SimpleErrorHandler implements ErrorHandler {
         public boolean error = false;
@@ -339,7 +340,7 @@ class ConfigurationToolkit {
         	Configuration configuration = new Configuration();
             digester.push(configuration);
             digester.parse(configFile);
-           	new FileConfigurationStore().setConfiguration(configuration, false);
+           	new FileConfigurationStore(CertCache.getConfPath(), false).setConfiguration(configuration, false);
         }
        	validate(configFile, schemaFile);
     	Digester digester = retrieveDigester();

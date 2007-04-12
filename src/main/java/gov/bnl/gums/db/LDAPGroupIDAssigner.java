@@ -20,7 +20,7 @@ import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 
 /**
  *
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class LDAPGroupIDAssigner {
     private Log log = LogFactory.getLog(LDAPGroupIDAssigner.class);

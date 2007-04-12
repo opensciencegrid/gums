@@ -34,7 +34,7 @@ import org.apache.commons.logging.*;
  *   be expected, and it will behave like the first option</li>
  * </ul>
  *
- * @author  carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class LDAPUserGroup extends UserGroup {
     static public String getTypeStatic() {

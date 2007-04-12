@@ -17,7 +17,7 @@ import java.util.*;
  * information somewhere. This interface is provided to allow for the
  * cache to reside on different mediums (i.e. Database, LDAP, file, ...)
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public interface UserGroupDB {
     /**

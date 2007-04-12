@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
 
 /**
  *
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     private Log log = LogFactory.getLog(HibernateUserGroupDB.class);

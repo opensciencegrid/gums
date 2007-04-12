@@ -4,11 +4,10 @@
  * Created on May 24, 2004, 3:17 PM
  */
 
-package gov.bnl.gums.configuration;
+package gov.bnl.gums;
 
-import gov.bnl.gums.GUMS;
-import gov.bnl.gums.GridUser;
 import gov.bnl.gums.account.AccountMapper;
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.HostToGroupMapping;
 import gov.bnl.gums.userGroup.UserGroup;
@@ -21,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 /** The main interface of the core logic for GUMS, allows to update the
  * groups, generate the gridMapfiles and to map a single user.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class ResourceManager {
     private Log log = LogFactory.getLog(ResourceManager.class);

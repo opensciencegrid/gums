@@ -26,10 +26,10 @@ import gov.bnl.gums.persistence.PersistenceFactory;
 
 /**
  *
- * @author  carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class GUMSAPIImpl implements GUMSAPI {
-    private static GUMS gums;
+	static private GUMS gums;
     private Log log = LogFactory.getLog(GUMSAPI.class);
     private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     private Log siteLog = LogFactory.getLog(GUMS.siteAdminLog);

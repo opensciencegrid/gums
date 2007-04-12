@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 
 /** Represent a GRID Identity in GUMS, which is a certificate with its DN and FQAN.
  *
- * @author  Gabriele Carcassi
+ * @author  Gabriele Carcassi, Jay Packard
  */
 public class GridUser {
     private Log log = LogFactory.getLog(GridUser.class);

@@ -15,7 +15,7 @@ import java.util.List;
  * The persistance layer shouldn't be doing any kind of caching, which will be
  * handled by the ManualAccontMapper itself.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public interface ManualAccountMapperDB {
     /**

@@ -16,7 +16,7 @@ import java.util.Map;
  * The implementation shouldn't buffer the information, as it the
  * AccountPoolMapper responsability to do so.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public interface AccountPoolMapperDB {
     

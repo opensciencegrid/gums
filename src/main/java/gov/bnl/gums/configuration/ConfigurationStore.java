@@ -12,7 +12,7 @@ import java.io.IOException;
  * This will allow to retrieve the configuration from a File, from a database,
  * or from whenever we will need to.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public interface ConfigurationStore {
     /**

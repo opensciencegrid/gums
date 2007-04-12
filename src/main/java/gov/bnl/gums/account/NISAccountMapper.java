@@ -23,11 +23,12 @@ import org.apache.commons.logging.*;
  * CompositeAccountMapper in which a ManualAccountMapper comes first. This allows
  * to override those user mapping that are not satisfying.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class NISAccountMapper extends AccountMapper {
     static Log log = LogFactory.getLog(NISAccountMapper.class);
     static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+    
     static public boolean checkSurname(String possibleSurname) {
         if (Character.isDigit(possibleSurname.charAt(0))) {
             return false;
@@ -38,6 +39,7 @@ public class NISAccountMapper extends AccountMapper {
         
         return true;
     }
+    
     static public String getTypeStatic() {
 		return "nis";
 	}

@@ -1,5 +1,5 @@
 /*
- * GecosNisAccountMapper.java
+ * GecosLdapAccountMapper.java
  *
  * Created on April 13, 2005, 4:21 PM
  */
@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
 
 /** Matches the DN with the account information retrieved from an LDAP server.
  *
- * @author Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class GecosLdapAccountMapper extends GecosAccountMapper {
     static private Log log = LogFactory.getLog(GecosLdapAccountMapper.class);

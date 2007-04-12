@@ -6,8 +6,6 @@
 
 package gov.bnl.gums;
 
-
-
 import gov.bnl.gums.configuration.ReadWriteLock;
 
 import java.io.PrintStream;
@@ -35,7 +33,7 @@ import org.apache.commons.logging.LogFactory;
 /** Retrieves the map from the NIS server and provide a logic to match name and
  * surname to an account.
  *
- * @author  Gabriele Carcassi
+ * @author  Gabriele Carcassi, Jay Packard
  */
 public class NISClient {
     private Log log = LogFactory.getLog(NISClient.class);
@@ -46,9 +44,7 @@ public class NISClient {
     private String nisJndiUrl;
     private MultiMap nameToAccount;
     private MultiMap surnameToAccount;
-    
     private ReadWriteLock lock = new ReadWriteLock("nis");
-    
     private Date lastUpdate = null;
     
     /** Creates a new instance of NisClient */

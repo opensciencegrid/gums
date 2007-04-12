@@ -15,14 +15,14 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  *
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class CertCache implements Filter {
-    private static Log log = LogFactory.getLog(CertCache.class);
-    private static ServletContext context;
-    private static ThreadLocal certificate = new ThreadLocal();
+	static private Log log = LogFactory.getLog(CertCache.class);
+	static private ServletContext context;
+	static private ThreadLocal certificate = new ThreadLocal();
     
-    public static String getConfPath() {
+	static public String getConfPath() {
         String base = context.getRealPath("/");
         log.trace("Path to the web app: '" + base + "'");
         String fullpath = base + "/WEB-INF/classes/gums.config";
@@ -30,15 +30,15 @@ public class CertCache implements Filter {
         return fullpath;
     }
 
-    public static X509Certificate getUserCertificate() {
+	static public X509Certificate getUserCertificate() {
         return (X509Certificate) certificate.get();
     }
 
-    public static String getUserDN() {
+	static public String getUserDN() {
         return CertToolkit.getUserDN(getUserCertificate());
     }
 
-    public static void setUserCertificate(X509Certificate cert) {
+	static public void setUserCertificate(X509Certificate cert) {
         certificate.set(cert);
     }
     

@@ -19,11 +19,9 @@ import java.util.StringTokenizer;
 
 /** Represent a set of services identified by a wildcard on their CN or DN.
  *
- * @author Gabriele Carcassi
- * @since 1.1.0
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class CertificateHostToGroupMapping extends HostToGroupMapping {
-    
     private String cn = null;
     private String dn = null;
     private List regexs;

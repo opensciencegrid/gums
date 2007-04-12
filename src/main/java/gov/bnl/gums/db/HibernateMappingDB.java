@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  *
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMapperDB {
     private Log log = LogFactory.getLog(HibernateMappingDB.class);

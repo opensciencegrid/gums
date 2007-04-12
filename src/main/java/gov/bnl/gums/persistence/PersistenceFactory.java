@@ -26,7 +26,7 @@ import java.util.Properties;
  * It also allow to use different mapping technologies, allowing to use either
  * entity beans, simple JDBC, Hibernate or any other favourite technology.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public abstract class PersistenceFactory {
     static public String getTypeStatic() {

@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
  * To configure the policy one needs only to set the groupName property
  * as the desired group account.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class GroupAccountMapper extends AccountMapper {
     static public String getTypeStatic() {

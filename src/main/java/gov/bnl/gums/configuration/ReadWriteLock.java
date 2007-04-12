@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
  * Once the write lock is requested, no more reads are accepted. The write lock
  * is guaranteed only when all read locks are released.
  *
- * @author Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class ReadWriteLock {
     private Log log = LogFactory.getLog(ReadWriteLock.class);

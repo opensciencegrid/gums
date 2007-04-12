@@ -14,7 +14,7 @@ import gov.bnl.gums.configuration.Configuration;
  * an implementation of this class. This also serves as a definition to the admin
  * service.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public interface GUMSAPI extends Remote {
     void addAccountRange(String persistanceManager, String group, String range);

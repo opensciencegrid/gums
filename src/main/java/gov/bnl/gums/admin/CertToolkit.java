@@ -18,10 +18,9 @@ import java.security.cert.X509Certificate;
 
 /**
  *
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class CertToolkit {
-    
     public static String convertDN(String commaDN) {
         List pieces = new ArrayList();
         while (commaDN.indexOf(", ") != -1) {

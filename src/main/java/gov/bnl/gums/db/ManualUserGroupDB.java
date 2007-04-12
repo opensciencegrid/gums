@@ -16,7 +16,7 @@ import java.util.*;
  * The persistance layer shouldn't be doing any kind of caching: it will be
  * done by the ManualUserGroup itself.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public interface ManualUserGroupDB {
     void addMember(GridUser userDN);

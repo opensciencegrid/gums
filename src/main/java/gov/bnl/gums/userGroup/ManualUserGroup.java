@@ -16,7 +16,7 @@ import gov.bnl.gums.GridUser;
  * <p>
  * This class will provide also configurable data caching.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class ManualUserGroup extends UserGroup {
     static public String getTypeStatic() {

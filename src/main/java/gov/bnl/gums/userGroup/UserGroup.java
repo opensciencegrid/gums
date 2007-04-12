@@ -15,7 +15,7 @@ import java.util.*;
  * mapping policy. An implementation could take/manage a list of users in
  * any way it wanted, or it could combine different groups.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public abstract class UserGroup {
 	private String name = "";

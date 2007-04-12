@@ -26,7 +26,7 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  * The configuration object will be constructed programmatically by reading
  * an xml file.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class Configuration {
     private Log log = LogFactory.getLog(Configuration.class);

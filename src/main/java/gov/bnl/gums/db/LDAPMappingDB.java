@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  *
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB {
     private Log log = LogFactory.getLog(LDAPMappingDB.class);

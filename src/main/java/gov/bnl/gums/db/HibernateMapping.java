@@ -12,7 +12,7 @@ package gov.bnl.gums.db;
 
 /**
  *
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class HibernateMapping {
     private Long id;

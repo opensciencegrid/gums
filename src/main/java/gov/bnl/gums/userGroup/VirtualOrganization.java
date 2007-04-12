@@ -6,6 +6,10 @@ import gov.bnl.gums.db.UserGroupDB;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/** 
+ *
+ * @author Jay Packard
+ */
 public class VirtualOrganization {
     private Log log = LogFactory.getLog(VOMSUserGroup.class);
 	private String name = "";

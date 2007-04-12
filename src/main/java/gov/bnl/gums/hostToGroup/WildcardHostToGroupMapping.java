@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
  * The '*' character can represent any string part of a single token of the hostname.
  * That is, it can't repesent a string that contains '.'.
  *
- * @author  Gabriele Carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class WildcardHostToGroupMapping extends HostToGroupMapping {
     static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);

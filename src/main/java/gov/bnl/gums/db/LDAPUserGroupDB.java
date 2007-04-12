@@ -26,11 +26,10 @@ import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 
 /**
  *
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     private Log log = LogFactory.getLog(LDAPUserGroupDB.class);
-
     private LDAPPersistenceFactory factory;
     private String group;
     private String groupDN;

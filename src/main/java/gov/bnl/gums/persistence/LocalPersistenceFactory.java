@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  *
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class LocalPersistenceFactory extends PersistenceFactory {
     static public String getTypeStatic() {
