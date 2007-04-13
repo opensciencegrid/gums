@@ -64,8 +64,8 @@ Adds range of accounts to a pool.
 			ConfigurationWebToolkit.createSelectBox("accountMapper", 
 				poolMappers, 
 				(request.getParameter("accountMapper")!=null ? request.getParameter("accountMapper") : null),
-				"onchange=\"document.forms[0].submit();\"",
-				poolMappers.size()>1) );
+				"onchange=\"document.forms[0].action='accountRange_form.jsp';document.forms[0].submit();\"",
+				false) );
 				
 		String selected = null;
 		if (request.getParameter("accountMapper")!=null)
