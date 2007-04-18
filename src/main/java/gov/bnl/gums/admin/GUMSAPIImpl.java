@@ -85,6 +85,16 @@ public class GUMSAPIImpl implements GUMSAPI {
     	}
     }
     
+    public void deleteBackupConfiguration(String dateStr) {
+    	if (hasWriteAccess(currentUser()))
+    		gums().deleteBackupConfiguration(dateStr);
+    	else {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to delete configuration because user doesn't have write access");
+    		siteLog.info(logUserAccess() + "Failed to delete configuration because user doesn't have write access");
+    		throw new AuthorizationDeniedException();
+    	}   	
+    }
+    
     public String generateGrid3UserVoMap(String hostname) {
         try {
             if (hasReadAllAccess(currentUser(), hostname)) {
@@ -140,6 +150,18 @@ public class GUMSAPIImpl implements GUMSAPI {
             gumsResourceAdminLog.error(logUserAccess() + "Failed to generate mapfile for host '" + hostname + "' - " + e.getMessage());
             throw e;
         }   	
+    }
+    
+    public Collection getBackupConfigDates() {
+    	Collection backupConfigDates = null;
+    	if (hasWriteAccess(currentUser()))
+    		backupConfigDates = gums().getBackupConfigDates();
+    	else {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have write access");
+    		siteLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have write access");
+    		throw new AuthorizationDeniedException();
+    	}    	
+    	return backupConfigDates;
     }
     
     public Configuration getConfiguration() {
@@ -309,6 +331,16 @@ public class GUMSAPIImpl implements GUMSAPI {
     	}
     }
     
+    public void restoreConfiguration(String dateStr) throws Exception {
+    	if (hasWriteAccess(currentUser()))
+    		gums().restoreConfiguration(dateStr);
+    	else {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
+    		siteLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
+    		throw new AuthorizationDeniedException();
+    	}  	
+    }
+    	
     public void updateGroups() {
         try {
             if (hasWriteAccess(currentUser())) {

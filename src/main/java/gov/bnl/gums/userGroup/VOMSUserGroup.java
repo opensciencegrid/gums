@@ -48,7 +48,7 @@ public class VOMSUserGroup extends UserGroup {
     private String vo = "";
     private String voGroup = "";
     private String voRole = "";
-    private String fqan = "";
+    private String fqan = null;
     private String matchFQAN = defaultMatchFQAN;
     private String remainderUrl = "";
 
@@ -300,11 +300,12 @@ public class VOMSUserGroup extends UserGroup {
 
     private void prepareFQAN() {
         if (!voGroup.equals("")) {
-            if (voRole.equals("")) {
+            if (!voRole.equals("") && !voGroup.equals(""))
+            	fqan = voGroup + "/Role=" + voRole;
+            else if (!voGroup.equals(""))
                 fqan = voGroup;
-            } else {
-                fqan = voGroup + "/Role=" + voRole;
-            }
+            else
+            	fqan = null;
         }
     }
     
@@ -322,8 +323,8 @@ public class VOMSUserGroup extends UserGroup {
         	org.edg.security.voms.service.User[] users = null;
             if (voRole.equals("")) {
                 users = voms.listMembers( !getVoGroup().equals("")?getVoGroup():null );
-            } else {
-                users = voms.listUsersWithRole( !getVoGroup().equals("")?getVoGroup():null, "Role=" + getVoRole());
+            } else if(!getVoGroup().equals("")) {
+                users = voms.listUsersWithRole( getVoGroup(), "Role=" + getVoRole());
             }        	
             if (users.length > 0) {
                 log.trace("Retrieved " + users.length + " users. First is: '" + users[0].getDN());

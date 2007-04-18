@@ -329,13 +329,16 @@ class ConfigurationToolkit {
         if (errorHandler.error)
         	throw new ParserConfigurationException();
     }
-    
+
     public static synchronized Configuration loadConfiguration(String configFile) throws ParserConfigurationException, IOException, SAXException {
     	String schemaFile = configFile+".schema";
     	String transformFile = configFile+".transform";
         if (getVersion(configFile).equals("1.1")) {
             log.trace("Transforming configuration file '" + configFile + "' using transform '" + transformFile);
         	ConfigurationTransform.doTransform(configFile, transformFile);
+        	
+        	// Reload it to get rid of duplicates that the transform couldn't handle
+        	// as well as to clean up the formatting
         	Digester digester = retrieveDigester();
         	Configuration configuration = new Configuration();
             digester.push(configuration);

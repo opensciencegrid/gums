@@ -7,6 +7,7 @@
 package gov.bnl.gums.configuration;
 
 import java.io.IOException;
+import java.util.Collection;
 
 /** Encapsulate the logic of retrieving the configuration from where it is stored.
  * This will allow to retrieve the configuration from a File, from a database,
@@ -15,6 +16,9 @@ import java.io.IOException;
  * @author Gabriele Carcassi, Jay Packard
  */
 public interface ConfigurationStore {
+	
+	void deleteBackupConfiguration(String dateStr);
+	
     /**
      * Defines whether a configuration can be retrieved from the store.
      * This should only check whether configuration information is accessible,
@@ -31,6 +35,12 @@ public interface ConfigurationStore {
     boolean isReadOnly();
     
     /**
+     * Get a list of config files that have been backed up
+     * @return collection of date strings.
+     */
+    Collection getBackupConfigDates();
+    
+    /**
      * Loads the configuration in memory. If the configuration cannot be loaded
      * due to an inconsistency in the store, it should throw an exception.
      * @return A configuration object.
@@ -38,9 +48,16 @@ public interface ConfigurationStore {
     Configuration retrieveConfiguration() throws RuntimeException;
     
     /**
+     * Restores configuration in memory. If the configuration cannot be loaded
+     * due to an inconsistency in the store, it should throw an exception.
+     * @return A configuration object.
+     */
+    Configuration restoreConfiguration(String dateStr) throws RuntimeException;
+    
+    /**
      * Set and store the configuration.
      * @param conf 
      */
-    void setConfiguration(Configuration conf, boolean backup) throws IOException;
+    void setConfiguration(Configuration conf, boolean backupCopy) throws IOException;
     
 }

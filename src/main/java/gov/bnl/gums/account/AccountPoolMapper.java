@@ -67,10 +67,13 @@ public class AccountPoolMapper extends AccountMapper {
 		return "pool";
 	}
         
-    public String mapUser(String userDN) {
+    public String mapUser(String userDN, boolean createIfDoesNotExist) {
         String account = getDB().retrieveAccount(userDN);
         if (account != null) return account;
-        return getDB().assignAccount(userDN);
+        if (createIfDoesNotExist)
+        	return getDB().assignAccount(userDN);
+        else
+        	return null;
     }
     
     public void setAccountPool(String accountPool) {

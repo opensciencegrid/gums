@@ -6,6 +6,8 @@
 
 package gov.bnl.gums.admin;
 
+import java.util.Collection;
+
 import gov.bnl.gums.GUMS;
 import gov.bnl.gums.configuration.Configuration;
 
@@ -20,6 +22,9 @@ public class GUMSAPIMock implements GUMSAPI {
     public void backupConfiguration() {
     }
 
+    public void deleteBackupConfiguration(String dateStr) {
+    }
+    
     public String generateGrid3UserVoMap(String hostname) {
         return "inverseMap";
     }
@@ -32,6 +37,10 @@ public class GUMSAPIMock implements GUMSAPI {
         return "mapfile";
     }
 
+    public Collection getBackupConfigDates() {
+    	return null;
+    }
+    
     public Configuration getConfiguration() {
     	return null;
     }
@@ -61,6 +70,9 @@ public class GUMSAPIMock implements GUMSAPI {
     
     public String mapUser(String hostname, String userDN, String fqan) {
         return "account";
+    }
+    
+    public void restoreConfiguration(String dateStr) {
     }
     
     public void setConfiguration(Configuration configuration) throws Exception {

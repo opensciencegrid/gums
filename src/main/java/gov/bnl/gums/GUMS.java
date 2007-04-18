@@ -10,6 +10,7 @@ import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.configuration.ConfigurationStore;
 import gov.bnl.gums.configuration.FileConfigurationStore;
 
+import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.naming.Context;
@@ -95,6 +96,15 @@ public class GUMS {
         
         startUpdateThread(this);
     }
+    
+    public void deleteBackupConfiguration(String dateStr) {
+    	if (confStore != null) confStore.deleteBackupConfiguration(dateStr);	
+    }
+    
+    public Collection getBackupConfigDates() {
+    	if (confStore != null) return confStore.getBackupConfigDates();
+        return null;
+    }
 
     /**
      * Retrieves the configuration being used by GUMS. The configuration might
@@ -116,6 +126,19 @@ public class GUMS {
         return resMan;
     }
     
+    public void restoreConfiguration(String dateStr) {
+    	try {
+	        this.conf = conf;
+	        if (!confStore.isReadOnly()) {
+	            confStore.restoreConfiguration(dateStr);
+	        }
+	        else
+	        	throw new RuntimeException("cannot write configuration because it is read-only");
+    	} catch(Exception e) {
+    		throw new RuntimeException("cannot write configuration: " + e.getMessage());
+    	}   	
+    }
+    
     /**
      * Changes the configuration used by GUMS.
      * <p>
@@ -134,4 +157,5 @@ public class GUMS {
     		throw new RuntimeException("cannot write configuration: " + e.getMessage());
     	}
     }
+   
 }

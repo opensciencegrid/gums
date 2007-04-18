@@ -53,7 +53,7 @@ public class GroupAccountMapper extends AccountMapper {
 		return "group";
 	}
     
-    public String mapUser(String userDN) {
+    public String mapUser(String userDN, boolean createIfDoesNotExist) {
         
         if (log.isDebugEnabled()) {
             log.debug("User " + userDN + " mapped to account " + accountName);

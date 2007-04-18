@@ -7,6 +7,7 @@
 package gov.bnl.gums.admin;
 
 import java.rmi.Remote;
+import java.util.Collection;
 
 import gov.bnl.gums.configuration.Configuration;
 
@@ -21,6 +22,8 @@ public interface GUMSAPI extends Remote {
     
     void backupConfiguration();
     
+    void deleteBackupConfiguration(String dateStr);
+    
     /**
      * Generate the inverse entry->VO map used by OSG.
      * @param hostname Host name to generate the map for.
@@ -33,6 +36,8 @@ public interface GUMSAPI extends Remote {
     String generateVoGridMapfile(String hostname);
     
     Configuration getConfiguration();
+    
+    Collection getBackupConfigDates();
     
     String getVersion();
     
@@ -51,6 +56,8 @@ public interface GUMSAPI extends Remote {
     String mapUser(String hostname, String userDN, String fqan);
     
     void setConfiguration(Configuration configuration) throws Exception;
+    
+    void restoreConfiguration(String dateStr) throws Exception;
     
     void updateGroups();
 }

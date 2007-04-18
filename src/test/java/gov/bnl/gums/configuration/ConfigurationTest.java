@@ -42,7 +42,7 @@ public class ConfigurationTest extends TestCase {
         assertEquals(1, groupToAccountMappings.size());
         GroupToAccountMapping gMap = conf.getGroupToAccountMapping( (String)groupToAccountMappings.get(0) );
         assertTrue((conf.getUserGroup( (String)gMap.getUserGroups().get(0)) ).isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
-        assertEquals("jsmith", conf.getAccountMapper( (String)gMap.getAccountMappers().get(0) ).mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals("jsmith", conf.getAccountMapper( (String)gMap.getAccountMappers().get(0) ).mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith", true));
     }
     
     static Configuration createSimpleConfiguration() {

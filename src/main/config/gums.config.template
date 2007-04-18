@@ -20,7 +20,7 @@
 	<virtualOrganizations>
 	    <virtualOrganization
 			name='virtualOrganizationA'
-			baseUrl='https://griddev01.racf.bnl.gov:8443/voms'
+			baseUrl='https://griddev01.usatlas.bnl.gov:8443/voms'
 			persistenceFactory='persistenceFactoryA' 
 			sslCertfile='/etc/grid-security/hostcert.pem'
 			sslKey='/etc/grid-security/hostkey.pem'/>

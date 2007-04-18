@@ -69,7 +69,7 @@ public abstract class AccountMapper {
      * @param userDN the certificate DN (i.e. '/DC=org/DC=doegrids/OU=People/CN=John Smith').
      * @return a user account (i.e. 'atlas').
      */
-    public abstract String mapUser(String userDN);
+    public abstract String mapUser(String userDN, boolean createNew);
 
     public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;

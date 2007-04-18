@@ -83,7 +83,7 @@ public abstract class GecosAccountMapper extends AccountMapper {
 		return "gecos";
 	}
     
-    public String mapUser(String userDN) {
+    public String mapUser(String userDN, boolean createIfDoesNotExist) {
         String[] nameSurname = parseNameAndSurname(userDN);
         GecosMap map = gecosMap();
         log.trace("GECOS findAccount. Name: " + nameSurname[0] + " - Surname: " + nameSurname[1] + " - GECOSMap: " + gecosMap());

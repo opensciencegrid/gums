@@ -45,7 +45,7 @@ public class CertCache implements Filter {
     public void destroy() {
     }
     
-    public void doFilter(javax.servlet.ServletRequest servletRequest, javax.servlet.ServletResponse servletResponse, javax.servlet.FilterChain filterChain) throws java.io.IOException, javax.servlet.ServletException {
+   public void doFilter(javax.servlet.ServletRequest servletRequest, javax.servlet.ServletResponse servletResponse, javax.servlet.FilterChain filterChain) throws java.io.IOException, javax.servlet.ServletException {
         setUserCertificate(null);
         if (servletRequest.getAttribute("javax.servlet.request.X509Certificate") != null){
             X509Certificate cert = ((X509Certificate[]) servletRequest.getAttribute("javax.servlet.request.X509Certificate"))[0];

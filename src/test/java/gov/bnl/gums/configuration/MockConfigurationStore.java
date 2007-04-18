@@ -15,6 +15,7 @@ import gov.bnl.gums.userGroup.MockUserGroup;
 import gov.bnl.gums.userGroup.UserGroup;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -45,7 +46,14 @@ public class MockConfigurationStore implements ConfigurationStore {
 			e.printStackTrace();
 		}
     }
-
+    
+    public void deleteBackupConfiguration(String dateStr) {
+    }
+    
+    public Collection getBackupConfigDates() {
+    	return null;
+    }
+    
     public void storeConfiguration(Configuration conf) {
         this.conf = conf;
     }
@@ -54,6 +62,10 @@ public class MockConfigurationStore implements ConfigurationStore {
         return conf;
     }
 
+    public Configuration restoreConfiguration(String strDate) {
+        return null;
+    }
+    
     public void setConfiguration(Configuration conf, boolean backup) {
         this.conf = conf;
     }

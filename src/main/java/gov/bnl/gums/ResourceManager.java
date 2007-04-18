@@ -86,7 +86,7 @@ public class ResourceManager {
                     Iterator accountMapperIt = accountMappers.iterator();
                     while (accountMapperIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
-		                String username = accountMapper.mapUser(user.getCertificateDN());
+		                String username = accountMapper.mapUser(user.getCertificateDN(), false);
 		                if ((username != null) && !accountsInMap.contains(username) && (gMap.getAccountingVo() != null)) {
 		                    grid3MapBuffer.append(username);
 		                    grid3MapBuffer.append(' ');
@@ -136,7 +136,7 @@ public class ResourceManager {
                     Iterator accountMappersIt = accountMappers.iterator();
                     while (accountMappersIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-                        if (accountName.equals(accountMapper.mapUser(user.getCertificateDN()))) {
+                        if (accountName.equals(accountMapper.mapUser(user.getCertificateDN(), false))) {
                         	if (allDNs==null)
                         		allDNs = new String();
                         	else
@@ -187,7 +187,7 @@ public class ResourceManager {
 	                    Iterator accountMappersIt = accountMappers.iterator();
 	                    while (accountMappersIt.hasNext()) {
 	                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-		                	String username = accountMapper.mapUser(user.getCertificateDN());
+		                	String username = accountMapper.mapUser(user.getCertificateDN(), true);
 		                    if (username != null) {
 		                        gridMapfileBuffer.append('"');
 		                        gridMapfileBuffer.append(user.getCertificateDN() );
@@ -249,7 +249,7 @@ public class ResourceManager {
                     Iterator accountMappersIt = accountMappers.iterator();
                     while (accountMappersIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-                        String localUser = accountMapper.mapUser(user.getCertificateDN());
+                        String localUser = accountMapper.mapUser(user.getCertificateDN(), true);
                         if (user != null) {
                             return localUser;
                         } else {

@@ -37,8 +37,8 @@ public class GecosAccountMapperTest extends TestCase {
     }
     
     public void testMapUser() {
-        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith"));
-        assertEquals(null, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=Evil Person"));
+        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith", true));
+        assertEquals(null, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=Evil Person", true));
     }
 
     public void testParsing() {

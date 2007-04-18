@@ -61,7 +61,7 @@ public class ManualAccountMapper extends AccountMapper {
 		return "manual";
 	}
     
-    public String mapUser(String userDN) {
+    public String mapUser(String userDN, boolean createIfDoesNotExist) {
         return getDB().retrieveMapping(userDN);
     }
     

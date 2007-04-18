@@ -103,7 +103,7 @@ public class NISAccountMapper extends AccountMapper {
 		return "nis";
 	}
     
-    public String mapUser(String userDN) {
+    public String mapUser(String userDN, boolean createIfDoesNotExist) {
         String[] nameSurname = parseNameAndSurname(userDN);
         return nisClient(jndiNisUrl).findAccount(nameSurname[0], nameSurname[1]);
     }

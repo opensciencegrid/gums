@@ -25,6 +25,9 @@ import java.net.URI;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -67,15 +70,20 @@ public class FileConfigurationStore implements ConfigurationStore {
 			e.printStackTrace();
 		}
 	}
+    
+    static public void moveFile(String source, String target) {
+    	copyFile(source, target);
+        new File(source).delete();
+    }
 	
     private Log log = LogFactory.getLog(FileConfigurationStore.class);
     private Log gumsSiteAdminLog = LogFactory.getLog(GUMS.siteAdminLog);
     private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-    private Exception configError;
     private Configuration conf;
     private Date lastRetrival;
     private String filename = null;
-    
+    private DateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmm");
+
     public FileConfigurationStore() {
     }
     
@@ -118,13 +126,39 @@ public class FileConfigurationStore implements ConfigurationStore {
         }
     }
     
-    public URL getConfURL() {
-    	return getClass().getClassLoader().getResource("gums.config");
+    public void deleteBackupConfiguration(String dateStr) {
+    	new File(getConfigBackupPath()+"/gums.config."+dateStr).delete();
+    }
+    
+    public String getConfigPath() {
+    	if (filename != null)
+        	return filename;
+        else 
+        	return getClass().getClassLoader().getResource("gums.config").getPath();
+    }
+    
+    public String getConfigBackupPath() {
+    	String configPath = getConfigPath();
+    	int index = configPath.lastIndexOf("/");
+       	return configPath.substring(0, index) + "/backup";
+    }
+    
+    public Collection getBackupConfigDates() {
+    	ArrayList backupConfigDates = new ArrayList();
+    	File dir = new File(getConfigBackupPath());
+    	String[] children = dir.list();
+    	if (children!=null) {
+	        for (int i=0; i<children.length; i++) {
+	        	backupConfigDates.add( children[i].substring(children[i].lastIndexOf(".")+1) );
+	        }    	
+    	}
+    	Collections.sort(backupConfigDates);
+    	return backupConfigDates;
     }
     
     public boolean isActive() {
         log.debug("Checking whether gums.config is present");
-        return ((filename != null) || (getConfURL() != null));
+        return getConfigPath()!=null;
     }
     
     public boolean isReadOnly() {
@@ -132,15 +166,23 @@ public class FileConfigurationStore implements ConfigurationStore {
     }
     
     public synchronized Configuration retrieveConfiguration() {
-        if ((lastRetrival == null) || (lastRetrival.before(lastModification())))
-            reloadConfiguration();
-        if (configError != null) {
-            throw new RuntimeException(filename+"  "+" is misconfigured: please check the resource admin log for errors, and the gums.config file.");
-        }
+        try {
+			if ((lastRetrival == null) || (lastRetrival.before(lastModification())))
+			    reloadConfiguration();
+		} catch (Exception e) {
+	        throw new RuntimeException(e.getMessage());
+		}
         return conf;
     }
     
-    public synchronized void setConfiguration(Configuration conf, boolean backup) throws IOException {
+    public synchronized Configuration restoreConfiguration(String dateStr) {
+    	String configPath = getConfigPath();
+    	moveFile(configPath, getConfigBackupPath() + "/gums.config." + format.format(new Date()));
+    	copyFile(getConfigBackupPath() + "/gums.config." + dateStr, configPath);
+        return retrieveConfiguration();
+    }
+    
+    public synchronized void setConfiguration(Configuration conf, boolean backupCopy) throws IOException {
         this.conf = conf;
         log.trace("Configuration set programically");
         gumsResourceAdminLog.info("configuration set programically");
@@ -149,12 +191,7 @@ public class FileConfigurationStore implements ConfigurationStore {
             throw new RuntimeException("Configuration has not been loaded");
         
         log.debug("Attempting to store configuration");
-        String configPath;
-        if (filename != null)
-        	configPath = filename;
-        else
-        	configPath = getConfURL().getPath();
-        
+        String configPath = getConfigPath();
         String tempGumsConfigPath = configPath+"~";
 
         BufferedWriter out;
@@ -235,38 +272,18 @@ public class FileConfigurationStore implements ConfigurationStore {
         out.close();
         
         // copy gums.config to gums.config_old
-        if (filename != null)
-        	copyFile(filename, filename+"_old");
-        else 
-        	copyFile(configPath,configPath+"_old");
+        if (!backupCopy)
+        	copyFile(configPath, getConfigPath()+".old");
 
-        // copy temp file to gums.config
-        if (filename != null) {
-        	DateFormat format = new SimpleDateFormat("yyyyMMdd_HHmm");
-        	copyFile(tempGumsConfigPath, filename + (backup?"."+format.format(new Date()):""));
-        }
-        else 
-        	copyFile(tempGumsConfigPath, configPath);
-
-        // delete temp file
-        new File(tempGumsConfigPath).delete();
-       
+        // move temp file to gums.config or gums.config.date
+        new File(getConfigBackupPath()).mkdir();
+    	moveFile(tempGumsConfigPath, (backupCopy?getConfigBackupPath()+"/gums.config."+format.format(new Date()):configPath));
     }
     
     private Date lastModification() {
         try {
-            if (filename != null) {
-                // If conf filename was specified
-                File file = new File(filename);
-                return new Date(file.lastModified());
-            } else {
-                // Conf filename not specified, getting it from the
-                // classpath
-                URL confURL = getConfURL();
-                URI uri = new URI(confURL.toString());
-                File file = new File(uri);
-                return new Date(file.lastModified());
-            }
+            File file = new File(getConfigPath());
+            return new Date(file.lastModified());
         } catch (Exception e) {
             gumsResourceAdminLog.fatal("The configuration wasn't read properly. GUMS is not operational.", e);
             return null;
@@ -275,26 +292,17 @@ public class FileConfigurationStore implements ConfigurationStore {
     
     private void reloadConfiguration() {
 		conf = null;
-        configError = null;
         try {
             log.debug("Attempting to load configuration from gums.config");
-            if (filename != null) {
-        		conf = ConfigurationToolkit.loadConfiguration(filename);
-                log.trace("Configuration reloaded from '" + filename + "'");
-                gumsResourceAdminLog.info("Configuration reloaded from '" + filename + "'");
-                gumsSiteAdminLog.info("Configuration reloaded from '" + filename + "'");
-            } else {
-    			URL confURL = getConfURL();
-                conf = ConfigurationToolkit.loadConfiguration(confURL.getPath());
-                log.trace("Configuration reloaded from classpath '" + confURL + "'");
-                gumsResourceAdminLog.info("Configuration reloaded '" + confURL + "'");
-                gumsSiteAdminLog.info("Configuration reloaded '" + confURL + "'");
-            }
+    		conf = ConfigurationToolkit.loadConfiguration(getConfigPath());
+            log.trace("Configuration reloaded from '" + getConfigPath() + "'");
+            gumsResourceAdminLog.info("Configuration reloaded from '" + getConfigPath() + "'");
+            gumsSiteAdminLog.info("Configuration reloaded from '" + getConfigPath() + "'");
             lastRetrival = new Date();
         } catch (Exception e) {
-            configError = e;
-            gumsResourceAdminLog.fatal("The configuration wasn't read properly. GUMS is not operational: " + e.getMessage());
-            log.info("Configuration wasn't read correctly.", e);
+            gumsResourceAdminLog.error("The configuration wasn't read correctly: " + e.getMessage());
+            log.error("The configuration wasn't read correctly.", e);
+            throw new RuntimeException("The configuration wasn't read correctly: " + e.getMessage());
         }
     }
 }

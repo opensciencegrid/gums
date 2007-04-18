@@ -41,10 +41,9 @@ public class ConfigurationTransform {
 	        
 	        trans.transform(source, result);
 
-	    	String configFileOldVersion = configFile + "_1.1";
+	        FileConfigurationStore.moveFile(configFile, configFile + "_1.1");
 
-	        FileConfigurationStore.copyFile(configFile, configFileOldVersion);
-	        FileConfigurationStore.copyFile(configFileTemp, configFile);
+	        FileConfigurationStore.moveFile(configFileTemp, configFile);
 	     } catch (Exception e) {
 	        gumsResourceAdminLog.fatal("Could not convert older version of gums.config: " + e.getMessage());
 	        log.info("Could not convert older version of gums.config.", e);

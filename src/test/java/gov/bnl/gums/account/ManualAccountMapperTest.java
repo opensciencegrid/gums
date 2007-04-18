@@ -44,17 +44,17 @@ public class ManualAccountMapperTest extends TestCase {
     
     public void testMap() {
         ((ManualAccountMapper) mapper).createMapping("/DC=org/DC=griddev/OU=People/CN=John Smith", "jsmith");
-        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith"));
-        assertEquals(null, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=Evil Persons"));
+        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith", true));
+        assertEquals(null, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=Evil Persons", true));
     }
     
     public void testRemove() {
         ((ManualAccountMapper) mapper).createMapping("/DC=org/DC=griddev/OU=People/CN=John Smith", "jsmith");
-        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals("jsmith", mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith", true));
         assertTrue(((ManualAccountMapper) mapper).removeMapping("/DC=org/DC=griddev/OU=People/CN=John Smith"));
-        assertEquals(null, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals(null, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith", true));
         assertFalse(((ManualAccountMapper) mapper).removeMapping("/DC=org/DC=griddev/OU=People/CN=Evil Person"));
-        assertEquals(null, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=Evil Persons"));
+        assertEquals(null, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=Evil Persons", true));
     }
     
 }
