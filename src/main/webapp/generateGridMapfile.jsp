@@ -3,8 +3,8 @@
 <%@page import="java.io.*"%>
 <%@page import="gov.bnl.gums.*"%>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
-<%  String hostname = request.getParameter("host");%>
-<%  String fqan = request.getParameter("fqan");%>
+<%  String hostname = request.getParameter("host"); if (hostname!=null) hostname=hostname.trim();%>
+<%  String fqan = request.getParameter("fqan"); if (fqan!=null) fqan=fqan.trim();%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>

@@ -2,9 +2,9 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="gov.bnl.gums.*"%>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
-<%  String hostname = request.getParameter("host");
-  String DN = request.getParameter("DN");
-  String FQAN = request.getParameter("FQAN");
+<%  String hostname = request.getParameter("host"); if (hostname!=null) hostname=hostname.trim();
+  String DN = request.getParameter("DN"); if (DN!=null) DN=DN.trim();
+  String FQAN = request.getParameter("FQAN"); if (FQAN!=null) FQAN=FQAN.trim();
   if ("".equals(FQAN)) FQAN = null;%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
