@@ -38,6 +38,8 @@ public class AdminCommandLine extends GUMSCommandLine {
             "Regerates mapfiles in the cache.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.PoolAddRange",
             "Adds accounts to an account pool.");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.PoolRemoveRange",
+        	"Removes accounts from an account pool.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.UpdateGroups",
             "Contact VO servers and retrieve user lists.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.Version",

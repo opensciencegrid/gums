@@ -19,10 +19,9 @@ public class ManualGroupRemove extends RemoteCommand {
      * Creates a new ManualGroup_Remove object.
      */
     public ManualGroupRemove() {
-        syntax = "PERSISTANCE GROUP USERDN1 [USERDN2] ...";
+        syntax = "USERGROUP USERDN1 [USERDN2] ...";
         description = "Removes a user from a manually managed group. " +
-            "PERSISTANCE is the 'persistenceFactory' as defined in the configuration for the group." +
-            "GROUP is the 'name' as defined in the configuration for the group.";
+            "USERGROUP is the name of the manual user group.";
     }
 
     protected org.apache.commons.cli.Options buildOptions() {
@@ -33,15 +32,14 @@ public class ManualGroupRemove extends RemoteCommand {
 
     protected void execute(org.apache.commons.cli.CommandLine cmd)
         throws Exception {
-        if (cmd.getArgs().length < 3) {
+        if (cmd.getArgs().length < 2) {
             failForWrongParameters("Missing parameters...");
         }
 
-        String persistenceManager = cmd.getArgs()[0];
-        String groupName = cmd.getArgs()[1];
+        String userGroup = cmd.getArgs()[0];
 
         for (int nArg = 2; nArg < cmd.getArgs().length; nArg++) {
-            getGums().manualGroupRemove(persistenceManager, groupName, cmd.getArgs()[nArg]);
+            getGums().manualGroupRemove(userGroup, cmd.getArgs()[nArg]);
         }
     }
 }

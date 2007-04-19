@@ -19,10 +19,9 @@ public class ManualMappingRemove extends RemoteCommand {
      * Creates a new ManualMapping_Remove object.
      */
     public ManualMappingRemove() {
-        syntax = "PERSISTANCE GROUP USERDN";
+        syntax = "ACCOUNTMAPPER USERDN";
         description = "Maps a DN to a user in a manually managed mapping. " +
-            "PERSISTANCE is the 'persistenceFactory' as defined in the configuration for the group." +
-            "GROUP is the 'name' as defined in the configuration for the group.";
+            "ACCOUNTMAPPER is the name of the manual account mapper.";
     }
 
     protected org.apache.commons.cli.Options buildOptions() {
@@ -37,10 +36,9 @@ public class ManualMappingRemove extends RemoteCommand {
             failForWrongParameters("Missing parameters...");
         }
 
-        String persistenceManager = cmd.getArgs()[0];
-        String groupName = cmd.getArgs()[1];
-        String userDN = cmd.getArgs()[2];
+        String accountMapper = cmd.getArgs()[0];
+        String userDN = cmd.getArgs()[1];
 
-        getGums().manualMappingRemove(persistenceManager, groupName, userDN);
+        getGums().manualMappingRemove(accountMapper, userDN);
     }
 }

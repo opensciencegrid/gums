@@ -19,10 +19,9 @@ public class ManualMappingAdd extends RemoteCommand {
      * Creates a new ManualMapping_Add object.
      */
     public ManualMappingAdd() {
-        syntax = "PERSISTANCE GROUP USERDN USERNAME";
+        syntax = "ACCOUNTMAPPER USERDN USERNAME";
         description = "Maps a DN to a user in a manually managed mapping. " +
-            "PERSISTANCE is the 'persistenceFactory' as defined in the configuration for the group." +
-            "GROUP is the 'name' as defined in the configuration for the group.";
+            "ACCOUNTMAPPER is the name of the manual account mapper.";
     }
 
     protected org.apache.commons.cli.Options buildOptions() {
@@ -33,15 +32,14 @@ public class ManualMappingAdd extends RemoteCommand {
 
     protected void execute(org.apache.commons.cli.CommandLine cmd)
         throws Exception {
-        if (cmd.getArgs().length < 4) {
+        if (cmd.getArgs().length < 3) {
             failForWrongParameters("Missing parameters...");
         }
 
-        String persistenceManager = cmd.getArgs()[0];
-        String groupName = cmd.getArgs()[1];
-        String userDN = cmd.getArgs()[2];
-        String username = cmd.getArgs()[3];
+        String accountMapper = cmd.getArgs()[0];
+        String userDN = cmd.getArgs()[1];
+        String username = cmd.getArgs()[2];
 
-        getGums().manualMappingAdd(persistenceManager, groupName, userDN, username);
+        getGums().manualMappingAdd(accountMapper, userDN, username);
     }
 }
