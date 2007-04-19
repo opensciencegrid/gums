@@ -81,6 +81,13 @@ public class GUMS {
     private Configuration conf;
     private ResourceManager resMan = new ResourceManager(this);
     protected ConfigurationStore confStore;
+ 
+    /**
+     * Creates and initilializes a new instance of GUMS (should only be used for testing).
+     */
+    public GUMS(Configuration conf) {
+    	this.conf = conf;
+    }
     
     /**
      * Creates and initilializes a new instance of GUMS.

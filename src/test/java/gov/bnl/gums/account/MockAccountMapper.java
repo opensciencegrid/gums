@@ -53,7 +53,7 @@ public class MockAccountMapper extends AccountMapper {
     }
     
     public String toXML(){
-    	return null;
+    	return "";
     }
     
     public AccountMapper clone(Configuration configuration) {

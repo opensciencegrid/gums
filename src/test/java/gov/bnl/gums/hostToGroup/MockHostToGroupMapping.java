@@ -53,7 +53,7 @@ public class MockHostToGroupMapping extends HostToGroupMapping {
     }
     
     public String toXML(){
-    	return null;
+    	return "";
     }
     
 }

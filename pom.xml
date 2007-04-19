@@ -156,7 +156,6 @@
 				        <artifactId>maven-surefire-plugin</artifactId>
 				        <configuration>
 				            <excludes>
-				            	<exclude>**/*</exclude>
 					            <exclude>**/*VOMS*Test*</exclude>
 				                <exclude>**/*LDAP*Test*</exclude>
 					            <exclude>**/unused/*</exclude>

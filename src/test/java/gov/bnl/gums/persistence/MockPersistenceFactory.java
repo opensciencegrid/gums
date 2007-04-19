@@ -45,7 +45,7 @@ public class MockPersistenceFactory extends PersistenceFactory {
     }
     
     public String toXML(){
-    	return null;
+    	return "";
     }
     
 }

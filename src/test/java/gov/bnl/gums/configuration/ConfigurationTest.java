@@ -45,7 +45,7 @@ public class ConfigurationTest extends TestCase {
         assertEquals("jsmith", conf.getAccountMapper( (String)gMap.getAccountMappers().get(0) ).mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith", true));
     }
     
-    static Configuration createSimpleConfiguration() {
+    public static Configuration createSimpleConfiguration() {
         Configuration conf = new Configuration();
 
         GroupToAccountMapping gMap = new GroupToAccountMapping(conf, "mockGroup");

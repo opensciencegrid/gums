@@ -51,7 +51,7 @@ public class MockUserGroup extends UserGroup {
     }
     
     public String toXML(){
-    	return null;
+    	return "";
     }
     
     public UserGroup clone(Configuration configuration) {
