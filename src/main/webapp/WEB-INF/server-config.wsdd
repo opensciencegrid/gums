@@ -9,14 +9,6 @@
       <parameter name="wsdlPortType" value="GUMSAPI"/>
       <parameter name="scope" value="Application"/>
   </service>
-  <service name="MockGUMSAdmin" provider="java:RPC" style="rpc" use="encoded">
-      <parameter name="wsdlTargetNamespace" value="http://www.bnl.gov/namespaces/2004/09/gums/GUMSService"/>
-      <parameter name="wsdlServiceElement" value="GUMSAPIService"/>
-      <parameter name="wsdlServicePort" value="admin"/>
-      <parameter name="className" value="gov.bnl.gums.admin.GUMSAPIMock"/>
-      <parameter name="wsdlPortType" value="GUMSAPI"/>
-      <parameter name="scope" value="Application"/>
-  </service>
   <service name="GUMSAuthorizationServicePort" provider="java:RPC" style="wrapped" use="literal">
       <wsdlFile>/org/opensciencegrid/authz/stubs/AuthZ.wsdl</wsdlFile>
       <parameter name="wsdlTargetNamespace" value="http://www.gridforum.org/namespaces/2004/03/ogsa-authz/saml"/>

@@ -46,6 +46,7 @@ Adds range of accounts to a pool.
 </p>
 
 <form action="accountRange.jsp" method="get">
+  <input type="hidden" name="action">
   <table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
     <tbody>
 	  <tr>
@@ -87,7 +88,20 @@ Adds range of accounts to a pool.
         <td style="text-align: left;">myAccount001-100</td>
       </tr>
       <tr>
-        <td colspan="2" style="text-align: center;"><button type="submit">Add Accounts</button></td>
+      	<table>
+      		<tr>
+		        <td colspan="2" style="text-align: center;" onclick="document.forms[0].elements['action'].value='add'"><button type="submit">Add Accounts</button></td>
+		        <td colspan="2" style="text-align: center;" onclick="document.forms[0].elements['action'].value='remove'"><button type="submit">Remove Accounts</button></td>
+		    </tr>
+		</table>
+      </tr>
+      <tr>
+      	<td>-----</td>
+      </tr>
+      <tr>
+      	<td>
+      		<td colspan="2" style="text-align: center;" onclick="document.forms[0].elements['action'].value='unassign'"><button type="submit">Unassign All Users</button></td>
+      	</td>
       </tr>
     </tbody>
   </table>

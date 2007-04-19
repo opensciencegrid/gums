@@ -50,8 +50,10 @@ Backs up or restores configuration.
       </tr>
       <tr>       
         <td>
-        	<div style="text-align: center;"><button type="submit" onclick="document.forms[0].elements['action'].value='restore'">Restore Configuration</button></div>
-        	<div style="text-align: center;"><button type="submit" onclick="document.forms[0].elements['action'].value='delete'">Delete Configuration</button></div>
+        	<div style="text-align: center;">
+        		<button type="submit" onclick="document.forms[0].elements['action'].value='restore'">Restore Configuration</button>
+        		<button type="submit" onclick="document.forms[0].elements['action'].value='delete'">Delete Configuration</button>
+        	</div>
         </td>
       </tr>
 <%

@@ -9,7 +9,7 @@
   <li>&nbsp;&nbsp;&nbsp;&nbsp;<a href="persistenceFactories.jsp">Persistence Factories</a></li>
   <li>&nbsp;&nbsp;&nbsp;&nbsp;<a href="virtualOrganizations.jsp">Virtual Organizations</a></li>
   <li>&nbsp;&nbsp;&nbsp;&nbsp;<a href="accountMappers.jsp">Account Mappers</a></li>
-  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="accountRange_form.jsp">Add Pool Account Range</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="accountRange_form.jsp">Manage Pool Accounts</a></li>
   <li>&nbsp;&nbsp;&nbsp;&nbsp;<a href="userGroups.jsp">User Groups</a></li>
   <li>&nbsp;&nbsp;&nbsp;&nbsp;<a href="groupToAccount.jsp">Group To Account</a></li>
   <li>&nbsp;&nbsp;&nbsp;&nbsp;<a href="hostToGroup.jsp">Host To Group</a></li>

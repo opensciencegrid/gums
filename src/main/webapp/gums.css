@@ -90,7 +90,7 @@
     float: left;
     left: 10px;
     top: 200px;
-    width: 200px;
+    width: 230px;
     background-color: rgb(255, 238, 119);
     }
 
@@ -102,11 +102,12 @@
   #sideNav ul { margin: 0px;
     padding-left: 0px;
     list-style-type: none;
+    
     }
 
   #sideNav li { padding: 3px;
     margin-top: 0px;
-    font-size: 9pt;
+    font-size: 8pt;
     margin-left: 0px;
     margin-right: 0px;
     font-weight: bold;
@@ -129,7 +130,7 @@
 
   #body { margin-top: 0px;
     margin-bottom: 0px;
-    margin-left: 220px;
+    margin-left: 250px;
     }
 
   #body table#projectList { border: 3px solid rgb(0, 0, 0);
@@ -203,7 +204,7 @@
     border-top: 1px solid;
     margin-top: 20px;
     margin-bottom: 0px;
-    margin-left: 220px;
+    margin-left: 250px;
     padding-top: 5px;
     height: 40px;
     }
