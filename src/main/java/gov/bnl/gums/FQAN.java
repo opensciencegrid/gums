@@ -10,7 +10,8 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** Represent a VOMS extended proxy credential as defined in
+/** 
+ * Represent a VOMS extended proxy credential as defined in
  * http://edg-wp2.web.cern.ch/edg-wp2/security/voms/edg-voms-credential.pdf.
  * <p>
  * A Fully Qualified Attribute Name consists of a VO, a group, a role and
@@ -76,6 +77,7 @@ public class FQAN {
 
     /**
      *  The capability used within the FQAN.
+     *  
      * @return The capability or null if none was specified.
      */
     public String getCapability() {

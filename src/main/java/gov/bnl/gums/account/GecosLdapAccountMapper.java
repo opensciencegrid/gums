@@ -21,7 +21,8 @@ import javax.naming.directory.SearchResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** Matches the DN with the account information retrieved from an LDAP server.
+/** 
+ * Matches the DN with the account information retrieved from an LDAP server.
  *
  * @author Gabriele Carcassi, Jay Packard
  */
@@ -65,10 +66,6 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     	return gecosField;
     }
     
-    /**
-     * Returns the URL used to describe the LDAP server.
-     * @return LDAP url according to JNDI LDAP driver.
-     */
     public String getJndiLdapUrl() {
         return jndiLdapUrl;
     }
@@ -85,10 +82,6 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     	this.gecosField = gecosField;
     }
     
-    /**
-     * Changes the LDAP server to use.
-     * @param jndiLdapUrl LDAP url according to JNDI LDAP driver.
-     */
     public void setJndiLdapUrl(String jndiLdapUrl) {
         this.jndiLdapUrl = jndiLdapUrl;
     }
@@ -130,13 +123,13 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
                 while (nisMap.hasMore()) {
                     SearchResult res = (SearchResult) nisMap.next();
                     Attributes atts = res.getAttributes();
-                    String username = (String) atts.get(accountField).get();
+                    String account = (String) atts.get(accountField).get();
                     Attribute gecosAtt = atts.get(gecosField);
                     if (gecosAtt != null) {
                         String gecos = gecosAtt.get().toString();
-                        map.addEntry(username, gecos);
+                        map.addEntry(account, gecos);
                     } else {
-                        log.trace("Found user '" + username + "' with no GECOS field");
+                        log.trace("Found user '" + account + "' with no GECOS field");
                     }
                 }
                 jndiCtx.close();
@@ -165,7 +158,7 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
         return null;
     }    
     
-    protected String mapName() {
+    protected String getMapName() {
         return jndiLdapUrl;
     }
 }

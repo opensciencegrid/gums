@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.CertToolkit;
 import gov.bnl.gums.configuration.Configuration;
 import junit.framework.*;
 import java.util.*;
@@ -43,21 +44,21 @@ public class GecosAccountMapperTest extends TestCase {
 
     public void testParsing() {
         String dn = "/DC=org/DC=griddev/OU=People/CN=John Smith Jr.";
-        String[] name = mapper.parseNameAndSurname(dn);
+        String[] name = CertToolkit.parseNameAndSurname(dn);
         assertEquals("John", name[0]);
         assertEquals("Smith", name[1]);
-        name = mapper.parseNameAndSurname("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345");
+        name = CertToolkit.parseNameAndSurname("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345");
         assertEquals("Jane", name[0]);
         assertEquals("Doe", name[1]);
-        name = mapper.parseNameAndSurname("/DC=org/DC=griddev/OU=People/CN=John W. Smith Jr. 12345");
+        name = CertToolkit.parseNameAndSurname("/DC=org/DC=griddev/OU=People/CN=John W. Smith Jr. 12345");
         assertEquals("John", name[0]);
         assertEquals("Smith", name[1]);
     }
     
     public void testCheckSurname() {
-        assertTrue(mapper.checkSurname("Smith"));
-        assertFalse(mapper.checkSurname("12345"));
-        assertFalse(mapper.checkSurname("Jr."));
+        assertTrue(CertToolkit.checkSurname("Smith"));
+        assertFalse(CertToolkit.checkSurname("12345"));
+        assertFalse(CertToolkit.checkSurname("Jr."));
     }
 
     private class GecosAccountMapperImpl extends GecosAccountMapper {
@@ -70,13 +71,13 @@ public class GecosAccountMapperTest extends TestCase {
             super(configuration, name);
         }
         
-        protected gov.bnl.gums.account.GecosMap createMap() {
+        protected GecosMap createMap() {
             GecosMap map = new GecosMap();
             map.addEntry("jsmith", "John Smith");
             return map;
         }
 
-        protected java.lang.String mapName() {
+        protected java.lang.String getMapName() {
             return getName();
         }
         

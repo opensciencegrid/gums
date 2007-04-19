@@ -26,6 +26,12 @@ public class ConfigurationTransform {
 	static private Log log = LogFactory.getLog(FileConfigurationStore.class);
 	static private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
 	
+	/**
+	 * Transforms gums.config 1.1 to 1.2
+	 * 
+	 * @param configFile
+	 * @param transformFile
+	 */
 	static public void doTransform(String configFile, String transformFile) {
 	    try {
 	    	String configFileTemp = configFile + "~";

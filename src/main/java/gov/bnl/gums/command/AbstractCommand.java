@@ -5,6 +5,7 @@
  */
 package gov.bnl.gums.command;
 
+import gov.bnl.gums.CertToolkit;
 import gov.bnl.gums.admin.*;
 
 import java.security.cert.X509Certificate;
@@ -19,6 +20,9 @@ import org.apache.commons.logging.LogFactory;
 import org.glite.security.trustmanager.ContextWrapper;
 
 /**
+ * Class to provide general command line utilities such as
+ * argument parsing and authentication
+ * 
  * @author Gabriele Carcassi, Jay Packard
  */
 public abstract class AbstractCommand {
@@ -45,6 +49,9 @@ public abstract class AbstractCommand {
         commandName = CommandLineToolkit.getCommandName(className);
     }
     
+    /**
+     * Extracting the client DN
+     */
     private void initClientCred() {
         // If DN is already found, no need to find it again...
         if (clientDN != null) return;

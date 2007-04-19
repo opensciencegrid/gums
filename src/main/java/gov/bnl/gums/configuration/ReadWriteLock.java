@@ -9,7 +9,8 @@ package gov.bnl.gums.configuration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** Implements a lock to prevent access to GUMS data when updating. This is
+/** 
+ * Implements a lock to prevent access to GUMS data when updating. This is
  * essentially the same as ReadWriteLock in JDK 1.5 (which I discovered after
  * implementing this), which can't be used as we need JDK 1.4 compatibility.
  * In the future it can be eliminated.
@@ -29,18 +30,23 @@ public class ReadWriteLock {
         this.name = name;
     }
     
-    /** Checks whether anybody has a read lock.
+    /** 
+     * Checks whether anybody has a read lock.
      */
     public synchronized boolean isReadLocked() {
         return lock[1] != 0;
     }
     
-    /** Checks whether anybody is reading data.
+    /** 
+     * Checks whether anybody is reading data.
      */
     public synchronized boolean isWriteLocked() {
         return lock[0] != 0;
     }
     
+    /**
+     * Obtain read lock.
+     */
     public synchronized void obtainReadLock() {
         log.trace("Trying to read on " + name + ": " + lock[0] + ", " + lock[1]);
         // Wait that writes are finished
@@ -59,6 +65,9 @@ public class ReadWriteLock {
         notifyAll();
     }
     
+    /**
+     * Obtain write lock.
+     */
     public synchronized void obtainWriteLock() {
         log.trace("Trying to write on " + name + ": " + lock[0] + ", " + lock[1]);
         
@@ -85,6 +94,9 @@ public class ReadWriteLock {
         }
     }
     
+    /**
+     * Release read lock.
+     */
     public synchronized void releaseReadLock() {
         log.trace("Unlocking read on " + name + ": " + lock[0] + ", " + lock[1]);
         lock[0]--;
@@ -92,6 +104,9 @@ public class ReadWriteLock {
         notifyAll();
     }
     
+    /**
+     * Release write lock.
+     */
     public synchronized void releaseWriteLock() {
         log.trace("Unlocking write on " + name + ": " + lock[0] + ", " + lock[1]);
         lock[1]=0;

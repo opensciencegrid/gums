@@ -7,9 +7,9 @@
 
 package gov.bnl.gums.configuration;
 
+import gov.bnl.gums.CertCache;
 import gov.bnl.gums.GUMS;
 import gov.bnl.gums.account.*;
-import gov.bnl.gums.admin.CertCache;
 import gov.bnl.gums.groupToAccount.*;
 import gov.bnl.gums.hostToGroup.*;
 import gov.bnl.gums.persistence.*;

@@ -3,6 +3,7 @@
  *
  * Created on November 3, 2004, 10:51 AM
  */
+
 package gov.bnl.gums.command;
 
 import java.net.MalformedURLException;
@@ -15,12 +16,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * Class for handling the gums-client.properties file
+ * 
  * @author Gabriele Carcassi, Jay Packard
  */
 public class Configuration {
 	static private Log log = LogFactory.getLog(Configuration.class);
 	static private Configuration conf = new Configuration();
 	
+	/**
+	 * Get instance of Configuration
+	 * 
+	 * @return Configuration object
+	 */
 	static public Configuration getInstance() {
         return conf;
     }
@@ -30,6 +38,9 @@ public class Configuration {
     private boolean direct;
     private boolean loaded;
 
+    /**
+     * @return URL object for GUMS AuthZ location
+     */
     public URL getGUMSAuthZLocation() {
         if (!loaded) {
             loadConf();
@@ -44,9 +55,7 @@ public class Configuration {
     }
     
     /**
-     * TODO: write doc
-     *
-     * @return TODO: write doc
+     * @return URL object of GUMS
      */
     public URL getGUMSLocation() {
         if (!loaded) {
@@ -56,7 +65,10 @@ public class Configuration {
         return locationURL;
     }
 
-    public boolean isDirect() {
+    /**
+     * @return true if gums.location if GUMS API can be instantiated directly
+     */
+   public boolean isDirect() {
         if (!loaded) {
             loadConf();
         }

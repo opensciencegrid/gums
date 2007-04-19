@@ -43,7 +43,8 @@ public class ResourceManagerTest extends TestCase {
     }
     
     public void setUp() {
-        GUMS gums = new GUMS(ConfigurationTest.createSimpleConfiguration());
+        GUMS gums = new GUMS();
+        gums.setConfiguration(ConfigurationTest.createSimpleConfiguration(), false);
         man = gums.getResourceManager();
         conf = gums.getConfiguration();
     }

@@ -40,6 +40,20 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
         return account;
     }
     
+    public boolean removeAccount(String account) {
+    	Iterator it = freeAccounts.iterator();
+    	boolean wasRemoved = false;
+    	while (it.hasNext()) {
+    		String itAccount = (String)it.next();
+    		if (itAccount.equals(account)) {
+    			freeAccounts.remove(itAccount);
+    			wasRemoved = true;
+    			break;
+    		}
+    	}
+    	return wasRemoved;
+    }
+    
     public String retrieveAccount(String userDN) {
         userToLastDate.put(userDN, new Date());
         return (String) userToAccount.get(userDN);
@@ -75,6 +89,12 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
     public void unassignUser(String user) {
         freeAccounts.add(userToAccount.remove(user));
         userToLastDate.remove(user);
+    }
+    
+    public void unassignAllUsers() {
+        freeAccounts.add(userToAccount.values());
+        userToAccount.clear();
+        userToLastDate.clear();
     }
     
     public void addAccount(String account) {

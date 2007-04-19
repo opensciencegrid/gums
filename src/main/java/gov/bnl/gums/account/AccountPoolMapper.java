@@ -9,7 +9,8 @@ package gov.bnl.gums.account;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 
-/** Provides the mapping by assigning user accounts from a pool provided by
+/** 
+ * Provides the mapping by assigning user accounts from a pool provided by
  * the AccountPoolMapperDB.
  * <p>
  * The accounts are mapped when the mapUser function is called for that
@@ -51,22 +52,28 @@ public class AccountPoolMapper extends AccountMapper {
     	return accountPool;
     }
 
-    public int getNumberAssigned() {
-    	return getDB().retrieveAccountMap().values().size();
+    public AccountPoolMapperDB getDB() {
+    	if (db==null)
+    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveAccountPoolMapperDB( accountPool );
+    	return db;
     }    
     
+    public int getNumberAssigned() {
+    	return getDB().retrieveAccountMap().values().size();
+    }
+
     public int getNumberUnassigned() {
     	return getDB().getNumberUnassignedMappings();
     }
-
+ 
     public String getPersistenceFactory() {
        return persistenceFactory;
     }
- 
+        
     public String getType() {
 		return "pool";
 	}
-        
+    
     public String mapUser(String userDN, boolean createIfDoesNotExist) {
         String account = getDB().retrieveAccount(userDN);
         if (account != null) return account;
@@ -83,22 +90,16 @@ public class AccountPoolMapper extends AccountMapper {
     public void setPersistenceFactory(String persistenceFactory) {
         this.persistenceFactory = persistenceFactory;
     }
-    
+
     public String toString(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
     }
-
+    
     public String toXML() {
     	return "\t\t<accountPoolMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tdescription='"+getDescription()+"'\n"+
 			"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
     		"\t\t\taccountPool='"+accountPool+"'/>\n\n";
-    }
-    
-    private AccountPoolMapperDB getDB() {
-    	if (db==null)
-    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveAccountPoolMapperDB( accountPool );
-    	return db;
     }
 }

@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.configuration;
 
+import gov.bnl.gums.CertCache;
 import gov.bnl.gums.account.AccountPoolMapper;
 import gov.bnl.gums.account.GecosAccountMapper;
 import gov.bnl.gums.account.GecosLdapAccountMapper;
@@ -13,7 +14,6 @@ import gov.bnl.gums.account.GecosNisAccountMapper;
 import gov.bnl.gums.account.GroupAccountMapper;
 import gov.bnl.gums.account.ManualAccountMapper;
 import gov.bnl.gums.account.NISAccountMapper;
-import gov.bnl.gums.admin.CertCache;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.CertificateHostToGroupMapping;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
@@ -39,7 +39,8 @@ import org.apache.commons.digester.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** Contains the logic on how to parse an XML configuration file to create a
+/** 
+ * Contains the logic on how to parse an XML configuration file to create a
  * correctly built Configuration object.
  *
  * @author Gabriele Carcassi, Jay Packard
@@ -47,6 +48,11 @@ import org.apache.commons.logging.LogFactory;
 class ConfigurationToolkit {
 	static private Log log = LogFactory.getLog(ConfigurationToolkit.class); 
     
+    /**
+     * Simple error handler that logs errors
+     * 
+     * @author jpackard
+     */
     public class SimpleErrorHandler implements ErrorHandler {
         public boolean error = false;
     	
@@ -107,15 +113,18 @@ class ConfigurationToolkit {
         
     }    
     
+    // Simple override rule that ignores missing properties
+    // and excludes given properties
     private static class PassRule extends SetPropertiesRule {
-    	PassRule(String [] excludes) {
+    	
+    	public PassRule(String [] excludes) {
     		super(excludes, new String[]{});
     		setIgnoreMissingProperty(false);
     	}
     	
     }
 
-    //  Rule for handling a reference to a persistent Factory
+    // Rule for handling a reference to a persistent Factory
     private static class PersistenceFactoryRule extends Rule {
         
         public void begin(String str, String str1, org.xml.sax.Attributes attributes) throws java.lang.Exception {
@@ -133,6 +142,7 @@ class ConfigurationToolkit {
         
     }
     
+    // Rule for distinguishing between 3rd party properties and GUMS properties
     private static class PersistencePropertiesRule extends Rule {
         
         public void begin(String str, String str1, org.xml.sax.Attributes attributes) throws java.lang.Exception {
@@ -160,7 +170,7 @@ class ConfigurationToolkit {
         
     };
     
-    //  Rule for handling the list of userGroups within a groupToAccountMapping
+    // Rule for handling the list of userGroups within a groupToAccountMapping
     private static class UserGroupListRule extends Rule {
         
         public void begin(String str, String str1, org.xml.sax.Attributes attributes) throws java.lang.Exception {
@@ -199,6 +209,14 @@ class ConfigurationToolkit {
         
     }          
     
+    /**
+     * Get the gums.config version for the given file
+     * 
+     * @param filename
+     * @return
+     * @throws IOException
+     * @throws SAXException
+     */
     public static String getVersion(String filename) throws IOException, SAXException {
         Digester digester = new Digester();
         digester.setValidating(false);
@@ -213,6 +231,9 @@ class ConfigurationToolkit {
         return version;
     }
     
+    /**
+     * @return a Digestor object for parsing gums.config
+     */
     public static Digester retrieveDigester() {
         Digester digester = new Digester();
         digester.setValidating(false);
@@ -310,6 +331,15 @@ class ConfigurationToolkit {
         return digester;
     }
     
+    /**
+     * Validate gums.config given a config file and a schema file
+     * 
+     * @param configFile
+     * @param schemaFile
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     * @throws IOException
+     */
     public static void validate(String configFile, String schemaFile) throws ParserConfigurationException, SAXException, IOException {
     	System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
     	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -330,6 +360,15 @@ class ConfigurationToolkit {
         	throw new ParserConfigurationException();
     }
 
+    /**
+     * Load gums.config
+     * 
+     * @param configFile
+     * @return
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
     public static synchronized Configuration loadConfiguration(String configFile) throws ParserConfigurationException, IOException, SAXException {
     	String schemaFile = configFile+".schema";
     	String transformFile = configFile+".transform";

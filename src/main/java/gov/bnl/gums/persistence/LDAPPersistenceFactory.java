@@ -130,43 +130,43 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
     
-    /** Adds the username to the given secondary group. It expects the base DN
+    /** Adds the account to the given secondary group. It expects the base DN
      * provided by the LDAP connection url to point to a domain (i.e. "dc-usatlas,dc=bnl,dc=gov")
      * that will contain a "ou=People" and a "ou=Group" subtree.
      * 
-     * @param username the username to add to the secondary group (i.e. "carcassi")
+     * @param account the account to add to the secondary group (i.e. "carcassi")
      * @param groupname the secondary group name (i.e. "usatlas")
      */
-    public void addToSecondaryGroup(String username, String groupname) {
-        addToSecondaryGroup(null, username, groupname);
+    public void addToSecondaryGroup(String account, String groupname) {
+        addToSecondaryGroup(null, account, groupname);
     }
     
-    /** Adds the username to the given secondary group. It expects the domain to be
+    /** Adds the account to the given secondary group. It expects the domain to be
      * relative to the base DN
      * provided by the LDAP connection url and to point to a domain (i.e. "dc-usatlas,dc=bnl,dc=gov")
      * that will contain a "ou=People" and a "ou=Group" subtree.
      * 
      * @param domain the domain DN relative to be base DN
-     * @param username the username to add to the secondary group (i.e. "carcassi")
+     * @param account the account to add to the secondary group (i.e. "carcassi")
      * @param groupname the secondary group name (i.e. "usatlas")
      */
-    public void addToSecondaryGroup(String domain, String username, String groupname) {
+    public void addToSecondaryGroup(String domain, String account, String groupname) {
         DirContext context = retrieveContext();
         try {
             DirContext subcontext = getDomainContext(context, domain);
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
             NamingEnumeration result;
-           	result = subcontext.search("cn="+groupname+",ou=Group", "(memberUid={0})", new Object[] {username}, ctrls);
+           	result = subcontext.search("cn="+groupname+",ou=Group", "(memberUid={0})", new Object[] {account}, ctrls);
             if (result.hasMore()) return;
             ModificationItem[] mods = new ModificationItem[1];
             mods[0] = new ModificationItem(subcontext.ADD_ATTRIBUTE,
-                new BasicAttribute("memberUid", username));
+                new BasicAttribute("memberUid", account));
             subcontext.modifyAttributes("cn="+groupname+",ou=Group", mods);
-            log.trace("Added secondary group to user - user '" + username + "' to group '" + groupname + "' at '" + domain + "'");
+            log.trace("Added secondary group to user - user '" + account + "' to group '" + groupname + "' at '" + domain + "'");
         } catch (Exception e) {
-            log.info("Couldn't add user to secondary group - user '" + username + "' to group '" + groupname + "' at '" + domain + "'", e);
-            throw new RuntimeException("Couldn't add user to secondary group - user '" + username + "' to group '" + groupname + "' at '" + domain + "': " + e.getMessage(), e);
+            log.info("Couldn't add user to secondary group - user '" + account + "' to group '" + groupname + "' at '" + domain + "'", e);
+            throw new RuntimeException("Couldn't add user to secondary group - user '" + account + "' to group '" + groupname + "' at '" + domain + "': " + e.getMessage(), e);
         } finally {
             releaseContext(context);
         }
@@ -196,36 +196,36 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
 
-    /** Changes the primary gid for the given username. It expects the base DN
+    /** Changes the primary gid for the given account. It expects the base DN
      * provided by the LDAP connection url to point to a domain (i.e. "dc-usatlas,dc=bnl,dc=gov")
      * that will contain a "ou=People" and a "ou=Group" subtree.
      * 
-     * @param username the username to change the primary group (i.e. "carcassi")
+     * @param account the account to change the primary group (i.e. "carcassi")
      * @param groupname the primary group name (i.e. "usatlas")
      */
-    public void changeGroupID(String username, String groupname) {
+    public void changeGroupID(String account, String groupname) {
         String gid = findGID(null, groupname);
         if (gid == null) {
             throw new RuntimeException("GID for group '" + groupname + "' wasn't found.");
         }
-        updateGID(null, username, gid);
+        updateGID(null, account, gid);
     }
 
-    /** Changes the primary gid for the given username. It expects the domain to be
+    /** Changes the primary gid for the given account. It expects the domain to be
      * relative to the base DN
      * provided by the LDAP connection url and to point to a domain (i.e. "dc-usatlas,dc=bnl,dc=gov")
      * that will contain a "ou=People" and a "ou=Group" subtree.
      *
      * @param domain the domain DN relative to be base DN
-     * @param username the username to change the primary group (i.e. "carcassi")
+     * @param account the account to change the primary group (i.e. "carcassi")
      * @param groupname the primary group name (i.e. "usatlas")
      */
-    public void changeGroupID(String domain, String username, String groupname) {
+    public void changeGroupID(String domain, String account, String groupname) {
         String gid = findGID(domain, groupname);
         if (gid == null) {
             throw new RuntimeException("GID for group '" + groupname + "' wasn't found.");
         }
-        updateGID(domain, username, gid);
+        updateGID(domain, account, gid);
     }
 
     public PersistenceFactory clone(Configuration configuration) {
@@ -434,8 +434,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
                 SearchResult res = (SearchResult) result.next();
                 if ("".equals(res.getName().trim())) continue;
                 ModificationItem[] mods = new ModificationItem[1];
-                mods[0] = new ModificationItem(context.REMOVE_ATTRIBUTE,
-                    new BasicAttribute("user", userDN));
+                mods[0] = new ModificationItem(context.REMOVE_ATTRIBUTE, new BasicAttribute("user", userDN));
                 context.modifyAttributes(res.getName() + "," + mapDN, mods);
                 deleted = true;
                 log.trace("Removed map entry - user '" + userDN + "' to map '" + mapName + "' at '" + mapDN + "'");
@@ -708,7 +707,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
     
-    private void updateGID(String domain, String username, String gid) {
+    private void updateGID(String domain, String account, String gid) {
         DirContext context = retrieveContext();
         try {
             DirContext subcontext = getDomainContext(context, domain);
@@ -716,11 +715,11 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
             mods[0] = new ModificationItem(subcontext.REPLACE_ATTRIBUTE,
                 new BasicAttribute("gidNumber", gid));
             
-            subcontext.modifyAttributes("uid="+username+",ou=People", mods);
-            log.trace("Changed primary gid for user '" + username + "' to gid '" + gid + "' at '" + domain + "'");
+            subcontext.modifyAttributes("uid="+account+",ou=People", mods);
+            log.trace("Changed primary gid for user '" + account + "' to gid '" + gid + "' at '" + domain + "'");
         } catch (Exception e) {
-            log.info("Couldn't change gid for user '" + username + "' to gid '" + gid + "' at '" + domain + "'", e);
-            throw new RuntimeException("Couldn't change gid for user '" + username + "' to gid '" + gid + "' at '" + domain + "': " + e.getMessage(), e);
+            log.info("Couldn't change gid for user '" + account + "' to gid '" + gid + "' at '" + domain + "'", e);
+            throw new RuntimeException("Couldn't change gid for user '" + account + "' to gid '" + gid + "' at '" + domain + "': " + e.getMessage(), e);
         } finally {
             releaseContext(context);
         }

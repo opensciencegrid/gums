@@ -40,6 +40,7 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
     
     /**
      * Creates a new LDAP map, named "map=map" in the defaultGumsOU.
+     * 
      * @param factory the LDAP factory that will provide LDAP connectivity
      * @param map the name of the map
      */
@@ -68,10 +69,6 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
         log.trace("LDAPMapDB object create: map '" + map + "' factory " + factory + " primary group '" + group + "' secondary groups '" + secondaryGroups + "'");
     }
     
-    /**
-     * Adds an account to the pool of accounts available.
-     * @param account a UNIX account
-     */
     public void addAccount(String account) {
         try {
             factory.createAccountInMap(account, map, mapDN);
@@ -82,11 +79,6 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
         }
     }
     
-    /**
-     * Assigns a new account taken from the pool to the certificate DN of the user.
-     * @param userDN full certificate DN of the user
-     * @return the UNIX account or null if no free account was found
-     */
     public String assignAccount(String userDN) {
         DirContext context = factory.retrieveContext();
         String account = null;
@@ -137,29 +129,17 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
         return account;
     }
 
-    /**
-     * Creates the group in LDAP if it doesn't exists.
-     */
     public void createGroupIfNotExists() {
         if (!doesMapExist()) {
             factory.createMap(map, mapDN);
             log.trace("LDAP group '" + map + "' didn't exist, and it was created");
         }
     }
-    
-    /**
-     * Creates a new mapping in the map, associating a certificate DN with an account.
-     * @param userDN full certificate DN of the user
-     * @param account a UNIX account
-     */
+
     public void createMapping(String userDN, String account) {
         factory.addMapEntry(userDN, account, map, mapDN);
     }
 
-    /**
-     * Checks whether the map actually exists in LDAP.
-     * @return true if it exists
-     */
     public boolean doesMapExist() {
         DirContext context = factory.retrieveContext();
         try {
@@ -195,11 +175,6 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
         }
     }
 
-    /**
-     * Remove the mapping associated to the certificate DN of the user provided.
-     * @param userDN full certificate DN of the user
-     * @return true if a mapping was actually removed
-     */
     public boolean removeMapping(String userDN) {
         try {
             return factory.removeMapEntry(userDN, map, mapDN);
@@ -209,8 +184,12 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
             throw e;
         }
     }
+    
+    public boolean removeAccount(String account) {
+        return false; // Should not remove account from ldap from GUMS
+    }
 
-    public void resetAccountPool() {
+    public void unassignAllUsers() {
         DirContext context = factory.retrieveContext();
         try {
             SearchControls ctrls = new SearchControls();
@@ -225,8 +204,7 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
                     Attribute users = atts.get("user");
                     String user = (String) users.get();
                     ModificationItem[] mods = new ModificationItem[1];
-                    mods[0] = new ModificationItem(context.REMOVE_ATTRIBUTE,
-                        new BasicAttribute("user", user));
+                    mods[0] = new ModificationItem(context.REMOVE_ATTRIBUTE, new BasicAttribute("user", user));
                     context.modifyAttributes("account=" + account + "," + mapDN, mods);
                 }
             }
@@ -239,11 +217,6 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
         }
     }
 
-    /**
-     * Retrieves the account associated with the certificate DN of the user.
-     * @param userDN full certificate DN of the user
-     * @return the UNIX account or null if no associated account was found
-     */
     public String retrieveAccount(String userDN) {
         String account = retrieveMapping(userDN);
         log.trace("Retrieving account from LDAP map '" + map + "' for user '" + userDN + "' account '" + account + "'");
@@ -254,11 +227,6 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
         return account;
     }
 
-    /**
-     * Retrieves the full association of certificates DNs to accounts that
-     * the map has stored.
-     * @return a Map with the certificate DN as the key and the account as the value
-     */
     public java.util.Map retrieveAccountMap() {
         DirContext context = factory.retrieveContext();
         Map map = new Hashtable();
@@ -287,11 +255,6 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
         }
     }
 
-    /**
-     * Retrieve the mapping for the certificate DN of the user.
-     * @param userDN full certificate DN of the user
-     * @return the UNIX account to be mapped to
-     */
     public String retrieveMapping(String userDN) {
         DirContext context = factory.retrieveContext();
         try {
@@ -321,21 +284,10 @@ public class LDAPMappingDB implements AccountPoolMapperDB, ManualAccountMapperDB
     	return null;
     }
     
-    /**
-     * This is not supported anymore
-     * @param date ignored
-     * @return nothing
-     * @throws UnsupportedOperationException
-     */
     public java.util.List retrieveUsersNotUsedSince(java.util.Date date) {
         throw new UnsupportedOperationException("retrieveUsersNotUsedSince is not supported anymore");
     }
     
-    /**
-     * For an account pool, frees the account that was associated to a particular
-     * user.
-     * @param userDN full certificate DN of the user
-     */
     public void unassignUser(String userDN) {
         factory.removeMapEntry(userDN, map, mapDN);
     }

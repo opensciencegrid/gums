@@ -21,8 +21,10 @@ import javax.naming.directory.SearchResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** Matches the DN with the account information retrieved from a NIS server.
+/** 
+ * Matches the DN with the account information retrieved from a NIS server.
  *
+ * @deprecated
  * @author Gabriele Carcassi, Jay Packard
  */
 public class GecosNisAccountMapper extends GecosAccountMapper {
@@ -70,13 +72,13 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
                 while (nisMap.hasMore()) {
                     SearchResult res = (SearchResult) nisMap.next();
                     Attributes atts = res.getAttributes();
-                    String username = (String) atts.get("cn").get();
+                    String account = (String) atts.get("cn").get();
                     Attribute gecosAtt = atts.get("gecos");
                     if (gecosAtt != null) {
                         String gecos = gecosAtt.get().toString();
-                        map.addEntry(username, gecos);
+                        map.addEntry(account, gecos);
                     } else {
-                        log.trace("Found user '" + username + "' with no GECOS field");
+                        log.trace("Found user '" + account + "' with no GECOS field");
                     }
                 }
                 jndiCtx.close();
@@ -105,10 +107,6 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
         return null;
     }
     
-    /**
-     * Returns the URL used to describe the NIS server.
-     * @return NIS url according to JNDI NIS driver.
-     */
     public String getJndiNisUrl() {
         return jndiNisUrl;
     }
@@ -117,10 +115,6 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
 		return "gecosNIS";
 	}
     
-    /**
-     * Changes the NIS server to use.
-     * @param jndiNisUrl NIS url according to JNDI NIS driver.
-     */
     public void setJndiNisUrl(String jndiNisUrl) {
         this.jndiNisUrl = jndiNisUrl;
     }
@@ -136,8 +130,6 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
 			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
     }
 
-    /** Prepares the parameters for the JNDI connection.
-     */
     private Properties retrieveJndiProperties() {
         Properties jndiProperties = new java.util.Properties();
         jndiProperties.put("java.naming.provider.url", jndiNisUrl);
@@ -145,7 +137,7 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
         return jndiProperties;
     }      
     
-    protected String mapName() {
+    protected String getMapName() {
         return jndiNisUrl;
     }
 }

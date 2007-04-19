@@ -9,7 +9,8 @@ package gov.bnl.gums.account;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 
-/** An account mapping policy that looks at a stored table to determine the
+/** 
+ * An account mapping policy that looks at a stored table to determine the
  * account. The database implementation is an abstract interface, which
  * allows the mapping to be persistent on different mediums (i.e. database,
  * LDAP, file, ...)
@@ -49,6 +50,12 @@ public class ManualAccountMapper extends AccountMapper {
     	getDB().createMapping(userDN, account);
     }
     
+    public ManualAccountMapperDB getDB() {
+    	if (db==null)
+    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualAccountMapperDB( getName() );
+    	return db;
+    }
+    
     public java.util.List getMappings() {
     	return getDB().retrieveMappings();
     }
@@ -67,26 +74,20 @@ public class ManualAccountMapper extends AccountMapper {
     
     public boolean removeMapping(String userDN) {
         return getDB().removeMapping(userDN);
-    }
+    }  
     
     public void setPersistenceFactory(String persistanceFactory) {
         this.persistenceFactory = persistanceFactory;
-    }  
-    
-    public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
     }
 
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
+    }      
+    
     public String toXML() {
     	return "\t\t<manualAccountMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tdescription='"+getDescription()+"'\n"+
 			"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
-    }      
-    
-    private ManualAccountMapperDB getDB() {
-    	if (db==null)
-    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualAccountMapperDB( getName() );
-    	return db;
     }
 }

@@ -40,6 +40,12 @@ import org.apache.commons.logging.*;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class FileConfigurationStore implements ConfigurationStore {
+    /**
+     * Copy source to target
+     * 
+     * @param source
+     * @param target
+     */
     static public void copyFile(String source, String target) {
         try {
         	if (System.getProperty("os.name").indexOf("Linux")!=-1) {
@@ -71,6 +77,12 @@ public class FileConfigurationStore implements ConfigurationStore {
 		}
 	}
     
+    /**
+     * Move source to target
+     * 
+     * @param source
+     * @param target
+     */
     static public void moveFile(String source, String target) {
     	copyFile(source, target);
         new File(source).delete();
@@ -84,15 +96,24 @@ public class FileConfigurationStore implements ConfigurationStore {
     private String filename = null;
     private DateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmm");
 
+    /**
+     * Creates a new FileConfigurationStore object
+     */
     public FileConfigurationStore() {
     }
     
-    /** Allows to specify the absolute name of the configuration file
+    /**
+     * Creates a new FileConfigurationStore object
+     * Allows for specify the absolute name of the configuration file
+     * 
+     * @param filename
+     * @param create if true, a new barbones configuration file will be created
+     * at given filename if no file currently exists at that filename
      */
     public FileConfigurationStore(String filename, boolean create) {
         this.filename = filename;
         
-        if (create) {
+        if (create && !(new File(filename).exists())) {
     		try {
     			BufferedWriter out = new BufferedWriter(new FileWriter(filename));
     			out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n"+
@@ -130,6 +151,9 @@ public class FileConfigurationStore implements ConfigurationStore {
     	new File(getConfigBackupPath()+"/gums.config."+dateStr).delete();
     }
     
+    /**
+     * @return gums.config path
+     */
     public String getConfigPath() {
     	if (filename != null)
         	return filename;
@@ -137,6 +161,9 @@ public class FileConfigurationStore implements ConfigurationStore {
         	return getClass().getClassLoader().getResource("gums.config").getPath();
     }
     
+    /**
+     * @return backup directory path
+     */
     public String getConfigBackupPath() {
     	String configPath = getConfigPath();
     	int index = configPath.lastIndexOf("/");

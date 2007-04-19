@@ -28,99 +28,107 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class LocalPersistenceFactory extends PersistenceFactory {
-    static public String getTypeStatic() {
-		return "local";
-	}
-    
-    private Log log = LogFactory.getLog(LocalPersistenceFactory.class);
-    private HibernatePersistenceFactory mysql;    
-    private LDAPPersistenceFactory ldap;
-	private boolean synchGroups = false;
-    
-	private class LocalAccountPoolMapperDB implements AccountPoolMapperDB {
-        private AccountPoolMapperDB mysqlDB;
+    private class LocalAccountPoolMapperDB implements AccountPoolMapperDB {
+        private AccountPoolMapperDB db;
         private String group;
         private List secondaryGroups;
         
         public LocalAccountPoolMapperDB(String poolname, String group, List secondaryGroups) {
             this.group = group;
             this.secondaryGroups = secondaryGroups;
-            mysqlDB = mysql.retrieveAccountPoolMapperDB(poolname);
+            db = persFactory.retrieveAccountPoolMapperDB(poolname);
         }
         
         public void addAccount(String account) {
-            mysqlDB.addAccount(account);
+            db.addAccount(account);
         }
 
         public String assignAccount(String userDN) {
-            String username = mysqlDB.assignAccount(userDN);
-            if (username == null) return null;
-            log.trace("Assigned '" + username + "' to '" + userDN);
+            String account = db.assignAccount(userDN);
+            if (account == null) return null;
+            log.trace("Assigned '" + account + "' to '" + userDN);
             try {
-                assignGroups(username);
-                return username;
+                assignGroups(account);
+                return account;
             } catch (RuntimeException e) {
                 log.trace("Group assignment failed: unassign user", e);
-                unassignUser(username);
+                unassignUser(account);
                 log.trace("User unassigned");
                 throw e;
             }
         }
         
         public int getNumberUnassignedMappings() {
-        	return mysqlDB.getNumberUnassignedMappings();
+        	return db.getNumberUnassignedMappings();
+        }
+        
+        public boolean removeAccount(String account) {
+        	return db.removeAccount(account);
         }
 
         public String retrieveAccount(String userDN) {
-            String username = mysqlDB.retrieveAccount(userDN);
+            String account = db.retrieveAccount(userDN);
             if (synchGroups) {
-                assignGroups(username);
+                assignGroups(account);
             }
-            return username;
+            return account;
         }
 
         public java.util.Map retrieveAccountMap() {
-            return mysqlDB.retrieveAccountMap();
+            return db.retrieveAccountMap();
         }
 
         public List retrieveUsersNotUsedSince(Date date) {
-            return mysqlDB.retrieveUsersNotUsedSince(date);
+            return db.retrieveUsersNotUsedSince(date);
         }
 
-        public void unassignUser(String user) {
-            mysqlDB.unassignUser(user);
+        public void unassignAllUsers() {
+        	db.unassignAllUsers();
         }
         
-        private void assignGroups(String username) {
-            ldap.changeGroupID(username, group);
-            log.trace("Assigned '" + group + "' to '" + username);
+        public void unassignUser(String user) {
+            db.unassignUser(user);
+        }
+        
+        private void assignGroups(String account) {
+            ldap.changeGroupID(account, group);
+            log.trace("Assigned '" + group + "' to '" + account);
             Iterator iter = secondaryGroups.iterator();
             while (iter.hasNext()) {
                 String group = (String) iter.next();
-                ldap.addToSecondaryGroup(username, group);
-                log.trace("Assigned secondary group '" + group + "' to '" + username);
+                ldap.addToSecondaryGroup(account, group);
+                log.trace("Assigned secondary group '" + group + "' to '" + account);
             }
         }
         
     }
+    
+    static public String getTypeStatic() {
+		return "local";
+	}
+    private Log log = LogFactory.getLog(LocalPersistenceFactory.class);    
+    private HibernatePersistenceFactory persFactory;
+	private LDAPPersistenceFactory ldap;
+    
+	private boolean synchGroups = false;
 	
     public LocalPersistenceFactory() {
     	super();
-        mysql = new HibernatePersistenceFactory();
+        persFactory = new HibernatePersistenceFactory();
         ldap = new LDAPPersistenceFactory();   	
     	log.trace("LocalPersistenceFactory instanciated");
     }
     
     public LocalPersistenceFactory(Configuration configuration) {
     	super(configuration);
-        mysql = new HibernatePersistenceFactory();
+        persFactory = new HibernatePersistenceFactory();
         ldap = new LDAPPersistenceFactory();   	
     	log.trace("LocalPersistenceFactory instanciated");
     }
     
     public LocalPersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
-        mysql = new HibernatePersistenceFactory(configuration, name);
+        persFactory = new HibernatePersistenceFactory(configuration, name);
         ldap = new LDAPPersistenceFactory(configuration, name);  
     	log.trace("LocalPersistenceFactory instanciated");
     }
@@ -163,11 +171,11 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
         StringTokenizer tokens = new StringTokenizer(name, ".");
         if (!tokens.hasMoreTokens()) {
-            return mysql.retrieveAccountPoolMapperDB(name);
+            return persFactory.retrieveAccountPoolMapperDB(name);
         }
         String pool = tokens.nextToken();
         if (!tokens.hasMoreTokens()) {
-            return mysql.retrieveAccountPoolMapperDB(name);
+            return persFactory.retrieveAccountPoolMapperDB(name);
         }
         String group = tokens.nextToken();
         List secondaryGroups = new ArrayList();
@@ -178,14 +186,14 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     }
     
     public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
-        return mysql.retrieveManualAccountMapperDB(name);
+        return persFactory.retrieveManualAccountMapperDB(name);
     }
     public ManualUserGroupDB retrieveManualUserGroupDB(String name) {
-        return mysql.retrieveManualUserGroupDB(name);
+        return persFactory.retrieveManualUserGroupDB(name);
     }
     
     public UserGroupDB retrieveUserGroupDB(String name) {
-        return mysql.retrieveUserGroupDB(name);
+        return persFactory.retrieveUserGroupDB(name);
     }
     
     public void setCaCertFile(String caCertFile) {
@@ -202,7 +210,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 
     public void setProperties(Properties properties) {
         super.setProperties(properties);
-        mysql.setProperties(getMySQLProperties());
+        persFactory.setProperties(getMySQLProperties());
         ldap.setProperties(getLDAPProperties());
     }
     

@@ -5,8 +5,9 @@
  * Created on December 21, 2004, 1:56 PM
  */
 
-package gov.bnl.gums.admin;
+package gov.bnl.gums;
 
+import gov.bnl.gums.CertToolkit;
 import junit.framework.*;
 
 /**

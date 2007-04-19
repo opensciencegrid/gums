@@ -22,6 +22,7 @@ public interface ManualAccountMapperDB {
      * Saves in the DB the new mapping between the userDN and the account.
      * If a mapping for the given user is already present, an exception should
      * be thrown.
+     * 
      * @todo should decide which excpetion to throw if the account was found,
      * and should modify the unit tests to test the error condition
      * @param userDN a certificate DN
@@ -31,6 +32,7 @@ public interface ManualAccountMapperDB {
     
     /**
      * Removes the mapping for the given user.
+     * 
      * @param userDN a certificate DN
      * @return true if a mapping was deleted
      * @todo should probabily test the result value in unit tests
@@ -39,6 +41,7 @@ public interface ManualAccountMapperDB {
     
     /**
      * Retrieves a user mapping from the database.
+     * 
      * @param userDN a certificate DN
      * @return the UNIX account provided by the mapping
      */
@@ -46,6 +49,7 @@ public interface ManualAccountMapperDB {
     
     /**
      * Retrieves user mappings from the database.
+     * 
      * @return all the mappings
      */
     java.util.List retrieveMappings();

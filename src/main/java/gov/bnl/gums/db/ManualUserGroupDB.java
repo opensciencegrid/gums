@@ -19,8 +19,33 @@ import java.util.*;
  * @author Gabriele Carcassi, Jay Packard
  */
 public interface ManualUserGroupDB {
+    /**
+     * Add member to group
+     * 
+     * @param userDN
+     */
     void addMember(GridUser userDN);
+    
+    /**
+     * Remove member from group
+     * 
+     * @param userDN
+     * @return true if userDN removed
+     */
     boolean removeMember(GridUser userDN);
+    
+    /**
+     * Checks to see if member in group
+     * 
+     * @param user
+     * @return true if user in group
+     */
     boolean isMemberInGroup(GridUser user);
+    
+    /**
+     * Get list of members
+     * 
+     * @return list of members
+     */
     List retrieveMembers();
 }

@@ -20,7 +20,8 @@ import org.apache.commons.logging.*;
 
 import gov.bnl.gums.persistence.PersistenceFactory;
 
-/** Holds the configuration of GUMS, including which policies will be used
+/** 
+ * Holds the configuration of GUMS, including which policies will be used
  * for which hosts, which database layer is going to be used and so on.
  * <p>
  * The configuration object will be constructed programmatically by reading
@@ -38,6 +39,9 @@ public class Configuration {
     private TreeMap userGroups = new TreeMap();
     private boolean errorOnMissedMapping;
     
+    /**
+     * @param accountMapper
+     */
     public void addAccountMapper(AccountMapper accountMapper) {
         log.trace("Adding AccountManager to the configuration: " + accountMapper.getName());
         if (accountMappers.get(accountMapper.getName())!=null)
@@ -47,6 +51,9 @@ public class Configuration {
         	accountMapper.setConfiguration(this);
     }
     
+    /**
+     * @param g2AMapping
+     */
     public void addGroupToAccountMapping(GroupToAccountMapping g2AMapping) {
         log.trace("Adding GroupToAccountMapper to the configuration: " + g2AMapping.getName());
         if (getGroupToAccountMapping(g2AMapping.getName())!=null) {
@@ -62,6 +69,9 @@ public class Configuration {
         	g2AMapping.setConfiguration(this);
     }
 
+    /**
+     * @param h2GMapping
+     */
     public void addHostToGroupMapping(HostToGroupMapping h2GMapping) {
         log.trace("Adding HostToGroupMapper to the configuration: " + h2GMapping.getName());
         if ( getHostToGroupMapping(h2GMapping.getName())!=null )
@@ -71,6 +81,10 @@ public class Configuration {
         	h2GMapping.setConfiguration(this);
     }
 
+    /**
+     * @param index
+     * @param h2GMapping
+     */
     public void addHostToGroupMapping(int index, HostToGroupMapping h2GMapping) {
         log.trace("Adding HostToGroupMapper to the configuration: " + h2GMapping.getName());
         if ( getHostToGroupMapping(h2GMapping.getName())!=null )
@@ -80,6 +94,9 @@ public class Configuration {
         	h2GMapping.setConfiguration(this);
     }
  
+    /**
+     * @param peristenceFactory
+     */
     public void addPersistenceFactory(PersistenceFactory peristenceFactory) {
         log.trace("Adding PersistenceManager to the configuration: " + peristenceFactory.getName());
         if (persistenceFactories.get(peristenceFactory.getName())!=null)
@@ -89,6 +106,9 @@ public class Configuration {
         	peristenceFactory.setConfiguration(this);
     }    
 
+    /**
+     * @param userGroup
+     */
     public void addUserGroup(UserGroup userGroup) {
         log.trace("Adding UserGroupManager to the configuration: " + userGroup.getName());
         if (userGroups.get(userGroup.getName())!=null)
@@ -98,6 +118,9 @@ public class Configuration {
         	userGroup.setConfiguration(this);
     }      
     
+    /**
+     * @param virtualOrganization
+     */
     public void addVirtualOrganization(VirtualOrganization virtualOrganization) {
         log.trace("Adding VO to the configuration: " + virtualOrganization.getName());
         if (virtualOrganizations.get(virtualOrganization.getName())!=null)
@@ -137,22 +160,40 @@ public class Configuration {
     	return newConf;
     }
 
+    /**
+     * @param accountMapper
+     * @return
+     */
     public AccountMapper getAccountMapper(String accountMapper)  {
         return (AccountMapper)accountMappers.get(accountMapper);
     }
     
+    /**
+     * @return
+     */
     public Map getAccountMappers()  {
         return Collections.unmodifiableMap(accountMappers);
     }
  
+    /**
+     * @param groupToAccountMapping
+     * @return
+     */
     public GroupToAccountMapping getGroupToAccountMapping(String groupToAccountMapping) {
     	return (GroupToAccountMapping)groupToAccountMappings.get(groupToAccountMapping);
     }    
     
+    /**
+     * @return
+     */
     public Map getGroupToAccountMappings() {
         return Collections.unmodifiableMap(groupToAccountMappings);
     }      
     
+    /**
+     * @param name
+     * @return
+     */
     public HostToGroupMapping getHostToGroupMapping(String name) {
         Iterator it = hostToGroupMappings.iterator();
         while(it.hasNext()) {
@@ -163,21 +204,31 @@ public class Configuration {
         return null;
     }
     
+    /**
+     * @return
+     */
     public List getHostToGroupMappings() {
         return Collections.unmodifiableList(hostToGroupMappings);
     }
     
+    /**
+     * @return
+     */
     public Map getPersistenceFactories()  {
         return Collections.unmodifiableMap(persistenceFactories);
     }    
     
+    /**
+     * @param persistenceFactory
+     * @return
+     */
     public PersistenceFactory getPersistenceFactory(String persistenceFactory)  {
         return (PersistenceFactory)persistenceFactories.get(persistenceFactory);
     }    
     
     /**
      * Returns a list of all the readers with all read access defined in the configuration file.
-     * <p>
+     *
      * @return a list of ReaderGroupManager objects.
      */
     public ArrayList getReadAllUserGroups() {
@@ -194,7 +245,7 @@ public class Configuration {
     
     /**
      * Returns a list of all the self readers defined in the configuration file.
-     * <p>
+     * 
      * @return a list of ReaderGroupManager objects.
      */
     public ArrayList getReadSelfUserGroups() {
@@ -209,25 +260,39 @@ public class Configuration {
         return readers;
     }   
 
+    /**
+     * @param userGroup
+     * @return
+     */
     public UserGroup getUserGroup(String userGroup) {
         return (UserGroup)userGroups.get(userGroup);
     }
     
+    /**
+     * @return
+     */
     public Map getUserGroups() {
         return Collections.unmodifiableMap(userGroups);
     }
 
+    /**
+     * @param virtualOrganization
+     * @return
+     */
     public VirtualOrganization getVirtualOrganization(String virtualOrganization) {
         return (VirtualOrganization)virtualOrganizations.get(virtualOrganization);
     }
  
+    /**
+     * @return
+     */
     public Map getVirtualOrganizations() {
         return virtualOrganizations;
     }
 
     /**
      * Returns a list of all the writer groups defined in the configuration file.
-     * <p>
+     *
      * @return a list of WriterGroupManager objects.
      */
     public ArrayList getWriteUserGroups() {
@@ -243,21 +308,32 @@ public class Configuration {
     }
 
     /**
-     * Getter for property errorOnMissedMapping.
-     * @return Value of property errorOnMissedMapping.
+     * @return
      */
     public boolean isErrorOnMissedMapping() {
         return this.errorOnMissedMapping;
     }
     
+    /**
+     * @param name
+     * @return
+     */
     public AccountMapper removeAccountMapper(String name) {
     	return (AccountMapper)accountMappers.remove(name);
     }
     
+    /**
+     * @param name
+     * @return
+     */
     public GroupToAccountMapping removeGroupToAccountMapping(String name) {
     	return (GroupToAccountMapping)groupToAccountMappings.remove(name);
     }   
 
+    /**
+     * @param name
+     * @return
+     */
     public HostToGroupMapping removeHostToGroupMapping(String name) {
         Iterator it = hostToGroupMappings.iterator();
         while(it.hasNext()) {
@@ -270,21 +346,32 @@ public class Configuration {
         return null;
     }   
     
+    /**
+     * @param name
+     * @return
+     */
     public PersistenceFactory removePersistenceFactory(String name) {
     	return (PersistenceFactory)persistenceFactories.remove(name);
     }   
     
+    /**
+     * @param name
+     * @return
+     */
     public UserGroup removeUserGroup(String name) {
     	return (UserGroup)userGroups.remove(name);
     }
 
+    /**
+     * @param name
+     * @return
+     */
     public VirtualOrganization removeVirtualOrganization(String name) {
     	return (VirtualOrganization)virtualOrganizations.remove(name);
     }
     
     /**
-     * Setter for property errorOnMissedMapping.
-     * @param errorOnMissedMapping New value of property errorOnMissedMapping.
+     * @param
      */
     public void setErrorOnMissedMapping(boolean errorOnMissedMapping) {
         this.errorOnMissedMapping = errorOnMissedMapping;

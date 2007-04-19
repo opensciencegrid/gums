@@ -17,7 +17,8 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** The main interface of the core logic for GUMS, allows to update the
+/** 
+ * The main interface of the core logic for GUMS, allows to update the
  * groups, generate the gridMapfiles and to map a single user.
  *
  * @author Gabriele Carcassi, Jay Packard
@@ -27,15 +28,22 @@ public class ResourceManager {
     private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     GUMS gums;
     
-    /** Creates a Resource Manager for a particula instance of the GUMS server.
+    /**
+     * Creates a Resource Manager for a particular instance of the GUMS server.
+     * 
+     * @param gums
      */
     public ResourceManager(GUMS gums) {
         this.gums = gums;
     }
     
+    /**
+     * @param hostname
+     * @return
+     */
     public String generateGrid3UserVoMap(String hostname) {
         Configuration conf = gums.getConfiguration();
-        HostToGroupMapping hostGroup = host2GroupMapping(conf, hostname);
+        HostToGroupMapping hostGroup = hostToGroupMapping(conf, hostname);
         if (hostGroup == null)
             throw new RuntimeException("The host '" + hostname + "' is not defined in any group.");
         StringBuffer grid3MapBuffer = new StringBuffer("");
@@ -86,13 +94,13 @@ public class ResourceManager {
                     Iterator accountMapperIt = accountMappers.iterator();
                     while (accountMapperIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
-		                String username = accountMapper.mapUser(user.getCertificateDN(), false);
-		                if ((username != null) && !accountsInMap.contains(username) && (gMap.getAccountingVo() != null)) {
-		                    grid3MapBuffer.append(username);
+		                String account = accountMapper.mapUser(user.getCertificateDN(), false);
+		                if ((account != null) && !accountsInMap.contains(account) && (gMap.getAccountingVo() != null)) {
+		                    grid3MapBuffer.append(account);
 		                    grid3MapBuffer.append(' ');
 		                    grid3MapBuffer.append(gMap.getAccountingVo());
 		                    grid3MapBuffer.append("\n");
-		                    accountsInMap.add(username);
+		                    accountsInMap.add(account);
 		                }
                     }
 	            }
@@ -102,7 +110,12 @@ public class ResourceManager {
         return finalGrid3Map;
     }
     
-    /** Generates a grid mapfile for a given host and prints it to out.
+    /**
+     * Generates a grid mapfile for a given host and prints it to out.
+     * 
+     * @param hostname
+     * @param includeFQAN
+     * @return
      */
     public String generateGridMapfile(String hostname, boolean includeFQAN) {
         String mapfile;
@@ -110,7 +123,12 @@ public class ResourceManager {
         return mapfile;
     }
     
-    /** Maps a user to a local account for a given host.
+    /**
+     * Maps a user to a local account for a given host to a grid identity.
+     * 
+     * @param hostname
+     * @param user
+     * @return
      */
     public String map(String hostname, GridUser user) {
         String value;
@@ -118,6 +136,12 @@ public class ResourceManager {
         return value;
     }
     
+    /**
+     * Map a local account to a list of grid identity
+     * 
+     * @param accountName
+     * @return
+     */
     public String mapAccount(String accountName) {
     	String allDNs = null;
         Configuration conf = gums.getConfiguration();
@@ -151,21 +175,18 @@ public class ResourceManager {
         return allDNs;
     }
     
-    /** Scans the configuration and calls updateMembers() on all the groups,
+    /**
+     * Scans the configuration and calls updateMembers() on all the groups,
      * updating the local database.
      */
     public void updateGroups() {
         updateGroupsImpl();
     }
     
-    /**
-     * @todo usersInMap should be a sorted list to make things faster, but
-     * no ready made implementation was found.
-     */
-    private String generateGridMapfile(HostToGroupMapping h2GMapping, boolean includeFQAN) {
-    	Configuration conf = h2GMapping.getConfiguration();
-        Iterator iter = h2GMapping.getGroupToAccountMappings().iterator();
-        List usersInMap = new ArrayList();
+    private String generateGridMapfile(HostToGroupMapping hToGMapping, boolean includeFQAN) {
+    	Configuration conf = hToGMapping.getConfiguration();
+        Iterator iter = hToGMapping.getGroupToAccountMappings().iterator();
+        TreeSet usersInMap = new TreeSet();
         
         StringBuffer gridMapfileBuffer = new StringBuffer("");
         while (iter.hasNext()) {
@@ -187,8 +208,8 @@ public class ResourceManager {
 	                    Iterator accountMappersIt = accountMappers.iterator();
 	                    while (accountMappersIt.hasNext()) {
 	                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-		                	String username = accountMapper.mapUser(user.getCertificateDN(), true);
-		                    if (username != null) {
+		                	String account = accountMapper.mapUser(user.getCertificateDN(), true);
+		                    if (account != null) {
 		                        gridMapfileBuffer.append('"');
 		                        gridMapfileBuffer.append(user.getCertificateDN() );
 		                        gridMapfileBuffer.append('"' );
@@ -198,7 +219,7 @@ public class ResourceManager {
 			                        gridMapfileBuffer.append('"' );		                        	
 		                        }
 		                        gridMapfileBuffer.append(' ');
-		                        gridMapfileBuffer.append(username );
+		                        gridMapfileBuffer.append(account );
 		                        gridMapfileBuffer.append("\n");
 		                        usersInMap.add(user.getCertificateDN());
 		                    } else {
@@ -215,19 +236,19 @@ public class ResourceManager {
     
     private String generateGridMapfileImpl(String hostname, boolean generateGridMapfile) {
         Configuration conf = gums.getConfiguration();
-        HostToGroupMapping host2GroupMapper = host2GroupMapping(conf, hostname);
+        HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
         if (host2GroupMapper == null) return null;
         String mapfile = generateGridMapfile(host2GroupMapper, generateGridMapfile);
         return mapfile;
     }
     
-    private HostToGroupMapping host2GroupMapping(Configuration conf, String hostname) {
-    	Collection host2GroupMappers = conf.getHostToGroupMappings();
-    	Iterator it = host2GroupMappers.iterator();
+    private HostToGroupMapping hostToGroupMapping(Configuration conf, String hostname) {
+    	Collection hostToGroupMappers = conf.getHostToGroupMappings();
+    	Iterator it = hostToGroupMappers.iterator();
         while (it.hasNext()) {
-            HostToGroupMapping host2GroupMapper = (HostToGroupMapping) it.next();
-            if (host2GroupMapper.isInGroup(hostname)) {
-                return host2GroupMapper;
+            HostToGroupMapping hostToGroupMapper = (HostToGroupMapping) it.next();
+            if (hostToGroupMapper.isInGroup(hostname)) {
+                return hostToGroupMapper;
             }
         }
         return null;
@@ -235,7 +256,7 @@ public class ResourceManager {
 
     private String mapImpl(String hostname, GridUser user) {
         Configuration conf = gums.getConfiguration();
-        HostToGroupMapping hostToGroupMapping = host2GroupMapping(conf, hostname);
+        HostToGroupMapping hostToGroupMapping = hostToGroupMapping(conf, hostname);
         if (hostToGroupMapping == null) return null;
         Iterator g2AMappingsIt = hostToGroupMapping.getGroupToAccountMappings().iterator();
         while (g2AMappingsIt.hasNext()) {
@@ -276,18 +297,6 @@ public class ResourceManager {
     
     private void updateGroupsImpl() {
         boolean success = true;
-/*        UserGroupManager admins = gums.getConfiguration().getAdminGroup();
-        if (admins != null) {
-            log.debug("Updating group " + admins);
-            try {
-                admins.updateMembers();
-                resourceAdminLog.info("Admin group " + admins.toString() + " updated");
-            } catch (Exception e) {
-                resourceAdminLog.warn("Admin group " + admins.toString() + " wasn't updated successfully: " + " [" + e.getMessage() + "]");
-                log.warn("updateMember for " + admins + " threw an exception", e);
-                success = false;
-            }
-        }*/
         Collection groups = gums.getConfiguration().getUserGroups().values();
         log.info("Updating group information for all " + groups.size() + " groups");
         Iterator iter = groups.iterator();

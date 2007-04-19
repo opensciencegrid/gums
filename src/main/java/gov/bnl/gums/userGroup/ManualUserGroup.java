@@ -50,6 +50,12 @@ public class ManualUserGroup extends UserGroup {
     	return userGroup;
     }
     
+    public ManualUserGroupDB getDB() {
+    	if (db==null)
+    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualUserGroupDB( getName() );
+    	return db;
+    }
+    
     public java.util.List getMemberList() {
         return getDB().retrieveMembers();
     }
@@ -73,7 +79,7 @@ public class ManualUserGroup extends UserGroup {
     public void setPersistenceFactory(String persistenceFactory) {
         this.persistenceFactory = persistenceFactory;
     }
-    
+
     public String toString() {
         if (persistenceFactory == null) {
             return "ManualUserGroup: persistenceFactory=null - group='" + getName() + "'";
@@ -81,25 +87,19 @@ public class ManualUserGroup extends UserGroup {
             return "ManualUserGroup: persistenceFactory='" + persistenceFactory + "' - group='" + getName() + "'";
         }
     }
-
+ 
     public String toString(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
     }
- 
+    
     public String toXML() {
     	return "\t\t<manualUserGroup\n"+
 		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tname='"+getName()+"'\n"+
 		"\t\t\tdescription='"+getDescription()+"'\n"+
 		"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
-    }
-    
-    public void updateMembers() {
     }    
     
-    private ManualUserGroupDB getDB() {
-    	if (db==null)
-    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualUserGroupDB( getName() );
-    	return db;
+    public void updateMembers() {
     }
 }

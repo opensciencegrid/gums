@@ -6,9 +6,17 @@
 package gov.bnl.gums.command;
 
 /**
+ * Helper class for command line classes
+ * 
  * @author Gabriele Carcassi, Jay Packard
  */
 public class CommandLineToolkit {
+	/**
+	 * Get a user friendly command name for a class
+	 * 
+	 * @param className
+	 * @return
+	 */
 	static public String getCommandName(String className) {
         className = className.substring(className.lastIndexOf('.') + 1);
 

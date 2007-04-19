@@ -11,7 +11,8 @@ import gov.bnl.gums.configuration.Configuration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** An account mapping policy that maps all user to the same account.
+/** 
+ * An account mapping policy that maps all user to the same account.
  * <p>
  * To configure the policy one needs only to set the groupName property
  * as the desired group account.

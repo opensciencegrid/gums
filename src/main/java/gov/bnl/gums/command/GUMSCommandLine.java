@@ -25,6 +25,10 @@ public class GUMSCommandLine {
 	static private Map commands = new Hashtable();
 	static private SortedMap commandDescriptions = new TreeMap();
 
+	/**
+	 * @param className
+	 * @param description
+	 */
 	static public void addCommand(String className, String description) {
         String command = CommandLineToolkit.getCommandName(className);
 
@@ -32,6 +36,9 @@ public class GUMSCommandLine {
         commandDescriptions.put(command, description);
     }
 
+	/**
+	 * 
+	 */
 	static public void clearCommands() {
         commands = new Hashtable();
     }
@@ -62,6 +69,9 @@ public class GUMSCommandLine {
         System.exit(retCode);
     }
 
+	/**
+	 * 
+	 */
 	static public void printHelp() {
         System.out.println("usage: " + command + " command [command-options] ");
         System.out.println("Commands:");
@@ -79,6 +89,11 @@ public class GUMSCommandLine {
         System.out.println("  " + command + " command --help");
     }
 
+	/**
+	 * @param command
+	 * @param args
+	 * @return
+	 */
 	static public int runCommand(String command, String[] args) {
         String className = (String) commands.get(command);
 

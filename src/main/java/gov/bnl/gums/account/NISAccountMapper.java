@@ -14,7 +14,8 @@ import java.util.*;
 
 import org.apache.commons.logging.*;
 
-/** Maps a user to a local account based on the CN of the certificate and the
+/** 
+ * Maps a user to a local account based on the CN of the certificate and the
  * gecos field in the NIS/YP database. The mapping can't be perfect, but contains
  * a series of heuristics that solve up to 90% of the cases, depending on how
  * the NIS database itself is kept.
@@ -23,6 +24,7 @@ import org.apache.commons.logging.*;
  * CompositeAccountMapper in which a ManualAccountMapper comes first. This allows
  * to override those user mapping that are not satisfying.
  *
+ * @deprecated
  * @author Gabriele Carcassi, Jay Packard
  */
 public class NISAccountMapper extends AccountMapper {
@@ -91,10 +93,6 @@ public class NISAccountMapper extends AccountMapper {
     	return accountMapper;
     }
     
-    /**
-     * Getter for property jndiNisUrl.
-     * @return Value of property jndiNisUrl.
-     */
     public String getJndiNisUrl() {
         return jndiNisUrl;
     }
@@ -107,10 +105,7 @@ public class NISAccountMapper extends AccountMapper {
         String[] nameSurname = parseNameAndSurname(userDN);
         return nisClient(jndiNisUrl).findAccount(nameSurname[0], nameSurname[1]);
     }
-    /**
-     * Setter for property jndiNisUrl.
-     * @param jndiNisUrl New value of property jndiNisUrl.
-     */
+
     public void setJndiNisUrl(String jndiNisUrl) {
         this.jndiNisUrl = jndiNisUrl;
     }

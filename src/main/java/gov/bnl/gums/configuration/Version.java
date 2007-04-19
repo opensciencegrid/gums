@@ -8,10 +8,16 @@ package gov.bnl.gums.configuration;
 public class Version {
 	private String version = null;
 	
+	/**
+	 * @param version
+	 */
 	public void setVersion(String version) {
 		this.version = version;
 	}
 	
+	/**
+	 * @return
+	 */
 	public String getVersion() {
 		return version;
 	}

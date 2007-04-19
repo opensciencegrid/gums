@@ -65,7 +65,7 @@ public class LDAPAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
         assertEquals("grid001", db.assignAccount("test"));
         assertEquals("grid002", db.assignAccount("test2"));
         assertEquals("grid003", db.assignAccount("test3"));
-        ((LDAPMappingDB) db).resetAccountPool();
+        ((LDAPMappingDB) db).unassignAllUsers();
         assertEquals("grid001", db.assignAccount("test4"));
         assertEquals("grid002", db.assignAccount("test5"));
         assertEquals("grid003", db.assignAccount("test6"));

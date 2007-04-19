@@ -224,6 +224,40 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
         }
     }
     
+    public boolean removeAccount(String account) {
+        Session session = null;
+        Transaction tx = null;
+        try {
+            log.trace("Removing mapping from map '" + map + "' for account '" + account + "'");
+            session = persistenceFactory.retrieveSessionFactory().openSession();
+            tx = session.beginTransaction();
+            boolean result = removeAccount(session, tx, account);
+            tx.commit();
+            return result;
+        // Handles when transaction goes wrong...
+        } catch (Exception e) {
+            log.error("Couldn't remove mapping from '" + map + "' for account '" + account + "'", e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: rollback failed", e1);
+                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
+                }
+            }
+            throw new RuntimeException("Database error: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: couldn't close session", e1);
+                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
+                }
+            }
+        }
+    }
+    
     public String retrieveAccount(String userDN) {
         Session session = null;
         Transaction tx = null;
@@ -420,6 +454,47 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
             }
         }
     }
+    
+    public void unassignAllUsers() {
+        Session session = null;
+        Transaction tx = null;
+        try {
+            log.trace("Unassign all accounts from pool '" + map + "'");
+            session = persistenceFactory.retrieveSessionFactory().openSession();
+            tx = session.beginTransaction();
+            Query q;
+            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ?");
+            q.setString(0, map);
+            List hibernateMappings = q.list();
+            Iterator it = hibernateMappings.iterator();
+            while (it.hasNext()) {
+                HibernateMapping mapping = (HibernateMapping)it.next();
+                mapping.setDn(null);
+            }
+            tx.commit();
+        // Handles when transaction goes wrong...
+        } catch (Exception e) {
+            log.error("Couldn't unassign all accounts from pool '" + map + "'", e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: rollback failed", e1);
+                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
+                }
+            }
+            throw new RuntimeException("Database error: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: couldn't close session", e1);
+                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
+                }
+            }
+        }
+    }
 
     private void createMapping(Session session, Transaction tx, String userDN, String account) throws Exception {
         HibernateMapping hMapping = new HibernateMapping();
@@ -431,6 +506,11 @@ public class HibernateMappingDB implements ManualAccountMapperDB, AccountPoolMap
 
     private boolean removeMapping(Session session, Transaction tx, String userDN) throws Exception {
         int n = session.delete("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ?", new Object[] {map, userDN}, new Type[] {new StringType(), new StringType()});
+        return n > 0;
+    }
+    
+    private boolean removeAccount(Session session, Transaction tx, String account) throws Exception {
+        int n = session.delete("FROM HibernateMapping m WHERE m.map = ? AND m.account = ?", new Object[] {map, account}, new Type[] {new StringType(), new StringType()});
         return n > 0;
     }
 

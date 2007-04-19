@@ -23,7 +23,8 @@ import org.apache.commons.collections.MultiMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** Retrieves the map from the NIS server and provide a logic to match name and
+/** 
+ * Retrieves the map from the NIS server and provide a logic to match name and
  * surname to an account.
  *
  * @author  Gabriele Carcassi, Jay Packard
@@ -39,17 +40,17 @@ public class GecosMap {
     private Date lastUpdate = null;
     private long expiration = 60*60*1000;
 
-    public void addEntry(String username, String gecos) {
+    public void addEntry(String account, String gecos) {
         String name = retrieveName(gecos);
         String surname = retrieveSurname(gecos);
-        log.trace("Adding user '" + username + "': GECOS='" + gecos + "' name='" + name + "' surname='" + surname + "'");
-        accountToGecos.put(username, gecos);
+        log.trace("Adding user '" + account + "': GECOS='" + gecos + "' name='" + name + "' surname='" + surname + "'");
+        accountToGecos.put(account, gecos);
         if (name != null) {
-            accountToName.put(username, name);
-            nameToAccount.put(name.toLowerCase(), username);
+            accountToName.put(account, name);
+            nameToAccount.put(name.toLowerCase(), account);
         }
-        accountToSurname.put(username, surname);
-        surnameToAccount.put(surname.toLowerCase(), username);
+        accountToSurname.put(account, surname);
+        surnameToAccount.put(surname.toLowerCase(), account);
         lastUpdate = new Date();
     }
     
@@ -64,14 +65,14 @@ public class GecosMap {
             if (commonAccounts.size() == 1) {
                 // Only one account matching both name and surname was found
                 // Pretty likely is the correct one
-                String username = (String) commonAccounts.get(0);
-                log.trace("NIS account Name/Surname single match. Name: " + name + " - Surname: " + surname + " - username: " + username);
-                return username;
+                String account = (String) commonAccounts.get(0);
+                log.trace("NIS account Name/Surname single match. Name: " + name + " - Surname: " + surname + " - account: " + account);
+                return account;
             } else if (commonAccounts.size() > 1) {
-                // More than one account with the matching username has been found
+                // More than one account with the matching account has been found
                 // It might be that only one account is really for the user, and the
                 // other are group/system accounts
-                // Check whether only one username contains the surname
+                // Check whether only one account contains the surname
                 Iterator iter = commonAccounts.iterator();
                 String matchingAccount = null;
                 while (iter.hasNext()) {
@@ -81,8 +82,8 @@ public class GecosMap {
                             matchingAccount = account;
                         } else {
                             // Two accounts matched. Can't decide, return null.
-                            log.trace("NIS account Name/Surname multiple match, multiple username with surname." +
-                            " Name: " + name + " - Surname: " + surname + " - username: not defined");
+                            log.trace("NIS account Name/Surname multiple match, multiple account with surname." +
+                            " Name: " + name + " - Surname: " + surname + " - account: not defined");
                             resourceAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
                             return null;
                         }
@@ -91,13 +92,13 @@ public class GecosMap {
                 if (matchingAccount != null) {
                     // Only one matching account was found. There is a chance
                     // this is the right account
-                    log.trace("NIS account Name/Surname multiple match, single username with surname." +
-                    " Name: " + name + " - Surname: " + surname + " - username: " + matchingAccount);
+                    log.trace("NIS account Name/Surname multiple match, single account with surname." +
+                    " Name: " + name + " - Surname: " + surname + " - account: " + matchingAccount);
                     return matchingAccount;
                 }
                 // Can't decide which account is the correct one
-                log.trace("NIS account Name/Surname multiple match, no username with surname." +
-                " Name: " + name + " - Surname: " + surname + " - username: not defined");
+                log.trace("NIS account Name/Surname multiple match, no account with surname." +
+                " Name: " + name + " - Surname: " + surname + " - account: not defined");
                 resourceAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
                 return null;
             }
@@ -105,16 +106,16 @@ public class GecosMap {
         }
         if (accountsWithSurname != null) {
             if (accountsWithSurname.size() == 1) {
-                String username = (String) accountsWithSurname.iterator().next();
-                log.trace("NIS account Surname single match, no match on Name. Name: " + name + " - Surname: " + surname + " - username: " + username);
-                return username;
+                String account = (String) accountsWithSurname.iterator().next();
+                log.trace("NIS account Surname single match, no match on Name. Name: " + name + " - Surname: " + surname + " - account: " + account);
+                return account;
             } else {
-                log.trace("NIS account Surname multiple match, no match on Name. Name: " + name + " - Surname: " + surname + " - username: undefined");
+                log.trace("NIS account Surname multiple match, no match on Name. Name: " + name + " - Surname: " + surname + " - account: undefined");
                 resourceAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + accountsWithSurname);
                 return null;
             }
         }
-        log.trace("NIS account no match on Surname. Name: " + name + " - Surname: " + surname + " - username: undefined");
+        log.trace("NIS account no match on Surname. Name: " + name + " - Surname: " + surname + " - account: undefined");
         // Try reversing name and surname
         accountsWithName = (Collection) nameToAccount.get(surname.toLowerCase());
         accountsWithSurname = (Collection) surnameToAccount.get(name.toLowerCase());
@@ -125,9 +126,9 @@ public class GecosMap {
             if (commonAccounts.size() == 1) {
                 // Only one account matching both name and surname was found
                 // Pretty likely is the correct one
-                String username = (String) commonAccounts.get(0);
-                log.trace("NIS account inverted Name/Surname single match. Name: " + surname + " - Surname: " + name + " - username: " + username);
-                return username;
+                String account = (String) commonAccounts.get(0);
+                log.trace("NIS account inverted Name/Surname single match. Name: " + surname + " - Surname: " + name + " - account: " + account);
+                return account;
             }
         }
         return null;
@@ -151,17 +152,17 @@ public class GecosMap {
     }
     
     public void printMaps(PrintStream out) {
-        out.println("username to gecos map");
+        out.println("account to gecos map");
         out.println("---------------------");
         out.println();
         Iterator accounts = accountToGecos.keySet().iterator();
         while (accounts.hasNext()) {
-            String username = (String) accounts.next();
-            String gecos = (String) accountToGecos.get(username);
-            String name = (String) accountToName.get(username);
-            String surname = (String) accountToSurname.get(username);
-            out.print(username);
-            for (int n = username.length(); n < 15; n++) {
+            String account = (String) accounts.next();
+            String gecos = (String) accountToGecos.get(account);
+            String name = (String) accountToName.get(account);
+            String surname = (String) accountToSurname.get(account);
+            out.print(account);
+            for (int n = account.length(); n < 15; n++) {
                 out.print(' ');
             }
             out.print(gecos);
@@ -188,10 +189,10 @@ public class GecosMap {
     private void printMap(PrintStream out, Map map, int offset) {
         Iterator accounts = map.keySet().iterator();
         while (accounts.hasNext()) {
-            String username = (String) accounts.next();
-            String gecos = (String) map.get(username);
-            out.print(username);
-            for (int n = username.length(); n < offset; n++) {
+            String account = (String) accounts.next();
+            String gecos = (String) map.get(account);
+            out.print(account);
+            for (int n = account.length(); n < offset; n++) {
                 out.print(' ');
             }
             out.println(gecos);
