@@ -81,7 +81,7 @@ public class ManualAccountMapper extends AccountMapper {
     }
 
     public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
+    	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?action=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\"></td>";
     }      
     
     public String toXML() {

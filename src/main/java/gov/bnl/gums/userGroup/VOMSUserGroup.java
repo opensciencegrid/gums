@@ -261,7 +261,7 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + matchFQAN + "</td><td bgcolor=\""+bgColor+"\">" + acceptProxyWithoutFQAN + "</td><td bgcolor=\""+bgColor+"\">" + voGroup + "</td><td bgcolor=\""+bgColor+"\">" + voRole + "</td><td bgcolor=\""+bgColor+"\">" + getVoObject().getBaseUrl() + remainderUrl + "</td>";
+    	return "<td bgcolor=\""+bgColor+"\"><a href=\"userGroups.jsp?action=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">" + matchFQAN + "</td><td bgcolor=\""+bgColor+"\">" + acceptProxyWithoutFQAN + "</td><td bgcolor=\""+bgColor+"\">" + voGroup + "</td><td bgcolor=\""+bgColor+"\">" + voRole + "</td>";
     }
 
     public String toXML() {

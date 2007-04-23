@@ -31,6 +31,9 @@ public class AccountPoolMapperDBTest extends TestCase {
     
     public void initDB() {
         for (int i = 0; i < 10; i++) {
+            db.removeAccount("pool"+i);
+        }
+        for (int i = 0; i < 10; i++) {
             db.addAccount("pool"+i);
         }
     }
@@ -44,6 +47,9 @@ public class AccountPoolMapperDBTest extends TestCase {
         for (int i = 0; i < 10; i++) {
         	if (db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=User "+i)!=null)
         		db.unassignUser("/DC=org/DC=griddev/OU=People/CN=User "+i);
+        }
+        for (int i = 0; i < 10; i++) {
+            db.removeAccount("pool"+i);
         }
     }
     
@@ -98,20 +104,23 @@ public class AccountPoolMapperDBTest extends TestCase {
         assertEquals(10, n);
         db.addAccount("newAccount");
         assertEquals("newAccount", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
-        
-        try {
-            db.addAccount("newAccount");
-        } catch (IllegalArgumentException e) {
-            // exception was thrown as supposed to
-        }
-        
+
         db.unassignUser("/DC=org/DC=griddev/OU=People/CN=John Smith");
         
         try {
             db.addAccount("newAccount");
-        } catch (IllegalArgumentException e) {
-            // exception was thrown as supposed to
+        } catch (Exception e) {
+            // exception was thrown as it should be
+        	// since account already exists
         }
+        
+        db.removeAccount("newAccount");
+        
+        db.addAccount("newAccount");
+        assertEquals("newAccount", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+
+        db.unassignAccount("newAccount");
+        assertEquals("newAccount", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=Jane Doe"));
     }
     
     public static void main(String args[]) {

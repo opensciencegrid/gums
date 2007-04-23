@@ -10,7 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-/** Provides the set of accounts for the AccountPoolMapper class which
+/** 
+ * Provides the set of accounts for the AccountPoolMapper class which
  * assignes accounts from a pool.
  * <p>
  * The implementation shouldn't buffer the information, as it the
@@ -21,7 +22,8 @@ import java.util.Map;
 public interface AccountPoolMapperDB {
     
     /** 
-     * Adds an account to the pool of free accounts.
+     * Adds an account to the pool of free accounts. If the account
+     * already exists, will throw an exception
      * 
      * @param account the account to be added
      */
@@ -45,13 +47,6 @@ public interface AccountPoolMapperDB {
      */
     String assignAccount(String userDN);
     
-    /**
-     * Return number of unassigned mappings
-     * 
-     * @return
-     */
-    int getNumberUnassignedMappings();
-    
     /** Retrieves the account associated to the Grid identity.
      * 
      * @param userDN the certificate DN
@@ -59,27 +54,40 @@ public interface AccountPoolMapperDB {
      */
     String retrieveAccount(String userDN);
     
-    /** Retrieves the accounts that are already mapped to a user.
+    /** Retrieves a user to account map.
      * 
      * @return a Map between the userDN (String) as the key and the account (String).
      */
     Map retrieveAccountMap();
     
-    /** Retrieve the list of account not in use since the given date.
+    /** 
+     * Retrieves an account to user DN map, including null DNs, where empty strings are returned
+     * if the account is unassigned.
+     * 
+     * @return a Map between the userDN (String) as the key and the account (String).
+     */
+    Map retrieveReverseAccountMap();
+    
+    /** 
+     * Retrieve the list of account not in use since the given date.
      * 
      * @param date the time since the accounts haven't been used.
      * @return a list of String with the accounts
      */
     List retrieveUsersNotUsedSince(Date date);
 
-    /** Removes an account from the mapping, and renders it available to the pool.
+    /** 
+     * Removes user from the mapping, and renders it available to the pool.
      * 
      * @param user the user that shouldn't be mapped anymore
      */
     void unassignUser(String user);
     
-    /**
-     *  Removes all accounts from the mapping, and renders them available to the pool.
+    /** 
+     * Unassigns whatever user is assigned to this account from the account mapping
+     * and renders that account available to the pool.
+     * 
+     * @param account that should be unassigned
      */
-    void unassignAllUsers();
+    void unassignAccount(String account);
 }

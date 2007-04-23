@@ -28,18 +28,30 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
     
     private List regexs;
   
-    /** Creates a new wildcard mapping, which needs to be properly configured. */
+    /**
+     * Creates a new wildcard mapping - empty constructor needed by XML Digester.
+     */
     public WildcardHostToGroupMapping() {
         adminLog.warn("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
     }
  
-    /** Creates a new wildcard mapping, which needs to be properly configured. */
+    /** 
+     * 
+     * Creates a new wildcard mapping with a configuration
+     * 
+     * @param configuration
+     */
     public WildcardHostToGroupMapping(Configuration configuration) {
     	super(configuration);
         adminLog.warn("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
     }
     
-    /** Creates a new wildcard mapping, which needs to be properly configured. */
+    /**
+     * Creates a new wildcard mapping with a configuration and wildcard. 
+     * 
+     * @param configuration
+     * @param wildcard
+     */
     public WildcardHostToGroupMapping(Configuration configuration, String wildcard) {
     	super(configuration, wildcard);
         adminLog.warn("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
@@ -57,6 +69,11 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
     	return hostToGroupMapping;
     }
     
+    /**
+     * Getter for wildcard property, which is really just the name.
+     * 
+     * @return Wildcard as string
+     */
     public String getWildcard() {
         return getName();
     }
@@ -74,7 +91,9 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
     	throw new RuntimeException("Call setWildcard rather than setName");
     }
     
-    /** Changes the wildcard that will be used to match the hostname.
+    /** 
+     * Changes the wildcard that will be used to match the hostname.
+     * 
      * @param wildcard The new wildcard (i.e. '*.mycompany.com').
      */
     public void setWildcard(String wildcard) {
@@ -90,6 +109,11 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
         }
     }        
     
+    /**
+     * Get XML representation of this object for writing to gums.config
+     * 
+     * @return xml as string
+     */
     public String toXML() {
 		return null;
     }

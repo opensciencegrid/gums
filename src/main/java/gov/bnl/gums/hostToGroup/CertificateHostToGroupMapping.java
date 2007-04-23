@@ -26,10 +26,18 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     private String dn = null;
     private List regexs;
     
+    /**
+     * Create a new CertificateHostToGroupMapping object.
+     */
     public CertificateHostToGroupMapping() {
     	super();
     }
     
+    /**
+     * Create a new CertificateHostToGroupMapping object.
+     * 
+     * @param configuration
+     */
     public CertificateHostToGroupMapping(Configuration configuration) {
     	super(configuration);
     }
@@ -49,14 +57,18 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
     	return hostToGroupMapping;
     }
     
-    /** Retrieves the wildcard that will be used to match the CN.
+    /** 
+     * Retrieves the wildcard that will be used to match the CN.
+     * 
      * @return The wildcard (i.e. '*.mycompany.com').
      */
     public String getCn() {
         return this.cn;
     }
     
-    /** Retrieves the wildcard that will be used to match the DN.
+    /** 
+     * Retrieves the wildcard that will be used to match the DN.
+     * 
      * @return The wildcard (i.e. '/DC=org/DC=doegrids/OU=Services/CN=*.mycompany.com').
      */
     public String getDn() {

@@ -34,12 +34,14 @@ public class GroupToAccountMapping {
     private Configuration configuration = null;
 
 	/**
-	 * This empty constructor needed by XML Digestor
+	 * Creates a GroupToAccountMapping object. This empty constructor is needed by the XML Digestor.
 	 */
 	public GroupToAccountMapping() {
 	}    
     
 	/**
+	 * Creates a GroupToAccountMapping object with a configuration.
+	 * 
 	 * @param configuration
 	 */
 	public GroupToAccountMapping(Configuration configuration) {
@@ -47,6 +49,8 @@ public class GroupToAccountMapping {
 	}
 	
 	/**
+	 * Creates a GroupToAccountMapping with a configuration and a name.
+	 * 
 	 * @param configuration
 	 * @param name
 	 */
@@ -57,6 +61,7 @@ public class GroupToAccountMapping {
 
 	/**
      * Setter for property mapper.
+     * 
      * @param mapper New value of property mapper.
      */
     public void addAccountMapper(String accountMapper) {
@@ -65,12 +70,19 @@ public class GroupToAccountMapping {
 	
 	/**
      * Setter for property group.
+     * 
      * @param group New value of property group.
      */
     public void addUserGroup(String userGroup) {
     	userGroups.add(userGroup);
     }
 	
+	/**
+	 * Create a clone of itself for specified configuration.
+	 * 
+	 * @param configuration
+	 * @return
+	 */
     public GroupToAccountMapping clone(Configuration configuration) {
     	GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping(configuration, name);
     	groupToAccountMapping.setDescription(getDescription());
@@ -100,6 +112,7 @@ public class GroupToAccountMapping {
     
     /**
      * Getter for property accountingDesc.
+     * 
      * @return Value of property accountingDesc.
      */
     public String getAccountingDesc() {
@@ -109,6 +122,7 @@ public class GroupToAccountMapping {
     
     /**
      * Getter for property accountingVo.
+     * 
      * @return Value of property accountingVo.
      */
     public String getAccountingVo()  {
@@ -118,22 +132,34 @@ public class GroupToAccountMapping {
     
     /**
      * Getter for property mapper.
+     * 
      * @return Value of property mapper.
      */
     public ArrayList getAccountMappers() {
         return accountMappers;
     }    
     
+    /**
+     * Getter for property configuration.
+     * 
+     * @return Configuration object.
+     */
     public Configuration getConfiguration() {
 		return configuration;
 	}
     
-	public String getDescription() {
+    /**
+     * Getter for property description.
+     * 
+     * @return Description as string.
+     */
+    public String getDescription() {
 		return description;
 	}
 	
     /**
      * Getter for property name.
+     * 
      * @return Value of property name.
      */
     public String getName() {
@@ -142,6 +168,7 @@ public class GroupToAccountMapping {
     
     /**
      * Getter for property group.
+     * 
      * @return Value of property group.
      */
     public ArrayList getUserGroups() {
@@ -159,6 +186,7 @@ public class GroupToAccountMapping {
 
     /**
      * Setter for property accountingVo.
+     * 
      * @param accountingVo New value of property accountingVo.
      */
     public void setAccountingVo(java.lang.String accountingVo)  {
@@ -166,18 +194,38 @@ public class GroupToAccountMapping {
         this.accountingVo = accountingVo;
     }
 
+    /**
+     * Setter for property configuration.
+     * 
+     * @param configuration.
+     */
     public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
     
+    /**
+     * Setter for property description.
+     * 
+     * @param description.
+     */
     public void setDescription(String description) {
     	this.description = description;
     }
     
+    /**
+     * Setter for property name.
+     * 
+     * @param name.
+     */
     public void setName(String name) {
 		this.name = name;
 	}
     
+    /**
+     * Get XML representation of this object for writing to gums.config
+     * 
+     * @return xml as string
+     */
     public String toXML() {
     	String retStr = "\t\t<groupToAccountMapping\n"+
 		"\t\t\tname='"+name+"'\n"+

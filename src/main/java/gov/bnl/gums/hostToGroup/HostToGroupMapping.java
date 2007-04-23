@@ -32,16 +32,25 @@ public abstract class HostToGroupMapping {
 	private String description = "";
     
 	/**
+	 * Create a nwe HostToGroupMapping object.
+	 * 
 	 * This empty constructor needed by XML Digestor
 	 */
     public HostToGroupMapping() {
     }
 
+    /**
+     * Create a new HostToGroupMapping object with a configuration.
+     * 
+     * @param configuration
+     */
     public HostToGroupMapping(Configuration configuration) {
     	this.configuration = configuration;
     }
     
 	/**
+	 * Create a new HostToGroupMapping object with a configuration and a name.
+	 * 
 	 * @param configuration
 	 */
     public HostToGroupMapping(Configuration configuration, String name) {
@@ -57,10 +66,18 @@ public abstract class HostToGroupMapping {
         this.groupToAccountMappers.add(groupToAccountMapping);
     }
     
+	/**
+	 * Create a clone of itself for specified configuration.
+	 * 
+	 * @param configuration
+	 * @return
+	 */
     public abstract HostToGroupMapping clone(Configuration configuration);
     
     /**
-     * @return returns true if group2AccountMapperName is matched.
+     * Determines if this host to group mapping contains a group to account mapping.
+     * 
+     * @return returns true if group to account mapping is contained.
      */
     public boolean containsGroupToAccountMapping(String groupToAccountMappingQuery) {
     	Iterator groupMapperIt = groupToAccountMappers.iterator();
@@ -72,10 +89,20 @@ public abstract class HostToGroupMapping {
     	return false;
     }
     
+    /**
+     * Getter for property configuration.
+     * 
+     * @return Configuration as string.
+     */
     public Configuration getConfiguration() {
     	return configuration;
     }
     
+    /**
+     * Getter for property description.
+     * 
+     * @return Description as string.
+     */
 	public String getDescription() {
 		return description;
 	}
@@ -87,23 +114,54 @@ public abstract class HostToGroupMapping {
         return Collections.unmodifiableList(groupToAccountMappers);
     }
     
+    /**
+     * Getter for property name.
+     * 
+     * @return Value of property name.
+     */
     public String getName() {
     	return name;
     }
     
+    /**
+     * Determines if hostname is matched within this host to group mapping.
+     * 
+     * @param hostname
+     * @return true if hostname matches
+     */
     public abstract boolean isInGroup(String hostname);
     
+    /**
+     * Setter for property configuration.
+     * 
+     * @param configuration.
+     */
     public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
     
+    /**
+     * Setter for property description.
+     * 
+     * @param description.
+     */
     public void setDescription(String description) {
     	this.description = description;
     }
     
+    /**
+     * Setter for property name.
+     * 
+     * @param name.
+     */
     public void setName(String name) {
     	this.name = name;
     }
     
+    /**
+     * Get XML representation of this object for writing to gums.config
+     * 
+     * @return xml as string
+     */
     public abstract String toXML();
 }

@@ -7,6 +7,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /** 
+ * Represents a VOMS server.  Contains the other parameters for access this server. 
+ * This is meant to be a shared reference for multiple user groups.  One specifies
+ * the base url here and provides the remainder url for each user group.
  *
  * @author Jay Packard
  */
@@ -24,12 +27,15 @@ public class VirtualOrganization {
 	private Configuration configuration = null;
     
 	/**
-	 * This empty constructor needed by XML Digestor
+	 * Creates a new virtual organization object. This empty 
+	 * constructor is needed by the XML Digestor.
 	 */
 	public VirtualOrganization() {
 	}
 
 	/**
+	 * Creates a new virtual organization object with a configuration.
+	 * 
 	 * @param configuration
 	 */
 	public VirtualOrganization(Configuration configuration) {
@@ -37,6 +43,8 @@ public class VirtualOrganization {
 	}
 	
 	/**
+	 * Creates a new virtual organization object with a configuration and a name.
+	 * 
 	 * @param configuration
 	 * @param name
 	 */
@@ -45,6 +53,7 @@ public class VirtualOrganization {
 		this.name = name;
 	}
 	 
+	
 	public VirtualOrganization clone(Configuration configuration) {
     	VirtualOrganization virtualOrganization = new VirtualOrganization(configuration, name);
     	virtualOrganization.setDescription(getDescription());

@@ -6,6 +6,10 @@
 
 package gov.bnl.gums.account;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
+
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 
@@ -57,13 +61,40 @@ public class AccountPoolMapper extends AccountMapper {
     		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveAccountPoolMapperDB( accountPool );
     	return db;
     }    
-    
-    public int getNumberAssigned() {
-    	return getDB().retrieveAccountMap().values().size();
-    }
 
-    public int getNumberUnassigned() {
-    	return getDB().getNumberUnassignedMappings();
+    /**
+     * @return String representation of how many accounts are assigned in database for each root account
+     */
+    public String getAssignments() {
+    	String retStr = new String();
+    	Map accountReverseMap = getDB().retrieveReverseAccountMap();
+    	TreeMap accountRoots = new TreeMap();
+    	Iterator it = accountReverseMap.keySet().iterator();
+    	while (it.hasNext()) {
+    		String account = (String)it.next();
+    		String accountRoot = getRoot(account);
+    		Integer[] stats = (Integer[])accountRoots.get(accountRoot);
+    		if (stats==null) {
+    			stats = new Integer[2];
+    			stats[0] = new Integer(1); // total
+   				stats[1] = new Integer(!accountReverseMap.get(account).equals("")?1:0); // assigned
+    		} else {
+    			stats[0] = new Integer(stats[0].intValue() + 1);
+    			if (!accountReverseMap.get(account).equals(""))
+    				stats[1] = new Integer(stats[1].intValue() + 1);
+    		}
+    		accountRoots.put(accountRoot, stats);
+    	}
+    	it = accountRoots.keySet().iterator();
+    	while (it.hasNext()) {
+    		String accountRoot = (String)it.next();
+    		retStr += accountRoot + "X(" + 
+    			((Integer[])accountRoots.get(accountRoot))[1] + "/" + 
+    			((Integer[])accountRoots.get(accountRoot))[0] + ")";
+    		if (it.hasNext())
+    			retStr += ", ";
+    	}
+    	return retStr;
     }
  
     public String getPersistenceFactory() {
@@ -92,7 +123,7 @@ public class AccountPoolMapper extends AccountMapper {
     }
 
     public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
+    	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?action=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">" + getAssignments() + "</td>";
     }
     
     public String toXML() {
@@ -101,5 +132,14 @@ public class AccountPoolMapper extends AccountMapper {
 			"\t\t\tdescription='"+getDescription()+"'\n"+
 			"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
     		"\t\t\taccountPool='"+accountPool+"'/>\n\n";
+    }
+    
+    private static String getRoot(String account) {
+    	String upper = account.toUpperCase();
+    	String lower = account.toLowerCase();
+    	int i = 0, len = lower.length();
+    	while (i<len && lower.charAt(i)!=upper.charAt(i))
+    		i++;
+    	return new String( account.substring(0,i) );
     }
 }

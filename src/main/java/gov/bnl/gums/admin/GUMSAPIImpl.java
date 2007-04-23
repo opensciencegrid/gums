@@ -16,6 +16,7 @@ import gov.bnl.gums.userGroup.UserGroup;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,6 +65,14 @@ public class GUMSAPIImpl implements GUMSAPI {
 	        
 	        StringBuffer buf = new StringBuffer(firstAccount);
 	        int len = firstAccount.length();
+	        Map reverseMap = getAccountPoolMapperDB(accountPoolMapperName).retrieveReverseAccountMap();
+	        for (int account = nFirstAccount; account <= nLastAccount; account++) {
+	            String nAccount = Integer.toString(account);
+	            buf.replace(len - nAccount.length(), len, nAccount);
+		        if (reverseMap.get(buf.toString())!=null)
+		        	throw new RuntimeException("One or more accounts already exist. None were added.");
+	        }
+	        buf = new StringBuffer(firstAccount);
 	        for (int account = nFirstAccount; account <= nLastAccount; account++) {
 	            String nAccount = Integer.toString(account);
 	            buf.replace(len - nAccount.length(), len, nAccount);
@@ -76,26 +85,6 @@ public class GUMSAPIImpl implements GUMSAPI {
 			siteLog.info(logUserAccess() + "Failed to add account range because user doesn't have write access");
 			throw new AuthorizationDeniedException();
 		}
-    }
-    
-    public void anualMappingRemove(String manualAccountMapperName, String userDN) {
-        try {
-            if (hasWriteAccess(currentUser())) {
-                getManualAccountMapperDB(manualAccountMapperName).removeMapping(userDN);
-                gumsResourceAdminLog.info(logUserAccess() + "Removed mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "'");
-                siteLog.info(logUserAccess() + "Removed mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "'");
-            } else {
-                throw new AuthorizationDeniedException();
-            }
-        } catch (AuthorizationDeniedException e) {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to remove mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' - " + e.getMessage());
-            siteLog.info(logUserAccess() + "Unauthorized access to remove mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "'");
-            throw e;
-        } catch (RuntimeException e) {
-            gumsResourceAdminLog.error(logUserAccess() + "Failed to remove mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' - " + e.getMessage());
-            siteLog.info(logUserAccess() + "Failed to remove mapping from persistence account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' - " + e.getMessage());
-            throw e;
-        }
     }
     
     public void backupConfiguration() {
@@ -240,7 +229,7 @@ public class GUMSAPIImpl implements GUMSAPI {
             throw e;
         }
     }
-
+    
     public void manualMappingAdd(String manualAccountMapperName, String userDN, String account) {
         try {
             if (hasWriteAccess(currentUser())) {
@@ -257,6 +246,26 @@ public class GUMSAPIImpl implements GUMSAPI {
         } catch (RuntimeException e) {
             gumsResourceAdminLog.error(logUserAccess() + "Failed to add mapping to account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' to account '" + account + "' - " + e.getMessage());
             siteLog.info(logUserAccess() + "Failed to add mapping to persistence account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' to account '" + account + "' - " + e.getMessage());
+            throw e;
+        }
+    }
+
+    public void manualMappingRemove(String manualAccountMapperName, String userDN) {
+        try {
+            if (hasWriteAccess(currentUser())) {
+                getManualAccountMapperDB(manualAccountMapperName).removeMapping(userDN);
+                gumsResourceAdminLog.info(logUserAccess() + "Removed mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "'");
+                siteLog.info(logUserAccess() + "Removed mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "'");
+            } else {
+                throw new AuthorizationDeniedException();
+            }
+        } catch (AuthorizationDeniedException e) {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to remove mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Unauthorized access to remove mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "'");
+            throw e;
+        } catch (RuntimeException e) {
+            gumsResourceAdminLog.error(logUserAccess() + "Failed to remove mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Failed to remove mapping from persistence account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' - " + e.getMessage());
             throw e;
         }
     }
@@ -350,15 +359,36 @@ public class GUMSAPIImpl implements GUMSAPI {
     	}
     }
     	
-    public void unassignAllPoolAccounts(String accountPoolMapperName) {
+    public void unassignAccountRange(String accountPoolMapperName, String range) {
     	if (hasWriteAccess(currentUser())) {
-	        getAccountPoolMapperDB(accountPoolMapperName).unassignAllUsers();
-	        gumsResourceAdminLog.info(logUserAccess() + "Unassigned account from account mapper '" + accountPoolMapperName + "'");
-	        siteLog.info(logUserAccess() + "Unassigned account from account mapper '" + accountPoolMapperName + "'");
+            String firstAccount = range.substring(0, range.indexOf('-'));
+            String lastAccountN = range.substring(range.indexOf('-') + 1);
+            String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
+            String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
+            int nFirstAccount = Integer.parseInt(firstAccountN);
+            int nLastAccount = Integer.parseInt(lastAccountN);
+
+            StringBuffer last = new StringBuffer(firstAccount);
+            String nLastAccountString = Integer.toString(nLastAccount);
+            last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
+            
+            System.out.println("Unassigning accounts between '" + firstAccount + "' and '" + last.toString() + "' from pool '" + accountPoolMapperName + "'");
+            
+            StringBuffer buf = new StringBuffer(firstAccount);
+            int len = firstAccount.length();
+            for (int account = nFirstAccount; account <= nLastAccount; account++) {
+                String nAccount = Integer.toString(account);
+                buf.replace(len - nAccount.length(), len, nAccount);
+                getAccountPoolMapperDB(accountPoolMapperName).unassignAccount(buf.toString());
+                System.out.println(buf.toString() + " unassigned");
+            }
+    		
+	        gumsResourceAdminLog.info(logUserAccess() + "Unassigned accounts from account mapper '" + accountPoolMapperName + "'");
+	        siteLog.info(logUserAccess() + "Unassigned accounts from account mapper '" + accountPoolMapperName + "'");
     	}
     	else {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to unassign all accounts because user doesn't have write access");
-    		siteLog.info(logUserAccess() + "Failed to unassign all accounts because user doesn't have write access");
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to unassign accounts because user doesn't have write access");
+    		siteLog.info(logUserAccess() + "Failed to unassign accounts because user doesn't have write access");
     		throw new AuthorizationDeniedException();
     	}
     }

@@ -12,7 +12,7 @@ package gov.bnl.gums.persistence;
 
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
-import gov.bnl.gums.db.HibernateMappingDB;
+import gov.bnl.gums.db.HibernateAccountMapperDB;
 import gov.bnl.gums.db.HibernateUserGroupDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
@@ -42,15 +42,29 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 	private Log log = LogFactory.getLog(HibernatePersistenceFactory.class);
     private SessionFactory sessions;
 
+	/**
+     * Create a new hibernate persistence factory.  This empty constructor is needed by the XML Digester.
+	 */
 	public HibernatePersistenceFactory() {
     	log.trace("HibernatePersistenceFactory instanciated");
     }
     
+    /**
+     * Create a new hibernate persistence factory with a configuration.
+     * 
+     * @param configuration
+     */
     public HibernatePersistenceFactory(Configuration configuration) {
     	super(configuration);
     	log.trace("HibernatePersistenceFactory instanciated");
     }    
 
+    /**
+     * Create a new ldap persistence factory with a configuration and a name.
+     * 
+     * @param configuration
+     * @param name
+     */
     public HibernatePersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
     	log.trace("HibernatePersistenceFactory instanciated");
@@ -68,11 +82,11 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 	}
     
     public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
-        return new HibernateMappingDB(this, name);
+        return new HibernateAccountMapperDB(this, name);
     }
 
     public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
-        return new HibernateMappingDB(this, name);
+        return new HibernateAccountMapperDB(this, name);
     }
 
     public ManualUserGroupDB retrieveManualUserGroupDB(String name) {

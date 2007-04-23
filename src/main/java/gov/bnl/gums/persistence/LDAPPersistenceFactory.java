@@ -10,7 +10,7 @@ package gov.bnl.gums.persistence;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 import gov.bnl.gums.db.LDAPGroupIDAssigner;
-import gov.bnl.gums.db.LDAPMappingDB;
+import gov.bnl.gums.db.LDAPAccountMapperDB;
 import gov.bnl.gums.db.LDAPUserGroupDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
@@ -82,19 +82,34 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	private String caCertFile = "";
     LDAPGroupIDAssigner assigner;
     
+    /**
+     * Create a new ldap persistence factory.  This empty constructor is needed by the XML Digester.
+     */
     public LDAPPersistenceFactory() {
     	super();
     }
     
+    /**
+     * Create a new ldap persistence factory with a configuration.
+     * 
+     * @param configuration
+     */
     public LDAPPersistenceFactory(Configuration configuration) {
     	super(configuration);
     }
     
+    /**
+     * Create a new ldap persistence factory with a configuration and a name.
+     * 
+     * @param configuration
+     * @param name
+     */
     public LDAPPersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
     }
     
-    /** Adds a userDN -> account mapping entry in the "map=mapName" LDAP map.
+    /** 
+     * Adds a userDN -> account mapping entry in the "map=mapName" LDAP map.
      * 
      * @param userDN the certificate DN of the user (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith")
      * @param account the account to whith to map the DN (i.e. "carcassi")
@@ -130,7 +145,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
     
-    /** Adds the account to the given secondary group. It expects the base DN
+    /** 
+     * Adds the account to the given secondary group. It expects the base DN
      * provided by the LDAP connection url to point to a domain (i.e. "dc-usatlas,dc=bnl,dc=gov")
      * that will contain a "ou=People" and a "ou=Group" subtree.
      * 
@@ -141,7 +157,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         addToSecondaryGroup(null, account, groupname);
     }
     
-    /** Adds the account to the given secondary group. It expects the domain to be
+    /** 
+     * Adds the account to the given secondary group. It expects the domain to be
      * relative to the base DN
      * provided by the LDAP connection url and to point to a domain (i.e. "dc-usatlas,dc=bnl,dc=gov")
      * that will contain a "ou=People" and a "ou=Group" subtree.
@@ -172,9 +189,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
     
-    // *** PersistenceFactory methods
-    
-    /** Adds a certificate DN to the group "group=groupName".
+    /** 
+     * Adds a certificate DN to the group "group=groupName".
      * 
      * @param userDN the certificate DN of the user (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith")
      * @param groupName the name of the group (i.e. "usatlas")
@@ -196,7 +212,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
 
-    /** Changes the primary gid for the given account. It expects the base DN
+    /** 
+     * Changes the primary gid for the given account. It expects the base DN
      * provided by the LDAP connection url to point to a domain (i.e. "dc-usatlas,dc=bnl,dc=gov")
      * that will contain a "ou=People" and a "ou=Group" subtree.
      * 
@@ -211,7 +228,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         updateGID(null, account, gid);
     }
 
-    /** Changes the primary gid for the given account. It expects the domain to be
+    /** 
+     * Changes the primary gid for the given account. It expects the domain to be
      * relative to the base DN
      * provided by the LDAP connection url and to point to a domain (i.e. "dc-usatlas,dc=bnl,dc=gov")
      * that will contain a "ou=People" and a "ou=Group" subtree.
@@ -238,7 +256,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	return persistenceFactory;
     }
     
-    /** Creates an account in the map "map=mapName", without having a userDN: this is useful
+    /** 
+     * Creates an account in the map "map=mapName", without having a userDN: this is useful
      * for pools of accounts.
      * 
      * @param account the account to whith to map the DN (i.e. "grid0001")
@@ -264,7 +283,9 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
             releaseContext(context);
         }
     }
-    /** Creates a new "map=mapName" entry in the LDAP GUMS tree.
+    
+    /** 
+     * Creates a new "map=mapName" entry in the LDAP GUMS tree.
      * 
      * @param mapName the name of the map (i.e. "usatlasSpecialMap")
      * @param mapDN the map DN (i.e. "map=usatlasSpecialMap")
@@ -289,9 +310,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
 
-    // *** Factory configuration (getters and setters)
-
-    /** Creates a new "group=groupName" entry in the LDAP GUMS tree.
+    /** 
+     * Creates a new "group=groupName" entry in the LDAP GUMS tree.
      * 
      * @param groupName the name of the group (i.e. "usatlas")
      * @param groupDN the group DN (i.e. "group=usatlas")
@@ -316,7 +336,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
 
-    /** Deletes the "map=mapName" map in the LDAP GUMS tree. Will completely
+    /** 
+     * Deletes the "map=mapName" map in the LDAP GUMS tree. Will completely
      * delete the map.
      * 
      * @param mapName the name of the map (i.e. "usatlasSpecialMap")
@@ -342,11 +363,32 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
             releaseContext(context);
         }
     }
+    
+    /** 
+     * Deletes the account in map.
+     * 
+     * @param mapName the name of the map (i.e. "usatlasSpecialMap")
+     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap")
+     */
+    public boolean destroyAccountInMap(String account, String mapName, String mapDN) {
+        DirContext context = retrieveContext();
+        try {
+            context.destroySubcontext("account=" + account + "," + mapDN );
+            log.trace("Destroyed LDAP map '" + mapName + "' at '" + mapDN + "'");
+        } catch (Exception e) {
+            log.info("LDAPPersistence error - destroyMap - map '" + mapName + "'", e);
+            throw new RuntimeException("Couldn't destroy LDAP map '" + mapName + "': " + e.getMessage(), e);
+        } finally {
+            releaseContext(context);
+        }
+        return true;
+    }    
 
     /**
      * Changes the GUMS DN in which the GUMS objects will be placed.
      * This DN will be relative to the DN as specified in the LDAP url
      * within the LDAP connection parameters.
+     * 
      * @return the GUMS base DN (defaults to "ou=GUMS")
      */
     public String getDefaultGumsOU()   {
@@ -366,7 +408,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	return trustStorePassword;
     }
     
-    /** Returns a Context ready to be used (taken from the pool).
+    /** 
+     * Returns a Context ready to be used (taken from the pool).
      * This is the entry point for the pool, and it can be used
      * by test cases to prepare the LDAP server.
      * 
@@ -387,6 +430,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * specified in the LDAP url within the LDAP connection parameters.
      * <p>
      * If set to null, no gid update will be performed.
+     * 
      * @return domains for updating the GID (i.e. "dc=usatlas")
      */
     public String getUpdateGIDdomains() {
@@ -396,6 +440,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     /**
      * This property forces the gid update for account pools at every access.
      * It's handy for when gids gets out of synch.
+     * 
      * @return if true gids are updated every time accounts from the pool are returned.
      */
     public boolean isSynchGroups() {
@@ -470,19 +515,17 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
     
-    // *** Maps management    
-    
     public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
         StringTokenizer tokens = new StringTokenizer(name, ".");
         if (!tokens.hasMoreTokens()) {
             log.trace("Creating LDAP AccountPoolMapperDB '" + name + "' (no GIDs)");
-            return new LDAPMappingDB(this, name);
+            return new LDAPAccountMapperDB(this, name);
         }
         
         String pool = tokens.nextToken();
         if (!tokens.hasMoreTokens()) {
             log.trace("Creating LDAP AccountPoolMapperDB '" + name + "' (no GIDs)");
-            return new LDAPMappingDB(this, name);
+            return new LDAPAccountMapperDB(this, name);
         }
         
         String group = tokens.nextToken();
@@ -492,10 +535,11 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
         
         log.trace("Creating LDAP AccountPoolMapperDB '" + name + "' primary group '" + group + "' secondary groups '" + secondaryGroups + "'");
-        return new LDAPMappingDB(this, pool, group, secondaryGroups);
+        return new LDAPAccountMapperDB(this, pool, group, secondaryGroups);
     }
     
-    /** Returns the gid assigner for the given ldap, with the configured
+    /** 
+     * Returns the gid assigner for the given ldap, with the configured
      * ldap domains for the factory.
      * 
      * @return an LDAPGroupIDAssigner preconfigured and ready to use
@@ -508,7 +552,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         return assigner;
     }
     
-    /** Retrieves an LDAP DirContext from the pool, if available and still valid,
+    /** 
+     * Retrieves an LDAP DirContext from the pool, if available and still valid,
      * or creates a new DirContext if none are found.
      * 
      * @return an LDAP DirContext
@@ -529,15 +574,13 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     
     public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
         log.trace("Creating LDAP ManualAccountMapperDB '" + name + "'");
-        return new LDAPMappingDB(this, name);
+        return new LDAPAccountMapperDB(this, name);
     }
     
     public ManualUserGroupDB retrieveManualUserGroupDB(String name) {
         log.trace("Creating LDAP ManualUserGroupDB '" + name + "'");
         return new LDAPUserGroupDB(this, name);
     }
-
-    // *** User group management
     
     public UserGroupDB retrieveUserGroupDB(String name) {
         log.trace("Creating LDAP UserGroupDB '" + name + "'");
@@ -552,6 +595,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * Changes the GUMS DN in which the GUMS objects will be placed.
      * This DN will be relative to the DN as specified in the LDAP url
      * within the LDAP connection parameters.
+     * 
      * @param baseDN the GUMS base DN (defaults to "ou=GUMS")
      */
     public void setDefaultGumsOU(String defaultGumsOU)   {
@@ -571,12 +615,11 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	if (!caCertFile.equals(""))
     		addCertToTrustStore();
     }
-    
-    // *** gid management
-    
+
     /**
      * Sets the list of properties to be used to connect to LDAP, that is
      * to create the JNDI context.
+     * 
      * @param properties a set of JNDI properties
      */
     public void setProperties(Properties properties) {

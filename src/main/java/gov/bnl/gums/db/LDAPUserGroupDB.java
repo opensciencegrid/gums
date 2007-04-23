@@ -45,27 +45,10 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         log.trace("LDAPUserGroupDB object create: group '" + group + "' factory " + factory);
     }
     
-    boolean doesGroupExist() {
-        DirContext context = factory.retrieveContext();
-        try {
-            SearchControls ctrls = new SearchControls();
-            ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            NamingEnumeration result = context.search(factory.getDefaultGumsOU(), "(group={0})", new Object[] {group}, ctrls);
-            log.trace("Checking whether group '" + group + "' exists: " + result.hasMore());
-            return result.hasMore();
-        } catch (Exception e) {
-            log.info("Couldn't determine whether group '" + group + "' exists", e);
-            throw new RuntimeException("Couldn't determine whether group '" + group + "' esists: " + e.getMessage(), e);
-        } finally {
-            factory.releaseContext(context);
-        }
+    public void addMember(gov.bnl.gums.GridUser user) {
+        factory.addUserGroupEntry(gridID(user), group, groupDN);
     }
     
-    void createGroupIfNotExists() {
-        if (!doesGroupExist())
-            factory.createUserGroup(group, groupDN);
-    }
-
     public boolean isMemberInGroup(gov.bnl.gums.GridUser user) {
         DirContext context = factory.retrieveContext();
         try {
@@ -80,30 +63,6 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         } finally {
             factory.releaseContext(context);
         }
-    }
-    
-    private String gridID(GridUser user) {
-        if (user.getVoFQAN() == null)
-            return user.getCertificateDN();
-        else
-            return user.getCertificateDN()+"["+user.getVoFQAN()+"]";
-    }
-
-    public boolean removeMember(gov.bnl.gums.GridUser user) {
-        try {
-            factory.removeUserGroupEntry(gridID(user), group, groupDN);
-            return true;
-        } catch (RuntimeException e) {
-            if (e.getCause() instanceof NoSuchAttributeException) {
-                log.trace("No entry to remove for user '" + user + "' from group '" + group + "'");
-                return false;
-            }
-            throw e;
-        }
-    }
-
-    public void addMember(gov.bnl.gums.GridUser user) {
-        factory.addUserGroupEntry(gridID(user), group, groupDN);
     }
 
     public void loadUpdatedList(java.util.List members) {
@@ -159,9 +118,18 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             throw new RuntimeException("Updating member list in LDAP group '" + group + "' wasn't completely successful: " + lastException.getMessage(), lastException);
         }
     }
-
-    public java.util.List retrieveRemovedMembers() {
-        return removedMembers;
+    
+    public boolean removeMember(gov.bnl.gums.GridUser user) {
+        try {
+            factory.removeUserGroupEntry(gridID(user), group, groupDN);
+            return true;
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof NoSuchAttributeException) {
+                log.trace("No entry to remove for user '" + user + "' from group '" + group + "'");
+                return false;
+            }
+            throw e;
+        }
     }
 
     public java.util.List retrieveMembers() {
@@ -197,6 +165,38 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
 
     public java.util.List retrieveNewMembers() {
         return addedMembers;
+    }
+
+    public java.util.List retrieveRemovedMembers() {
+        return removedMembers;
+    }
+
+    private void createGroupIfNotExists() {
+        if (!doesGroupExist())
+            factory.createUserGroup(group, groupDN);
+    }
+
+    private boolean doesGroupExist() {
+        DirContext context = factory.retrieveContext();
+        try {
+            SearchControls ctrls = new SearchControls();
+            ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            NamingEnumeration result = context.search(factory.getDefaultGumsOU(), "(group={0})", new Object[] {group}, ctrls);
+            log.trace("Checking whether group '" + group + "' exists: " + result.hasMore());
+            return result.hasMore();
+        } catch (Exception e) {
+            log.info("Couldn't determine whether group '" + group + "' exists", e);
+            throw new RuntimeException("Couldn't determine whether group '" + group + "' esists: " + e.getMessage(), e);
+        } finally {
+            factory.releaseContext(context);
+        }
+    }
+
+    private String gridID(GridUser user) {
+        if (user.getVoFQAN() == null)
+            return user.getCertificateDN();
+        else
+            return user.getCertificateDN()+"["+user.getVoFQAN()+"]";
     }
     
 }

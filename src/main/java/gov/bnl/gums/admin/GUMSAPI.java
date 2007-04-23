@@ -29,15 +29,6 @@ public interface GUMSAPI extends Remote {
     void addAccountRange(String accountPoolMapperName, String range);
     
     /**
-     * Removes a userDN from an account mapping
-     * 
-     * @param persistanceFactory
-     * @param accountMapperName name of manual account mapper
-     * @param userDN
-     */
-    void anualMappingRemove(String manualAccountMapperName, String userDN);
-    
-    /**
      * Backup current configuration
      */
     void backupConfiguration();
@@ -124,6 +115,15 @@ public interface GUMSAPI extends Remote {
     void manualMappingAdd(String manualAccountMapperName, String userDN, String account);
     
     /**
+     * Removes a userDN from an account mapping
+     * 
+     * @param persistanceFactory
+     * @param accountMapperName name of manual account mapper
+     * @param userDN
+     */
+    void manualMappingRemove(String manualAccountMapperName, String userDN);
+    
+    /**
      * Map an account to a list of grid DNs
      * 
      * @param accountName
@@ -173,7 +173,7 @@ public interface GUMSAPI extends Remote {
      * @param persistanceManager
      * @param accountMapperName
      */
-    void unassignAllPoolAccounts(String accountPoolMapperName);
+    void unassignAccountRange(String accountPoolMapperName, String range);
     
     /**
      * Update members in user groups by querying VO servers - may be time consuming

@@ -48,11 +48,11 @@ public class LocalPersistenceFactoryTest extends TestCase {
     }
 
     public void testRetrieveManualAccountMapperDB() {
-        assertTrue(factory.retrieveManualAccountMapperDB("test").toString().indexOf("HibernateMapping") != -1);
+        assertTrue(factory.retrieveManualAccountMapperDB("test").toString().indexOf("HibernateAccountMapperDB") != -1);
     }
 
     public void testRetrieveAccountPoolMapperDB() {
-        assertTrue(factory.retrieveAccountPoolMapperDB("test").toString().indexOf("HibernateMapping") != -1);
+        assertTrue(factory.retrieveAccountPoolMapperDB("test").toString().indexOf("HibernateAccountMapperDB") != -1);
         assertTrue(factory.retrieveAccountPoolMapperDB("test.pool").toString().indexOf("LocalAccountPoolMapperDB") != -1);
         assertTrue(factory.retrieveAccountPoolMapperDB("test.fail.pool").toString().indexOf("LocalAccountPoolMapperDB") != -1);
     }

@@ -11,13 +11,21 @@ import gov.bnl.gums.configuration.Configuration;
 
 import java.util.*;
 
-/** An interface that defines a group of people, which GUMS will associate to a 
+/** 
+ * An interface that defines a group of people, which GUMS will associate to a 
  * mapping policy. An implementation could take/manage a list of users in
  * any way it wanted, or it could combine different groups.
  *
  * @author Gabriele Carcassi, Jay Packard
  */
 public abstract class UserGroup {
+    /**
+     * @return user friendly string representation of the property type called statically 
+     */
+    static public String getTypeStatic() {
+		return "abstract";
+	}
+	
 	private String name = "";
 	private String description = "";
 	private Configuration configuration = null;
@@ -25,12 +33,14 @@ public abstract class UserGroup {
 	protected int accessIndex = 2;
 	
 	/**
-	 * This empty constructor is needed by XML Digestor
+	 * Create a new user group.  This empty constructor is needed by the XML Digestor.
 	 */
 	public UserGroup() {
 	}
 	
 	/**
+	 * Create a new user group with a configuration.
+	 * 
 	 * @param configuration
 	 * @param name
 	 */
@@ -39,6 +49,8 @@ public abstract class UserGroup {
 	}
 
 	/**
+	 * Create a new user group with a configuration and a name.
+	 * 
 	 * @param configuration
 	 * @param name
 	 */
@@ -47,16 +59,38 @@ public abstract class UserGroup {
 		this.name = name;
 	}
 	
+	/**
+	 * Create a clone of itself
+	 * 
+	 * @param configuration
+	 * @return
+	 */
 	public abstract UserGroup clone(Configuration configuration);
 
+	/**
+	 * Getter for property access, that determines what a member of this
+	 * user group has access to in GUMS.
+	 * 
+	 * @return access as string
+	 */
 	public String getAccess() {
     	return accessTypes[accessIndex];
     }
 
+	/**
+	 * Getter for property configuration.
+	 * 
+	 * @return Configuration object
+	 */
 	public Configuration getConfiguration() {
 		return configuration;
 	}
 	
+	/**
+	 * Getter for property description.
+	 * 
+	 * @return Description as string
+	 */
 	public String getDescription() {
 		return description;
 	}
@@ -75,26 +109,41 @@ public abstract class UserGroup {
      */
     public abstract List getMemberList();
 
+	/**
+	 * Getter for property name.
+	 * 
+	 * @return name as string
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * Getter for property type.
+	 * 
+	 * @return type as string
+	 */
     public String getType() {
 		return "abstract";
 	}
     
-    static public String getTypeStatic() {
-		return "abstract";
-	}
-    
+    /**
+     * @return true if this group allows at least read all access
+     */
     public boolean hasReadAllAccess() {
     	return (accessIndex<=1);
     }
     
+    /**
+     * @return true if this group allows at least read self access
+     */
     public boolean hasReadSelfAccess() {
     	return (accessIndex<=2);
     }
     
+    /**
+     * @return true if this group allows write access (admin privileges)
+     */
     public boolean hasWriteAccess() {
     	return (accessIndex==0);
     }
@@ -106,6 +155,11 @@ public abstract class UserGroup {
      */
     public abstract boolean isInGroup(GridUser user);
     
+    /**
+     * Setter for property access
+     * 
+     * @param access
+     */
     public void setAccess(String access) {
     	for(int i=0; i<accessTypes.length; i++) {
     		if ( accessTypes[i].equalsIgnoreCase(access) ) {
@@ -116,23 +170,52 @@ public abstract class UserGroup {
     	throw new RuntimeException("Invalid access type: "+access);
     }
     
+    /**
+     * Setter for property configuration.
+     * 
+     * @param configuration
+     */
     public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
     
+    /**
+     * Setter for property description.
+     * 
+     * @param description
+     */
     public void setDescription(String description) {
     	this.description = description;
     }
     
+    /**
+     * Setter for property name.
+     * 
+     * @param name
+     */
     public void setName(String name) {
 		this.name = name;
 	}
     
+    /**
+     * Get string representation of this object for displaying in the 
+     * diagnostic summary web page
+     * 
+     * @param bgColor back ground color
+     * @return
+     */
     public abstract String toString(String bgColor);
 
+	/**
+	 * Create a clone of itself
+	 * 
+	 * @param configuration
+	 * @return
+	 */
     public abstract String toXML();
     
-    /** Updates the local list of the users from the source of the group.
+    /** 
+     * Updates the local list of the users from the source of the group.
      * <p>
      * Most user groups will get the information from a separate database
      * accessible via WAN. For that reason, the user group will maintain a

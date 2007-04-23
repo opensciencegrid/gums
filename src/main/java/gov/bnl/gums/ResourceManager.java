@@ -61,7 +61,7 @@ public class ResourceManager {
             Iterator userGroupIt = userGroups.iterator();
             while (userGroupIt.hasNext()) {
             	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupIt.next() );
-	            if (gMap.getAccountingVo() != null && gMap.getAccountingDesc() != null && userGroup.getMemberList().size() != 0) {
+	            if (userGroup.getMemberList().size() != 0) {
 	                voi = voi + " " + gMap.getAccountingVo();
 	                voc = voc + " " + gMap.getAccountingDesc();
 	            }
@@ -95,7 +95,7 @@ public class ResourceManager {
                     while (accountMapperIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
 		                String account = accountMapper.mapUser(user.getCertificateDN(), false);
-		                if ((account != null) && !accountsInMap.contains(account) && (gMap.getAccountingVo() != null)) {
+		                if ((account != null) && !accountsInMap.contains(account) && (!gMap.getAccountingVo().equals(""))) {
 		                    grid3MapBuffer.append(account);
 		                    grid3MapBuffer.append(' ');
 		                    grid3MapBuffer.append(gMap.getAccountingVo());

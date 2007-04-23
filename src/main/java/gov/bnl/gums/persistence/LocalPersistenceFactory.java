@@ -24,10 +24,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * Persistence factory instantiation that combines a hibernate persistence factory
+ * with an ldap persistence factory.  When a pool account is assigned a group, this 
+ * is also set in ldap.
  *
  * @author Gabriele Carcassi, Jay Packard
  */
 public class LocalPersistenceFactory extends PersistenceFactory {
+    /**
+     * Implements AccountPoolMapperDB for the local persistence factory
+     * 
+     * @author Gabriele Carcassi, Jay Packard
+     */
     private class LocalAccountPoolMapperDB implements AccountPoolMapperDB {
         private AccountPoolMapperDB db;
         private String group;
@@ -58,10 +66,6 @@ public class LocalPersistenceFactory extends PersistenceFactory {
             }
         }
         
-        public int getNumberUnassignedMappings() {
-        	return db.getNumberUnassignedMappings();
-        }
-        
         public boolean removeAccount(String account) {
         	return db.removeAccount(account);
         }
@@ -77,13 +81,17 @@ public class LocalPersistenceFactory extends PersistenceFactory {
         public java.util.Map retrieveAccountMap() {
             return db.retrieveAccountMap();
         }
+        
+        public java.util.Map retrieveReverseAccountMap() {
+            return db.retrieveReverseAccountMap();
+        }
 
         public List retrieveUsersNotUsedSince(Date date) {
             return db.retrieveUsersNotUsedSince(date);
         }
 
-        public void unassignAllUsers() {
-        	db.unassignAllUsers();
+        public void unassignAccount(String account) {
+        	db.unassignAccount(account);
         }
         
         public void unassignUser(String user) {
@@ -112,6 +120,9 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     
 	private boolean synchGroups = false;
 	
+    /**
+     * Create a new local persistence factory.  This empty constructor is needed by the XML Digester.
+     */
     public LocalPersistenceFactory() {
     	super();
         persFactory = new HibernatePersistenceFactory();
@@ -119,6 +130,11 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     	log.trace("LocalPersistenceFactory instanciated");
     }
     
+    /**
+     * Create a new local persistence factory with a configuration.
+     * 
+     * @param configuration
+     */
     public LocalPersistenceFactory(Configuration configuration) {
     	super(configuration);
         persFactory = new HibernatePersistenceFactory();
@@ -126,6 +142,12 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     	log.trace("LocalPersistenceFactory instanciated");
     }
     
+    /**
+     * Create a new local persistence factory with a configuration and a name.
+     * 
+     * @param configuration
+     * @param name
+     */
     public LocalPersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
         persFactory = new HibernatePersistenceFactory(configuration, name);
@@ -188,6 +210,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
         return persFactory.retrieveManualAccountMapperDB(name);
     }
+    
     public ManualUserGroupDB retrieveManualUserGroupDB(String name) {
         return persFactory.retrieveManualUserGroupDB(name);
     }

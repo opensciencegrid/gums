@@ -18,8 +18,7 @@ import gov.bnl.gums.configuration.Configuration;
  */
 public abstract class AccountMapper {
     /**
-     * @return user friendly string representation of the type of 
-     * account mapper to be used statically
+     * @return user friendly string representation of the property type called statically 
      */
 	static public String getTypeStatic() {
 		return "abstract";
@@ -86,7 +85,6 @@ public abstract class AccountMapper {
 	
 	/**
 	 * @return string representation of type of account mapper
-	 * to be used on an instantiated object
 	 */
 	public String getType() {
 		return "abstract";

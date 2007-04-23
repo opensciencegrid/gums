@@ -29,6 +29,9 @@ import java.util.Properties;
  * @author Gabriele Carcassi, Jay Packard
  */
 public abstract class PersistenceFactory {
+    /**
+     * @return user friendly string representation of the property type called statically 
+     */
     static public String getTypeStatic() {
 		return "abstract";
 	}
@@ -39,12 +42,14 @@ public abstract class PersistenceFactory {
     private Configuration configuration;
     
 	/**
-	 * This empty constructor needed by XML Digestor
+	 * Create a persistence factory. This empty constructor is needed by the XML Digestor.
 	 */
 	public PersistenceFactory() {
 	}
     
 	/**
+	 * Create a persistence factory with a configuration.
+	 * 
 	 * @param configuration
 	 */
 	public PersistenceFactory(Configuration configuration) {
@@ -52,6 +57,8 @@ public abstract class PersistenceFactory {
 	}	
     
 	/**
+	 * Create a persistence factory with a configuration and a name.
+	 * 
 	 * @param configuration
 	 * @param name
 	 */
@@ -60,24 +67,54 @@ public abstract class PersistenceFactory {
 		this.configuration = configuration;
 	}
 	
+	/**
+	 * Create a clone of itself
+	 * 
+	 * @param configuration
+	 * @return
+	 */
 	public abstract PersistenceFactory clone(Configuration configuration);
 
+    /**
+     * Getter for property configuration.
+     * 
+     * @return Value of property configuration.
+     */
 	public Configuration getConfiguration() {
 		return configuration;
 	}
 	
+    /**
+     * Getter for property description.
+     * 
+     * @return Value of property description.
+     */
 	public String getDescription() {
 		return description;
 	}
 
+    /**
+     * Getter for property name.
+     * 
+     * @return Value of property name.
+     */
 	public String getName() {
 		return name;
 	}
 	
+    /**
+     * Getter for the list of properties for the particular technology
+     * deployed by the inhereted classes.
+     * 
+     * @return properties.
+     */
 	public Properties getProperties() {
 		return properties;
 	}
 
+	/**
+	 * @return string representation of type of persistence factory
+	 */
 	public String getType() {
 		return "abstract";
 	}
@@ -90,21 +127,47 @@ public abstract class PersistenceFactory {
 	
 	public abstract UserGroupDB retrieveUserGroupDB(String name);
 	
+	/**
+     * Setter for property configuration.
+     * 
+     * @param configuration.
+     */
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
 	
+    /**
+     * Setter for property description.
+     * 
+     * @param description.
+     */
     public void setDescription(String description) {
     	this.description = description;
     }
 	
+    /**
+     * Setter for property name.
+     * 
+     * @param name.
+     */
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+    /**
+     * Setter for the list of properties for the particular technology
+     * deployed by the inhereted classes.
+     * 
+     * @param properties.
+     */
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}
 	
+    /**
+     * Get XML representation of this object for writing to gums.config
+     * 
+     * @return xml as string
+     */
 	public abstract String toXML();
 }

@@ -10,7 +10,8 @@ import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.GridUser;
 
-/** A user group that is defined by a list of users stored in some way, allowing
+/** 
+ * A user group that is defined by a list of users stored in some way, allowing
  * to add and remove users. The persistance layer is implemented through an
  * interface, allowing different storage frameworks (i.e. database, LDAP, file)
  * <p>
@@ -26,14 +27,23 @@ public class ManualUserGroup extends UserGroup {
     private ManualUserGroupDB db;
 	private String persistenceFactory = "";
     
+    /**
+     * Create a new manual user group. This empty constructor is needed by the XML Digestor.
+     */
     public ManualUserGroup() {
     	super();
     }
     
+    /**
+     * Create a new manual user group with a configuration.
+     */
     public ManualUserGroup(Configuration configuration) {
     	super(configuration);
     }
     
+    /**
+     * Create a new manual user group with a configuration and a name.
+     */
 	public ManualUserGroup(Configuration configuration, String name) {
 		super(configuration, name);
 	}
@@ -60,6 +70,11 @@ public class ManualUserGroup extends UserGroup {
         return getDB().retrieveMembers();
     }
     
+    /**
+     * Setter for property persistenceFactory.
+     * 
+     * @return persistence factory as string.
+     */
     public String getPersistenceFactory() {
         return persistenceFactory;
     }
@@ -76,6 +91,11 @@ public class ManualUserGroup extends UserGroup {
         return getDB().removeMember(user);
     }
     
+    /**
+     * Setter for property persistenceFactory
+     * 
+     * @param persistenceFactory
+     */
     public void setPersistenceFactory(String persistenceFactory) {
         this.persistenceFactory = persistenceFactory;
     }
@@ -89,7 +109,7 @@ public class ManualUserGroup extends UserGroup {
     }
  
     public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\">" + getName() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\">" + persistenceFactory + "</td>";
+    	return "<td bgcolor=\""+bgColor+"\"><a href=\"userGroups.jsp?action=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td><td bgcolor=\""+bgColor+"\"></td>";
     }
     
     public String toXML() {
