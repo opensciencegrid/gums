@@ -34,12 +34,12 @@ public class AdminCommandLine extends GUMSCommandLine {
             "Removes mapping for DN.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.MapUser",
             "Maps a grid identity to a local account.");
-        GUMSCommandLine.addCommand("gov.bnl.gums.admin.MapfileCacheRefresh",
-            "Regerates mapfiles in the cache.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.PoolAddRange",
             "Adds accounts to an account pool.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.PoolRemoveRange",
         	"Removes accounts from an account pool.");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.PoolUnassignRange",
+    		"Unassigns accounts from an account pool.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.UpdateGroups",
             "Contact VO servers and retrieve user lists.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.Version",
