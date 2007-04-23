@@ -4,10 +4,9 @@
  * Created on December 21, 2004, 12:54 PM
  */
 
-package gov.bnl.gums;
+package gov.bnl.gums.admin;
 
-
-
+import gov.bnl.gums.CertToolkit;
 
 import java.security.cert.X509Certificate;
 import javax.servlet.Filter;
