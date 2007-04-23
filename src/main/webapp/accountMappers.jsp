@@ -339,7 +339,7 @@ else if ("edit".equals(request.getParameter("action"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-				myPool
+				myPool (typically same as account mapper name)
 		    </td>
 		</tr>
 		<tr>

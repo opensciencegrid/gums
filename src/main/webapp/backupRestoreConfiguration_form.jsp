@@ -52,7 +52,7 @@ Backs up or restores configuration.
         <td>
         	<div style="text-align: center;">
         		<button type="submit" onclick="document.forms[0].elements['action'].value='restore'">Restore Configuration</button>
-        		<button type="submit" onclick="document.forms[0].elements['action'].value='delete'">Delete Configuration</button>
+        		<button type="submit" onclick="if(!confirm('Are you sure you want to delete this configuration?'))return false; document.forms[0].elements['action'].value='delete'">Delete Configuration</button>
         	</div>
         </td>
       </tr>

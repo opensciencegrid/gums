@@ -4,7 +4,7 @@
 <%@page import="gov.bnl.gums.account.*"%>
 <%  String action = request.getParameter("action");%>
 <%  String accountMapper = request.getParameter("accountMapper");%>
-<%  String range = request.getParameter("range");%>
+<%  String range = request.getParameter("range"); if (range!=null)range = range.trim();%>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -16,38 +16,35 @@
 <%@include file="topNav.jspf"%>
 <div id="title">
 <h1><span>GUMS</span></h1>
-<h2><span>Add Pool Account Range</span></h2>
+<h2><span>Manage Pool Accounts</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
 <p>
 <BR>
 <% 
-	if (action.equals("add")) {
+	if ("add".equals(action)) {
 		try {
-			gums.addAccountRange(
-				accountMapper, 
-				range ); 
-			out.println("Accounts have been successfully added to the pool!");
+			gums.addAccountRange( accountMapper, range ); 
+			out.println("Accounts have been added to the pool.");
 		} catch(Exception e) {
 			out.println("<div class=\"failure\">Error saving pool account range: " + e.getMessage() + "</div>");
 		}
-	else if (action.equals("remove")) {	
+	}
+	else if ("remove".equals(action)) {	
 		try {
-			gums.removeAccountRange(
-				accountMapper, 
-				range ); 
-			out.println("Accounts have been successfully removed from the pool!");
+			gums.removeAccountRange( accountMapper, range ); 
+			out.println("Accounts have been removed from the pool.");
 		} catch(Exception e) {
 			out.println("<div class=\"failure\">Error removing pool account range: " + e.getMessage() + "</div>");
 		}
-	else if (action.equals("unassign")) {	
+	}
+	else if ("unassign".equals(action)) {	
 		try {
-			gums.unassignAllUsers(
-				accountMapper); 
-			out.println("All users have been deassigned from pool!");
+			gums.unassignAccountRange( accountMapper, range ); 
+			out.println("Accounts have been unassigned.");
 		} catch(Exception e) {
-			out.println("<div class=\"failure\">Error unassigning users: " + e.getMessage() + "</div>");
+			out.println("<div class=\"failure\">Error unassigning accounts: " + e.getMessage() + "</div>");
 		}
 	}
 %>

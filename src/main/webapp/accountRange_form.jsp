@@ -16,7 +16,7 @@
 <%@include file="topNav.jspf"%>
 <div id="title">
 <h1><span>GUMS</span></h1>
-<h2><span>Add Pool Account Range</span></h2>
+<h2><span>Manage Pool Accounts</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
@@ -42,7 +42,7 @@ try {
 %>
 
 <p>
-Adds range of accounts to a pool.
+Adds, removes, or unassigns accounts in pool.
 </p>
 
 <form action="accountRange.jsp" method="get">
@@ -67,42 +67,38 @@ Adds range of accounts to a pool.
 				(request.getParameter("accountMapper")!=null ? request.getParameter("accountMapper") : null),
 				"onchange=\"document.forms[0].action='accountRange_form.jsp';document.forms[0].submit();\"",
 				false) );
-				
-		String selected = null;
-		if (request.getParameter("accountMapper")!=null)
-			selected = request.getParameter("accountMapper");
-		else if(poolMappers.size()>=1)
-			selected = (String)poolMappers.get(0);
-		if (selected!=null)
-			out.write( "("+((AccountPoolMapper)configuration.getAccountMapper(selected)).getNumberAssigned() + " accounts assigned, " +
-				 ((AccountPoolMapper)configuration.getAccountMapper(selected)).getNumberUnassigned() + " unassigned)");
 %>   
-	</td>
-      </tr>
-	  <tr>
+		</td>
+	</tr>
+<%
+      	String selected = (String)poolMappers.get(0);
+      	String assignments = ((AccountPoolMapper)configuration.getAccountMapper(selected)).getAssignments();
+		if (selected!=null && !assignments.equals("")) {
+%>
+	<tr>
+		<td style="text-align: right;">Current Assignments: </td>
+		<td style="text-align: left;">
+			<%=assignments%>
+		</td>
+    </tr>	
+<%
+	}
+%>
+	<tr>
         <td style="text-align: right;">Range: </td>
         <td style="text-align: left;"><input type="text" name="range" maxlength="256" size="16"/></td>
-      </tr>
-	  <tr>
+	</tr>
+	<tr>
         <td style="text-align: right;">i.e.: </td>
         <td style="text-align: left;">myAccount001-100</td>
-      </tr>
-      <tr>
-      	<table>
-      		<tr>
-		        <td colspan="2" style="text-align: center;" onclick="document.forms[0].elements['action'].value='add'"><button type="submit">Add Accounts</button></td>
-		        <td colspan="2" style="text-align: center;" onclick="document.forms[0].elements['action'].value='remove'"><button type="submit">Remove Accounts</button></td>
-		    </tr>
-		</table>
-      </tr>
-      <tr>
-      	<td>-----</td>
-      </tr>
-      <tr>
-      	<td>
-      		<td colspan="2" style="text-align: center;" onclick="document.forms[0].elements['action'].value='unassign'"><button type="submit">Unassign All Users</button></td>
-      	</td>
-      </tr>
+	</tr>
+	<tr>
+		<td colspan="2" style="text-align: center;">
+        	<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} document.forms[0].elements['action'].value='add'">Add Account Range</button>
+        	<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} if(!confirm('Are you sure you want to remove this account range?'))return false; document.forms[0].elements['action'].value='remove'">Remove Account Range</button>
+			<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} if(!confirm('Are you sure you want to unassign accounts?'))return false; document.forms[0].elements['action'].value='unassign'">Unassign Account Range</button>
+		</td>
+	</tr>
     </tbody>
   </table>
 </form>
