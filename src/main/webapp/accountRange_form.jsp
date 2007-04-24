@@ -72,7 +72,7 @@ Adds, removes, or unassigns accounts in pool.
 	</tr>
 <%
       	String selected = (String)poolMappers.get(0);
-      	String assignments = ((AccountPoolMapper)configuration.getAccountMapper(selected)).getAssignments();
+      	String assignments = gums.getPoolAccountAssignments(selected));
 		if (selected!=null && !assignments.equals("")) {
 %>
 	<tr>
