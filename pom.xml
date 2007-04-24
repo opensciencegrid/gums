@@ -109,21 +109,24 @@
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xerces/xmlParserAPIs/2.6.2"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xalan/xalan/2.6.0"/>
 							    </copy>
+								<copy filtering="on" todir="target/lib">
+									<fileset includes="*.jar" dir="target"/>
+								</copy>
+															    
 							    <mkdir dir="target/scripts"/>
 				                <copy todir="target/scripts">
 				                	<fileset dir="src/main/scripts/"/>
 				                </copy>
+   				                <chmod file="target/scripts/gums" perm="ug+x"/>
+				                <chmod file="target/scripts/gums-service" perm="ug+x"/>
+				                <chmod file="target/scripts/gums-host" perm="ug+x"/>
+				                <chmod file="target/scripts/gums-host-cron" perm="ug+x"/>
+				                
 				                <mkdir dir="target/config"/>
 				                <copy todir="target/config">
 				                	<fileset dir="src/main/config/"/>
 				                </copy>
-				                <chmod file="target/scripts/gums" perm="ug+x"/>
-				                <chmod file="target/scripts/gums-client" perm="ug+x"/>
-				                <chmod file="target/scripts/gums-host" perm="ug+x"/>
-				                <chmod file="target/scripts/gums-host-cron" perm="ug+x"/>
-								<copy filtering="on" todir="target/lib">
-									<fileset includes="*.jar" dir="target"/>
-								</copy>
+
 								<mkdir dir="target/var"/>
 								<mkdir dir="target/var/log"/>
 							</tasks>
@@ -205,6 +208,18 @@
 			</plugin>
 		</plugins>
     </build>
+	 
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 	 
  	<dependencies> 
 		<dependency>

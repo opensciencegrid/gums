@@ -40,6 +40,8 @@ public class AdminCommandLine extends GUMSCommandLine {
         	"Removes accounts from an account pool.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.PoolUnassignRange",
     		"Unassigns accounts from an account pool.");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.PoolGetAssignments",
+        	"Get printout of current pool account assignments.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.UpdateGroups",
             "Contact VO servers and retrieve user lists.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.Version",
