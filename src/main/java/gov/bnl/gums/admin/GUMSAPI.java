@@ -78,6 +78,14 @@ public interface GUMSAPI extends Remote {
      * @return
      */
     Configuration getConfiguration();
+
+    /**
+     * Get current pool account assignments
+     * 
+     * @param accountMapper
+     * @return printout of assignments
+     */
+    String getPoolAccountAssignments(String accountMapper);
     
     /**
      * Get current version of GUMS

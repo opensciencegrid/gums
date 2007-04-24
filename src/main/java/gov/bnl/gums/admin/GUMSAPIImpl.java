@@ -164,6 +164,17 @@ public class GUMSAPIImpl implements GUMSAPI {
         }   	
     }
     
+    public String getPoolAccountAssignments(String accountMapper) {
+    	if (hasWriteAccess(currentUser())) {
+    		return ((AccountPoolMapper)gums().getConfiguration().getAccountMapper(accountMapper)).getAssignments();
+    	}
+    	else {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have write access");
+    		siteLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have write access");
+    		throw new AuthorizationDeniedException();
+    	}    	
+    }
+    
     public Collection getBackupConfigDates() {
     	Collection backupConfigDates = null;
     	if (hasWriteAccess(currentUser()))
