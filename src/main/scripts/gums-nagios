@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+#
+# Nagios probe for GUMS
+# Sources config script and executes a gums mapUser command. 
+# If all DNs are properly mapped, returns 0 and OK message. 
+# If not all DNs are properly mapped, returns 1 and WARN message.
+# If none are properly mapped, or cannot connect, returns 2 and ERROR message.
+# 
+#
