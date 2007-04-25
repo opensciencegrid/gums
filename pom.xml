@@ -5,7 +5,9 @@
 	<artifactId>gums-service</artifactId>
 	<packaging>war</packaging>
 	<version>1.2.0</version>
-	<description></description>
+	<name>gums-service</name>
+	<description>GUMS Service provides web services used by the client tool and a 
+		web interface for administering GUMS</description>
     
   	<repositories>
 		<repository>
@@ -150,18 +152,6 @@
            </plugin>
        </plugins>
 	</build>
-  
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<aggregate>true</aggregate>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>  
   
  	<dependencies> 
 		<dependency>
