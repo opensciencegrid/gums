@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Maven">
+  <bannerLeft>
+    <name>&nbsp;GUMS</name>
+  </bannerLeft>
+  <body>
+    <links>
+      <item name="Privilege Project" href="http://computing.fnal.gov/docs/products/voprivilege/index.html" />
+      <item name="BNL RACF" href="https://www.racf.bnl.gov"/>
+    </links>
+
+    <menu name="General">
+      <item name="Overview" href="index.html"/>
+      <item name="What is GUMS?" href="introduction.html"/>
+      <item name="FAQ" href="faq.html"/>
+    </menu>
+    
+    ${reports}
+  </body>
+</project>
