@@ -4,6 +4,7 @@
 	<groupId>gums</groupId>
 	<artifactId>gums-client</artifactId>
 	<version>1.2.0</version>
+	<name>gums-client</name>
 	<description>GUMS Client provides the administrative command line tools to administer GUMS.
     It allows to query and change the state of the GUMS server.</description>
   
@@ -128,7 +129,7 @@
 				                </copy>
 
 								<mkdir dir="target/var"/>
-								<mkdir dir="target/var/log"/>
+								<mkdir dir="target/var/logs"/>
 							</tasks>
 						</configuration>
 						<goals>
@@ -208,18 +209,6 @@
 			</plugin>
 		</plugins>
     </build>
-	 
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<aggregate>true</aggregate>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
 	 
  	<dependencies> 
 		<dependency>
