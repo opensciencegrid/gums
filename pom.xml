@@ -4,7 +4,8 @@
 	<groupId>gums</groupId>
 	<artifactId>gums-core</artifactId>
 	<version>1.2.0</version>
-	<description></description>
+	<name>gums-core</name>
+	<description>GUMS Client provides the core functionality used by other GUMS components</description>
 
   	<repositories>
 		<repository>
@@ -200,18 +201,6 @@
 			</build>
 		</profile>	
 	</profiles>
-
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<aggregate>true</aggregate>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
 
 	<dependencies> 
         <dependency>
