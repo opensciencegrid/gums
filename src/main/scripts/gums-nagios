@@ -8,3 +8,104 @@
 # If none are properly mapped, or cannot connect, returns 2 and ERROR message.
 # 
 #
+
+RETURN=0
+
+ScriptPath=""
+CommandPath=`dirname $0`
+if [ $CommandPath = "." ]
+then
+
+    # The command path is the current directory:
+    # check if file is really here
+
+    if [ ! -e "$0" ]
+    then
+        # The command is not in the current directory:
+        # must have used the path.
+        # Locating with which.
+
+        WhichFull=`which $0`
+        WhichPath=`dirname $WhichFull`
+        ScriptPath=$WhichPath
+        GumsPath=`dirname $ScriptPath`
+    else
+        # It was really the current directory
+        ScriptPath=$CommandPath
+        GumsPath=".."
+    fi
+else
+    ScriptPath=$CommandPath
+    GumsPath=`dirname $ScriptPath`
+fi
+
+# Detects where gums is installed and puts the directory
+# name in ScriptPath
+
+cd $ScriptPath
+cd ../lib
+LSLIB=`/bin/ls ../lib`
+LIBCLASSPATH=`/bin/echo $LSLIB | /bin/sed -e 's/ /:/g'`
+CLASSPATH=../config:$LIBCLASSPATH
+
+ENDORSED="../lib/endorsed"
+
+# defaults for the security code
+CERTDIR=${X509_CERT_DIR-/etc/grid-security/certificates}
+
+CERT=/etc/grid-security/hostcert.pem
+KEY=/etc/grid-security/hostkey.pem
+
+SECURITY_OPTS="-Daxis.socketSecureFactory=org.glite.security.trustmanager.axis.AXISSocketFactory 
+-DsslCAFiles=$CERTDIR/*.0 -DsslCertFile=$CERT -DsslKey=$KEY"
+
+exec 0<../config/gums-nagios.conf
+STATE=0
+SUCCESS_COUNT=0
+TOTAL_COUNT=0
+while read LINE
+do
+	LINE=${LINE## }
+	if [ "${LINE:0:1}" != "#" ] && [ "$LINE" != "" ]
+	then
+		if [ $STATE -eq 0 ]
+		then
+			HOST=$LINE
+		fi
+		if [ $STATE -eq 1 ]
+		then
+			USERDN=$LINE
+		fi
+		if [ $STATE -eq 2 ]
+		then
+			ACCOUNT=$LINE
+		fi
+
+		let STATE=$STATE+1
+		if [ $STATE -eq 3 ]
+		then
+			echo `java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp ../config:$CLASSPATH gov.bnl.gums.admin.HostCommandLine mapUser -s "$HOST" "$USERDN"`
+			if [ "`java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp ../config:$CLASSPATH gov.bnl.gums.admin.HostCommandLine mapUser -s "$HOST" "$USERDN"`" == "$ACCOUNT" ]
+			then
+				let SUCCESS_COUNT=$SUCCESS_COUNT+1;
+			fi
+
+			let TOTAL_COUNT=$TOTAL_COUNT+1;
+		
+			STATE=0
+		fi
+	fi
+done
+
+if [ $SUCCESS_COUNT -eq $TOTAL_COUNT ]
+then
+	echo All GUMS mappings succeeded
+	exit 0
+fi
+if [ $SUCCESS_COUNT -gt 0 ]
+then
+	echo Some GUMS mappings did not succeed 
+	exit 1
+fi
+echo No GUMS mappings succeeded 
+exit 2
