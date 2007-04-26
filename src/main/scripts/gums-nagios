@@ -84,7 +84,6 @@ do
 		let STATE=$STATE+1
 		if [ $STATE -eq 3 ]
 		then
-			echo `java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp ../config:$CLASSPATH gov.bnl.gums.admin.HostCommandLine mapUser -s "$HOST" "$USERDN"`
 			if [ "`java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp ../config:$CLASSPATH gov.bnl.gums.admin.HostCommandLine mapUser -s "$HOST" "$USERDN"`" == "$ACCOUNT" ]
 			then
 				let SUCCESS_COUNT=$SUCCESS_COUNT+1;
