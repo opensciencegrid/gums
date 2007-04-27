@@ -60,36 +60,35 @@
     background-color: rgb(255, 204, 51);
     margin-bottom: 0px;
     background-repeat: repeat-x;
-    height: 150px;
+    height: 92px;
     }
 
-  #title h1 { background: transparent url(images/siteAAA.png) no-repeat scroll left top;
-    float: left;
-    margin-left: 20px;
-    margin-top: 14px;
-    -moz-background-clip: initial;
-    -moz-background-origin: initial;
-    -moz-background-inline-policy: initial;
-    margin-bottom: 0px;
-    width: 200px;
-    height: 111px;
+  #title h1 { font-size: 20pt;
+    position: absolute;
+    left: 15px;
+    top: 0px;
+    color: rgb(102, 51, 0);
     }
 
-  #title h2 { font-size: 24pt;
-    float: left;
-    margin-left: 50px;
-    margin-top: 25px;
+  #title h2 { font-size: 18pt;
+    position: absolute;
+    left: 300px;
+    top: 3px;
     color: rgb(153, 51, 0);
     }
-
-  #title h1 span { display: none;
+    
+  #title h3 { font-size: 8pt;
+    position: absolute;
+    left: 15px;
+    top: 40px;
+    color: rgb(102, 51, 0);
     }
 
   #sideNav { border: 1px solid rgb(255, 204, 51);
     position: absolute;
     float: left;
     left: 10px;
-    top: 200px;
+    top: 104px;
     width: 230px;
     background-color: rgb(255, 238, 119);
     }

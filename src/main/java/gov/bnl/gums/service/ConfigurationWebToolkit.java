@@ -20,6 +20,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
 
+/** 
+ * Toolkit for providing configuration functionality for the web pages.
+ *
+ * @author Jay Packard
+ */
 public class ConfigurationWebToolkit implements Remote {
 	static public CertificateHostToGroupMapping parseHostToGroupMapping(HttpServletRequest request) throws Exception {
 		CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping();

@@ -17,6 +17,7 @@
 <%@include file="topNav.jspf"%>
 <div id="title">
 <h1><span>GUMS</span></h1>
+<h3><span>GRID User Management System</h3>
 <h2><span>Manual Account Mappings</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>

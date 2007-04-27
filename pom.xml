@@ -51,10 +51,6 @@
 		</repository>
 	</distributionManagement>	
 
-	<scm>
-	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-service</developerConnection>
-	</scm>
-  
   	<build>
 		<plugins>
 	 		<plugin>
@@ -120,8 +116,8 @@
 		            <exclude>**/.svn</exclude>
 		          </excludes>
 		        </configuration>
-        </plugin>
-        <plugin>
+        	</plugin>
+            <plugin>
                <groupId>org.codehaus.cargo</groupId>
                <artifactId>cargo-maven2-plugin</artifactId>
                <version>0.3-SNAPSHOT</version>

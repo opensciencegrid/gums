@@ -14,6 +14,7 @@
 <%@include file="topNav.jspf"%>
 <div id="title">
 <h1><span>GUMS</span></h1>
+<h3><span>GRID User Management System</h3>
 <h2><span>Back Up/Restore Configuration</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
