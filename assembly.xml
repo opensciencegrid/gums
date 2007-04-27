@@ -17,8 +17,8 @@
 			<outputDirectory>scripts</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>target/var/logs</directory>
-			<outputDirectory>var/logs</outputDirectory>
+			<directory>target/var/log</directory>
+			<outputDirectory>var/log</outputDirectory>
 		</fileSet>
 	</fileSets>
 </assembly>

@@ -129,7 +129,7 @@
 				                </copy>
 
 								<mkdir dir="target/var"/>
-								<mkdir dir="target/var/logs"/>
+								<mkdir dir="target/var/log"/>
 							</tasks>
 						</configuration>
 						<goals>
