@@ -122,6 +122,7 @@
 				                <chmod file="target/scripts/gums-service" perm="ug+x"/>
 				                <chmod file="target/scripts/gums-host" perm="ug+x"/>
 				                <chmod file="target/scripts/gums-host-cron" perm="ug+x"/>
+				                <chmod file="target/scripts/gums-nagios" perm="ug+x"/>
 				                
 				                <mkdir dir="target/config"/>
 				                <copy todir="target/config">

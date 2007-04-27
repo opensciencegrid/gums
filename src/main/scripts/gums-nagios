@@ -70,21 +70,17 @@ do
 	then
 		if [ $STATE -eq 0 ]
 		then
-			HOST=$LINE
-		fi
-		if [ $STATE -eq 1 ]
-		then
 			USERDN=$LINE
 		fi
-		if [ $STATE -eq 2 ]
+		if [ $STATE -eq 1 ]
 		then
 			ACCOUNT=$LINE
 		fi
 
 		let STATE=$STATE+1
-		if [ $STATE -eq 3 ]
+		if [ $STATE -eq 2 ]
 		then
-			if [ "`java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp ../config:$CLASSPATH gov.bnl.gums.admin.HostCommandLine mapUser -s "$HOST" "$USERDN"`" == "$ACCOUNT" ]
+			if [ "`java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp ../config:$CLASSPATH gov.bnl.gums.admin.HostCommandLine mapUser -b "$USERDN"`" == "$ACCOUNT" ]
 			then
 				let SUCCESS_COUNT=$SUCCESS_COUNT+1;
 			fi
