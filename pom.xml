@@ -5,7 +5,7 @@
 	<artifactId>gums-core</artifactId>
 	<version>1.2.0</version>
 	<name>gums-core</name>
-	<description>GUMS Client provides the core functionality used by other GUMS components</description>
+	<description>GUMS Core provides the core functionality used by other GUMS components</description>
 
   	<repositories>
 		<repository>
@@ -30,10 +30,6 @@
 		</repository>
 	</distributionManagement>	
 
-	<!--scm>
-	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-core</developerConnection>
-	</scm-->
-	
   	<build>
   		<testResources>
 	      <testResource>
