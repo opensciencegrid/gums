@@ -16,7 +16,7 @@ public class PoolAddRange extends RemoteCommand {
     }
 
     /**
-     * Creates a new ManualGroup_Add object.
+     * Creates a new PoolAddRange object.
      */
     public PoolAddRange() {
         syntax = "ACCOUNTMAPPER RANGE";

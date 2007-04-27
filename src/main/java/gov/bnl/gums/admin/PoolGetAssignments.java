@@ -16,7 +16,7 @@ public class PoolGetAssignments extends RemoteCommand {
     }
 
     /**
-     * Creates a new ManualGroup_Add object.
+     * Creates a new PoolGetAssignments object.
      */
     public PoolGetAssignments() {
         syntax = "ACCOUNTMAPPER";

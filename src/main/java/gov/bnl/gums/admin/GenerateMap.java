@@ -11,7 +11,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 /**
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public abstract class GenerateMap extends RemoteCommand {
     protected org.apache.commons.cli.Options buildOptions() {

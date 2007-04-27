@@ -11,7 +11,7 @@ import org.opensciencegrid.authz.client.GRIDIdentityMappingServiceClient;
 import org.opensciencegrid.authz.common.GridId;
 
 /**
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class MapUser extends RemoteCommand {
     static {

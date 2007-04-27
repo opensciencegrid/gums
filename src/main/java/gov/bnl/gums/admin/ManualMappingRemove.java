@@ -8,7 +8,7 @@ package gov.bnl.gums.admin;
 import org.apache.commons.cli.*;
 
 /**
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class ManualMappingRemove extends RemoteCommand {
     static {
@@ -16,7 +16,7 @@ public class ManualMappingRemove extends RemoteCommand {
     }
 
     /**
-     * Creates a new ManualMapping_Remove object.
+     * Creates a new ManualMappingRemove object.
      */
     public ManualMappingRemove() {
         syntax = "ACCOUNTMAPPER USERDN";

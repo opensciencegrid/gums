@@ -8,7 +8,7 @@ package gov.bnl.gums.admin;
 import org.apache.commons.cli.Options;
 
 /**
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class MapAccount extends RemoteCommand {
     static {
@@ -16,7 +16,7 @@ public class MapAccount extends RemoteCommand {
     }
 
     /**
-     * Creates a new GenerateGridMapfile object.
+     * Creates a new MapAccount object.
      */
     public MapAccount() {
         syntax = "ACCOUNTNAME";

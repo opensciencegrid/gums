@@ -6,7 +6,7 @@
 package gov.bnl.gums.admin;
 
 /**
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class GenerateGridMapfile extends GenerateMap {
     static {

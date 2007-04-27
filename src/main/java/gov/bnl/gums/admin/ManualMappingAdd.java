@@ -8,7 +8,7 @@ package gov.bnl.gums.admin;
 import org.apache.commons.cli.*;
 
 /**
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class ManualMappingAdd extends RemoteCommand {
     static {
@@ -16,7 +16,7 @@ public class ManualMappingAdd extends RemoteCommand {
     }
 
     /**
-     * Creates a new ManualMapping_Add object.
+     * Creates a new ManualMappingAdd object.
      */
     public ManualMappingAdd() {
         syntax = "ACCOUNTMAPPER USERDN USERNAME";

@@ -16,7 +16,7 @@ public class ManualGroupAdd extends RemoteCommand {
     }
 
     /**
-     * Creates a new ManualGroup_Add object.
+     * Creates a new ManualGroupAdd object.
      */
     public ManualGroupAdd() {
         syntax = "USERGROUP USERDN1 [USERDN2] ...";

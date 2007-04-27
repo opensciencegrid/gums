@@ -24,7 +24,7 @@ public class Version extends RemoteCommand {
     }
 
     /**
-     * Creates a new UpdateGroups object.
+     * Creates a new Version object.
      */
     public Version() {
         syntax = "";

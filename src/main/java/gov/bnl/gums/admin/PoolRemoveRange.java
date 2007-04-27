@@ -16,7 +16,7 @@ public class PoolRemoveRange extends RemoteCommand {
     }
 
     /**
-     * Creates a new ManualGroup_Add object.
+     * Creates a new PoolRemoveRange object.
      */
     public PoolRemoveRange() {
         syntax = "ACCOUNTMAPPER RANGE";

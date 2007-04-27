@@ -10,7 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class HostCommandLine extends GUMSCommandLine {
     private static Log log = LogFactory.getLog(HostCommandLine.class);

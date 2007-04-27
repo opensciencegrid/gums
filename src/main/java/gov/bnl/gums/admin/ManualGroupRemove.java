@@ -8,7 +8,7 @@ package gov.bnl.gums.admin;
 import org.apache.commons.cli.*;
 
 /**
- * @author carcassi
+ * @author Gabriele Carcassi, Jay Packard
  */
 public class ManualGroupRemove extends RemoteCommand {
     static {
@@ -16,7 +16,7 @@ public class ManualGroupRemove extends RemoteCommand {
     }
 
     /**
-     * Creates a new ManualGroup_Remove object.
+     * Creates a new ManualGroupRemove object.
      */
     public ManualGroupRemove() {
         syntax = "USERGROUP USERDN1 [USERDN2] ...";
