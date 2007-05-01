@@ -8,12 +8,14 @@
   <name>Maven</name>
   <url>http://maven.apache.org/maven2</url>
   <inceptionYear>2004</inceptionYear>
+  
   <distributionManagement>
     <site>
       <id>website</id>
       <url>scp://webhost.company.com/www/website</url>
     </site>
   </distributionManagement>
+  
   <build>
     <plugins>
       <plugin>
@@ -24,6 +26,12 @@
       </plugin>
     </plugins>
   </build>
+  
+  <scm>
+    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege</connection>
+    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege</developerConnection>
+    <url>https://svn.usatlas.bnl.gov/svn/privilege</url>
+  </scm>
   
   <mailingLists>
     <mailingList>
@@ -53,26 +61,52 @@
   </mailingLists>
   
   <reporting>
-    <plugins>
-	  <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-project-info-reports-plugin</artifactId>
-	      <reportSets>
-	         <reportSet>
-                <id>Project</id>
+	<plugins>
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-project-info-reports-plugin</artifactId>
+		<reportSets>
+			<reportSet>
+	            <id>Project</id>
 	            <reports>
 	               <report>dependency-convergence</report>
 	               <report>project-team</report>
 	               <report>mailing-list</report>
+	               <!--report>summary</report-->
 	               <!--report>cim</report-->
 	               <!--report>issue-tracking</report-->
 	               <report>license</report>
 	               <!--report>scm</report-->
 	            </reports>
-	         </reportSet>
-	      </reportSets>
-	  </plugin>
-    </plugins>
+			</reportSet>
+		</reportSets>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<configuration>
+				<aggregate>true</aggregate>
+			</configuration>
+		</plugin>
+	  	<plugin>
+	    	<groupId>org.apache.maven.plugins</groupId>
+	    	<artifactId>maven-jxr-plugin</artifactId>
+	    	<configuration>
+	      		<aggregate>true</aggregate>
+	    	</configuration>
+		</plugin>
+	  	<plugin>
+	    	<groupId>org.apache.maven.plugins</groupId>
+	    	<artifactId>maven-pmd-plugin</artifactId>
+	    	<configuration>
+	      		<aggregate>true</aggregate>
+	    	</configuration>
+	  	</plugin>
+		<!--plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-changelog-plugin</artifactId>
+		</plugin-->
+	</plugins>
   </reporting>
   
   <developers>

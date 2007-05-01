@@ -11,8 +11,36 @@
 
     <menu name="General">
       <item name="Overview" href="index.html"/>
-      <item name="What is GUMS?" href="introduction.html"/>
+      <item name="Introduction" href="intro.html"/>
+      <item name="New in Version 1.2" href="version.html"/>
       <item name="FAQ" href="faq.html"/>
+    </menu>
+    
+    <menu name="Deployment">
+      <item name="Download" href="download.html"/>
+      <item name="Installation" href="installation.html">
+	      <item name="VDT Installation" href="installation_vdt.html"/>
+	      <item name="Manual Installation" href="installation_manual.html"/>
+	      <item name="Upgrade from Version 1.1" href="installation_upgrade.html"/>
+	      <item name="Site Integration" href="installation_site.html"/>
+      </item>
+      <item name="Using GUMS" href="use.html">
+	      <item name="Configuration" href="use_configuration.html"/>	
+	      <item name="Mappings" href="use_mappings.html"/>
+	      <item name="Manual Users" href="use_manual.html"/>	
+      </item>
+      <item name="Troubleshooting" href="troubleshooting.html"/>
+    </menu>
+    
+    <menu name="Development">
+      <item name="How to build" href="building.html"/>
+      <item name="Components" href="components.html"/>
+      <item name="Release process" href="release.html"/>
+      <item name="Tests" href="tests.html">
+	      <item name="Unit Tests" href="tests_unit.html"/>
+	      <item name="SSL Performance Tests" href="tests_ssl.html"/>
+	      <item name="GT3 Performance Tests" href="tests_gt3.html"/>
+      </item>
     </menu>
     
     ${reports}
