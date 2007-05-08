@@ -103,14 +103,20 @@ Usage: ./addAdmin [DN for administrator]
 
  All additional users may be added through the web interface or client tools.
 
+** Configure timeout
+
+ for user groups that specify a server and a persistence factory, the DNs are retrieved
+from the server and put into the persistence factory at a regular interval.  The persistence
+factory is the source from which the matching occurs.  The default is 720 minutes (12 hours),
+but this can be changed in WEB-INF/web.xml at 'env-entry/env-entry-value'.
+
 ** Run Tomcat and MySQL
 
  Run Tomcat and MySQL.  Assuming they are installed by RPM, this is done as:
 
 +----------------------------------------------+	
-[root@gums /]# cd /etc/init.d
-[root@gums init.d]# ./tomcat5 start
-[root@gums init.d]# ./mysqld start
+[root@gums /]# /etc/init.d/tomcat5 start
+[root@gums /]# /etc/init.d/mysqld start
 +----------------------------------------------+	
 
 ** Test
@@ -131,8 +137,20 @@ This package depends on the GUMS service being up and running.>
 
  The client consists of several executables installed by RPM. Download and run the latest RPM from 
 {{{http://grid.racf.bnl.gov/mvn/gums/gums-client/1.2.0/gums-client-1.2.0.rpm}
-http://grid.racf.bnl.gov/mvn/gums/gums-client/1.2.0/gums-client-1.2.0.rpm}}. You will have noticed that 
-there are several executables in the bin directory:
+http://grid.racf.bnl.gov/mvn/gums/gums-client/1.2.0/gums-client-1.2.0.rpm}}. Listing the files
+as:
+
++--------------------------------------------------+
+[root@gums /]# ls /usr/sbin | grep gums
+gums
+gums-host
+gums-host-cron
+gums-nagios
+gums-service
+[username@gums /]#
++--------------------------------------------------+
+
+ you willnotice that there are several executables in the bin directory:
 	
 	* <<gums-host>> - Allows access to the GUMS mapping services.
 	
@@ -162,7 +180,6 @@ Admin on the same machine) as:
 
 +--------------------------------------------------+
 [root@gums /]# vi /etc/gums/gums-client.properties
-[root@gums bin]# cat ../etc/gums-client.properties
 gums.location=https://gums.mysite.com:8443/gums/services/GUMSAdmin
 gums.authz=https://gums.mysite.com:8443/gums/services/GUMSAuthorizationServicePort
 +--------------------------------------------------+
@@ -172,8 +189,8 @@ gums.authz=https://gums.mysite.com:8443/gums/services/GUMSAuthorizationServicePo
  Test the client by generating a mapfile at the command line
 
 +--------------------------------------------------+
-[root@gums bin]# su - username
-[username@gums bin]# ./gums-host generateGridMapfile /DC=org/DC=doegrids/OU=Services/CN=test.site.com
+[root@gums /]# su - username
+[username@gums /]# /usr/sbin/gums-host generateGridMapfile /DC=org/DC=doegrids/OU=Services/CN=test.site.com
 +--------------------------------------------------+
 
  You should get the same response you got from the web server.
