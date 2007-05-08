@@ -82,9 +82,9 @@ public class VirtualOrganization {
 		return description;
 	}
 	
-	public UserGroupDB getDB() {
+	public UserGroupDB getDB(String userGroup) {
     	if (db==null)
-            db = configuration.getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( getName() );
+            db = configuration.getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( userGroup );
     	return db;
     }
 	

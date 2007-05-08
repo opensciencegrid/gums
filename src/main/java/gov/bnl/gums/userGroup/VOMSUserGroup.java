@@ -316,7 +316,7 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     private UserGroupDB getVoDB() {
-    	return getVoObject().getDB();
+    	return getVoObject().getDB( getName() );
     }
     
     private VirtualOrganization getVoObject() {
