@@ -33,8 +33,7 @@
     
     <menu name="Development">
       <item name="How to build" href="building.html"/>
-      <item name="Components" href="components.html"/>
-      <item name="Release process" href="release.html"/>
+      <item name="Source documentation" href="source_docs.html"/>
       <item name="Test Results" href="tests.html">
 	      <item name="SSL Performance Tests" href="tests_ssl.html"/>
 	      <item name="GT3 Performance Tests" href="tests_gt3.html"/>

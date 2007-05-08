@@ -1,0 +1,92 @@
+Building
+
+ <This page describes how to build GUMS and set up an environment for deploying it.>
+
+* Download
+
+ Download the source from the {{{download.html}download}} page for projects: 
+gums-core, gums-service, gums-client, and gums-site or from subversion if you
+have been given access at {{{https://svn.usatlas.bnl.gov/svn/privilege}https://svn.usatlas.bnl.gov/svn/privilege}
+
+* Install Software
+
+ Install Java, Tomcat, MySQL, Maven 2, and Cargo.  We recommend using {{{http://linux.duke.edu/projects/yum/}YUM}} with the 
+{{{http://www.jpackage.org/}JPackage repository}} for installing these.
+Instructions can be found at {{{http://www.usatlas.bnl.gov/twiki/bin/view/Projects/GridDevHowTo}http://www.usatlas.bnl.gov/twiki/bin/view/Projects/GridDevHowTo}}.  
+Another good package to install is {{{http://www.eclipse.org/}Eclipse}}, 
+for which you can install the {{{http://maven.apache.org/plugins/maven-eclipse-plugin/}Maven Eclipse Plugin}}.
+ 
+* Configure
+
+ Follow the instructions at the {{{installation_manual.html}manual installation}} page for configuring Tomcat, 
+creating the database, and adding yourself as an administrator.
+
+** Unit Tests
+
+ Unit tests provide an easy way to make a change and quickly ensure you haven't broken anything.  gums-core has three levels of unit tests:
+ 
+	* <<standard>> - only tests that do not require other services (best practice for JUnit).
+	
+	* <<local>> - standard tests plus those that require Tomcat and MySQL to be installed 
+				and configured. Requires db.properties and hibernate.properties be correctly
+				configured within the src/test/config directory.
+	
+	* <<external>> - standard and local tests plus those that rely on an external voms and ldap server.  Requires 
+				voms.properties and ldap.properties be correctly
+				configured within the src/test/config directory.  The voms server should be named griddev and 
+				contain group /griddev/subgriddev and role griddevRole, for which should exist users
+				"/DC=org/DC=griddev/OU=People/CN=John Smith" and "/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345".
+				The ldap server should be set up with the LDAP schema, gums.schema, and
+				the ldif file, griddev.ldif, found in the src/main/ldap directory.
+				
+ The default test is standard.  To change this, add the following section to your ~/.m2/settings.xml file:
+ 
++-----------------------------------------------+
+<settings>
+	...
+	<profiles>
+		<profile>
+			<id>local-test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+	</profiles>
+</settings>
++-----------------------------------------------+
+
+ or with 'local-test' replaced by 'external-test'.
+ 
+* Build
+
+ Build using Maven 2 with:
+ 
++------------------------------------------------+
+[root@privilege /]# cd gums-site
+[root@gums-site /]# mvn install site
+[root@gums-site /]# cd ../gums-service
+[root@gums-service /]# mvn cargo:redeploy
++------------------------------------------------+
+
+ or each invididual project as:
+ 
++------------------------------------------------+
+[root@privilege /]# cd gums-core
+[root@gums-core /]# mvn install 
+[root@gums-core /]# cd ../gums-service
+[root@gums-service /]# mvn install cargo:redeploy
+[root@gums-service /]# cd ../gums-client
+[root@gums-client /]# mvn install
+[root@gums-client /]# cd ../gums-site
+[root@gums-site /]# mvn site
++------------------------------------------------+
+
+ It is normal to see errors during the testing phase of GUMS since errors are purposefully being created to ensure
+GUMS catches them.  However, you will know that the tests passed by output:
+
++------------------------------------------------+
+Results :
+
+Tests run: 149, Failures: 0, Errors: 0, Skipped: 0
++------------------------------------------------+
+

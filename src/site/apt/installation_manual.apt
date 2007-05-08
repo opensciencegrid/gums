@@ -73,10 +73,10 @@ webapps directory of tomcat.
 setupDatabase script as:
 	
 +----------------------------------------------+	
-[root@gums webapps]# cd gums-service-1.2.0/scripts/
-[root@gums scripts]# ./setupDatabase
+[root@gums webapps]# cd gums-core-1.2.0/
+[root@gums gums-core-1.2.0]# ./setupDatabase
 Usage: ./setupDatabase [mysql user for GUMS] [GUMS server host] [GUMS mysql password]
-[root@gums scripts]# ./setupDatabase gums gums.mysite.com secret
+[root@gums gums-core-1.2.0]# ./setupDatabase gums gums.mysite.com secret
 +----------------------------------------------+
 
  The script will only run on localhost. If you need to create db on 
@@ -95,10 +95,10 @@ MYSQLPARAM="-p"
  You must add yourself to the admins user group as:
  
 +----------------------------------------------+	
-[root@gums scripts]# ./addAdmin
+[root@gums gums-core-1.2.0]# ./addAdmin
 Adds an admin in the GUMS database on localhost
 Usage: ./addAdmin [DN for administrator]
-[root@gums scripts]# ./addAdmin "/DC=org/DC=doegrids/OU=People/CN=Your Self 83753"
+[root@gums gums-core-1.2.0]# ./addAdmin "/DC=org/DC=doegrids/OU=People/CN=Your Self 83753"
 +----------------------------------------------+	 
 
  All additional users may be added through the web interface or client tools.

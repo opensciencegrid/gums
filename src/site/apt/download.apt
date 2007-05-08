@@ -1,7 +1,7 @@
-Download GUMS 1.2
+Download
 
  GUMS 1.2 is divided into three components: gums-core which provides the core functionality in the form of a jar,
 gums-service which provides the web interface and web services in the form a war, 
 and the gums-client which provides command line tools for hosts and administrators in the form of an rpm.  
-These may all be downloaded from our Maven repository at {{{http://grid.racf.bnl.gov/mvn/gums}http://grid.racf.bnl.gov/mvn/gums/}}.
+These may all be downloaded from our Maven repository at {{{http://grid.racf.bnl.gov/mvn/gums}http://grid.racf.bnl.gov/mvn/gums/}}
 organized as component/version/file.
