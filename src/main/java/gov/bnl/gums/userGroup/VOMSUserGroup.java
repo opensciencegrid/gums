@@ -38,16 +38,24 @@ import org.edg.security.voms.service.admin.*;
 public class VOMSUserGroup extends UserGroup {
 	static private final boolean defaultAcceptProxyWithoutFQAN = true;
 	static private final String defaultMatchFQAN = "ignore";
+	static private String[] matchFQANTypes = {"exact","vorole","role","group","vogroup","vo","ignore"}; // group is just for backwards compatibility
 	
     static public String getTypeStatic() {
 		return "voms";
 	}
     
+    static public List getMatchFQANTypes() {
+		ArrayList retList = new ArrayList();
+		for(int i=0; i<matchFQANTypes.length; i++)
+			retList.add(matchFQANTypes[i]);
+		return retList;
+	}
+
     private Log log = LogFactory.getLog(VOMSUserGroup.class);
     private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     private String vo = "";
     private String voGroup = "";
-    private String voRole = "";
+    private String role = "";
     private String fqan = null;
     private String matchFQAN = defaultMatchFQAN;
     private String remainderUrl = "";
@@ -71,7 +79,7 @@ public class VOMSUserGroup extends UserGroup {
     	userGroup.setDescription(getDescription());
     	userGroup.setAccess(getAccess());
     	userGroup.setVirtualOrganization(getVirtualOrganization());
-    	userGroup.setVoRole(getVoRole());
+    	userGroup.setRole(getRole());
     	userGroup.setVoGroup(getVoGroup());
     	userGroup.setMatchFQAN(getMatchFQAN());
     	userGroup.setRemainderUrl(getRemainderUrl());
@@ -84,14 +92,14 @@ public class VOMSUserGroup extends UserGroup {
      * <p>
      * Possible values are:
      * <ul>
-     *   <li>exact (default) - the FQAN in the proxy has to be the same as
-     *   what the VOMSGroup is set to. </li>
-     *   <li>group - the FQAN in the proxy has to be the same group, or any
-     *   subgroup; role is ignored.</li>
-     *   <li>vo - the FQAN in the proxy has to be of the same vo.</li>
-     *   <li>ignore - the FQAN in the proxy is completely ignored.</li>
+     *   <li>exact (default) - role, group, and vo have to match. </li>
+     *   <li>vorole - role and vo have to match.</li>
+     *   <li>role - rolehas to match.</li>
+     *   <li>group, vogroup - group and vo have to match.</li>
+     *   <li>vo - vo has to match.</li>
+     *   <li>ignore - no matching.</li>
      * </ul>
-     * @return One of the following:  "ignore", "vo", "group" or "exact".
+     * @return matching type as String.
      */
     public String getMatchFQAN() {
    		return matchFQAN;
@@ -144,11 +152,11 @@ public class VOMSUserGroup extends UserGroup {
     }    
     
     /**
-     * Changes the VO role.
+     * Changes the role.
      * @return The role name in the VOMS server (i.e. myrole), or "" for no role
      */
-    public String getVoRole() {
-        return this.voRole;
+    public String getRole() {
+        return this.role;
     }
     
     /**
@@ -185,14 +193,28 @@ public class VOMSUserGroup extends UserGroup {
         // At this point, the user has FQAN
         // To avoid a query on the db, we check if the fqan matches first
 
-        // If we have an exact match, fqan has to be the same
+        // If we have vorole match, entire fqan has to be the same
         if ("exact".equals(getMatchFQAN())) {
             if (!user.getVoFQAN().toString().equals(fqan))
                 return false;
         }
-
+        
+        // If we have a vo-role match, vo and role has to be the same
+        if ("vorole".equals(getMatchFQAN())) {
+        	FQAN theFQAN = new FQAN(fqan);
+            if (!user.getVoFQAN().getVo().equals(theFQAN.getVo()) && !user.getVoFQAN().getRole().equals(theFQAN.getRole()))
+                return false;
+        }
+        
+        // If we have a role match, role has to be the same
+        if ("role".equals(getMatchFQAN())) {
+        	FQAN theFQAN = new FQAN(fqan);
+            if (!user.getVoFQAN().getRole().equals(theFQAN.getRole()))
+                return false;
+        }
+        
         // If we match the group, we make sure the VO starts with the group
-        if ("group".equals(getMatchFQAN())) {
+        if ("group".equals(getMatchFQAN()) || "vogroup".equals(getMatchFQAN())) {
             if (!user.getVoFQAN().toString().startsWith(voGroup))
                 return false;
         }
@@ -220,9 +242,14 @@ public class VOMSUserGroup extends UserGroup {
     /**
      * Changes the scheme according to which the FQAN will be matched. See
      * getMatchFQAN for more details.
-     * @param matchFQAN One of the following:  "ignore", "vo", "group" or "exact".
+     * @param matchFQAN One of the following:  "exact, "vorole, "role", "group", "vo", "ignore".
      */
     public void setMatchFQAN(String matchFQAN) {
+    	boolean found = false;
+    	for (int i=0; i<matchFQANTypes.length; i++)
+    		if (matchFQANTypes[i].equals(matchFQAN)) found = true;
+    	if (!found)
+    		throw new RuntimeException("Invalid match FQAN string: "+matchFQAN);
         this.matchFQAN = matchFQAN;
     }
     
@@ -251,17 +278,17 @@ public class VOMSUserGroup extends UserGroup {
      * Changes the role.
      * @param voGroup The group in the VOMS (i.e. /atlas/usatlas)
      */
-    public void setVoRole(String voRole) {
-        this.voRole = voRole;
+    public void setRole(String role) {
+        this.role = role;
         prepareFQAN();
     }
 
     public String toString() {
-        return "VOMSGroup: remainderUrl='" + remainderUrl + "' - voGroup='" + getVoGroup() + "' - voRole='" + getVoRole() + "'";
+        return "VOMSGroup: remainderUrl='" + remainderUrl + "' - voGroup='" + getVoGroup() + "' - voRole='" + getRole() + "'";
     }
     
     public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\"><a href=\"userGroups.jsp?action=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">" + matchFQAN + "</td><td bgcolor=\""+bgColor+"\">" + acceptProxyWithoutFQAN + "</td><td bgcolor=\""+bgColor+"\">" + voGroup + "</td><td bgcolor=\""+bgColor+"\">" + voRole + "</td>";
+    	return "<td bgcolor=\""+bgColor+"\"><a href=\"userGroups.jsp?action=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">" + matchFQAN + "</td><td bgcolor=\""+bgColor+"\">" + acceptProxyWithoutFQAN + "</td><td bgcolor=\""+bgColor+"\">" + voGroup + "</td><td bgcolor=\""+bgColor+"\">" + role + "</td>";
     }
 
     public String toXML() {
@@ -276,8 +303,8 @@ public class VOMSUserGroup extends UserGroup {
    		retStr += "\t\t\tacceptProxyWithoutFQAN='"+acceptProxyWithoutFQAN+"'\n"; 
     	if (!voGroup.equals(""))
         	retStr += "\t\t\tvoGroup='"+voGroup+"'\n";
-    	if (!voRole.equals(""))
-    		retStr += "\t\t\tvoRole='"+voRole+"'\n";
+    	if (!role.equals(""))
+    		retStr += "\t\t\trole='"+role+"'\n";
     	if (retStr.charAt(retStr.length()-1)=='\n')
     		retStr = retStr.substring(0, retStr.length()-1);
     	retStr += "/>\n\n";
@@ -300,8 +327,8 @@ public class VOMSUserGroup extends UserGroup {
 
     private void prepareFQAN() {
         if (!voGroup.equals("")) {
-            if (!voRole.equals("") && !voGroup.equals(""))
-            	fqan = voGroup + "/Role=" + voRole;
+            if (!role.equals("") && !voGroup.equals(""))
+            	fqan = voGroup + "/Role=" + role;
             else if (!voGroup.equals(""))
                 fqan = voGroup;
             else
@@ -321,10 +348,10 @@ public class VOMSUserGroup extends UserGroup {
             System.setProperty("axis.socketSecureFactory", "org.edg.security.trustmanager.axis.AXISSocketFactory");
             VOMSAdmin voms = getVOMSAdmin();
         	org.edg.security.voms.service.User[] users = null;
-            if (voRole.equals("")) {
+            if (role.equals("")) {
                 users = voms.listMembers( !getVoGroup().equals("")?getVoGroup():null );
             } else if(!getVoGroup().equals("")) {
-                users = voms.listUsersWithRole( getVoGroup(), "Role=" + getVoRole());
+                users = voms.listUsersWithRole( getVoGroup(), "Role=" + getRole());
             }        	
             if (users.length > 0) {
                 log.trace("Retrieved " + users.length + " users. First is: '" + users[0].getDN());

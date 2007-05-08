@@ -38,7 +38,7 @@
 			acceptProxyWithoutFQAN='true'
 			matchFQAN='exact'
 			voGroup='/griddev/subgriddev'
-			voRole='griddevRole'/>	
+			role='griddevRole'/>	
 	</userGroups>
 	
 	<accountMappers>

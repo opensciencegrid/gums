@@ -298,7 +298,7 @@ public class FileConfigurationStore implements ConfigurationStore {
         
         out.close();
         
-        // copy gums.config to gums.config_old
+        // copy gums.config to gums.config.old
         if (!backupCopy)
         	copyFile(configPath, getConfigPath()+".old");
 

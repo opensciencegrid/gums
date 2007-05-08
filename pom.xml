@@ -30,6 +30,12 @@
 		</repository>
 	</distributionManagement>	
 
+   	<scm>
+	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</connection>
+	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</developerConnection>
+    	<url>https://svn.usatlas.bnl.gov/svn/privilege/gums-client</url>
+	</scm>
+
   	<build>
   		<testResources>
 	      <testResource>

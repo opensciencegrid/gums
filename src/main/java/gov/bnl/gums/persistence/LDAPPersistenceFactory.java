@@ -80,6 +80,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	private String trustStore = System.getProperty("java.home")+"/lib/security/cacerts";
 	private String trustStorePassword = "";
 	private String caCertFile = "";
+	private String ldapGroupField = "memberUid";
     LDAPGroupIDAssigner assigner;
     
     /**
@@ -174,11 +175,11 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
             NamingEnumeration result;
-           	result = subcontext.search("cn="+groupname+",ou=Group", "(memberUid={0})", new Object[] {account}, ctrls);
+           	result = subcontext.search("cn="+groupname+",ou=Group", "("+ldapGroupField+"={0})", new Object[] {account}, ctrls);
             if (result.hasMore()) return;
             ModificationItem[] mods = new ModificationItem[1];
             mods[0] = new ModificationItem(subcontext.ADD_ATTRIBUTE,
-                new BasicAttribute("memberUid", account));
+                new BasicAttribute(ldapGroupField, account));
             subcontext.modifyAttributes("cn="+groupname+",ou=Group", mods);
             log.trace("Added secondary group to user - user '" + account + "' to group '" + groupname + "' at '" + domain + "'");
         } catch (Exception e) {
@@ -251,6 +252,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	persistenceFactory.setDescription(getDescription());
     	persistenceFactory.setCaCertFile(getCaCertFile());
     	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
+    	persistenceFactory.setLdapGroupField(getLdapGroupField());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
     	return persistenceFactory;
@@ -404,10 +406,15 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	return caCertFile;
     }
     
+    public String getLdapGroupField() {
+    	return ldapGroupField;
+    }
+        
     public String getTrustStorePassword() {
     	return trustStorePassword;
     }
     
+
     /** 
      * Returns a Context ready to be used (taken from the pool).
      * This is the entry point for the pool, and it can be used
@@ -609,6 +616,10 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     		addCertToTrustStore();
     }
 
+    public void setLdapGroupField(String ldapGroupField) {
+    	this.ldapGroupField = ldapGroupField;
+    }
+    
     public void setTrustStorePassword(String trustStorePassword) {
        	System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword );
         this.trustStorePassword = trustStorePassword;
@@ -669,7 +680,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     		"\t\t\tdescription='"+getDescription()+"'\n"+
     		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
 			"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
-			"\t\t\ttrustStorePassword='"+trustStorePassword+"'\n";
+			"\t\t\ttrustStorePassword='"+trustStorePassword+"'\n"+
+			"\t\t\tldapGroupField='"+ldapGroupField+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();
     	while(keyIt.hasNext()) {

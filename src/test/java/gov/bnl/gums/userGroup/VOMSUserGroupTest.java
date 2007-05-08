@@ -66,7 +66,7 @@ public class VOMSUserGroupTest extends TestCase {
         vomsUserGroup.setRemainderUrl("");
         vomsUserGroup.setVirtualOrganization(vo.getName());
         vomsUserGroup.setVoGroup("/griddev/subgriddev");
-        vomsUserGroup.setVoRole("griddevrole");
+        vomsUserGroup.setRole("griddevrole");
         configuration.addUserGroup(userGroup);
     }
 

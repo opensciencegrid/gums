@@ -160,6 +160,8 @@ class ConfigurationToolkit {
                     MethodUtils.invokeMethod(digestor, "setSynchGroups", new Object[] {new Boolean(value.equals("true"))});
                 else if (name.equals("caCertFile"))
                     MethodUtils.invokeMethod(digestor, "setCaCertFile", new Object[] {value});
+                else if (name.equals("ldapGroupField"))
+                    MethodUtils.invokeMethod(digestor, "setLdapGroupField", new Object[] {value});
                 else if (name.equals("trustStorePassword"))
                     MethodUtils.invokeMethod(digestor, "setTrustStorePassword", new Object[] {value});
                 else if (!name.equals("className"))

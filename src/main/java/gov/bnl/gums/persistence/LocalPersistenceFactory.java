@@ -25,8 +25,8 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Persistence factory instantiation that combines a hibernate persistence factory
- * with an ldap persistence factory.  When a pool account is assigned a group, this 
- * is also set in ldap.
+ * with a small part of the ldap persistence factory (see addToSecondaryGroup).  When a pool 
+ * account is assigned a group, this is set in ldap.
  *
  * @author Gabriele Carcassi, Jay Packard
  */
@@ -158,12 +158,20 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     public PersistenceFactory clone(Configuration configuration) {
     	LocalPersistenceFactory persistenceFactory = new LocalPersistenceFactory(configuration, getName());
     	persistenceFactory.setDescription(getDescription());
+    	persistenceFactory.setCaCertFile(getCaCertFile());
+    	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
+    	persistenceFactory.setLdapGroupField(getLdapGroupField());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
+    	persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
     	return persistenceFactory;
     }
     
     public String getCaCertFile() {
     	return ldap.getCaCertFile();
+    }
+    
+    public String getLdapGroupField() {
+    	return ldap.getLdapGroupField();
     }
     
     public Properties getLDAPProperties() {
@@ -227,6 +235,10 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     	super.setConfiguration(configuration);
     }
     
+    public void setLdapGroupField(String groupField) {
+    	ldap.setLdapGroupField(groupField);
+    }
+    
     public void setName(String name) {
     	super.setName(name);
     }
@@ -251,7 +263,8 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     		"\t\t\tdescription='"+getDescription()+"'\n"+
     		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
     		"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
-    		"\t\t\ttrustStorePassword='"+getTrustStorePassword()+"'\n";
+    		"\t\t\ttrustStorePassword='"+getTrustStorePassword()+"'\n"+
+    		"\t\t\tldapGroupField='"+getLdapGroupField()+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();
     	while(keyIt.hasNext()) {
