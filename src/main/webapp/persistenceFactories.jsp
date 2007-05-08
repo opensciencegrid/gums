@@ -181,6 +181,10 @@ else if ("edit".equals(request.getParameter("action"))
 	authenticationTypes.add("simple");
 	authenticationTypes.add("none");
 	
+	ArrayList trueFalse = new ArrayList();
+	trueFalse.add("true");
+	trueFalse.add("false");
+	
 	if ("edit".equals(request.getParameter("action"))) {
 		try {
 			persistenceFactory = (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("name") );
@@ -337,7 +341,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    <td nowrap>
 		    	uid=gumsAdmin,ou=People,dc=racf,dc=bnl,dc=gov
 		    </td>
-		</tr>	
+		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
 	    		and LDAP password 
@@ -346,6 +350,40 @@ else if ("edit".equals(request.getParameter("action"))
 		    	<input type="password" maxlength="256" size="32" name="ldapCredentials" value="<%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.credentials")%>"/> .
 		    </td>
 		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		updating group for every access 
+		    </td>
+		    <td nowrap>
+			<%=ConfigurationWebToolkit.createSelectBox("synchGroups", 
+				trueFalse, 
+				((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"true":"false",
+				"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+				false)%>
+		    </td>
+		</tr>
+<%
+		if ( ((LDAPPersistenceFactory)persistenceFactory).isSynchGroups() ) {
+%>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		by writing to LDAP field 
+		    </td>
+		    <td nowrap>
+		    	<input maxlength="256" size="64" name="groupField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getLdapGroupField()%>"/>
+		    </td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	memberUid
+		    </td>
+		</tr>
+<%
+		}
+%>
 		<tr>
     		<td nowrap style="text-align: right;">
 	    		using CA certificate file (SSL only)
@@ -378,15 +416,6 @@ else if ("edit".equals(request.getParameter("action"))
 		    	changeit
 		    </td>
 		</tr>	
-		<tr>
-    		<td nowrap style="text-align: right;">
-	    		Update GID for every access? 
-		    </td>
-		    <td nowrap>
-				<select name="synchGroups"><option <%=(((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"selected":"")%>>true</option>
-				<option<%=(((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"":"selected")%>>false</option></select>
-		    </td>
-		</tr>
 <%
 	}
 	else if (persistenceFactory instanceof LocalPersistenceFactory) {
@@ -462,7 +491,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    <td nowrap>
 		    	uid=gumsAdmin,ou=People,dc=racf,dc=bnl,dc=gov
 		    </td>
-		</tr>			
+		</tr>		
 		<tr>
     		<td nowrap style="text-align: right;">
 	    		and LDAP password
@@ -471,6 +500,40 @@ else if ("edit".equals(request.getParameter("action"))
 		    	<input type="password" maxlength="256" size="32" name="ldapCredentials" value="<%=((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.credentials")%>"/> .
 		    </td>
 		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		updating group for every access 
+		    </td>
+		    <td nowrap>
+			<%=ConfigurationWebToolkit.createSelectBox("synchGroups", 
+				trueFalse, 
+				((LocalPersistenceFactory)persistenceFactory).isSynchGroups()?"true":"false",
+				"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+				false)%>
+		    </td>
+		</tr>
+<%
+		if ( ((LocalPersistenceFactory)persistenceFactory).isSynchGroups() ) {
+%>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		by writing to LDAP field 
+		    </td>
+		    <td nowrap>
+		    	<input maxlength="256" size="64" name="groupField" value="<%=((LocalPersistenceFactory)persistenceFactory).getLdapGroupField()%>"/>
+		    </td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	memberUid
+		    </td>
+		</tr>
+<%
+		}
+%>
 		<tr>
     		<td nowrap style="text-align: right;">
 	    		using CA certificate file (SSL only)
@@ -501,17 +564,6 @@ else if ("edit".equals(request.getParameter("action"))
 		    </td>
 		    <td nowrap>
 		    	changeit
-		    </td>
-		</tr>
-		<tr>
-    		<td nowrap style="text-align: right;">
-	    		Update GID for every access? 
-		    </td>
-		    <td nowrap>
-				<select name="synchGroups">
-					<option <%=(((LocalPersistenceFactory)persistenceFactory).isSynchGroups()?"selected":"")%>>true</option> 
-					<option <%=(((LocalPersistenceFactory)persistenceFactory).isSynchGroups()?"":"selected")%>>false</option>
-				</select>
 		    </td>
 		</tr>
 <%

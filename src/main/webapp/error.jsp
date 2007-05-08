@@ -14,7 +14,7 @@
 <div id="title">
 <h1><span>GUMS</span></h1>
 <h3><span>GRID User Management System</h3>
-<h2><span>BNL GUMS</span></h2>
+<h2><span>Error</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">

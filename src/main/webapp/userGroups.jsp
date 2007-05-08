@@ -159,22 +159,18 @@ if (request.getParameter("action")==null ||
 <%
 			}
 			
-			out.write(	"Non-VOMS certificates are " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "" : "not ") + "accepted<br>");
+			out.write(	"Non-VOMS certificates are: " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "" : "not ") + "accepted<br>");
 
-			out.write(	"VOMS certificate's VO " + (!((VOMSUserGroup)userGroup).isIgnoreFQAN() ? "must match" : "is ignored") + "<br>");
+%>
+			and VOMS certificate's FQAN is matched as: <%=((VOMSUserGroup)userGroup).getMatchFQAN()%><br>
+<%
 
-			if( !((VOMSUserGroup)userGroup).isIgnoreFQAN() ) {
-				if ( !((VOMSUserGroup)userGroup).getVoGroup().equals("") ) {
 %>
-					VOMS certificate must match group: <%=((VOMSUserGroup)userGroup).getVoGroup()%><br>
+			with vo/group: <%=((VOMSUserGroup)userGroup).getVoGroup()%><br>
 <%
-				}		
-				if ( !((VOMSUserGroup)userGroup).getVoRole().equals("") ) {
 %>
-					VOMS certificate must match role: <%=((VOMSUserGroup)userGroup).getVoRole()%><br>
+			and role: <%=((VOMSUserGroup)userGroup).getRole()%><br>
 <%
-				}
-			}
 		}
 %>
 								access: <%=userGroup.getAccess()%>
@@ -355,7 +351,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				Look for cert. DN in LDAP field 
+				Look for certificate DN in LDAP field 
 			</td>
 			<td> 
 				<input maxlength="256" size="16" name="certDNField" value="<%=((LDAPUserGroup)userGroup).getCertDNField()%>"/> .
@@ -378,7 +374,7 @@ else if ("edit".equals(request.getParameter("action"))
 					by querying virtual organization
 				</td>
 				<td>
-					<%=ConfigurationWebToolkit.createSelectBox("vo", 
+					<%=ConfigurationWebToolkit.createSelectBox("vOrg", 
 							configuration.getVirtualOrganizations().values(), 
 							((VOMSUserGroup)userGroup).getVirtualOrganization(),
 							null,
@@ -400,7 +396,7 @@ else if ("edit".equals(request.getParameter("action"))
 			    <td nowrap>
 			    	/atlas/services/VOMSAdmin
 			    </td>
-			</tr>	
+			</tr>
 			<tr>
 				<td nowrap style="text-align: right;">
 					where non-VOMS certificates are
@@ -414,37 +410,49 @@ else if ("edit".equals(request.getParameter("action"))
 			</tr>
 			<tr>
 				<td nowrap style="text-align: right;">
-					and VOMS certificate's VO
+					and VOMS certificate's FQAN is matched as
 				</td>
 				<td>
-					<select name="VOMS" onchange="document.forms[0].elements['action'].value='reload';document.forms[0].submit();">
-						<option <%=(((VOMSUserGroup)userGroup).isIgnoreFQAN()?"selected":"")%>>is ignored</option>
-						<option <%=(((VOMSUserGroup)userGroup).isIgnoreFQAN()?"":"selected")%>>must match</option>
-					</select><%=(((VOMSUserGroup)userGroup).isIgnoreFQAN() ? " ." : "")%>
-				</td>
-			</tr>
-
-<%
-		if( !((VOMSUserGroup)userGroup).isIgnoreFQAN() ) {
-%>
-			<tr>
-				<td nowrap style="text-align: right;">
-					and group must match (optional)
-				</td>
-				<td>
-					<input name="group" value="<%=((VOMSUserGroup)userGroup).getVoGroup()%>"/>
+					<%=ConfigurationWebToolkit.createSelectBox("matchFQAN", 
+							VOMSUserGroup.getMatchFQANTypes(), 
+							"exact",
+							null,
+							false)%>
 				</td>
 			</tr>
 			<tr>
 				<td nowrap style="text-align: right;">
-					and role must match (optional)
+					with vo/group (optional)
 				</td>
 				<td>
-					<input name="role" value="<%=((VOMSUserGroup)userGroup).getVoRole()%>"/> .
+					<input name="vogroup" value="<%=((VOMSUserGroup)userGroup).getVoGroup()%>"/>
 				</td>
 			</tr>
+		    <tr>
+	    		<td nowrap style="text-align: right;">
+		    		i.e.
+			    </td>
+			    <td nowrap>
+			    	/atlas/usatlas
+			    </td>
+			</tr>
+			<tr>
+				<td nowrap style="text-align: right;">
+					and role (optional)
+				</td>
+				<td>
+					<input name="role" value="<%=((VOMSUserGroup)userGroup).getRole()%>"/> .
+				</td>
+			</tr>
+		    <tr>
+	    		<td nowrap style="text-align: right;">
+		    		i.e.
+			    </td>
+			    <td nowrap>
+			    	production
+			    </td>
+			</tr>
 <%
-		}
 	}
 %>
 			

@@ -153,26 +153,18 @@ public class ConfigurationWebToolkit implements Remote {
 			userGroup.setName( request.getParameter("name").trim() );
 			userGroup.setDescription( request.getParameter("description").trim() );
 			userGroup.setAccess( request.getParameter("access").trim() );
-			if (request.getParameter("vo")!=null)
-				((VOMSUserGroup)userGroup).setVirtualOrganization( request.getParameter("vo").trim() );
+			if (request.getParameter("vOrg")!=null)
+				((VOMSUserGroup)userGroup).setVirtualOrganization( request.getParameter("vOrg").trim() );
 			if (request.getParameter("url")!=null)
 				((VOMSUserGroup)userGroup).setRemainderUrl( request.getParameter("url").trim() );
 			if (request.getParameter("nVOMS")!=null)
 				((VOMSUserGroup)userGroup).setAcceptProxyWithoutFQAN( request.getParameter("nVOMS").trim().equals("allowed") );
-			if (request.getParameter("VOMS")!=null && request.getParameter("VOMS").equals("must match")) {
-				if (request.getParameter("vo")!=null && !request.getParameter("vo").trim().equals(""))
-					((VOMSUserGroup)userGroup).setMatchFQAN( "exact" );
-				else if (request.getParameter("group")!=null && !request.getParameter("group").trim().equals(""))
-					((VOMSUserGroup)userGroup).setMatchFQAN( "group" );
-				else
-					((VOMSUserGroup)userGroup).setMatchFQAN( "vo" );
-			}
-			else
-				((VOMSUserGroup)userGroup).setMatchFQAN( "ignore" );
-			if (request.getParameter("group")!=null)
-				((VOMSUserGroup)userGroup).setVoGroup( request.getParameter("group").trim() );
+			if (request.getParameter("matchFQAN")!=null)
+				((VOMSUserGroup)userGroup).setMatchFQAN( request.getParameter("matchFQAN") );
+			if (request.getParameter("vogroup")!=null)
+				((VOMSUserGroup)userGroup).setVoGroup( request.getParameter("vogroup") );
 			if (request.getParameter("role")!=null)
-				((VOMSUserGroup)userGroup).setVoRole( request.getParameter("role").trim() );
+				((VOMSUserGroup)userGroup).setRole( request.getParameter("role") );
 		}
 		
 		return userGroup;
@@ -215,6 +207,8 @@ public class ConfigurationWebToolkit implements Remote {
 			((LDAPPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
 			((LDAPPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
 			((LDAPPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
+			if (request.getParameter("groupField")!=null)
+				((LDAPPersistenceFactory)persistenceFactory).setLdapGroupField( request.getParameter("groupField") );
 			((LDAPPersistenceFactory)persistenceFactory).setProperties( getLdapProperties(persistenceFactory, request, false) );
 		} 
 		else if (type.equals(LocalPersistenceFactory.getTypeStatic())) {
@@ -224,6 +218,8 @@ public class ConfigurationWebToolkit implements Remote {
 			((LocalPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
 			((LocalPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
 			((LocalPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
+			if (request.getParameter("groupField")!=null)
+				((LocalPersistenceFactory)persistenceFactory).setLdapGroupField( request.getParameter("groupField").trim() );
 			Properties properties = getHibernateProperties(persistenceFactory, request, true);
 			properties.putAll(getLdapProperties(persistenceFactory, request, true));
 			((LocalPersistenceFactory)persistenceFactory).setProperties( properties );
@@ -447,4 +443,24 @@ public class ConfigurationWebToolkit implements Remote {
 		else
 			return "";
 	}
+	
+	static public String stripVo(String voGroup) {
+		if(voGroup.length()>0 && voGroup.charAt(0)=='/') {
+			String subStr = voGroup.substring(1);
+			int index = subStr.indexOf("/");
+			if (index!=-1)
+				return subStr.substring(index+1);
+		}
+		return voGroup;
+	}
+	
+	static public String stripGroup(String voGroup) {
+		if(voGroup.length()>0 && voGroup.charAt(0)=='/') {
+			String subStr = voGroup.substring(1);
+			int index = subStr.indexOf("/");
+			if (index!=-1)
+				return subStr.substring(0, index);
+		}
+		return voGroup;
+	}	
 }

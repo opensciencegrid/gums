@@ -245,7 +245,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				using SSL key
+				using SSL key (optional)
 			</td>
 			<td>
 				<input maxlength="256" size="32" name="sslKey" value="<%=virtualOrganization.getSslKey()%>"/> ,
@@ -261,7 +261,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>	
 		<tr>
 			<td nowrap style="text-align: right;">
-				SSL cert file
+				SSL cert file (optional)
 			</td>
 			<td>
 				<input maxlength="256" size="32" name="sslCert" value="<%=virtualOrganization.getSslCertfile()%>"/> ,
@@ -277,7 +277,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				SSL key password
+				SSL key password (optional)
 			</td>
 			<td>
 				<input type="password" maxlength="256" size="32" name="sslKeyPW" value="<%=virtualOrganization.getSslKeyPasswd()%>"/>
@@ -285,7 +285,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				SSL CA files
+				SSL CA files (optional)
 			</td>
 			<td>
 				<input maxlength="256" size="32" name="sslCA" value="<%=virtualOrganization.getSslCAFiles()%>"/> ,

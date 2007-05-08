@@ -15,22 +15,19 @@
 			<name>Maven Repository Switchboard</name>
 	 		<layout>default</layout>
  			<url>http://repo1.maven.org/maven2</url>
-        </repository>
-        
+        </repository>       
         <repository>
 	    	<id>ibiblio</id>
 			<name>Ibiblio Maven Repository Switchboard</name>
 	 		<layout>default</layout>
             <url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
         </repository>
-
         <repository>
 	    	<id>usatlas</id>
 			<name>usatlas repository</name>
 	 		<layout>default</layout>
  			<url>http://grid.racf.bnl.gov/mvn/</url>
-		</repository>
-        
+		</repository>       
     </repositories>
     
     <pluginRepositories>
@@ -49,7 +46,13 @@
 	      <name>usatlas repository</name>
 	      <url>scp://grid.racf.bnl.gov:/var/www/html/mvn</url>
 		</repository>
-	</distributionManagement>	
+	</distributionManagement>
+	
+	<scm>
+	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</connection>
+	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</developerConnection>
+    	<url>https://svn.usatlas.bnl.gov/svn/privilege/gums-client</url>
+	</scm>
 
   	<build>
 		<plugins>
