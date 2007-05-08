@@ -46,6 +46,7 @@ p {
 #banner {
   background-color: rgb(255, 204, 51);
   border-bottom: none;
+  color: rgb(102, 51, 0);
 }
 #projectLogo span{
     border: 1px solid rgb(255, 204, 51);

@@ -6,7 +6,7 @@
 	<version>1.2.0</version>
 	<name>gums-client</name>
 	<description>GUMS Client provides the administrative command line tools to administer GUMS.
-    It allows to query and change the state of the GUMS server.</description>
+    It allows querying and changing the state of the GUMS server.</description>
   
   	<repositories>
 		<repository>
@@ -29,18 +29,22 @@
 		</repository>
 	</repositories>
  
-	<distributionManagement>
-		<repository>
-	      <id>usatlas</id>
-	      <name>usatlas repository</name>
-	      <url>scp://grid.racf.bnl.gov:/var/www/html/mvn</url>
-		</repository>
-	</distributionManagement>
+     <pluginRepositories>
+		<pluginRepository>
+          <id>codehaus snapshot repository</id>
+			<url>http://snapshots.repository.codehaus.org/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+    </pluginRepositories>
  
-   	<!--scm>
+   	<scm>
+	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</connection>
 	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</developerConnection>
-	</scm-->
- 
+    	<url>https://svn.usatlas.bnl.gov/svn/privilege/gums-client</url>
+	</scm>
+	
     <build>
 		<plugins>
 			<plugin>
