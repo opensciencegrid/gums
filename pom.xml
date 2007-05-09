@@ -37,6 +37,16 @@
 				<enabled>true</enabled>
 			</releases>
 		</pluginRepository>
+		<pluginRepository>
+    		<id>Mojo Snapshots</id>
+    		<url>http://snapshots.repository.codehaus.org/</url>
+    		<snapshots>
+      			<enabled>true</enabled>
+    		</snapshots>
+    		<releases>
+      			<enabled>false</enabled>
+    		</releases>
+  		</pluginRepository>
     </pluginRepositories>
  
    	<scm>
@@ -212,6 +222,74 @@
 					<outputDirectory>target</outputDirectory>
 		        </configuration>
 			</plugin>
+			<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>2.0-alpha-3-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>rpm</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <release>1</release>
+                    <copyright>GPL</copyright>
+                    <distribution>myapp</distribution>
+                    <group>Grid/Security</group>
+                    <packager>John R. Hover</packager>
+                    <prefix>/usr</prefix>
+
+                    <mappings>
+                        <mapping>
+                            <directory>/usr/bin</directory>
+                            <filemode>775</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/scripts</location>
+                                </source>
+                            </sources>
+                        </mapping>
+             
+                        <mapping>
+                            <directory>/etc/gums</directory>
+                            <configuration>true</configuration>
+                            <filemode>644</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/config</location>
+                                </source>
+                            </sources>
+                        </mapping>
+
+                        <mapping>
+                            <directory>/usr/lib/gums</directory>
+                            <filemode>755</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <artifact/>
+                            <sources>
+                                <source>
+                                    <location>target/lib</location>
+                                </source>
+                            </sources>
+                        </mapping> 
+                        
+              
+                        <mapping>
+                            <directory>/var/log</directory>
+                            <filemode>750</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                        </mapping>
+                    </mappings>                    
+                </configuration>
+            </plugin>
 		</plugins>
     </build>
 	 
