@@ -1,12 +1,12 @@
-Building
+How to Build
 
  <This page describes how to build GUMS and set up an environment for deploying it.>
 
 * Download
 
  Download the source from the {{{download.html}download}} page for projects: 
-gums-core, gums-service, gums-client, and gums-site or from subversion if you
-have been given access at {{{https://svn.usatlas.bnl.gov/svn/privilege}https://svn.usatlas.bnl.gov/svn/privilege}
+gums-core, gums-service, gums-client, and gums-site or from BNL's subversion repository if you
+have been given access at {{{https://svn.usatlas.bnl.gov/svn/privilege}https://svn.usatlas.bnl.gov/svn/privilege}}.
 
 * Install Software
 

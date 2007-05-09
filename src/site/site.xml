@@ -12,6 +12,7 @@
     <menu name="General">
       <item name="Overview" href="index.html"/>
       <item name="Introduction" href="intro.html"/>
+      <item name="Integration" href="integration.html"/>
       <item name="New in Version 1.2" href="version.html"/>
       <item name="FAQ" href="faq.html"/>
     </menu>
