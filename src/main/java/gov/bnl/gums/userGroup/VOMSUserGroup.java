@@ -38,7 +38,7 @@ import org.edg.security.voms.service.admin.*;
 public class VOMSUserGroup extends UserGroup {
 	static private final boolean defaultAcceptProxyWithoutFQAN = true;
 	static private final String defaultMatchFQAN = "ignore";
-	static private String[] matchFQANTypes = {"exact","vorole","role","group","vogroup","vo","ignore"}; // group is just for backwards compatibility
+	static private String[] matchFQANTypes = {"exact","vorole","role","vogroup","vo","ignore"};
 	
     static public String getTypeStatic() {
 		return "voms";
@@ -242,12 +242,16 @@ public class VOMSUserGroup extends UserGroup {
     /**
      * Changes the scheme according to which the FQAN will be matched. See
      * getMatchFQAN for more details.
-     * @param matchFQAN One of the following:  "exact, "vorole, "role", "group", "vo", "ignore".
+     * @param matchFQAN One of the following:  "exact, "vorole, "role", "vogroup", "vo", "ignore". (also "group" for backwards compat.)
      */
     public void setMatchFQAN(String matchFQAN) {
     	boolean found = false;
+    	if (matchFQAN.equals("group"))
+    		matchFQAN = "vogroup";
+    	if (matchFQAN.equals(""))
+    		matchFQAN = "exact";
     	for (int i=0; i<matchFQANTypes.length; i++)
-    		if (matchFQANTypes[i].equals(matchFQAN)) found = true;
+    		if (matchFQANTypes[i].equalsIgnoreCase(matchFQAN)) found = true;
     	if (!found)
     		throw new RuntimeException("Invalid match FQAN string: "+matchFQAN);
         this.matchFQAN = matchFQAN;

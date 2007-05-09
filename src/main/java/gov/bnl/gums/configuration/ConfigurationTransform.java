@@ -52,8 +52,8 @@ public class ConfigurationTransform {
 	        FileConfigurationStore.moveFile(configFileTemp, configFile);
 	     } catch (Exception e) {
 	        gumsResourceAdminLog.fatal("Could not convert older version of gums.config: " + e.getMessage());
-	        log.info("Could not convert older version of gums.config.", e);
-	        throw new RuntimeException("The configuration wasn't read properly");	    	 
+	        log.info("Could not convert older version of gums.config", e);
+	        throw new RuntimeException("Could not convert older version of gums.config");	    	 
 	     }  	
 	}
 
