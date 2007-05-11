@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<faqs id="General FAQ">
+<faqs id="General FAQ" title="FAQ">
   <part id="General">
   	<title>General</title>
     <faq id="where">

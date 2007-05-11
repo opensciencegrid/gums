@@ -1,3 +1,7 @@
+ ------
+ GUMS Version 1.2
+ ------
+
 New in Version 1.2
 
  The focus of GUMS version 1.2 has been to provide ease of use and completeness.  
@@ -80,7 +84,7 @@ before the change is saved as gums.config_1.1.  An example of the new format is 
 			acceptProxyWithoutFQAN='true'
 			matchFQAN='exact'
 			voGroup='/griddev/subgriddev'
-			voRole='griddevRole'/>	
+			role='griddevRole'/>	
 	</userGroups>
 	
 	<accountMappers>

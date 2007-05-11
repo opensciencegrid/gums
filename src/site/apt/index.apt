@@ -1,10 +1,8 @@
- -----
- The Site
- -----
- BNL
- -----
+ ------
+ GUMS Overview
+ ------
 
-GUMS
+Overview
 
  GUMS (Grid User Management System) is a Grid Identity Mapping Service. Identity mapping is necessary when 
 a site's resources do not use GRID credentials natively, but instead use a different mechanism to identify users, 
