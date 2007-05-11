@@ -10,6 +10,7 @@ import gov.bnl.gums.admin.*;
 
 import java.security.cert.X509Certificate;
 import java.net.ConnectException;
+import java.net.URL;
 
 import javax.net.ssl.X509KeyManager;
 
@@ -181,8 +182,8 @@ public abstract class AbstractCommand {
         return clientDN;
     }
 
-    protected abstract GUMSAPI getGums();
-
+    protected abstract GUMSAPI getGums(String gumsUrl);
+    
     protected boolean isUsingProxy() {
         initClientCred();
         return usingProxy;

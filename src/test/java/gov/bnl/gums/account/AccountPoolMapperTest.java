@@ -10,8 +10,11 @@ package gov.bnl.gums.account;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.MockPersistenceFactory;
 import gov.bnl.gums.persistence.PersistenceFactory;
+import gov.bnl.gums.userGroup.UserGroup;
+import gov.bnl.gums.userGroup.VOMSUserGroup;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import junit.framework.*;

@@ -377,14 +377,6 @@ class ConfigurationToolkit {
         if (getVersion(configFile).equals("1.1")) {
             log.trace("Transforming configuration file '" + configFile + "' using transform '" + transformFile);
         	ConfigurationTransform.doTransform(configFile, transformFile);
-        	
-        	// Reload it to get rid of duplicates that the transform couldn't handle
-        	// as well as to clean up the formatting
-        	Digester digester = retrieveDigester();
-        	Configuration configuration = new Configuration();
-            digester.push(configuration);
-            digester.parse(configFile);
-           	new FileConfigurationStore(CertCache.getConfPath(), false).setConfiguration(configuration, false);
         }
        	validate(configFile, schemaFile);
     	Digester digester = retrieveDigester();

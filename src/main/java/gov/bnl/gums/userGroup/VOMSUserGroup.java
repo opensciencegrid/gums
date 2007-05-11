@@ -288,7 +288,7 @@ public class VOMSUserGroup extends UserGroup {
     }
 
     public String toString() {
-        return "VOMSGroup: remainderUrl='" + remainderUrl + "' - voGroup='" + getVoGroup() + "' - voRole='" + getRole() + "'";
+        return "VOMSGroup: remainderUrl='" + remainderUrl + "' - voGroup='" + getVoGroup() + "' - role='" + getRole() + "'";
     }
     
     public String toString(String bgColor) {

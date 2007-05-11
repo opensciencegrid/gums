@@ -299,7 +299,7 @@ public class FileConfigurationStore implements ConfigurationStore {
         out.close();
         
         // copy gums.config to gums.config.old
-        if (!backupCopy)
+        if (!backupCopy && new File(configPath).exists())
         	copyFile(configPath, getConfigPath()+".old");
 
         // move temp file to gums.config or gums.config.date
