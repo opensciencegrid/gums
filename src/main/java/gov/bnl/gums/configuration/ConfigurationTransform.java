@@ -67,15 +67,17 @@ public class ConfigurationTransform {
 
             FileConfigurationStore.moveFile(configFileTemp, configFile);
             
-            // Clean up names
+            // Clean up virtualOrganization names
             Iterator it = new ArrayList(configuration.getVirtualOrganizations().keySet()).iterator();
             while (it.hasNext()) {
             	String name = (String)it.next();
             	String origName = new String(name);
             	if (name.startsWith("http")) {
             		name = name.replaceAll("^http.*://","");
+            		name = name.replaceAll(".*/voms/","");
+            		name = name.replaceAll(".*/edg-voms-admin/","");
             		name = name.replaceAll("[:|/].*","");
-            		name = name.replaceAll("\\.","-");
+            		name = name.toLowerCase();
             		if (configuration.getVirtualOrganization(name)!=null) {
 	            		int count = 1;
 	            		while (configuration.getVirtualOrganization(name + Integer.toString(count)) != null) 
@@ -97,14 +99,16 @@ public class ConfigurationTransform {
             	}
             }
             
+            // Clean up account mapper names
             it = new ArrayList(configuration.getAccountMappers().keySet()).iterator();
             while (it.hasNext()) {
             	String name = (String)it.next();
             	String origName = new String(name);
             	if (name.indexOf("://")!=-1) {
             		name = name.replaceAll(".*://","");
-            		name = name.replaceAll("[:|/].*","");
-            		name = name.replaceAll("\\.","-");
+            		name = name.replaceAll(".*/dc=","");
+            		name = name.replaceAll("dc=","");
+            		name = name.toLowerCase();
             		if (configuration.getAccountMapper(name)!=null) {
 	            		int count = 1;
 	            		while (configuration.getAccountMapper(name + Integer.toString(count)) != null) 
