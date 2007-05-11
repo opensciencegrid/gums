@@ -17,15 +17,14 @@ public class GenerateVoGridMapfile extends GenerateMap {
      * Creates a new GenerateGridMapfile object.
      */
     public GenerateVoGridMapfile() {
-        syntax = "[-f FILENAME] [SERVICEDN]";
+        syntax = "[-g GUMSURL] [-f FILENAME] [SERVICEDN]";
         description = "Generates the grid-vo-mapfile for a service/host. ";
 //            "When using ./bin/gums, SERVICEDN must be specified. " +
 //            "When using ./bin/gums-host, SERVICEDN defaults to the host certificate DN.";
     }
 
-    protected String generateMap(String hostname) throws Exception {
-        String map = null;
-        map = getGums().generateVoGridMapfile(hostname);
+    protected String generateMap(String hostname, String gumsUrl) throws Exception {
+        String map = getGums(gumsUrl).generateVoGridMapfile(hostname);
         if (map == null) {
             System.err.println("No map was found for the service/host " + hostname);
             System.exit(-1);

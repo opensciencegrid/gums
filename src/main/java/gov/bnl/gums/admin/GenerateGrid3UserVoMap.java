@@ -17,15 +17,15 @@ public class GenerateGrid3UserVoMap extends GenerateMap {
      * Creates a new GenerateGrid3UserVoMap object.
      */
     public GenerateGrid3UserVoMap() {
-        syntax = "[-f FILENAME] [SERVICEDN]";
+        syntax = "[-g GUMSURL] [-f FILENAME] [SERVICEDN]";
         description = "Generates the grid3-user-vo-map.txt for a service/host. " +
             "When using ./bin/gums, SERVICEDN must be specified. " +
             "When using ./bin/gums-host, SERVICEDN defaults to the host certificate DN.";
     }
 
-    protected String generateMap(String hostname) throws Exception {
+    protected String generateMap(String hostname, String gumsUrl) throws Exception {
         String map = null;
-        map = getGums().generateGrid3UserVoMap(hostname);
+        map = getGums(gumsUrl).generateGrid3UserVoMap(hostname);
         if (map == null) {
             System.err.println("No map was found for the service/host " + hostname);
             System.exit(-1);

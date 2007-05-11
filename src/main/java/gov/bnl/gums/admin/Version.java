@@ -11,6 +11,8 @@
 package gov.bnl.gums.admin;
 
 import java.io.File;
+
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 /**
@@ -27,18 +29,24 @@ public class Version extends RemoteCommand {
      * Creates a new Version object.
      */
     public Version() {
-        syntax = "";
+        syntax = "[-g GUMSURL]";
         description = "Returns the version of GUMS client being used.";
     }
 
     protected org.apache.commons.cli.Options buildOptions() {
         Options options = new Options();
 
+        Option gumsUrl = new Option("g", "GUMS URL", true,
+        "Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
+        options.addOption(gumsUrl);
+        
         return options;
     }
 
     protected void execute(org.apache.commons.cli.CommandLine cmd) throws Exception {
-    	System.out.println("GUMS version " + getGums().getVersion());
+    	String gumsUrl = (cmd.getOptionValue("g", null));
+    	
+    	System.out.println("GUMS version " + getGums(gumsUrl).getVersion());
     }
     
 }

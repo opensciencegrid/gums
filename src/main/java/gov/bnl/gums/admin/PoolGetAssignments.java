@@ -19,7 +19,7 @@ public class PoolGetAssignments extends RemoteCommand {
      * Creates a new PoolGetAssignments object.
      */
     public PoolGetAssignments() {
-        syntax = "ACCOUNTMAPPER";
+        syntax = "[-g GUMSURL] ACCOUNTMAPPER";
         description = "Gets printout of current pool account assignments. " +
             "ACCOUNTMAPPER is the name of the account mapper. ";
     }
@@ -27,6 +27,10 @@ public class PoolGetAssignments extends RemoteCommand {
     protected org.apache.commons.cli.Options buildOptions() {
         Options options = new Options();
 
+        Option gumsUrl = new Option("g", "GUMS URL", true,
+        "Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
+        options.addOption(gumsUrl);
+        
         return options;
     }
 
@@ -37,7 +41,9 @@ public class PoolGetAssignments extends RemoteCommand {
         }
 
         String accountMapper = cmd.getArgs()[0];
+        
+        String gumsUrl = (cmd.getOptionValue("g", null));
 
-        System.out.println( getGums().getPoolAccountAssignments(accountMapper) );
+        System.out.println( getGums(gumsUrl).getPoolAccountAssignments(accountMapper) );
     }
 }

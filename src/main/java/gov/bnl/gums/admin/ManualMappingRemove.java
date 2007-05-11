@@ -19,7 +19,7 @@ public class ManualMappingRemove extends RemoteCommand {
      * Creates a new ManualMappingRemove object.
      */
     public ManualMappingRemove() {
-        syntax = "ACCOUNTMAPPER USERDN";
+        syntax = "[-g GUMSURL] ACCOUNTMAPPER USERDN";
         description = "Maps a DN to a user in a manually managed mapping. " +
             "ACCOUNTMAPPER is the name of the manual account mapper.";
     }
@@ -27,6 +27,10 @@ public class ManualMappingRemove extends RemoteCommand {
     protected org.apache.commons.cli.Options buildOptions() {
         Options options = new Options();
 
+        Option gumsUrl = new Option("g", "GUMS URL", true,
+        "Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
+        options.addOption(gumsUrl);
+        
         return options;
     }
 
@@ -38,7 +42,9 @@ public class ManualMappingRemove extends RemoteCommand {
 
         String accountMapper = cmd.getArgs()[0];
         String userDN = cmd.getArgs()[1];
+        
+        String gumsUrl = (cmd.getOptionValue("g", null));
 
-        getGums().manualMappingRemove(accountMapper, userDN);
+        getGums(gumsUrl).manualMappingRemove(accountMapper, userDN);
     }
 }

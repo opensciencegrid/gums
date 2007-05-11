@@ -5,6 +5,8 @@
  */
 package gov.bnl.gums.admin;
 
+import java.net.URL;
+
 import gov.bnl.gums.command.Configuration;
 import org.apache.commons.cli.*;
 import org.opensciencegrid.authz.client.GRIDIdentityMappingServiceClient;
@@ -22,12 +24,18 @@ public class MapUser extends RemoteCommand {
      * Creates a new MapUser object.
      */
     public MapUser() {
-        syntax = "[-s SERVICEDN] [-n TIMES] [-t NREQUESTS] [-b] [-f FQAN] [-i FQANISSUER] USERDN1 [USERDN2] ... ";
+        syntax = "[-g GUMSURL] [-s SERVICEDN] [-n TIMES] [-t NREQUESTS] [-b] [-f FQAN] [-i FQANISSUER] USERDN1 [USERDN2] ... ";
         description = "Maps the grid identity to the local account.";
     }
 
     protected org.apache.commons.cli.Options buildOptions() {
         Options options = new Options();
+        
+        Option gumsUrl = new Option("g", "GUMS URL", true,
+                "Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
+
+        options.addOption(gumsUrl);
+        
         Option host = new Option("s", "service", true,
                 "DN of the service. When using gums-host, it defaults to the host credential DN.");
 
@@ -59,7 +67,7 @@ public class MapUser extends RemoteCommand {
                 "Name Issuer, that is the DN of the VOMS service that issued the attribute certificate");
 
         options.addOption(issuer);
-
+        
         return options;
     }
 
@@ -70,6 +78,8 @@ public class MapUser extends RemoteCommand {
         }
 
         String hostname = (cmd.getOptionValue("s", null)); /* get hostname, default value is null */
+        
+        String gumsUrl = (cmd.getOptionValue("g", null));
 
         if (hostname == null) {
             if (isUsingProxy()) {
@@ -111,7 +121,7 @@ public class MapUser extends RemoteCommand {
         
         long overall = System.currentTimeMillis();
         long start = System.currentTimeMillis();
-        GRIDIdentityMappingServiceClient client = new GRIDIdentityMappingServiceClient(Configuration.getInstance().getGUMSAuthZLocation());
+        GRIDIdentityMappingServiceClient client = new GRIDIdentityMappingServiceClient(gumsUrl!=null?new URL(gumsUrl):Configuration.getInstance().getGUMSAuthZLocation());
         GridId id = new GridId();
         id.setHostDN(hostname);
         id.setUserFQAN(cmd.getOptionValue("f", null));
@@ -128,7 +138,7 @@ public class MapUser extends RemoteCommand {
                     id.setUserDN(userDN[i]);
                     System.out.println(client.mapCredentials(id));
                 } else {
-                    System.out.println(getGums().mapUser(hostname, userDN[i], id.getUserFQAN()));
+               		System.out.println(getGums(gumsUrl).mapUser(hostname, userDN[i], id.getUserFQAN()));
                 }
             }
             if ((timing != null) && (((n+1) % requestInGroup) == 0)) {

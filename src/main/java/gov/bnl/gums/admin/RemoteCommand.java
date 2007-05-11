@@ -29,7 +29,7 @@ public abstract class RemoteCommand extends AbstractCommand {
 
     private GUMSAPI clientStub;
 
-    protected GUMSAPI getGums() {
+    protected GUMSAPI getGums(String gumsUrlStr) {
         log.trace("Retrieving GUMS stub");
         if (clientStub != null) return clientStub;        
         try {
@@ -38,10 +38,10 @@ public abstract class RemoteCommand extends AbstractCommand {
                 log.info("Accessing direct implementation.");
                 return new GUMSAPIImpl();
             } else {
-                URL gumsLocation = Configuration.getInstance().getGUMSLocation();
+            	URL gumsUrl = gumsUrlStr!=null ? new URL(gumsUrlStr) : Configuration.getInstance().getGUMSLocation();;
 
-                log.info("Accessing GUMS implementation at " + gumsLocation + ".");
-                clientStub = service.getadmin(gumsLocation);
+                log.info("Accessing GUMS implementation at " + gumsUrl + ".");
+                clientStub = service.getadmin(gumsUrl);
                 Stub axisStub = (Stub) clientStub;
                 axisStub.setMaintainSession(true);
                 Iterator iter = axisStub._getPropertyNames();
@@ -60,6 +60,8 @@ public abstract class RemoteCommand extends AbstractCommand {
             return null;
         }
     }
-
-
+    
+    protected GUMSAPI getGums() {
+    	return getGums(null);
+    }
 }

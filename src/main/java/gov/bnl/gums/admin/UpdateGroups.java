@@ -20,18 +20,23 @@ public class UpdateGroups extends RemoteCommand {
      * Creates a new UpdateGroups object.
      */
     public UpdateGroups() {
-        syntax = "";
+        syntax = "[-g GUMSURL]";
         description = "Contact all VO servers and update the local lists of users.";
     }
 
     protected org.apache.commons.cli.Options buildOptions() {
         Options options = new Options();
 
+        Option gumsUrl = new Option("g", "GUMS URL", true,
+        "Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
+        options.addOption(gumsUrl);
+        
         return options;
     }
 
-    protected void execute(org.apache.commons.cli.CommandLine cmd)
-        throws Exception {
-        getGums().updateGroups();
+    protected void execute(org.apache.commons.cli.CommandLine cmd) throws Exception {
+        String gumsUrl = (cmd.getOptionValue("g", null));
+    	
+        getGums(gumsUrl).updateGroups();
     }
 }

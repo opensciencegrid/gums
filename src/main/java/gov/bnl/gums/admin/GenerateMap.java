@@ -6,9 +6,11 @@
 package gov.bnl.gums.admin;
 
 import org.apache.commons.cli.*;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.net.URL;
 
 /**
  * @author Gabriele Carcassi, Jay Packard
@@ -16,9 +18,13 @@ import java.io.PrintStream;
 public abstract class GenerateMap extends RemoteCommand {
     protected org.apache.commons.cli.Options buildOptions() {
         Options options = new Options();
-        Option mapfile = new Option("f", "file", true,
-                "saves in the specified file; prints to the console by default");
 
+        Option mapfile = new Option("g", "GUMS URL", true,
+    		"Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
+        options.addOption(mapfile);
+        
+        mapfile = new Option("f", "file", true,
+             "saves in the specified file; prints to the console by default");
         options.addOption(mapfile);
 
         return options;
@@ -27,7 +33,9 @@ public abstract class GenerateMap extends RemoteCommand {
     protected void execute(org.apache.commons.cli.CommandLine cmd)
         throws Exception {
         String hostname = null;
-
+        
+        String gumsUrl = cmd.getOptionValue("g", null);
+        
         if (cmd.getArgs().length == 0) {
             if (isUsingProxy()) {
                 failForWrongParameters("Service DN is missing");
@@ -50,12 +58,12 @@ public abstract class GenerateMap extends RemoteCommand {
         try {
             if (file == null) {
                 // print to std out if no filename entered
-                System.out.println(generateMap(hostname));
+                System.out.println(generateMap(hostname, gumsUrl));
             } else {
                 PrintStream filename = new PrintStream(new FileOutputStream(
                             file));
 
-                filename.print(generateMap(hostname));
+                filename.print(generateMap(hostname, gumsUrl));
             }
         } catch (FileNotFoundException e) {
             System.err.println("Couldn't open file " + file + ": " +
@@ -64,6 +72,6 @@ public abstract class GenerateMap extends RemoteCommand {
         }
     }
 
-    protected abstract String generateMap(String hostname)
+    protected abstract String generateMap(String hostname, String gumsUrl)
         throws Exception;
 }

@@ -19,7 +19,7 @@ public class ManualGroupAdd extends RemoteCommand {
      * Creates a new ManualGroupAdd object.
      */
     public ManualGroupAdd() {
-        syntax = "USERGROUP USERDN1 [USERDN2] ...";
+        syntax = "[-g GUMSURL] USERGROUP USERDN1 [USERDN2] ...";
         description = "Adds a user to a manually managed group. " +
             "USERGROUP is the name of the manual user group.";
     }
@@ -27,6 +27,10 @@ public class ManualGroupAdd extends RemoteCommand {
     protected org.apache.commons.cli.Options buildOptions() {
         Options options = new Options();
 
+        Option gumsUrl = new Option("g", "GUMS URL", true,
+        "Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
+        options.addOption(gumsUrl);
+        
         return options;
     }
 
@@ -38,8 +42,10 @@ public class ManualGroupAdd extends RemoteCommand {
 
         String userGroup = cmd.getArgs()[0];
 
+        String gumsUrl = (cmd.getOptionValue("g", null));
+        
         for (int nArg = 2; nArg < cmd.getArgs().length; nArg++) {
-            getGums().manualGroupRemove(userGroup, cmd.getArgs()[nArg]);
+            getGums(gumsUrl).manualGroupRemove(userGroup, cmd.getArgs()[nArg]);
         }
     }
 }
