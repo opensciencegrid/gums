@@ -275,7 +275,7 @@ else if ("edit".equals(request.getParameter("action"))
 					configuration.getUserGroups().values(), 
 					(String)userGroupsIt.next(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-					counter!=0) );
+					true) );
 			counter++;
 		}
 	}
@@ -284,7 +284,7 @@ else if ("edit".equals(request.getParameter("action"))
 			configuration.getUserGroups().values(), 
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-			counter!=0)+
+			true)+
 			"(try in order)");
 %>
 		    </td>
@@ -314,7 +314,7 @@ else if ("edit".equals(request.getParameter("action"))
 			configuration.getAccountMappers().values(), 
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-			counter!=0)+
+			true)+
 			"(try in order) .");
 %>
 			</td>

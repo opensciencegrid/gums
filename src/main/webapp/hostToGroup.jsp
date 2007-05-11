@@ -294,7 +294,7 @@ else if ("edit".equals(request.getParameter("action"))
 					configuration.getGroupToAccountMappings().values(), 
 					(String)g2AMappingsIt.next(),
 					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-					counter!=0) );
+					true) );
 			counter++;
 		}
 	}
@@ -303,7 +303,7 @@ else if ("edit".equals(request.getParameter("action"))
 			configuration.getGroupToAccountMappings().values(), 
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
-			counter!=0)+
+			true)+
 			"(try in order)");
 %>	
 			</td>
