@@ -38,7 +38,7 @@ to avoid redundant information.  The key changes are:
 	This determines the access of any user belonging to this userGroup.
 
  The version 1.1 gums.config is automatically converted to the new format.  A backup
-before the change is saved as gums.config.old.  An example of the new format is as follows:
+before the change is saved as gums.config_1.1.  An example of the new format is as follows:
 
 +------------------------------------------------------------------------+
 

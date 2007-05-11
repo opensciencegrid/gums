@@ -2,4 +2,4 @@ Upgrade from Version 1.1
 
  No changes are needed in the gums database or elsewhere. Simply back up your gums.config file and follow the installation instructions.
 Then copy back your gums.config.  When GUMs first starts, it will notice that your gums.config file is an older version
-and automatically convert it, saving the original as gums.config.old.
+and automatically convert it, saving the original as gums.config_1.1.
