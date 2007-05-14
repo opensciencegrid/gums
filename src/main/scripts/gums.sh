@@ -5,35 +5,23 @@
 #
 # --client (or default with no argument)
 #    AdminCommandLine, user proxy 
-# --host
-#    HostCommandLine, hostcert + key
 #
 # --service
 #    AdminCommandLine, hostcert + key
 #
+# --host
+#    HostCommandLine, hostcert + key
+#
 # --nagios
 #    HostCommandLine, hostcert + key, + nagios probe functionality
-# 
-# System Paths
-# ======================
-# for RPM:
-# BIN=/usr/bin
-# ETC=/etc/gums 
-# LIB=/usr/lib/gums
-# ENDORSED=$LIB/endorsed
-# 
-# for Tarball/VDT:
-# GUMSDIR=<tarball-unpack-location>
-# BIN=$GUMSDIR/bin
-# ETC=$GUMSDIR/config 
-# LIB=$GUMSDIR/lib
-# ENDORSED=$LIB/endorsed
-# 
-# for VDT:
-# GUMSDIR=$VDT_LOCATION/gums
 #
+# Author: John R. Hover <jhover@bnl.gov> 
+# based on initial gums script by Gabriele Carcassi. 
 #
 
+#
+# Defaults
+#
 DEBUG=1
 MODE="CLIENT"
 
@@ -49,16 +37,19 @@ for opt in $@ ; do
 		--host)
 		MODE="HOST"
 		;;
+
 		--service)
 		MODE="SERVICE"
 		;;
+
 		--nagios)
 		MODE="NAGIOS"
 		;;
+
 		--client)
 		MODE="CLIENT"
-		
 		;;
+
 		*)
 		ARGS="$ARGS $opt"
 	esac
@@ -85,8 +76,32 @@ USER_CERT=${X509_USER_CERT-$HOME/.globus/usercert.pem}
 USER_KEY=${X509_USER_CERT-$HOME/.globus/userkey.pem}
 
 #
-# Check for tarball install, adjust paths as necessary
+# Check for tarball install, sanity check, and adjust paths as necessary
 #
+INVOKE=$0
+BASE=`basename $INVOKE`
+cd $BASE
+INVOKE_BIN=$PWD
+cd -
+GUMSDIR=`basename $INVOKE_BIN`
+
+if [ -d $GUMSDIR/scripts ]; then
+	BIN=$GUMSDIR/scripts
+fi
+
+if [ -d $GUMSDIR/config ]; then
+	ETC=$GUMSDIR/config
+fi
+
+if [ -d $GUMSDIR/lib ]; then
+	LIB=$GUMSDIR/lib ]
+fi
+
+if [ -d $LIB/endorsed ]; then
+	ENDORSED=$LIB/endorsed
+fi
+
+
 
 
 
@@ -135,8 +150,6 @@ else
 	exit 1
 fi	
 
-
-
 SECURITY_OPTS="$TRUST_OPTS $CERT_OPTS"
 
 if [ $DEBUG -eq 1 ] ; then 
@@ -157,6 +170,10 @@ fi
 # Do  basic validation of variables
 #
 
+
+#
+# Execute correct main class with proper arguments depending on mode.
+#
 if [ "$MODE" != "NAGIOS" ] ; then
 	java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp $GUMSCP $MAINCLASS $ARGS
 else
