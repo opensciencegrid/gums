@@ -17,11 +17,12 @@
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
-<h1>Welcome to GUMS: Grid User Management System.</h1>
-<p>GUMS allows for central management of grid identity to local account mappings.
+<h1>Welcome to GUMS</h1>
+<p>GUMS (Grid User Management System) allows for central management of grid identity to local account mappings.
 This web application contains both the web service components and the web interface.
 On your left you see a series of commands you can execute to configure the mappings, 
-manage users, and test mappings.</p>
+manage users, and test mappings.  GUMS documentation can be found at 
+<a href="https://www.racf.bnl.gov/Facility/GUMS/index.html">https://www.racf.bnl.gov/Facility/GUMS/index.html</a>.</p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>

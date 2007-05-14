@@ -23,6 +23,24 @@
 <%-- <jsp:useBean id="beanInstanceName" scope="session" class="beanPackage.BeanClassName" /> --%>
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
+<%
+Collection backupConfigDates = null;
+try {
+	backupConfigDates = gums.getBackupConfigDates();
+}catch(Exception e){
+%>
+
+<p><div class="failure">Error getting backup configuration dates: <%= e.getMessage() %></div></p>
+</div>
+<%@include file="bottomNav.jspf"%>
+</body>
+</html>
+
+<%
+	return;
+}
+%>
+
 Backs up or restores configuration.
 </p>
 
@@ -36,7 +54,6 @@ Backs up or restores configuration.
         </td>
       </tr>
 <%
-	Collection backupConfigDates = gums.getBackupConfigDates();
 	if (backupConfigDates.size()>0) {
 %>
       <tr>
