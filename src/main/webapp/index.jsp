@@ -11,13 +11,12 @@
 <body>
 <%@include file="topNav.jspf"%>
 <div id="title">
-<h1><span>GUMS</span></h1>
+<h1><span>GUMS <%=gums.getVersion()%></span></h1>
 <h3><span>GRID User Management System</h3>
-<h2><span>GUMS version <%= gums.getVersion() %></span></h2>
+<h2><span>Welcome to GUMS</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
-<h1>Welcome to GUMS</h1>
 <p>GUMS (Grid User Management System) allows for central management of grid identity to local account mappings.
 This web application contains both the web service components and the web interface.
 On your left you see a series of commands you can execute to configure the mappings, 

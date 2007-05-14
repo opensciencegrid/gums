@@ -15,7 +15,7 @@
 <body>
 <%@include file="topNav.jspf"%>
 <div id="title">
-<h1><span>GUMS</span></h1>
+<h1><span>GUMS <%=gums.getVersion()%></span></h1>
 <h3><span>GRID User Management System</h3>
 <h2><span>Persistence Factories</span></h2>
 </div>
