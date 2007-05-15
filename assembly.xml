@@ -15,6 +15,7 @@
 		<fileSet>
 			<directory>target/scripts</directory>
 			<outputDirectory>scripts</outputDirectory>
+			<fileMode>0755</fileMode>
 		</fileSet>
 		<fileSet>
 			<directory>target/var/log</directory>
