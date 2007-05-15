@@ -99,7 +99,8 @@ if [ $DEBUG -eq 1 ] ; then
 	echo "[DEBUG]: Gumsdir is $GUMSDIR"
 fi
 
-if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ; then
+# Handle VDT install
+if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ] ; then
 	if [ $DEBUG -eq 1 ] ; then
 		echo "Setting paths using VDT_LOCATION..."
 	fi
@@ -107,7 +108,18 @@ if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ; then
 	ETC=$VDT_LOCATION/gums/etc/
 	LIB=$VDT_LOCATION/gums/lib/
 	ENDORSED=$LIB/endorsed
-	
+
+# Handle RPM install
+elif [ "$INVOKE_DIR" == "/usr/bin" ] && [ -d /etc/gums/ ] ; then
+	if [ $DEBUG -eq 1 ] ; then
+		echo "Seems to be an RPM install. Setting paths..."
+	fi
+	BIN=/usr/bin
+	ETC=/etc/gums
+	LIB=/usr/lib/gums
+	ENDORSED=$LIB/endorsed
+
+# Handle tarball/ development location	
 else
 	if [ $DEBUG -eq 1 ] ; then
 		echo "[DEBUG]: Setting paths by guessing based on script location."
