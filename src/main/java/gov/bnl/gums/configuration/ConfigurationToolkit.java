@@ -22,7 +22,7 @@ import gov.bnl.gums.persistence.LocalPersistenceFactory;
 import gov.bnl.gums.userGroup.LDAPUserGroup;
 import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.VOMSUserGroup;
-import gov.bnl.gums.userGroup.VirtualOrganization;
+import gov.bnl.gums.userGroup.VomsServer;
 
 import java.io.IOException;
 import java.util.*;
@@ -194,18 +194,18 @@ class ConfigurationToolkit {
     }
     
     //  Rule for handling a reference to a VO
-    private static class VirtualOrganizationRule extends Rule {
+    private static class VomsServerRule extends Rule {
         
         public void begin(String str, String str1, org.xml.sax.Attributes attributes) throws java.lang.Exception {
-            if (attributes.getValue("virtualOrganization") != null) {
+            if (attributes.getValue("vomsServer") != null) {
                 Configuration conf = (Configuration) getDigester().getRoot();
                 Object obj = getDigester().peek();
-                String virtualOrganizationName = attributes.getValue("virtualOrganization").trim();
-                Object virtualOrganization = conf.getVirtualOrganizations().get(virtualOrganizationName);
-                if (virtualOrganization == null) {
-                    throw new IllegalArgumentException("The virtual organization '" + virtualOrganizationName + "' is used, but it was not defined.");
+                String vomsServerName = attributes.getValue("vomsServer").trim();
+                Object vomsServer = conf.getVomsServers().get(vomsServerName);
+                if (vomsServer == null) {
+                    throw new IllegalArgumentException("The VOMS server '" + vomsServerName + "' is used, but it was not defined.");
                 }
-                MethodUtils.invokeMethod(obj, "setVirtualOrganization", new Object[] {virtualOrganizationName});
+                MethodUtils.invokeMethod(obj, "setVomsServer", new Object[] {vomsServerName});
             }
         }
         
@@ -257,28 +257,28 @@ class ConfigurationToolkit {
         digester.addRule("gums/persistenceFactories/localPersistenceFactory", new PersistencePropertiesRule());
         digester.addSetNext("gums/persistenceFactories/localPersistenceFactory", "addPersistenceFactory", "gov.bnl.gums.persistence.PersistenceFactory");
 
-        digester.addObjectCreate("gums/virtualOrganizations/virtualOrganization", VirtualOrganization.class);
-        digester.addSetProperties("gums/virtualOrganizations/virtualOrganization");
-        digester.addRule("gums/virtualOrganizations/virtualOrganization", new PassRule(new String[] {"persistenceFactory"}));
-        digester.addRule("gums/virtualOrganizations/virtualOrganization", new PersistenceFactoryRule());
-        digester.addSetNext("gums/virtualOrganizations/virtualOrganization", "addVirtualOrganization", "gov.bnl.gums.userGroup.VirtualOrganization");
+        digester.addObjectCreate("gums/vomsServers/vomsServer", VomsServer.class);
+        digester.addSetProperties("gums/vomsServers/vomsServer");
+        digester.addRule("gums/vomsServers/vomsServer", new PassRule(new String[] {"persistenceFactory"}));
+        digester.addRule("gums/vomsServers/vomsServer", new PersistenceFactoryRule());
+        digester.addSetNext("gums/vomsServers/vomsServer", "addVomsServer", "gov.bnl.gums.userGroup.VomsServer");
         
         digester.addObjectCreate("gums/userGroups/ldapUserGroup", LDAPUserGroup.class);
-        digester.addRule("gums/userGroups/ldapUserGroup", new PassRule(new String[] {"className", "persistenceFactory", "virtualOrganization"}));
+        digester.addRule("gums/userGroups/ldapUserGroup", new PassRule(new String[] {"className", "persistenceFactory", "vomsServer"}));
         digester.addRule("gums/userGroups/ldapUserGroup", new PersistenceFactoryRule());
-        digester.addRule("gums/userGroups/ldapUserGroup", new VirtualOrganizationRule());
+        digester.addRule("gums/userGroups/ldapUserGroup", new VomsServerRule());
         digester.addSetNext("gums/userGroups/ldapUserGroup", "addUserGroup", "gov.bnl.gums.userGroup.UserGroup");
 
         digester.addObjectCreate("gums/userGroups/manualUserGroup", ManualUserGroup.class);
-        digester.addRule("gums/userGroups/manualUserGroup", new PassRule(new String[] {"className", "persistenceFactory", "virtualOrganization"}));
+        digester.addRule("gums/userGroups/manualUserGroup", new PassRule(new String[] {"className", "persistenceFactory", "vomsServer"}));
         digester.addRule("gums/userGroups/manualUserGroup", new PersistenceFactoryRule());
-        digester.addRule("gums/userGroups/manualUserGroup", new VirtualOrganizationRule());
+        digester.addRule("gums/userGroups/manualUserGroup", new VomsServerRule());
         digester.addSetNext("gums/userGroups/manualUserGroup", "addUserGroup", "gov.bnl.gums.userGroup.UserGroup");
         
         digester.addObjectCreate("gums/userGroups/vomsUserGroup", VOMSUserGroup.class);
-        digester.addRule("gums/userGroups/vomsUserGroup", new PassRule(new String[] {"className", "persistenceFactory", "virtualOrganization"}));
+        digester.addRule("gums/userGroups/vomsUserGroup", new PassRule(new String[] {"className", "persistenceFactory", "vomsServer"}));
         digester.addRule("gums/userGroups/vomsUserGroup", new PersistenceFactoryRule());
-        digester.addRule("gums/userGroups/vomsUserGroup", new VirtualOrganizationRule());
+        digester.addRule("gums/userGroups/vomsUserGroup", new VomsServerRule());
         digester.addSetNext("gums/userGroups/vomsUserGroup", "addUserGroup", "gov.bnl.gums.userGroup.UserGroup");
         
         digester.addObjectCreate("gums/accountMappers/accountPoolMapper", AccountPoolMapper.class);

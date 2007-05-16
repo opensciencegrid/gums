@@ -76,10 +76,10 @@
 		    </xsl:for-each>
     	</persistenceFactories>
 
-    	<virtualOrganizations>
+    	<vomsServers>
     		<xsl:for-each select="gums/groupMappings/groupMapping/userGroup">
 		      <xsl:if test="@className = 'gov.bnl.gums.VOMSGroup'">
-		        <virtualOrganization
+		        <vomsServer
 					name='{@url}'
 		        	description=''
 					baseUrl='{@url}'
@@ -91,7 +91,7 @@
 		        />
 		      </xsl:if>
 			</xsl:for-each>
-    	</virtualOrganizations>
+    	</vomsServers>
 
 		<accountMappers>
     		<xsl:for-each select="gums/groupMappings/groupMapping/accountMapping">
@@ -202,7 +202,7 @@
 						description=''
 						acceptProxyWithoutFQAN='{@acceptProxyWithoutFQAN}'
 						matchFQAN='{@matchFQAN}'
-						virtualOrganization='{@url}'
+						vomsServer='{@url}'
 						remainderUrl=''
 						access='read self'
 						voGroup='{@voGroup}'

@@ -12,7 +12,7 @@ import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.HostToGroupMapping;
 import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.userGroup.UserGroup;
-import gov.bnl.gums.userGroup.VirtualOrganization;
+import gov.bnl.gums.userGroup.VomsServer;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -104,11 +104,11 @@ public class FileConfigurationStore implements ConfigurationStore {
     
     /**
      * Creates a new FileConfigurationStore object
-     * Allows for specify the absolute name of the configuration file
+     * Allows for specifying the absolute name of the configuration file
      * 
      * @param filename
      * @param create if true, a new barbones configuration file will be created
-     * at given filename if no file currently exists at that filename
+     * at given filename if no file currently exists there
      */
     public FileConfigurationStore(String filename, boolean create) {
         this.filename = filename;
@@ -212,8 +212,8 @@ public class FileConfigurationStore implements ConfigurationStore {
     public synchronized void setConfiguration(Configuration conf, boolean backupCopy) throws IOException {
         this.conf = conf;
         log.trace("Configuration set programically");
-        gumsResourceAdminLog.info("configuration set programically");
-        gumsSiteAdminLog.info("configuration set programically");
+        gumsResourceAdminLog.info("Configuration set programically");
+        gumsSiteAdminLog.info("Configuration set programically");
         if (conf == null)
             throw new RuntimeException("Configuration has not been loaded");
         
@@ -239,15 +239,15 @@ public class FileConfigurationStore implements ConfigurationStore {
             out.write("\t</persistenceFactories>\n\n");
         }
         
-        // Write Virtual Organizations (VOs)
-        if( conf.getVirtualOrganizations().size()>0 ) {
-            out.write("\t<virtualOrganizations>\n\n");
-        	Iterator it = conf.getVirtualOrganizations().values().iterator();
+        // Write Voms Servers
+        if( conf.getVomsServers().size()>0 ) {
+            out.write("\t<vomsServers>\n\n");
+        	Iterator it = conf.getVomsServers().values().iterator();
         	while( it.hasNext() ) {
-        		VirtualOrganization vo = (VirtualOrganization)it.next();
+        		VomsServer vo = (VomsServer)it.next();
         		out.write( vo.toXML() );
         	}
-            out.write("\t</virtualOrganizations>\n\n");
+            out.write("\t</vomsServers>\n\n");
         }           
 
         // Write User Groups
@@ -298,7 +298,7 @@ public class FileConfigurationStore implements ConfigurationStore {
         
         out.close();
         
-        // copy gums.config to gums.config.old
+        // copy gums.config to gums.config_old
         if (!backupCopy && new File(configPath).exists())
         	copyFile(configPath, getConfigPath()+".old");
 

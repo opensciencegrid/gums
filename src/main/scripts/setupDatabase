@@ -186,8 +186,8 @@ then
 		fi
 	fi
 fi
-cat ../config/gums.config.template \
+cat ../classes/gums.config.template \
   | /bin/sed -e s/@USER@/$USER/g                    \
              -e s/@SERVER@/$SERVER/g                \
              -e s/@PASSWORD@/$PASSWORD/g            \
-  > ../config/gums.config
+  > ../classes/gums.config

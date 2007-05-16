@@ -6,7 +6,7 @@ import gov.bnl.gums.admin.CertCache;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.userGroup.UserGroup;
 import gov.bnl.gums.userGroup.VOMSUserGroup;
-import gov.bnl.gums.userGroup.VirtualOrganization;
+import gov.bnl.gums.userGroup.VomsServer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,12 +63,12 @@ public class ConfigurationTransform {
             digester.push(configuration);
             digester.parse(configFileTemp);
             
-            FileConfigurationStore.moveFile(configFile, configFile + "_1.1");
+            FileConfigurationStore.moveFile(configFile, configFile + ".1.1");
 
             FileConfigurationStore.moveFile(configFileTemp, configFile);
             
-            // Clean up virtualOrganization names
-            Iterator it = new ArrayList(configuration.getVirtualOrganizations().keySet()).iterator();
+            // Clean up VOMS server names
+            Iterator it = new ArrayList(configuration.getVomsServers().keySet()).iterator();
             while (it.hasNext()) {
             	String name = (String)it.next();
             	String origName = new String(name);
@@ -78,22 +78,22 @@ public class ConfigurationTransform {
             		name = name.replaceAll(".*/edg-voms-admin/","");
             		name = name.replaceAll("[:|/].*","");
             		name = name.toLowerCase();
-            		if (configuration.getVirtualOrganization(name)!=null) {
+            		if (configuration.getVomsServer(name)!=null) {
 	            		int count = 1;
-	            		while (configuration.getVirtualOrganization(name + Integer.toString(count)) != null) 
+	            		while (configuration.getVomsServer(name + Integer.toString(count)) != null) 
 	            			count++;
             			name += Integer.toString(count);
             		}
-            		VirtualOrganization vo = configuration.getVirtualOrganization(origName);
+            		VomsServer vo = configuration.getVomsServer(origName);
             		if (vo!=null) {
 	            		vo.setName(name);
-	            		configuration.removeVirtualOrganization(origName);
-	            		configuration.addVirtualOrganization(vo);
+	            		configuration.removeVomsServer(origName);
+	            		configuration.addVomsServer(vo);
 	            		Iterator it2 = configuration.getUserGroups().values().iterator();
 	            		while (it2.hasNext()) {
 	            			UserGroup userGroup = (UserGroup)it2.next();
-	            			if (userGroup instanceof VOMSUserGroup && ((VOMSUserGroup)userGroup).getVirtualOrganization().equals(origName))
-	            				((VOMSUserGroup)userGroup).setVirtualOrganization(name);
+	            			if (userGroup instanceof VOMSUserGroup && ((VOMSUserGroup)userGroup).getVomsServer().equals(origName))
+	            				((VOMSUserGroup)userGroup).setVomsServer(name);
 	            		}
             		}
             	}

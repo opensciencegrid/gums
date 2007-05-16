@@ -25,7 +25,7 @@ import junit.framework.*;
  * @author jhover
  */
 public class VOMSUserGroupTest extends TestCase {
-	VirtualOrganization vo;
+	VomsServer vomsServer;
 	UserGroup userGroup;
 	Configuration configuration = new Configuration();
        
@@ -52,19 +52,19 @@ public class VOMSUserGroupTest extends TestCase {
     
     public void setUp() {
     	Properties properties = readVomsProperties();
-        vo = new VirtualOrganization(configuration, "vo");
-        vo.setBaseUrl( properties.getProperty("voms.connection.baseUrl") );
-        vo.setSslCertfile( properties.getProperty("voms.security.sslCertfile") );
-        vo.setSslKey( properties.getProperty("voms.security.sslKey") );
+        vomsServer = new VomsServer(configuration, "vo");
+        vomsServer.setBaseUrl( properties.getProperty("voms.connection.baseUrl") );
+        vomsServer.setSslCertfile( properties.getProperty("voms.security.sslCertfile") );
+        vomsServer.setSslKey( properties.getProperty("voms.security.sslKey") );
         PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "test");
         configuration.addPersistenceFactory(persistenceFactory);
-        vo.setPersistenceFactory(persistenceFactory.getName());
-        configuration.addVirtualOrganization(vo);
+        vomsServer.setPersistenceFactory(persistenceFactory.getName());
+        configuration.addVomsServer(vomsServer);
         
         VOMSUserGroup vomsUserGroup = new VOMSUserGroup(configuration, "group1");
         userGroup = vomsUserGroup;
         vomsUserGroup.setRemainderUrl("");
-        vomsUserGroup.setVirtualOrganization(vo.getName());
+        vomsUserGroup.setVomsServer(vomsServer.getName());
         vomsUserGroup.setVoGroup("/griddev/subgriddev");
         vomsUserGroup.setRole("griddevrole");
         configuration.addUserGroup(userGroup);

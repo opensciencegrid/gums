@@ -71,10 +71,10 @@
 					</xs:unique>
 				</xs:element>	
 				
-				<xs:element name="virtualOrganizations" minOccurs="0" maxOccurs="1">
+				<xs:element name="vomsServers" minOccurs="0" maxOccurs="1">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="virtualOrganization" minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="vomsServer" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:attribute name="name" type="xs:string" use="required"/>
 									<xs:attribute name="description" type="xs:string"/>
@@ -88,8 +88,8 @@
 							</xs:element>							
 						</xs:sequence>
 					</xs:complexType>
-					<xs:unique name="uniqueVirtualOrganizationName">
-						<xs:selector xpath="virtualOrganization"/>
+					<xs:unique name="uniqueVomsServerName">
+						<xs:selector xpath="vomsServer"/>
 						<xs:field xpath="@name"/>
 					</xs:unique>
 				</xs:element>		
@@ -112,7 +112,7 @@
 										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="acceptProxyWithoutFQAN" type="xs:boolean" use="required"/>
 										<xs:attribute name="matchFQAN" type="xs:string" use="required"/>
-										<xs:attribute name="virtualOrganization" type="xs:string" use="required"/>
+										<xs:attribute name="vomsServer" type="xs:string" use="required"/>
 										<xs:attribute name="access" type="xs:string"/>
 										<xs:attribute name="remainderUrl" type="xs:string"/>
 										<xs:attribute name="voGroup" type="xs:string"/>

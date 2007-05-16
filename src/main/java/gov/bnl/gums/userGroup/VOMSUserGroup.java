@@ -53,7 +53,7 @@ public class VOMSUserGroup extends UserGroup {
 
     private Log log = LogFactory.getLog(VOMSUserGroup.class);
     private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-    private String vo = "";
+    private String vomsServer = "";
     private String voGroup = "";
     private String role = "";
     private String fqan = null;
@@ -78,7 +78,7 @@ public class VOMSUserGroup extends UserGroup {
     	VOMSUserGroup userGroup = new VOMSUserGroup(configuration, getName());
     	userGroup.setDescription(getDescription());
     	userGroup.setAccess(getAccess());
-    	userGroup.setVirtualOrganization(getVirtualOrganization());
+    	userGroup.setVomsServer(getVomsServer());
     	userGroup.setRole(getRole());
     	userGroup.setVoGroup(getVoGroup());
     	userGroup.setMatchFQAN(getMatchFQAN());
@@ -122,11 +122,11 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     /**
-     * Get name of virtual organization
+     * Get name of VomsServer
      * @return
      */
-    public String getVirtualOrganization() {
-    	return vo;
+    public String getVomsServer() {
+    	return vomsServer;
     }
     
     /**
@@ -262,11 +262,11 @@ public class VOMSUserGroup extends UserGroup {
     }
 
     /**
-     * Set name of virtual organization
+     * Set name of VOMS Server
      * @param vo
      */
-    public void setVirtualOrganization(String vo) {
-    	this.vo = vo;
+    public void setVomsServer(String vomsServer) {
+    	this.vomsServer = vomsServer;
     }
     
     /**
@@ -300,7 +300,7 @@ public class VOMSUserGroup extends UserGroup {
 		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tname='"+getName()+"'\n"+
 		"\t\t\tdescription='"+getDescription()+"'\n"+
-        "\t\t\tvirtualOrganization='"+vo+"'\n";
+        "\t\t\tvomsServer='"+vomsServer+"'\n";
     	if (!remainderUrl.equals(""))
     		retStr += "\t\t\tremainderUrl='"+remainderUrl+"'\n";
    		retStr += "\t\t\tmatchFQAN='"+matchFQAN+"'\n";
@@ -323,10 +323,10 @@ public class VOMSUserGroup extends UserGroup {
     	return getVoObject().getDB( getName() );
     }
     
-    private VirtualOrganization getVoObject() {
+    private VomsServer getVoObject() {
     	if (getConfiguration()==null)
     		throw new RuntimeException("Configuration has not yet been set for this class");    	
-    	return getConfiguration().getVirtualOrganization(vo);
+    	return getConfiguration().getVomsServer(vomsServer);
     }
 
     private void prepareFQAN() {
@@ -376,7 +376,7 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     private void setProperties() {
-    	VirtualOrganization voObject = getVoObject();
+    	VomsServer voObject = getVoObject();
         log.debug( "SSL properties set: sslCertfile='" + voObject.getSslCertfile() + "' sslKey='" + voObject.getSslKey() + "' sslKeyPasswd set:" + (!voObject.getSslKeyPasswd().equals("")) + " sslCAFiles='" + voObject.getSslCAFiles() + "'" ); 
         if (!voObject.getSslCertfile().equals("")) {
             System.setProperty("sslCertfile", voObject.getSslCertfile());

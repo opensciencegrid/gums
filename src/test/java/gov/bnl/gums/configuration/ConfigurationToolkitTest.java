@@ -141,9 +141,9 @@ public class ConfigurationToolkitTest extends TestCase {
 	        "<persistenceFactories>" +
         		getPersistenceFactory("mysql") +
 	        "</persistenceFactories>" +
-	        "<virtualOrganizations>" +
-	        	"<virtualOrganization name='myvo' persistenceFactory='mysql'/>" +
-	        "</virtualOrganizations>" +
+	        "<vomsServers>" +
+	        	"<vomsServer name='myvo' persistenceFactory='mysql'/>" +
+	        "</vomsServers>" +
         "</gums>";
         Digester digester = toolkit.retrieveDigester();
         Configuration conf = new Configuration();

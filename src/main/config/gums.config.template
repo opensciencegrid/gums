@@ -5,7 +5,7 @@
 <gums version='1.2'>
 	<persistenceFactories>
 		<hibernatePersistenceFactory
-			name='persistenceFactoryA'
+			name='mysql'
 			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
 			hibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'
 			hibernate.connection.url='jdbc:mysql://localhost:3306/GUMS_1_1'
@@ -17,23 +17,23 @@
 			hibernate.c3p0.timeout='180'/>
 	</persistenceFactories>
 	
-	<virtualOrganizations>
-	    <virtualOrganization
-			name='virtualOrganizationA'
+	<vomsServers>
+	    <vomsServer
+			name='griddevVoms'
 			baseUrl='https://griddev01.usatlas.bnl.gov:8443/voms'
-			persistenceFactory='persistenceFactoryA' 
+			persistenceFactory='mysql' 
 			sslCertfile='/etc/grid-security/hostcert.pem'
 			sslKey='/etc/grid-security/hostkey.pem'/>
-	</virtualOrganizations>
+	</vomsServers>
 
 	<userGroups>
 		<manualUserGroup
 			name='admins'
-			persistenceFactory='persistenceFactoryA'
+			persistenceFactory='mysql'
 			access='write'/>
 		<vomsUserGroup
-			name='userGroupB'
-			virtualOrganization='virtualOrganizationA'
+			name='vomsUserGroup'
+			vomsServer='griddevVoms'
 			remainderUrl='/griddev/services/VOMSAdmin'
 			acceptProxyWithoutFQAN='true'
 			matchFQAN='exact'
@@ -44,14 +44,14 @@
 	<accountMappers>
 		<manualAccountMapper
 			name='accountMapperA'
-			persistenceFactory='persistenceFactoryA'/>
+			persistenceFactory='mysql'/>
 		<groupAccountMapper
 			name='accountMapperB'
-			accountName='accountB'/>
+			accountName='myaccount'/>
 		<accountPoolMapper
 			name='accountMapperC'
-			persistenceFactory='persistenceFactoryA'
-			accountPool='accountC'/>
+			persistenceFactory='mysql'
+			accountPool='myaccountpool'/>
 	</accountMappers>
 	
 	<groupToAccountMappings>
@@ -61,8 +61,8 @@
 			accountMappers='accountMapperA'/>
 		<groupToAccountMapping 
 			name='groupToAccountMappingB' 
-			userGroups='userGroupB' 
-			accountMappers='accountMapperB'/>
+			userGroups='vomsUserGroup' 
+			accountMappers='accountMapperB,accountMapperC'/>
 	</groupToAccountMappings>
 	  
 	<hostToGroupMappings>

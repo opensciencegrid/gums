@@ -10,11 +10,9 @@ import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.HostToGroupMapping;
 import gov.bnl.gums.userGroup.UserGroup;
-import gov.bnl.gums.userGroup.VirtualOrganization;
+import gov.bnl.gums.userGroup.VomsServer;
 
 import java.util.*;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.*;
 
@@ -35,7 +33,7 @@ public class Configuration {
     private TreeMap groupToAccountMappings = new TreeMap();
     private TreeMap persistenceFactories = new TreeMap();
     private TreeMap accountMappers = new TreeMap();
-    private TreeMap virtualOrganizations = new TreeMap();
+    private TreeMap vomsServers = new TreeMap();
     private TreeMap userGroups = new TreeMap();
     private boolean errorOnMissedMapping;
     
@@ -119,15 +117,15 @@ public class Configuration {
     }      
     
     /**
-     * @param virtualOrganization
+     * @param vomsServer
      */
-    public void addVirtualOrganization(VirtualOrganization virtualOrganization) {
-        log.trace("Adding VO to the configuration: " + virtualOrganization.getName());
-        if (virtualOrganizations.get(virtualOrganization.getName())!=null)
-        	log.warn("Virtual organization " + virtualOrganization.getName() + " replaced with one with same name");
-        virtualOrganizations.put(virtualOrganization.getName(), virtualOrganization);
-        if (virtualOrganization.getConfiguration()==null)
-        	virtualOrganization.setConfiguration(this);
+    public void addVomsServer(VomsServer vomsServer) {
+        log.trace("Adding VOMS server to the configuration: " + vomsServer.getName());
+        if (vomsServers.get(vomsServer.getName())!=null)
+        	log.warn("VOMS Server " + vomsServer.getName() + " replaced with one with same name");
+        vomsServers.put(vomsServer.getName(), vomsServer);
+        if (vomsServer.getConfiguration()==null)
+        	vomsServer.setConfiguration(this);
     }
     
     public Object clone() {
@@ -137,9 +135,9 @@ public class Configuration {
     	while (it.hasNext() )
     		newConf.addPersistenceFactory( ((PersistenceFactory)it.next()).clone(newConf) );
     	
-    	it = virtualOrganizations.values().iterator();
+    	it = vomsServers.values().iterator();
     	while (it.hasNext() )
-    		newConf.addVirtualOrganization( ((VirtualOrganization)it.next()).clone(newConf) );
+    		newConf.addVomsServer( ((VomsServer)it.next()).clone(newConf) );
     	
     	it = accountMappers.values().iterator();
     	while (it.hasNext() )
@@ -276,18 +274,18 @@ public class Configuration {
     }
 
     /**
-     * @param virtualOrganization
+     * @param vomsServer
      * @return
      */
-    public VirtualOrganization getVirtualOrganization(String virtualOrganization) {
-        return (VirtualOrganization)virtualOrganizations.get(virtualOrganization);
+    public VomsServer getVomsServer(String vomsServer) {
+        return (VomsServer)vomsServers.get(vomsServer);
     }
  
     /**
      * @return
      */
-    public Map getVirtualOrganizations() {
-        return virtualOrganizations;
+    public Map getVomsServers() {
+        return vomsServers;
     }
 
     /**
@@ -366,8 +364,8 @@ public class Configuration {
      * @param name
      * @return
      */
-    public VirtualOrganization removeVirtualOrganization(String name) {
-    	return (VirtualOrganization)virtualOrganizations.remove(name);
+    public VomsServer removeVomsServer(String name) {
+    	return (VomsServer)vomsServers.remove(name);
     }
     
     /**
