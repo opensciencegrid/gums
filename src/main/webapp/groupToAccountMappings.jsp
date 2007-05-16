@@ -123,7 +123,7 @@ if (request.getParameter("action")==null ||
 %>	
 	   	<tr>
 			<td width="55" valign="top">
-				<form action="groupToAccount.jsp" method="get">
+				<form action="groupToAccountMappings.jsp" method="get">
 					<input type="image" src="images/Edit24.gif" name="action" value="edit">
 					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this group to account mapping?'))return false;">
 					<input type="hidden" name="name" value="<%=g2AMapping.getName()%>">
@@ -133,13 +133,13 @@ if (request.getParameter("action")==null ||
 		   		<table class="configElement" width="100%">
 		  			<tr>
 			    		<td>
-							Group to account mapper:
-							<a href="groupToAccount.jsp?action=edit&name=<%=g2AMapping.getName()%>">
+							Name:
+							<a href="groupToAccountMappings.jsp?action=edit&name=<%=g2AMapping.getName()%>">
 								<%=g2AMapping.getName()%>
 							</a><br>
 							Description: <%=g2AMapping.getDescription()%><br>		    		
 <%				    		
-		out.write(			"User group" + (g2AMapping.getUserGroups().size()>1 ? "s: " : ": ") );
+		out.write(			"User Group" + (g2AMapping.getUserGroups().size()>1 ? "s: " : ": ") );
 		
 		Iterator userGroupsIt = g2AMapping.getUserGroups().iterator();
 		while(userGroupsIt.hasNext())
@@ -152,7 +152,7 @@ if (request.getParameter("action")==null ||
 %>
 		<br>
 <%
-		out.write(			"Account mapper" + (g2AMapping.getAccountMappers().size()>1 ? "s: " : ": ") );
+		out.write(			"Account Mapper" + (g2AMapping.getAccountMappers().size()>1 ? "s: " : ": ") );
 		
 		Iterator accountMappersIt = g2AMapping.getAccountMappers().iterator();
 		while(accountMappersIt.hasNext())
@@ -174,7 +174,7 @@ if (request.getParameter("action")==null ||
 %>
 		<tr>
 	        <td colspan=2>
-	        	<form action="groupToAccount.jsp" method="get">
+	        	<form action="groupToAccountMappings.jsp" method="get">
 	        		<div style="text-align: center;"><button type="submit" name="action" value="add">Add</button></div>
 	        	</form>
 	        </td>
@@ -215,13 +215,13 @@ else if ("edit".equals(request.getParameter("action"))
 	}
 %>
 
-<form action="groupToAccount.jsp" method="get">
+<form action="groupToAccountMappings.jsp" method="get">
 	<input type="hidden" name="action" value="">
 	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		For requests routed to group
+	    		Name:
 		    </td>
 		    <td nowrap>
 <%
@@ -252,14 +252,14 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
 			<td nowrap style="text-align: right;">
-	    		with description
+	    		Description:
 		    </td>
 		    <td nowrap>
 				<input name="description" size="64" value="<%=g2AMapping.getDescription()%>"/>
 		    </td>
 		</tr>	
 		<tr>
-			<td nowrap style="text-align: right;">where user member of user group</td>
+			<td nowrap style="text-align: right;">User Group(s): </td>
 			<td>
 <%
 	
@@ -285,12 +285,12 @@ else if ("edit".equals(request.getParameter("action"))
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
 			true)+
-			"(try in order)");
+			" (validate membership from first successful user group)");
 %>
 		    </td>
 		</tr>
 		<tr>
-			<td nowrap style="text-align: right;">route request to account mapper(s)</td>
+			<td nowrap style="text-align: right;">Account Mapper(s): </td>
 			<td>
 <%	
 	// Create multiple group to account mappings
@@ -315,17 +315,17 @@ else if ("edit".equals(request.getParameter("action"))
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
 			true)+
-			"(try in order) .");
+			" (get account from first successful account mapper)");
 %>
 			</td>
 		</tr>
 		<tr>
-    		<td nowrap style="text-align: right;">Accounting VO (optional for Grid3-User-VO-Map) </td>
-		    <td nowrap><input maxlength="256" size="32" name="vo" value="<%=g2AMapping.getAccountingVo()%>"/></td>
+    		<td nowrap style="text-align: right;">Accounting VO: </td>
+		    <td nowrap><input maxlength="256" size="32" name="vo" value="<%=g2AMapping.getAccountingVo()%>"/> (non-empty to be included in Grid3-User-VO-Map)</td>
 		</tr>
 		<tr>
-    		<td nowrap style="text-align: right;">Accounting Description (optional for Grid3-User-VO-Map) </td>
-		    <td nowrap><input maxlength="256" size="64" name="desc" value="<%=g2AMapping.getAccountingDesc()%>"/></td>
+    		<td nowrap style="text-align: right;">Accounting Description: </td>
+		    <td nowrap><input maxlength="256" size="64" name="desc" value="<%=g2AMapping.getAccountingDesc()%>"/> (included in Grid3-User-VO-Map)</td>
 		</tr>
 		<tr>
 	        <td colspan=2>

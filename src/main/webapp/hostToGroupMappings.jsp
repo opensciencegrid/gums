@@ -148,7 +148,7 @@ if (request.getParameter("action")==null ||
 %>
 	   	<tr>
 			<td width="55" valign="top">
-				<form action="hostToGroup.jsp#<%=cH2GMapping.getName()%>" method="get">
+				<form action="hostToGroupMappings.jsp#<%=cH2GMapping.getName()%>" method="get">
 					<a name="<%=cH2GMapping.getName()%>">
 						<input type="image" src="images/Up24.gif" name="action" value="up">
 						<input type="image" src="images/Edit24.gif" name="action" value="edit">
@@ -162,13 +162,13 @@ if (request.getParameter("action")==null ||
 		   		<table class="<%=(cH2GMapping.getName().equals(movedName)?"configMovedElement":"configElement")%>" width="100%">
 		  			<tr>
 			    		<td>
-							Host to group mapper:
-							<a href="hostToGroup.jsp?action=edit&name=<%=cH2GMapping.getName()%>">
+							Host to Group Mapping:
+							<a href="hostToGroupMappings.jsp?action=edit&name=<%=cH2GMapping.getName()%>">
 								<%=cH2GMapping.getName()%>
 							</a><br>
 							Description: <%=cH2GMapping.getDescription()%><br>	
 <%
-		out.write(			"Group" + (cH2GMapping.getGroupToAccountMappings().size()>1 ? "s: " : ": ") );
+		out.write(			"Group To Account Mapping" + (cH2GMapping.getGroupToAccountMappings().size()>1 ? "s: " : ": ") );
 		
 		Iterator g2AMappingsIt = cH2GMapping.getGroupToAccountMappings().iterator();
 		while(g2AMappingsIt.hasNext())
@@ -191,7 +191,7 @@ if (request.getParameter("action")==null ||
 %>
 		<tr>
 	        <td colspan=2>
-	        	<form action="hostToGroup.jsp" method="get">
+	        	<form action="hostToGroupMappings.jsp" method="get">
 	        		<div style="text-align: center;"><button type="submit" name="action" value="add">Add</button></div>
 	        	</form>
 	        </td>
@@ -233,21 +233,22 @@ else if ("edit".equals(request.getParameter("action"))
 	
 	CertificateHostToGroupMapping cH2GMapping = (CertificateHostToGroupMapping)h2GMapping;
 %>
-<form action="hostToGroup.jsp" method="get">
+<form action="hostToGroupMappings.jsp" method="get">
 	<input type="hidden" name="action" value="">
 	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		For requests from hosts matching
+	    		Hosts:
 		    </td>
 		    <td nowrap>
 <%
 	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction"))) {
 %>
-		    	<input maxlength="256" size="64" name="name" value="<%=cH2GMapping.getName()%>"/>
+		    	<input maxlength="256" size="48" name="name" value="<%=cH2GMapping.getName()%>"/>
 				cn<input type="radio" name="type" value="cn" <%=(cH2GMapping.getDn()==null?"checked":"")%>>
 			    dn<input type="radio" name="type" value="dn" <%=(cH2GMapping.getDn()!=null?"checked":"")%>>
+			    (only requests from matching hosts are accepted)
 		    </td>
 		</tr>
 		<tr>
@@ -272,14 +273,14 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
 			<td nowrap style="text-align: right;">
-	    		with description
+	    		Description:
 		    </td>
 		    <td nowrap>
 				<input name="description" size="64" value="<%=cH2GMapping.getDescription()%>"/>
 		    </td>
 		</tr>	
 		<tr>
-			<td nowrap style="text-align: right;">route request to group(s)</td>
+			<td nowrap style="text-align: right;">Group To Account Mapping(s): </td>
 			<td>
 <%
 	// Create multiple group to account mappings
@@ -304,7 +305,7 @@ else if ("edit".equals(request.getParameter("action"))
 			null,
 			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
 			true)+
-			"(try in order)");
+			" (return account from first successful mapping)");
 %>	
 			</td>
 		</tr>
