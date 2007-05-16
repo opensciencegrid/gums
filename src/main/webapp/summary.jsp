@@ -20,7 +20,7 @@
 <div id="title">
 <h1><span>GUMS <%=gums.getVersion()%></span></h1>
 <h3><span>GRID User Management System</h3>
-<h2><span>Diagnostic Summary</span></h2>
+<h2><span>Summary</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">

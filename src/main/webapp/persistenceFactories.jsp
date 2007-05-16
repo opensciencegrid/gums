@@ -52,7 +52,6 @@ String message = null;
 if (request.getParameter("action")==null || 
 	"save".equals(request.getParameter("action")) || 
 	"delete".equals(request.getParameter("action"))) {
-	
 	if ("save".equals(request.getParameter("action"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
@@ -113,7 +112,7 @@ if (request.getParameter("action")==null ||
 <%		    		
 		if (persistenceFactory instanceof HibernatePersistenceFactory) {
 %>
-				    		Hibernate persistence factory:
+				    		Hibernate Persistence Factory:
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=persistenceFactory.getName()%>">
 				    			<%=persistenceFactory.getName()%>
 				    		</a><br>
@@ -123,7 +122,7 @@ if (request.getParameter("action")==null ||
 		}
 		else if (persistenceFactory instanceof LDAPPersistenceFactory) {
 %>
-				    		LDAP persistence factory:
+				    		LDAP Persistence Factory:
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=persistenceFactory.getName()%>">
 				    			<%=persistenceFactory.getName()%>
 				    		</a><br>
@@ -133,7 +132,7 @@ if (request.getParameter("action")==null ||
 		}
 		else if (persistenceFactory instanceof LocalPersistenceFactory) {
 %>
-				    		Local persistence factory:
+				    		Local Persistence Factory:
 				    		<a href="persistenceFactories.jsp?action=edit&name=<%=persistenceFactory.getName()%>">
 				    			<%=persistenceFactory.getName()%>
 				    		</a><br>
@@ -215,7 +214,7 @@ else if ("edit".equals(request.getParameter("action"))
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		Store user information in persistence factory 
+	    		Name:
 		    </td>
 		    <td nowrap>
 <%
@@ -245,7 +244,7 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
 			<td nowrap style="text-align: right;">
-	    		with description
+	    		Description:
 		    </td>
 		    <td nowrap>
 				<input name="description" size="64" value="<%=persistenceFactory.getDescription()%>"/>
@@ -253,7 +252,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>	
 		<tr>
 			<td nowrap style="text-align: right;">
-	    		of type
+	    		Type:
 		    </td>
 		    <td nowrap>
 			<%=ConfigurationWebToolkit.createSelectBox("type", 
@@ -268,7 +267,7 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 	    <tr>
     		<td nowrap style="text-align: right;">
-	    		at MySQL URL
+	    		JDBC MySQL URL:
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="64" name="mySqlUrl" value="<%=((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.url")%>"/>
@@ -284,7 +283,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		with MySQL username
+	    		MySQL Username:
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="32" name="mySqlUsername" value="<%=((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.username")%>"/>
@@ -300,7 +299,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>		
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		and MySQL password
+	    		MySQL Password:
 		    </td>
 		    <td nowrap>
 		    	<input type="password" maxlength="256" size="32" name="mySqlPassword" value="<%=((HibernatePersistenceFactory)persistenceFactory).getProperties().getProperty("hibernate.connection.password")%>"/>
@@ -312,7 +311,7 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		at LDAP URL
+	    		LDAP URL:
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="64" name="ldapUrl" value="<%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.provider.url")%>"/>
@@ -323,12 +322,12 @@ else if ("edit".equals(request.getParameter("action"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	ldap://localhost/dc=racf,dc=bnl,dc=gov
+		    	ldap://localhost/dc=racf,dc=bnl,dc=gov&nbsp;  or&nbsp;  ldaps://localhost/dc=racf,dc=bnl,dc=gov (SSL)
 		    </td>
 		</tr>	
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		with LDAP principle 
+	    		LDAP Principle:
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="64" name="ldapPrincipal" value="<%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.principal")%>"/>
@@ -344,15 +343,15 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		and LDAP password 
+	    		LDAP Password:
 		    </td>
 		    <td nowrap>
-		    	<input type="password" maxlength="256" size="32" name="ldapCredentials" value="<%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.credentials")%>"/> .
+		    	<input type="password" maxlength="256" size="32" name="ldapCredentials" value="<%=((LDAPPersistenceFactory)persistenceFactory).getProperties().getProperty("java.naming.security.credentials")%>"/>
 		    </td>
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		updating group for every access 
+	    		Update group for every access: 
 		    </td>
 		    <td nowrap>
 			<%=ConfigurationWebToolkit.createSelectBox("synchGroups", 
@@ -367,10 +366,10 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		by writing to LDAP field 
+	    		LDAP Group Field:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="64" name="groupField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getLdapGroupField()%>"/>
+		    	<input maxlength="256" size="64" name="groupField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getLdapGroupField()%>"/> (in which field group will be written)
 		    </td>
 		</tr>
 	    <tr>
@@ -386,10 +385,10 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		using CA certificate file (SSL only)
+	    		CA Certificate File:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="64" name="caCertFile" value="<%=((LDAPPersistenceFactory)persistenceFactory).getCaCertFile()%>"/>
+		    	<input maxlength="256" size="64" name="caCertFile" value="<%=((LDAPPersistenceFactory)persistenceFactory).getCaCertFile()%>"/> (required for SSL access only)
 		    </td>
 		</tr>
 	    <tr>
@@ -402,10 +401,10 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>			
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		and trust store password (SSL only)
+	    		Trust Store Password:
 		    </td>
 		    <td nowrap>
-		    	<input type="password" maxlength="256" size="32" name="tsPassword" value="<%=((LDAPPersistenceFactory)persistenceFactory).getTrustStorePassword()%>"/> .
+		    	<input type="password" maxlength="256" size="32" name="tsPassword" value="<%=((LDAPPersistenceFactory)persistenceFactory).getTrustStorePassword()%>"/> (required for SSL access only)
 		    </td>
 		</tr>
 	    <tr>
@@ -422,7 +421,7 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		at MySQL URL 
+	    		JDBC MySQL URL:
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="64" name="mySqlUrl" value="<%=((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.url")%>"/>
@@ -438,7 +437,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		with MySQL username 
+	    		MySQL Username:
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="32" name="mySqlUsername" value="<%=((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.username")%>"/>
@@ -454,7 +453,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		and MySQL password 
+	    		MySQL Password:
 		    </td>
 		    <td nowrap>
 		    	<input type="password" maxlength="256" size="32" name="mySqlPassword" value="<%=((LocalPersistenceFactory)persistenceFactory).getMySQLProperties().getProperty("hibernate.connection.password")%>"/>
@@ -462,7 +461,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		and at LDAP URL 
+	    		LDAP URL:
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="64" name="ldapUrl" value="<%=((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.provider.url")%>"/>
@@ -473,12 +472,12 @@ else if ("edit".equals(request.getParameter("action"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	ldap://localhost/dc=racf,dc=bnl,dc=gov
+		    	ldap://localhost/dc=racf,dc=bnl,dc=gov&nbsp;  or&nbsp;  ldaps://localhost/dc=racf,dc=bnl,dc=gov (SSL)
 		    </td>
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		with LDAP principle
+	    		LDAP Principle:
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="64" name="ldapPrincipal" value="<%=((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.principal")%>"/>
@@ -494,15 +493,15 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>		
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		and LDAP password
+	    		LDAP Password:
 		    </td>
 		    <td nowrap>
-		    	<input type="password" maxlength="256" size="32" name="ldapCredentials" value="<%=((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.credentials")%>"/> .
+		    	<input type="password" maxlength="256" size="32" name="ldapCredentials" value="<%=((LocalPersistenceFactory)persistenceFactory).getLDAPProperties().getProperty("java.naming.security.credentials")%>"/>
 		    </td>
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		updating group for every access 
+	    		Update group for every access:
 		    </td>
 		    <td nowrap>
 			<%=ConfigurationWebToolkit.createSelectBox("synchGroups", 
@@ -517,10 +516,10 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		by writing to LDAP field 
+	    		LDAP Group Field:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="64" name="groupField" value="<%=((LocalPersistenceFactory)persistenceFactory).getLdapGroupField()%>"/>
+		    	<input maxlength="256" size="64" name="groupField" value="<%=((LocalPersistenceFactory)persistenceFactory).getLdapGroupField()%>"/> (in which field group will be written)
 		    </td>
 		</tr>
 	    <tr>
@@ -536,10 +535,10 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		using CA certificate file (SSL only)
+	    		CA certificate File:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="64" name="caCertFile" value="<%=((LocalPersistenceFactory)persistenceFactory).getCaCertFile()%>"/>
+		    	<input maxlength="256" size="64" name="caCertFile" value="<%=((LocalPersistenceFactory)persistenceFactory).getCaCertFile()%>"/> (required for SSL access only)
 		    </td>
 		</tr>
 	    <tr>
@@ -552,10 +551,10 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>			
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		and trust store password (SSL only)
+	    		Trust Store Password
 		    </td>
 		    <td nowrap>
-		    	<input type="password" maxlength="256" size="32" name="tsPassword" value="<%=((LocalPersistenceFactory)persistenceFactory).getTrustStorePassword()%>"/> .
+		    	<input type="password" maxlength="256" size="32" name="tsPassword" value="<%=((LocalPersistenceFactory)persistenceFactory).getTrustStorePassword()%>"/> (required for SSL access only)
 		    </td>
 		</tr>
 	    <tr>

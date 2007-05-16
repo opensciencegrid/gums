@@ -154,7 +154,7 @@ public class ConfigurationWebToolkit implements Remote {
 			userGroup.setDescription( request.getParameter("description").trim() );
 			userGroup.setAccess( request.getParameter("access").trim() );
 			if (request.getParameter("vOrg")!=null)
-				((VOMSUserGroup)userGroup).setVirtualOrganization( request.getParameter("vOrg").trim() );
+				((VOMSUserGroup)userGroup).setVomsServer( request.getParameter("vOrg").trim() );
 			if (request.getParameter("url")!=null)
 				((VOMSUserGroup)userGroup).setRemainderUrl( request.getParameter("url").trim() );
 			if (request.getParameter("nVOMS")!=null)
@@ -170,23 +170,23 @@ public class ConfigurationWebToolkit implements Remote {
 		return userGroup;
 	}
 
-	static public VirtualOrganization parseVirtualOrganization(HttpServletRequest request) throws Exception {
-		VirtualOrganization virtualOrganization = new VirtualOrganization();
-		virtualOrganization.setName( request.getParameter("name").trim() );
-		virtualOrganization.setDescription( request.getParameter("description").trim() );
+	static public VomsServer parseVomsServer(HttpServletRequest request) throws Exception {
+		VomsServer vomsServer = new VomsServer();
+		vomsServer.setName( request.getParameter("name").trim() );
+		vomsServer.setDescription( request.getParameter("description").trim() );
 		if (request.getParameter("persistenceFactory")!=null)
-			virtualOrganization.setPersistenceFactory( request.getParameter("persistenceFactory").trim() );
+			vomsServer.setPersistenceFactory( request.getParameter("persistenceFactory").trim() );
 		if (request.getParameter("baseURL")!=null)
-			virtualOrganization.setBaseUrl( request.getParameter("baseURL").trim() );
+			vomsServer.setBaseUrl( request.getParameter("baseURL").trim() );
 		if (request.getParameter("sslKey")!=null)
-			virtualOrganization.setSslKey( request.getParameter("sslKey").trim() );
+			vomsServer.setSslKey( request.getParameter("sslKey").trim() );
 		if (request.getParameter("sslCert")!=null)
-			virtualOrganization.setSslCertfile( request.getParameter("sslCert").trim() );
+			vomsServer.setSslCertfile( request.getParameter("sslCert").trim() );
 		if (request.getParameter("sslCA")!=null)
-			virtualOrganization.setSslCAFiles( request.getParameter("sslCA").trim() );
+			vomsServer.setSslCAFiles( request.getParameter("sslCA").trim() );
 		if (request.getParameter("sslKeyPW")!=null)
-			virtualOrganization.setSslKeyPasswd( request.getParameter("sslKeyPW").trim() );
-		return virtualOrganization;
+			vomsServer.setSslKeyPasswd( request.getParameter("sslKeyPW").trim() );
+		return vomsServer;
 	}	
 	
 	static public PersistenceFactory parsePersistenceFactory(HttpServletRequest request) throws Exception {
@@ -310,13 +310,13 @@ public class ConfigurationWebToolkit implements Remote {
 		return retStr;
 	}
 	
-	static public String getVOMSUserGroupReferences(Configuration configuration, String virtualOrganization) {
+	static public String getVOMSUserGroupReferences(Configuration configuration, String vomsServer) {
 		String retStr = null;
 		Collection userGroups = configuration.getUserGroups().values();
 		Iterator it = userGroups.iterator();
 		while (it.hasNext()) {
 			UserGroup userGroup = (UserGroup)it.next();
-			if ( userGroup instanceof VOMSUserGroup && virtualOrganization.equals( ((VOMSUserGroup)userGroup).getVirtualOrganization() ) ) {
+			if ( userGroup instanceof VOMSUserGroup && vomsServer.equals( ((VOMSUserGroup)userGroup).getVomsServer() ) ) {
 				if (retStr==null) 
 					retStr = "";
 				retStr += userGroup.getName() + ", ";
@@ -332,13 +332,13 @@ public class ConfigurationWebToolkit implements Remote {
 		String retStr = null;
 		Iterator it;
 		
-		it = configuration.getVirtualOrganizations().values().iterator();
+		it = configuration.getVomsServers().values().iterator();
 		while (it.hasNext()) {
-			VirtualOrganization vo = (VirtualOrganization)it.next();
-			if(vo.getPersistenceFactory().equals(persistenceFactory)) {
+			VomsServer vomsServer = (VomsServer)it.next();
+			if(vomsServer.getPersistenceFactory().equals(persistenceFactory)) {
 				if (retStr==null) 
 					retStr = "";
-				retStr += "virtual organization " + vo.getName() + ", ";
+				retStr += "VOMS server " + vomsServer.getName() + ", ";
 			}
 		}
 
@@ -438,8 +438,8 @@ public class ConfigurationWebToolkit implements Remote {
 			return ((UserGroup)obj).getName();
 		else if(obj instanceof PersistenceFactory)
 			return ((PersistenceFactory)obj).getName();
-		else if(obj instanceof VirtualOrganization)
-			return ((VirtualOrganization)obj).getName();
+		else if(obj instanceof VomsServer)
+			return ((VomsServer)obj).getName();
 		else
 			return "";
 	}

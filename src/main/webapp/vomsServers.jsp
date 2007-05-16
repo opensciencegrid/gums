@@ -18,7 +18,7 @@
 <div id="title">
 <h1><span>GUMS <%=gums.getVersion()%></span></h1>
 <h3><span>GRID User Management System</h3>
-<h2><span>Virtual Organizations</span></h2>
+<h2><span>VOMS Servers</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
@@ -44,7 +44,7 @@ try {
 %>
 
 <p>
-Configures virtual organizations.
+Configures VOMS servers.
 </p>
 
 <%
@@ -57,13 +57,13 @@ if (request.getParameter("action")==null ||
 	if ("save".equals(request.getParameter("action"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			newConfiguration.removeVirtualOrganization( request.getParameter("name") );
-			newConfiguration.addVirtualOrganization( ConfigurationWebToolkit.parseVirtualOrganization(request) );
+			newConfiguration.removeVomsServer( request.getParameter("name") );
+			newConfiguration.addVomsServer( ConfigurationWebToolkit.parseVomsServer(request) );
 			gums.setConfiguration(newConfiguration);
 			configuration = gums.getConfiguration();
-			message = "<div class=\"success\">Virtual organization has been saved.</div>";
+			message = "<div class=\"success\">VOMS server has been saved.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error saving virtual organization: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error saving VOMS server: " + e.getMessage() + "</div>";
 		}
 	}
 
@@ -72,22 +72,22 @@ if (request.getParameter("action")==null ||
 		try{
 			String references = ConfigurationWebToolkit.getVOMSUserGroupReferences(newConfiguration, request.getParameter("name"));
 			if( references==null ) {
-				if (newConfiguration.removeVirtualOrganization( request.getParameter("name") )!=null) {
+				if (newConfiguration.removeVomsServer( request.getParameter("name") )!=null) {
 					gums.setConfiguration(newConfiguration);
 					configuration = gums.getConfiguration();
-					message = "<div class=\"success\">Virtual organization has been deleted.</div>";
+					message = "<div class=\"success\">VOMS server has been deleted.</div>";
 				}
 				else
-					message = "<div class=\"failure\">Error deleting virtual organization</div>";
+					message = "<div class=\"failure\">Error deleting VOMS server</div>";
 			}
 			else
 				message = "<div class=\"failure\">You cannot delete this item until removing references to it within group to account mapping(s): " + references + "</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error deleting virtual organization: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error deleting VOMS server: " + e.getMessage() + "</div>";
 		}
 	}
 	
-	Collection virtualOrganizations = configuration.getVirtualOrganizations().values();
+	Collection vomsServers = configuration.getVomsServers().values();
 
 	out.write(
 "<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
@@ -95,32 +95,32 @@ if (request.getParameter("action")==null ||
 	if(message!=null)
 		out.write( "<tr><td colspan=\"2\">" + message + "</td></tr>" );
 				
-	Iterator virtualOrganizationsIt = virtualOrganizations.iterator();
-	while(virtualOrganizationsIt.hasNext()) {
-		VirtualOrganization virtualOrganization = virtualOrganizationsIt.hasNext() ? (VirtualOrganization)virtualOrganizationsIt.next() : null;
+	Iterator vomsServersIt = vomsServers.iterator();
+	while(vomsServersIt.hasNext()) {
+		VomsServer vomsServer = vomsServersIt.hasNext() ? (VomsServer)vomsServersIt.next() : null;
 		
 %>
 	   	<tr>
 			<td width="55" valign="top">
-				<form action="virtualOrganizations.jsp" method="get">
+				<form action="vomsServers.jsp" method="get">
 					<input type="image" src="images/Edit24.gif" name="action" value="edit">
-					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this virtual organization?'))return false;">
-					<input type="hidden" name="name" value="<%=virtualOrganization.getName()%>">
+					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this VOMS server?'))return false;">
+					<input type="hidden" name="name" value="<%=vomsServer.getName()%>">
 				</form>
 			</td>
 	  		<td align="left">
 		   		<table class="configElement" width="100%">
 		  			<tr>
 			    		<td>
-				    		Virtual organization:
-				    		<a href="virtualOrganization.jsp?action=edit&name=<%=virtualOrganization.getName()%>">
-				    			<%=virtualOrganization.getName()%>
+				    		VOMS Server:
+				    		<a href="vomsServers.jsp?action=edit&name=<%=vomsServer.getName()%>">
+				    			<%=vomsServer.getName()%>
 				    		</a><br>			    	
-				    		Description: <%=virtualOrganization.getDescription()%><br>		
-				    		VOMS server: <%=virtualOrganization.getBaseUrl()%>{remainder url}<br>	
-							Persistence factory:
-				    		<a href="persistenceFactories.jsp?action=edit&name=<%=virtualOrganization.getPersistenceFactory()%>">
-				    			<%=virtualOrganization.getPersistenceFactory()%>
+				    		Description: <%=vomsServer.getDescription()%><br>		
+				    		Base URL: <%=vomsServer.getBaseUrl()%>{remainder url}<br>	
+							Persistence Factory:
+				    		<a href="persistenceFactories.jsp?action=edit&name=<%=vomsServer.getPersistenceFactory()%>">
+				    			<%=vomsServer.getPersistenceFactory()%>
 				    		</a><br>
 						</td>
 			      	</tr>
@@ -133,7 +133,7 @@ if (request.getParameter("action")==null ||
 %>
 		<tr>
 	        <td colspan=2>
-	        	<form action="virtualOrganizations.jsp" method="get">
+	        	<form action="vomsServers.jsp" method="get">
 	        		<div style="text-align: center;"><button type="submit" name="action" value="add">Add</button></div>
 	        	</form>
 	        </td>
@@ -147,45 +147,45 @@ else if ("edit".equals(request.getParameter("action"))
 	|| "add".equals(request.getParameter("action"))
 	|| "reload".equals(request.getParameter("action"))) {
 	
-	Collection virtualOrganizations = configuration.getVirtualOrganizations().values();
+	Collection vomsServers = configuration.getVomsServers().values();
 	
-	VirtualOrganization virtualOrganization = null;
+	VomsServer vomsServer = null;
 	
 	if ("edit".equals(request.getParameter("action"))) {
 		try {
-			virtualOrganization = (VirtualOrganization)configuration.getVirtualOrganizations().get( request.getParameter("name") );
+			vomsServer = (VomsServer)configuration.getVomsServers().get( request.getParameter("name") );
 		} catch(Exception e) {
-			out.write( "<div class=\"failure\">Error getting virtual organization: " + e.getMessage() + "</div>" );
+			out.write( "<div class=\"failure\">Error getting VOMS server: " + e.getMessage() + "</div>" );
 			return;
 		}
 	}
 
 	if ("reload".equals(request.getParameter("action"))) {
 		try{
-			virtualOrganization = ConfigurationWebToolkit.parseVirtualOrganization(request);
+			vomsServer = ConfigurationWebToolkit.parseVomsServer(request);
 		} catch(Exception e) {
-			out.write( "<div class=\"failure\">Error reloading virtual organization: " + e.getMessage() + "</div>" );
+			out.write( "<div class=\"failure\">Error reloading VOMS server: " + e.getMessage() + "</div>" );
 			return;
 		}
 	}
 		
 	else if ("add".equals(request.getParameter("action"))) {
-		virtualOrganization = new VirtualOrganization(configuration);
+		vomsServer = new VomsServer(configuration);
 	}		
 %>
-<form action="virtualOrganizations.jsp" method="get">
+<form action="vomsServers.jsp" method="get">
 	<input type="hidden" name="action" value="">
 	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		Check if member of virtual organization
+	    		Name:
 		    </td>
 		    <td nowrap>
 <%
 	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction"))) {
 %>
-		    	<input maxlength="256" size="32" name="name" value="<%=(virtualOrganization.getName()!=null ? virtualOrganization.getName() : "")%>"/>
+		    	<input maxlength="256" size="32" name="name" value="<%=(vomsServer.getName()!=null ? vomsServer.getName() : "")%>"/>
 		    </td>
 		</tr>
 		<tr>
@@ -193,15 +193,15 @@ else if ("edit".equals(request.getParameter("action"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-				myVirtualOrganization
+				myVomsServer
 		    </td>
 		</tr>
 <%
 	}
 	else {
 %>		
-		    	<%=virtualOrganization.getName()%>
-		    	<input type="hidden" name="name" value="<%=virtualOrganization.getName()%>"/>
+		    	<%=vomsServer.getName()%>
+		    	<input type="hidden" name="name" value="<%=vomsServer.getName()%>"/>
 		   </td>
 		</tr>	
 <%
@@ -209,18 +209,18 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
 			<td nowrap style="text-align: right;">
-	    		with description
+	    		Description:
 		    </td>
 		    <td nowrap>
-				<input name="description" size="64" value="<%=virtualOrganization.getDescription()%>"/>
+				<input name="description" size="64" value="<%=vomsServer.getDescription()%>"/>
 		    </td>
 		</tr>	
 		<tr>
 			<td nowrap style="text-align: right;">
-				by querying VOMS server at base URL
+				Base URL:
 			</td>
 			<td>
-				<input maxlength="256" size="32" name="baseURL" value="<%=virtualOrganization.getBaseUrl()%>"/>{remainder URL}
+				<input maxlength="256" size="32" name="baseURL" value="<%=vomsServer.getBaseUrl()%>"/>{remainder URL}
 			</td>
 		</tr>
 	    <tr>
@@ -233,22 +233,22 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				and caching results in persistence factory
+				Persistence Factory:
 			</td>
 			<td>
 				<%=ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
 						configuration.getPersistenceFactories().values(), 
-						virtualOrganization.getPersistenceFactory(),
+						vomsServer.getPersistenceFactory(),
 						null,
-						false)%>
+						false)%> (for caching individual users)
 			</td>
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				using SSL key (optional)
+				SSL Key:
 			</td>
 			<td>
-				<input maxlength="256" size="32" name="sslKey" value="<%=virtualOrganization.getSslKey()%>"/> ,
+				<input maxlength="256" size="32" name="sslKey" value="<%=vomsServer.getSslKey()%>"/> (optional)
 			</td>
 		</tr>
 	    <tr>
@@ -261,10 +261,10 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>	
 		<tr>
 			<td nowrap style="text-align: right;">
-				SSL cert file (optional)
+				SSL Cert File:
 			</td>
 			<td>
-				<input maxlength="256" size="32" name="sslCert" value="<%=virtualOrganization.getSslCertfile()%>"/> ,
+				<input maxlength="256" size="32" name="sslCert" value="<%=vomsServer.getSslCertfile()%>"/> (optional)
 			</td>
 		</tr>
 	    <tr>
@@ -277,18 +277,18 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				SSL key password (optional)
+				SSL Key Password:
 			</td>
 			<td>
-				<input type="password" maxlength="256" size="32" name="sslKeyPW" value="<%=virtualOrganization.getSslKeyPasswd()%>"/>
+				<input type="password" maxlength="256" size="32" name="sslKeyPW" value="<%=vomsServer.getSslKeyPasswd()%>"/> (optional)
 			</td>
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				SSL CA files (optional)
+				SSL CA Files:
 			</td>
 			<td>
-				<input maxlength="256" size="32" name="sslCA" value="<%=virtualOrganization.getSslCAFiles()%>"/> ,
+				<input maxlength="256" size="32" name="sslCA" value="<%=vomsServer.getSslCAFiles()%>"/> (optional)
 			</td>
 		</tr>
 	    <tr>
@@ -309,7 +309,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
 	        <td colspan=2>
-				<%=ConfigurationWebToolkit.createDoSubmit(virtualOrganizations, request)%>
+				<%=ConfigurationWebToolkit.createDoSubmit(vomsServers, request)%>
 	        	<div style="text-align: center;">
 	        		<button type="submit" onclick="return doSubmit()">Save</button>
 	        	</div>

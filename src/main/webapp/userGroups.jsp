@@ -117,24 +117,24 @@ if (request.getParameter("action")==null ||
 <%
 		if (userGroup instanceof ManualUserGroup) {
 %>
-				    		Manual user group:
+				    		Manual User Group:
 				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
 				    			<%=userGroup.getName()%>
 				    		</a><br>
 				    		Description: <%=userGroup.getDescription()%><br>	
-				    		Persistence factory:
+				    		Persistence Factory:
 							<a href="persistenceFactories.jsp?action=edit&name=<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>">
 								<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>
 							</a><br>
 <%
 		} else if (userGroup instanceof LDAPUserGroup) {
 %>
-				    		LDAP user group:
+				    		LDAP User Group:
 				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
 				    			<%=userGroup.getName()%>
 				    		</a><br>
 				    		Description: <%=userGroup.getDescription()%><br>	
-							LDAP server: <%=((LDAPUserGroup)userGroup).getServer()%><br>	
+							LDAP Server: <%=((LDAPUserGroup)userGroup).getServer()%><br>	
 							Query: <%=((LDAPUserGroup)userGroup).getQuery()%><br>
 							Persistence factory:
 							<a href="persistenceFactories.jsp?action=edit&name=<%=((LDAPUserGroup)userGroup).getPersistenceFactory()%>">
@@ -143,14 +143,14 @@ if (request.getParameter("action")==null ||
 <%
 		} else if (userGroup instanceof VOMSUserGroup) {
 %>
-				    		VOMS user group:
+				    		VOMS User Group:
 				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
 				    			<%=userGroup.getName()%>
 				    		</a><br>
 				    		Description: <%=userGroup.getDescription()%><br>	
-							Virtual organization:
-							<a href="virtualOrganizations.jsp?action=edit&name=<%=((VOMSUserGroup)userGroup).getVirtualOrganization()%>">
-								<%=((VOMSUserGroup)userGroup).getVirtualOrganization()%>
+							VOMS Server:
+							<a href="vomsServers.jsp?action=edit&name=<%=((VOMSUserGroup)userGroup).getVomsServer()%>">
+								<%=((VOMSUserGroup)userGroup).getVomsServer()%>
 							</a><br>			
 <%
 			if ( !((VOMSUserGroup)userGroup).getRemainderUrl().equals("") ) {
@@ -162,18 +162,18 @@ if (request.getParameter("action")==null ||
 			out.write(	"Non-VOMS certificates are: " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "" : "not ") + "accepted<br>");
 
 %>
-			and VOMS certificate's FQAN is matched as: <%=((VOMSUserGroup)userGroup).getMatchFQAN()%><br>
+			VOMS certificate's FQAN is matched as: <%=((VOMSUserGroup)userGroup).getMatchFQAN()%><br>
 <%
 
 %>
-			with vo/group: <%=((VOMSUserGroup)userGroup).getVoGroup()%><br>
+			VO/Group: <%=((VOMSUserGroup)userGroup).getVoGroup()%><br>
 <%
 %>
-			and role: <%=((VOMSUserGroup)userGroup).getRole()%><br>
+			Role: <%=((VOMSUserGroup)userGroup).getRole()%><br>
 <%
 		}
 %>
-								access: <%=userGroup.getAccess()%>
+								GUMS Access: <%=userGroup.getAccess()%>
 						</td>
 			      	</tr>
 				</table>
@@ -237,7 +237,7 @@ else if ("edit".equals(request.getParameter("action"))
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		Check if member of user group
+	    		Name:
 		    </td>
 		    <td nowrap>
 <%
@@ -267,7 +267,7 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
 			<td nowrap style="text-align: right;">
-	    		with description
+	    		Description:
 		    </td>
 		    <td nowrap>
 				<input name="description" size="64" value="<%=userGroup.getDescription()%>"/>
@@ -275,7 +275,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>	
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		of type 
+	    		Type:
 		    </td>
 		    <td nowrap>
 			<%=ConfigurationWebToolkit.createSelectBox("type", 
@@ -291,14 +291,14 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
 			<td nowrap style="text-align: right;">
-				by searching within this group in persistence factory
+				persistence Factory:
 			</td>
 			<td>
 				<%=ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
 						configuration.getPersistenceFactories().values(), 
 						((ManualUserGroup)userGroup).getPersistenceFactory(),
 						null,
-						false)%> .
+						false)%> (where to search for individual users)
 			</td>
 		</tr>
 <%
@@ -307,7 +307,7 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
 			<td nowrap style="text-align: right;">
-				by querying LDAP server
+				LDAP server:
 			</td>
 			<td> 
 				<input maxlength="256" size="32" name="server" value="<%=((LDAPUserGroup)userGroup).getServer()%>"/>
@@ -323,7 +323,7 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>		
 		<tr>
 			<td nowrap style="text-align: right;">
-				with query
+				Query:
 			</td>
 			<td> 
 				<input maxlength="256" size="32" name="query" value="<%=((LDAPUserGroup)userGroup).getQuery()%>"/>
@@ -339,22 +339,22 @@ else if ("edit".equals(request.getParameter("action"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				and caching results in persistence factory
+				Persistence Factory
 			</td>
 			<td> 
 				<%=ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
 						configuration.getPersistenceFactories().values(), 
 						((LDAPUserGroup)userGroup).getPersistenceFactory(),
 						null,
-						false)%>
-			.</td>
+						false)%> (where to cache users)
+			</td>
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				Look for certificate DN in LDAP field 
+				LDAP DN Field 
 			</td>
 			<td> 
-				<input maxlength="256" size="16" name="certDNField" value="<%=((LDAPUserGroup)userGroup).getCertDNField()%>"/> .
+				<input maxlength="256" size="16" name="certDNField" value="<%=((LDAPUserGroup)userGroup).getCertDNField()%>"/>  (which field certificate DN is in)
 			</td>
 		</tr>
 	    <tr>
@@ -371,19 +371,19 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 			<tr>
 				<td nowrap style="text-align: right;">
-					by querying virtual organization
+					VOMS Server:
 				</td>
 				<td>
 					<%=ConfigurationWebToolkit.createSelectBox("vOrg", 
-							configuration.getVirtualOrganizations().values(), 
-							((VOMSUserGroup)userGroup).getVirtualOrganization(),
+							configuration.getVomsServers().values(), 
+							((VOMSUserGroup)userGroup).getVomsServer(),
 							null,
 							false)%>
 				</td>
 			</tr>
 			<tr>
 				<td nowrap style="text-align: right;">
-					at URL
+					Remainder URL:
 				</td>
 				<td>
 					{base URL}<input maxlength="256" size="32" name="url" value="<%=((VOMSUserGroup)userGroup).getRemainderUrl()%>"/>
@@ -399,7 +399,7 @@ else if ("edit".equals(request.getParameter("action"))
 			</tr>
 			<tr>
 				<td nowrap style="text-align: right;">
-					where non-VOMS certificates are
+					Accept non-VOMS certificates:
 				</td>
 				<td>
 					<select name="nVOMS" onchange="document.forms[0].elements['action'].value='reload';document.forms[0].submit();">
@@ -410,7 +410,7 @@ else if ("edit".equals(request.getParameter("action"))
 			</tr>
 			<tr>
 				<td nowrap style="text-align: right;">
-					and VOMS certificate's FQAN is matched as
+					Match VOMS certificate's FQAN as:
 				</td>
 				<td>
 					<%=ConfigurationWebToolkit.createSelectBox("matchFQAN", 
@@ -422,10 +422,10 @@ else if ("edit".equals(request.getParameter("action"))
 			</tr>
 			<tr>
 				<td nowrap style="text-align: right;">
-					with vo/group (optional)
+					VO/Group:
 				</td>
 				<td>
-					<input name="vogroup" value="<%=((VOMSUserGroup)userGroup).getVoGroup()%>"/>
+					<input name="vogroup" value="<%=((VOMSUserGroup)userGroup).getVoGroup()%>"/> (optional)
 				</td>
 			</tr>
 		    <tr>
@@ -438,10 +438,10 @@ else if ("edit".equals(request.getParameter("action"))
 			</tr>
 			<tr>
 				<td nowrap style="text-align: right;">
-					and role (optional)
+					Role:
 				</td>
 				<td>
-					<input name="role" value="<%=((VOMSUserGroup)userGroup).getRole()%>"/> .
+					<input name="role" value="<%=((VOMSUserGroup)userGroup).getRole()%>"/> (optional)
 				</td>
 			</tr>
 		    <tr>
@@ -458,14 +458,14 @@ else if ("edit".equals(request.getParameter("action"))
 			
 			<tr>
 				<td nowrap style="text-align: right;">
-					Members have 
+					GUMS Access:
 				</td>
 				<td>
 					<select name="access">
 						<option <%=(userGroup.getAccess().equals("read self")?"selected":"")%>>read self</option>
 						<option <%=(userGroup.getAccess().equals("read all")?"selected":"")%>>read all</option>
 						<option <%=(userGroup.getAccess().equals("write")?"selected":"")%>>write</option>
-					</select> access to GUMS.
+					</select> (GUMS access by members of this user group)
 				</td>
 			</tr>
 			<tr>
