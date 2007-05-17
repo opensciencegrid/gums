@@ -56,9 +56,11 @@
 	        <directory>src/main/config</directory>
 	      </resource>
 	      <resource>
+   	        <targetPath>sql</targetPath>
 			<directory>src/main/sql</directory>
 	      </resource>
 	      <resource>
+   	        <targetPath>scripts</targetPath>
 			<directory>src/main/scripts</directory>
 	      </resource>
 	    </resources>

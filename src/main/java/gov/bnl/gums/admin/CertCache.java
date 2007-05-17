@@ -26,16 +26,27 @@ public class CertCache implements Filter {
 	static private ThreadLocal certificate = new ThreadLocal();
 
 	/**
-	 * Get the path for gums.config from the servlet context
+	 * Get the directory path for the configuration files
 	 * 
-	 * @return configuration path as String
+	 * @return configuration directory as String
 	 */
-	static public String getConfPath() {
+	static public String getConfigDir() {
 		String base = context.getRealPath("/");
-		log.trace("Path to the web app: '" + base + "'");
-		String fullpath = base + "/WEB-INF/classes/gums.config";
-		log.trace("URL to config file: '" + fullpath + "'");
-		return fullpath;
+		String dir = base + "/WEB-INF/config";
+		log.trace("URL to config dir: '" + dir + "'");
+		return dir;
+	}
+	
+	/**
+	 * Get the directory path for the resource files
+	 * 
+	 * @return resource directory as String
+	 */
+	static public String getResourceDir() {
+		String base = context.getRealPath("/");
+		String dir = base + "/WEB-INF";
+		log.trace("URL to resource dir: '" + dir + "'");
+		return dir;
 	}
 
 	/**

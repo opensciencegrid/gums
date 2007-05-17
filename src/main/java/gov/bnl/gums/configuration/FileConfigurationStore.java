@@ -21,8 +21,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -93,29 +91,42 @@ public class FileConfigurationStore implements ConfigurationStore {
     private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     private Configuration conf;
     private Date lastRetrival;
-    private String filename = null;
+    private String configBackupDir = null;
+    private String configPath = null;
+    private String schemaPath = null;
+    private String transformPath = null;
     private DateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmm");
 
     /**
-     * Creates a new FileConfigurationStore object
+     * Creates a new FileConfigurationStore object.
+     * Used to instantiate class when run as a unit test.
      */
     public FileConfigurationStore() {
+        String configDir = getClass().getClassLoader().getResource("gums.config").getPath().replace("/gums.config", "");
+        this.configPath = configDir+"/gums.config";
+        this.schemaPath = configDir+"/gums.config.schema";
+        this.transformPath = configDir+"/gums.config.transform";   
+        this.configBackupDir = configDir+"/backup";
     }
     
     /**
-     * Creates a new FileConfigurationStore object
-     * Allows for specifying the absolute name of the configuration file
+     * Creates a new FileConfigurationStore object.
+     * Allows for specifying the absolute name of the configuration file.
+     * Used to instantiate class when GUMS is run within servlet.
      * 
      * @param filename
      * @param create if true, a new barbones configuration file will be created
      * at given filename if no file currently exists there
      */
-    public FileConfigurationStore(String filename, boolean create) {
-        this.filename = filename;
+    public FileConfigurationStore(String configDir, String resourceDir, boolean create) {
+        this.configPath = configDir+"/gums.config";
+        this.schemaPath = resourceDir+"/gums.config.schema";
+        this.transformPath = resourceDir+"/gums.config.transform";
+        this.configBackupDir = configDir+"/backup";
         
-        if (create && !(new File(filename).exists())) {
+        if (create && !(new File(configPath).exists())) {
     		try {
-    			BufferedWriter out = new BufferedWriter(new FileWriter(filename));
+    			BufferedWriter out = new BufferedWriter(new FileWriter(configPath));
     			out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n"+
 	    			"<gums version='"+GUMS.getVersion()+"'>\n\n"+
 	    				"\t<persistenceFactories>\n\n"+
@@ -148,31 +159,12 @@ public class FileConfigurationStore implements ConfigurationStore {
     }
     
     public void deleteBackupConfiguration(String dateStr) {
-    	new File(getConfigBackupPath()+"/gums.config."+dateStr).delete();
-    }
-    
-    /**
-     * @return gums.config path
-     */
-    public String getConfigPath() {
-    	if (filename != null)
-        	return filename;
-        else 
-        	return getClass().getClassLoader().getResource("gums.config").getPath();
-    }
-    
-    /**
-     * @return backup directory path
-     */
-    public String getConfigBackupPath() {
-    	String configPath = getConfigPath();
-    	int index = configPath.lastIndexOf("/");
-       	return configPath.substring(0, index) + "/backup";
+    	new File(configBackupDir+"/gums.config."+dateStr).delete();
     }
     
     public Collection getBackupConfigDates() {
     	ArrayList backupConfigDates = new ArrayList();
-    	File dir = new File(getConfigBackupPath());
+    	File dir = new File(configBackupDir);
     	String[] children = dir.list();
     	if (children!=null) {
 	        for (int i=0; i<children.length; i++) {
@@ -185,7 +177,7 @@ public class FileConfigurationStore implements ConfigurationStore {
     
     public boolean isActive() {
         log.debug("Checking whether gums.config is present");
-        return getConfigPath()!=null;
+        return new File(configPath).exists();
     }
     
     public boolean isReadOnly() {
@@ -203,9 +195,8 @@ public class FileConfigurationStore implements ConfigurationStore {
     }
     
     public synchronized Configuration restoreConfiguration(String dateStr) {
-    	String configPath = getConfigPath();
-    	moveFile(configPath, getConfigBackupPath() + "/gums.config." + format.format(new Date()));
-    	copyFile(getConfigBackupPath() + "/gums.config." + dateStr, configPath);
+    	moveFile(configPath, configBackupDir + "/gums.config.old");
+    	copyFile(configBackupDir + "/gums.config." + dateStr, configPath);
         return retrieveConfiguration();
     }
     
@@ -218,7 +209,6 @@ public class FileConfigurationStore implements ConfigurationStore {
             throw new RuntimeException("Configuration has not been loaded");
         
         log.debug("Attempting to store configuration");
-        String configPath = getConfigPath();
         String tempGumsConfigPath = configPath+"~";
 
         BufferedWriter out;
@@ -297,19 +287,20 @@ public class FileConfigurationStore implements ConfigurationStore {
         out.write("</gums>");
         
         out.close();
+
+        new File(configBackupDir).mkdir();
         
         // copy gums.config to gums.config_old
         if (!backupCopy && new File(configPath).exists())
-        	copyFile(configPath, getConfigPath()+".old");
+        	copyFile(configPath, configBackupDir+"/gums.config.old");
 
         // move temp file to gums.config or gums.config.date
-        new File(getConfigBackupPath()).mkdir();
-    	moveFile(tempGumsConfigPath, (backupCopy?getConfigBackupPath()+"/gums.config."+format.format(new Date()):configPath));
+    	moveFile(tempGumsConfigPath, (backupCopy?configBackupDir+"/gums.config."+format.format(new Date()):configPath));
     }
     
     private Date lastModification() {
         try {
-            File file = new File(getConfigPath());
+            File file = new File(configPath);
             return new Date(file.lastModified());
         } catch (Exception e) {
             gumsResourceAdminLog.fatal("The configuration wasn't read properly. GUMS is not operational.", e);
@@ -321,10 +312,10 @@ public class FileConfigurationStore implements ConfigurationStore {
 		conf = null;
         try {
             log.debug("Attempting to load configuration from gums.config");
-    		conf = ConfigurationToolkit.loadConfiguration(getConfigPath());
-            log.trace("Configuration reloaded from '" + getConfigPath() + "'");
-            gumsResourceAdminLog.info("Configuration reloaded from '" + getConfigPath() + "'");
-            gumsSiteAdminLog.info("Configuration reloaded from '" + getConfigPath() + "'");
+    		conf = ConfigurationToolkit.loadConfiguration(configPath, schemaPath, transformPath);
+            log.trace("Configuration reloaded from '" + configPath + "'");
+            gumsResourceAdminLog.info("Configuration reloaded from '" + configPath + "'");
+            gumsSiteAdminLog.info("Configuration reloaded from '" + configPath + "'");
             lastRetrival = new Date();
         } catch (Exception e) {
             gumsResourceAdminLog.error("The configuration wasn't read correctly: " + e.getMessage());

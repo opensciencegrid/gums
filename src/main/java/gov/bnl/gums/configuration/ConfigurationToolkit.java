@@ -371,19 +371,17 @@ class ConfigurationToolkit {
      * @throws IOException
      * @throws SAXException
      */
-    public static synchronized Configuration loadConfiguration(String configFile) throws ParserConfigurationException, IOException, SAXException {
-    	String schemaFile = configFile+".schema";
-    	String transformFile = configFile+".transform";
-        if (getVersion(configFile).equals("1.1")) {
-            log.trace("Transforming configuration file '" + configFile + "' using transform '" + transformFile);
-        	ConfigurationTransform.doTransform(configFile, transformFile);
+    public static synchronized Configuration loadConfiguration(String configPath, String schemaPath, String transformPath) throws ParserConfigurationException, IOException, SAXException {
+        if (getVersion(configPath).equals("1.1")) {
+            log.trace("Transforming configuration file '" + configPath + "' using transform '" + transformPath);
+        	ConfigurationTransform.doTransform(configPath, transformPath);
         }
-       	validate(configFile, schemaFile);
+       	validate(configPath, schemaPath);
     	Digester digester = retrieveDigester();
     	Configuration configuration = new Configuration();
         digester.push(configuration);
-        log.trace("Loading the configuration from file '" + configFile + "' using schema '" + schemaFile);
-        digester.parse(configFile);
+        log.trace("Loading the configuration from file '" + configPath + "' using schema '" + schemaPath);
+        digester.parse(configPath);
         return configuration;
     }
     

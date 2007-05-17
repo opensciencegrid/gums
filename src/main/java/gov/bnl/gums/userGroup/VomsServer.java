@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Jay Packard
  */
-public class VirtualOrganization {
+public class VomsServer {
     private Log log = LogFactory.getLog(VOMSUserGroup.class);
 	private String name = "";
 	private String description = "";
@@ -27,43 +27,43 @@ public class VirtualOrganization {
 	private Configuration configuration = null;
     
 	/**
-	 * Creates a new virtual organization object. This empty 
+	 * Creates a new VomsServer object. This empty 
 	 * constructor is needed by the XML Digestor.
 	 */
-	public VirtualOrganization() {
+	public VomsServer() {
 	}
 
 	/**
-	 * Creates a new virtual organization object with a configuration.
+	 * Creates a new VomsServer object with a configuration.
 	 * 
 	 * @param configuration
 	 */
-	public VirtualOrganization(Configuration configuration) {
+	public VomsServer(Configuration configuration) {
 		this.configuration = configuration;
 	}
 	
 	/**
-	 * Creates a new virtual organization object with a configuration and a name.
+	 * Creates a new VomsServer object with a configuration and a name.
 	 * 
 	 * @param configuration
 	 * @param name
 	 */
-	public VirtualOrganization(Configuration configuration, String name) {
+	public VomsServer(Configuration configuration, String name) {
 		this.configuration = configuration;
 		this.name = name;
 	}
 	 
 	
-	public VirtualOrganization clone(Configuration configuration) {
-    	VirtualOrganization virtualOrganization = new VirtualOrganization(configuration, name);
-    	virtualOrganization.setDescription(getDescription());
-    	virtualOrganization.setBaseUrl(baseUrl);
-    	virtualOrganization.setSslKey(sslKey);
-    	virtualOrganization.setSslCertfile(sslCertfile);
-    	virtualOrganization.setSslKeyPasswd(sslKeyPasswd);
-    	virtualOrganization.setSslCAFiles(sslCAFiles);
-    	virtualOrganization.setPersistenceFactory(persistenceFactory);
-    	return virtualOrganization;
+	public VomsServer clone(Configuration configuration) {
+    	VomsServer vomsServer = new VomsServer(configuration, name);
+    	vomsServer.setDescription(getDescription());
+    	vomsServer.setBaseUrl(baseUrl);
+    	vomsServer.setSslKey(sslKey);
+    	vomsServer.setSslCertfile(sslCertfile);
+    	vomsServer.setSslKeyPasswd(sslKeyPasswd);
+    	vomsServer.setSslCAFiles(sslCAFiles);
+    	vomsServer.setPersistenceFactory(persistenceFactory);
+    	return vomsServer;
     }
 
 	/**
@@ -187,11 +187,11 @@ public class VirtualOrganization {
     }
 
     public String toString() {
-        return "VirtualOrganization: baseUrl='" + baseUrl + "' sslCertfile='" + getSslCertfile() + "' sslKey='" + getSslKey() + "' sslKeyPasswd set:" + (!getSslKeyPasswd().equals("")) + " - sslCAFiles='" + getSslCAFiles() + "'";
+        return "vomsServer: baseUrl='" + baseUrl + "' sslCertfile='" + getSslCertfile() + "' sslKey='" + getSslKey() + "' sslKeyPasswd set:" + (!getSslKeyPasswd().equals("")) + " - sslCAFiles='" + getSslCAFiles() + "'";
     }
     
     public String toXML() {
-    	String retStr = "\t\t<virtualOrganization\n"+
+    	String retStr = "\t\t<vomsServer\n"+
 		"\t\t\tname='"+name+"'\n"+
 		"\t\t\tdescription='"+getDescription()+"'\n"+
 		"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n"+

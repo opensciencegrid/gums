@@ -143,7 +143,7 @@ public class VOMSUserGroup extends UserGroup {
             System.setProperty("axis.socketSecureManager", "org.edg.security.trustmanager.axis.AXISSocketManager");
             VOMSAdminServiceLocator locator = new VOMSAdminServiceLocator();
             URL vomsUrl = new URL( getUrl() );
-            log.info("Trying to connect to VOMS admin at " + vomsUrl);
+            log.info("Connecting to VOMS admin at " + vomsUrl);
             return locator.getVOMSAdmin(vomsUrl);
         } catch (Throwable e) {
             log.error("Couldn't get VOMS Admin: ", e);
