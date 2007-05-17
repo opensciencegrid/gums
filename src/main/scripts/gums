@@ -229,7 +229,7 @@ else
 					fi
 					let STATE=$STATE+1
 					if [ $STATE -eq 2 ] ; then
-						ANSWER=`"$BINDIR/gums-host.sh mapUser -b "` 
+						ANSWER=`"$BINDIR/gums-host mapUser -b "` 
 						if [ $ANSWER == "$ACCOUNT" ] ; then
 							let SUCCESS_COUNT=$SUCCESS_COUNT+1 
 						fi
