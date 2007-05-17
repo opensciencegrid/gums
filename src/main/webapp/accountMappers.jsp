@@ -126,7 +126,7 @@ if (request.getParameter("action")==null ||
 <%
 		} else if (accountMapper instanceof ManualAccountMapper) {
 %>
-				    		Manual Account Mapper:
+				    		Manual Account Mapper:<%=System.getProperty("log4j.configuration")%>
 				    		<a href="accountMappers.jsp?action=edit&name=<%=accountMapper.getName()%>">
 				    			<%=accountMapper.getName()%>
 				    		</a><br>	

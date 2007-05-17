@@ -55,45 +55,40 @@
 	</scm>
 
   	<build>
+   		<resources>
+	      <resource>
+	        <directory>src/main</directory>
+	        <excludes>
+	          <exclude>**</exclude>
+	        </excludes>
+	      </resource>
+	    </resources> 	
 		<plugins>
 	 		<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>1</id>
-						<phase>compile</phase>
+						<phase>generate-resources</phase>
 						<configuration>
 							<tasks>
-				                <mkdir dir="target/scripts"/>
-				                <unzip dest="target/scripts">
+				                
+				                <unzip dest="src/main/resources">
 				                    <fileset dir="${settings.localRepository}/gums/gums-core">
         								<include name="**/gums-core-*.jar"/>
 								    </fileset>
 									<patternset>
-										<include name="addAdmin"/>
-										<include name="setupDatabase"/>
+										<include name="gums.config.template"/>
+										<include name="log4j.properties.template"/>
+										<include name="gums.config.schema"/>
+										<include name="gums.config.transform"/>
+										<include name="sql/**"/>
+										<include name="scripts/**"/>
 									</patternset>
-				                </unzip>  	
-				                <mkdir dir="target/sql"/>
-				                <unzip dest="target/sql">
-				                    <fileset dir="${settings.localRepository}/gums/gums-core">
-        								<include name="**/gums-core-*.jar"/>
-								    </fileset>
-									<patternset>
-										<include name="*.mysql"/>
-									</patternset>
-				                </unzip>  				                
-				                <unzip dest="target/classes">
-				                    <fileset dir="${settings.localRepository}/gums/gums-core">
-        								<include name="**/gums-core-*.jar"/>
-								    </fileset>
-									<patternset>
-										<include name="gums.*"/>
-										<include name="log4j.*"/>
-									</patternset>
-				                </unzip>          
-				                <copyfile src="target/classes/gums.config.template" dest="target/classes/gums.config" forceoverwrite="no"/>
-				                <copyfile src="target/classes/log4j.properties.template" dest="target/classes/log4j.properties" forceoverwrite="no"/>
+				                </unzip>
+				                
+				                <copyfile src="src/main/resources/gums.config.template" dest="src/main/config/gums.config" forceoverwrite="no"/>
+				                <copyfile src="src/main/resources/log4j.properties.template" dest="src/main/config/log4j.properties" forceoverwrite="no"/>
 							</tasks>
 						</configuration>
 						<goals>
@@ -119,6 +114,24 @@
 		            <exclude>**/.svn</exclude>
 		          </excludes>
 		        </configuration>
+        	</plugin>
+        	<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-war-plugin</artifactId>
+		        <configuration>
+			       <webResources>
+			         <resource>
+			           <directory>../gums-service/src/main/config</directory>
+			           <targetPath>WEB-INF/config</targetPath>
+			           <filtering>false</filtering>
+			         </resource>
+			         <resource>
+			           <directory>../gums-service/src/main/resources</directory>
+			           <targetPath>WEB-INF</targetPath>
+			           <filtering>false</filtering>
+			         </resource>
+			       </webResources>
+			    </configuration>
         	</plugin>
             <plugin>
                <groupId>org.codehaus.cargo</groupId>
@@ -146,7 +159,6 @@
                                     </deployable>
                         </deployables>
                     </deployer>
-                    
                 </configuration>
            </plugin>
        </plugins>
@@ -272,12 +284,6 @@
             <groupId>opensaml</groupId>
             <artifactId>opensaml</artifactId>
             <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>simple-war</artifactId>
-            <version>0.8</version>
-            <type>war</type>
         </dependency>
         <dependency>
             <groupId>xml-security</groupId>
