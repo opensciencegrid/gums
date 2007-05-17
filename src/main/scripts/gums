@@ -159,10 +159,11 @@ fi
 
 
 #
-# Construct GUMS classpath
+# Construct GUMS classpath.
+# Be careful about the ordering in GUMSCP since resources are retrieved in order.
 #
 LIBCLASSPATH=`ls -1 $LIB/*.jar | tr "\n" ":"`
-GUMSCP=$LIBCLASSPATH$ETC
+GUMSCP=$ETC:$LIBCLASSPATH$ETC  # The ETC at the end is a hack to prevent an ending colon.
 
 #
 # Set command line class and cert handling by mode
