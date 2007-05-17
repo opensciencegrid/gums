@@ -93,16 +93,16 @@ cd $OLDDIR
 GUMSDIR=`dirname $INVOKE_DIR`
 
 if [ $DEBUG -eq 1 ] ; then 
-	echo "[DEBUG]: Invoke is $INVOKE"
-	echo "[DEBUG]: Dirpath is $DIRPATH"
-	echo "[DEBUG]: Invoke directory is $INVOKE_DIR"
-	echo "[DEBUG]: Gumsdir is $GUMSDIR"
+	echo "[DEBUG] Invoke is $INVOKE"
+	echo "[DEBUG] Dirpath is $DIRPATH"
+	echo "[DEBUG] Invoke directory is $INVOKE_DIR"
+	echo "[DEBUG] Gumsdir is $GUMSDIR"
 fi
 
 # Handle VDT install
 if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ] ; then
 	if [ $DEBUG -eq 1 ] ; then
-		echo "Setting paths using VDT_LOCATION..."
+		echo "[DEBUG] Setting paths using VDT_LOCATION..."
 	fi
 	BIN=$VDT_LOCATION/gums/bin/
 	ETC=$VDT_LOCATION/gums/etc/
@@ -112,7 +112,7 @@ if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ] ; then
 # Handle RPM install
 elif [ "$INVOKE_DIR" == "/usr/bin" ] && [ -d /etc/gums/ ] ; then
 	if [ $DEBUG -eq 1 ] ; then
-		echo "Seems to be an RPM install. Setting paths..."
+		echo "[DEBUG] Seems to be an RPM install. Setting paths..."
 	fi
 	BIN=/usr/bin
 	ETC=/etc/gums
@@ -190,17 +190,17 @@ fi
 SECURITY_OPTS="$TRUST_OPTS $CERT_OPTS"
 
 if [ $DEBUG -eq 1 ] ; then 
-	echo "[DEBUG]: Program is $PROG"
-	echo "[DEBUG]: Program dir is $BINDIR"
-	echo "[DEBUG]: Binary dir is $BIN"
-	echo "[DEBUG]: Config dir is $ETC"
-	echo "[DEBUG]: Library dir is $LIB"
-	echo "[DEBUG]: Endorsed lib dir is $ENDORSED"
-	echo "[DEBUG]: Cert dir is $CERTDIR"
-	echo "[DEBUG]: Full classpath is: $GUMSCP"
-	echo "[DEBUG]: Security opts are: $SECURITY_OPTS"
-	echo "[DEBUG]: Pass-through args are $ARGS"
-	echo "[DEBUG]: Mode is $MODE"
+	echo "[DEBUG] Program is $PROG"
+	echo "[DEBUG] Program dir is $BINDIR"
+	echo "[DEBUG] Binary dir is $BIN"
+	echo "[DEBUG] Config dir is $ETC"
+	echo "[DEBUG] Library dir is $LIB"
+	echo "[DEBUG] Endorsed lib dir is $ENDORSED"
+	echo "[DEBUG] Cert dir is $CERTDIR"
+	echo "[DEBUG] Full classpath is: $GUMSCP"
+	echo "[DEBUG] Security opts are: $SECURITY_OPTS"
+	echo "[DEBUG] Pass-through args are $ARGS"
+	echo "[DEBUG] Mode is $MODE"
 fi
 
 #
@@ -229,8 +229,8 @@ else
 					fi
 					let STATE=$STATE+1
 					if [ $STATE -eq 2 ] ; then
-						ANSWER=`"$BINDIR/gums-host mapUser -b "` 
-						if [ $ANSWER == "$ACCOUNT" ] ; then
+						ANSWER=`$BINDIR/gums-host mapUser -b $USERDN` 
+						if [ "$ANSWER" == "$ACCOUNT" ] ; then
 							let SUCCESS_COUNT=$SUCCESS_COUNT+1 
 						fi
 						let TOTAL_COUNT=$TOTAL_COUNT+1;
