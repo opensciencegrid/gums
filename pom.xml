@@ -257,7 +257,7 @@
                         <mapping>
                             <directory>/etc/gums</directory>
                             <configuration>true</configuration>
-                            <filemode>644</filemode>
+                            <filemode>655</filemode>
                             <username>root</username>
                             <groupname>root</groupname>
                             <sources>
