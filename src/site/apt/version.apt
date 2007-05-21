@@ -63,14 +63,14 @@ before the change is saved as gums.config_1.1.  An example of the new format is 
 			hibernate.c3p0.timeout='180'/>
 	</persistenceFactories>
 	
-	<virtualOrganizations>
-	    <virtualOrganization
-			name='virtualOrganizationA'
+	<vomsServers>
+	    <vomsServer
+			name='vomsServerA'
 			baseUrl='https://griddev01.usatlas.bnl.gov:8443/voms'
 			persistenceFactory='persistenceFactoryA' 
 			sslCertfile='/etc/grid-security/hostcert.pem'
 			sslKey='/etc/grid-security/hostkey.pem'/>
-	</virtualOrganizations>
+	</vomsServers>
 
 	<userGroups>
 		<manualUserGroup
@@ -79,7 +79,7 @@ before the change is saved as gums.config_1.1.  An example of the new format is 
 			access='write'/>
 		<vomsUserGroup
 			name='userGroupB'
-			virtualOrganization='virtualOrganizationA'
+			vomsServer='vomsServerA'
 			remainderUrl='/griddev/services/VOMSAdmin'
 			acceptProxyWithoutFQAN='true'
 			matchFQAN='exact'
@@ -120,3 +120,4 @@ before the change is saved as gums.config_1.1.  An example of the new format is 
 
 +------------------------------------------------------------------------+
 
+ gums.config and log4j properties used to be located in WEB-INF/classes but now are in WEB-INF/config.

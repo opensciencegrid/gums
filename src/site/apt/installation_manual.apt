@@ -51,16 +51,16 @@ Next, review the configuration of the server as:
  Add the following section with the appropriate paths for your installation:
 
 +---------------------------------------+
-	<Connector port="8443">
+	<Connector port="8443"
                maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
                enableLookups="false" disableUploadTimeout="true"
                acceptCount="100" debug="0" scheme="https" secure="true"
                sSLImplementation="org.glite.security.trustmanager.tomcat.TMSSLImplementation"
-               sslCAFiles="<</etc/grid-security/certificates/*.0>>"
-               crlFiles="<</etc/grid-security/certificates/*.r0>>"
-               sslCertFile="<</etc/grid-security/hostcert.pem>>"
-               sslKey="<</etc/grid-security/hostkey.pem>>"
-               log4jConfFile="<</etc/tomcat5/log4j-trustmanager.properties>>"
+               sslCAFiles="/etc/grid-security/certificates/*.0"
+               crlFiles="/etc/grid-security/certificates/*.r0"
+               sslCertFile="/etc/grid-security/hostcert.pem"
+               sslKey="/etc/grid-security/hostkey.pem"
+               log4jConfFile="/etc/tomcat5/log4j-trustmanager.properties"
                clientAuth="true" sslProtocol="TLS" />
 +---------------------------------------+
 
@@ -77,10 +77,11 @@ webapps directory of tomcat.
 setupDatabase script as:
 	
 +----------------------------------------------+	
-[root@gums webapps]# cd gums-core-1.2.0/
-[root@gums gums-core-1.2.0]# ./setupDatabase
+[root@gums gums]# cd gums-service-1.2.0/WEB-INF/scripts
+[root@gums scripts]# chmod ug+x *
+[root@gums scripts]# ./setupDatabase
 Usage: ./setupDatabase [mysql user for GUMS] [GUMS server host] [GUMS mysql password]
-[root@gums gums-core-1.2.0]# ./setupDatabase gums gums.mysite.com secret
+[root@gums scripts]# ./setupDatabase gums gums.mysite.com secret
 +----------------------------------------------+
 
  The script will only run on localhost. If you need to create db on 
@@ -96,13 +97,13 @@ MYSQLPARAM="-p"
 
 ** Add an Administrator
 
- You must add yourself to the admins user group as:
+ You must add yourself to the admins user group using the addAdmin script as:
  
-+----------------------------------------------+	
-[root@gums gums-core-1.2.0]# ./addAdmin
++----------------------------------------------+
+[root@gums scripts]# ./addAdmin
 Adds an admin in the GUMS database on localhost
 Usage: ./addAdmin [DN for administrator]
-[root@gums gums-core-1.2.0]# ./addAdmin "/DC=org/DC=doegrids/OU=People/CN=Your Self 83753"
+[root@gums scripts]# ./addAdmin "/DC=org/DC=doegrids/OU=People/CN=Your Self 83753"
 +----------------------------------------------+	 
 
  All additional users may be added through the web interface or client tools.

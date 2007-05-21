@@ -12,7 +12,7 @@ Configure Mappings
 
 	* <<persistenceFactories>> - defines where the local user data can be stored. 
 
-	* <<virtualOrganizations>> - defines VOMS servers as well as the
+	* <<vomsServers>> - defines VOMS servers as well as the
 	authentication information needed to access them.  These are referenced
 	by multiple user groups.
 
@@ -31,7 +31,7 @@ Configure Mappings
 	* <<hostToGroupMappings>> - defines which groupToAccountMappings are used for different	hosts. 
 	
  These may all be added, modified, and removed from the web interface.  Changes from the web interface
-ultimately end up in the XML file, gums.config, located in WEB-INF/classes, which can also
+ultimately end up in the XML file, gums.config, located in WEB-INF/config, which can also
 be edited by hand.  It is easy to see the correlation of the configuration as seen in the web interface 
 with the configuration as seen in the XML file.  These settings do not affect data stored in the
 persistence factories, which are used for storing individual user information.
@@ -40,8 +40,8 @@ persistence factories, which are used for storing individual user information.
 	
  On the left side of the web interface you see the following options under 'Configuration':
  
-	* <<Back Up/Restore>> - back up the current gums.config to WEB-INF/classes/backup/gums.config.date or
-	restore or delete configuration from WEB-INF/classes/backup.
+	* <<Back Up/Restore>> - back up the current gums.config to WEB-INF/config/backup/gums.config.date or
+	restore or delete configuration from WEB-INF/config/backup.
 	
 	* <<Diagnostic Summary>> - shows a concise view of all the mappings to easily follow the flow of
 	host -> group -> user group -> account mapper -> account.
@@ -50,7 +50,7 @@ persistence factories, which are used for storing individual user information.
 	you to create a new persistence factory.  Clicking the edit or delete icon next to an item allows you to edit or delete
 	the persistence factory.  More detail is shown when you add or edit an item.
 	
-	* <<Virtual Oganizations>> - shows a list of virtual organizations with key attributes. Also allows adding, editing, and deleting.
+	* <<VOMS Servers>> - shows a list of VOMS servers with key attributes. Also allows adding, editing, and deleting.
 
 	* <<Account Mapper>> - shows a list of account mappers with key attributes. Also allows adding, editing, and deleting.
 
@@ -151,14 +151,14 @@ account mappers, the final result returned is 'null', meaning this user cannot b
 +---------------------------+
 <vomsUserGroup
 	name='osgusatlas'
-	virtualOrganization='bnlVo'
+	vomsServer='bnlVoms'
 	remainderUrl='/atlas/services/VOMSAdmin'
 	voGroup="/atlas/usatlas"
 	acceptProxiesWithoutFQAN="true"/>
 +---------------------------+
 
  This says all the people in USATLAS, retrieved through the server specified by
-the virtual organization element 'bnlVo', are part of this group. The attribute 
+the VOMS server element 'bnlVoms', are part of this group. The attribute 
 'remainderUrl' will be described below.  The attribute 
 'acceptProxiesWithoutFQAN="true"' means standard/non-VOMS proxies are allowed. 
 Our case, DN='/DC=org/DC=doegrids/OU=People/CN=John Smith' 
@@ -197,11 +197,11 @@ are other types of account mappers besides gecosLdapAccountMapper which are expl
 Note that besides being referred to by user groups to store users, persistence factories are referred 
 to by some account mapper types to store mappings.
 
- Finally, let's look at the virtual organization referred to in the user group:
+ Finally, let's look at the VOMS server referred to in the user group:
  
 +---------------------------+ 
-	<virtualOrganization
-		name='virtualOrganizationA'
+	<vomsServer
+		name='bnlVoms'
 		baseUrl='https://griddev01.usatlas.bnl.gov:8443/voms'
 		persistenceFactory='mysql' 
 		.../>
@@ -227,8 +227,9 @@ in the VOMS user group.  This allows for sharing a server serving multiple VOs.
 	will mimimal effort (i.e. Postgres, Oracle, ...).
 
 	* <<ldap>> - for storing user information in a site's LDAP server.  Except for the group field, the information is stored 
-	in a special GUMS structure.  To support this LDAP needs access to the GUMS schema file which can 
-	be downloaded {{{gums.schema}here}}. Also, an object of type GUMSStruct needs to be created.  See openldap 
+	in a special GUMS structure.  To support this LDAP needs access to the GUMS LDAP schema file which can 
+	be downloaded {{{gums.schema}here}}. Also, an object of type GUMSStruct needs to be created named 'GUMS' for which
+	an LDIF file can be used to add this downloaded from from {{{gums.ldif}here}}.  See openldap 
 	documentation for more information at {{{http://www.openldap.org/doc/admin23/}{http://www.openldap.org/doc/admin23/}}.
 	
 	* <<local>> - for storing user information in a database and setting the group within a site's LDAP server as well.
