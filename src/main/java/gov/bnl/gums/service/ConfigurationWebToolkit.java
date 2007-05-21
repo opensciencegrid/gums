@@ -207,8 +207,12 @@ public class ConfigurationWebToolkit implements Remote {
 			((LDAPPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
 			((LDAPPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
 			((LDAPPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
-			if (request.getParameter("groupField")!=null)
-				((LDAPPersistenceFactory)persistenceFactory).setLdapGroupField( request.getParameter("groupField") );
+			if (request.getParameter("groupIdField")!=null)
+				((LDAPPersistenceFactory)persistenceFactory).setGroupIdField( request.getParameter("groupIdField") );
+			if (request.getParameter("accountField")!=null)
+				((LDAPPersistenceFactory)persistenceFactory).setAccountField( request.getParameter("accountField") );
+			if (request.getParameter("memAccField")!=null)
+				((LDAPPersistenceFactory)persistenceFactory).setMemberAccountField( request.getParameter("memAccField") );
 			((LDAPPersistenceFactory)persistenceFactory).setProperties( getLdapProperties(persistenceFactory, request, false) );
 		} 
 		else if (type.equals(LocalPersistenceFactory.getTypeStatic())) {
@@ -218,8 +222,12 @@ public class ConfigurationWebToolkit implements Remote {
 			((LocalPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
 			((LocalPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
 			((LocalPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
-			if (request.getParameter("groupField")!=null)
-				((LocalPersistenceFactory)persistenceFactory).setLdapGroupField( request.getParameter("groupField").trim() );
+			if (request.getParameter("groupIdField")!=null)
+				((LocalPersistenceFactory)persistenceFactory).setGroupIdField( request.getParameter("groupIdField") );
+			if (request.getParameter("accountField")!=null)
+				((LocalPersistenceFactory)persistenceFactory).setAccountField( request.getParameter("accountField") );
+			if (request.getParameter("memAccField")!=null)
+				((LocalPersistenceFactory)persistenceFactory).setMemberAccountField( request.getParameter("memAccField") );
 			Properties properties = getHibernateProperties(persistenceFactory, request, true);
 			properties.putAll(getLdapProperties(persistenceFactory, request, true));
 			((LocalPersistenceFactory)persistenceFactory).setProperties( properties );

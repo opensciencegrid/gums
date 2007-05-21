@@ -72,9 +72,9 @@ Adds, removes, or unassigns accounts in pool.
 		</td>
 	</tr>
 <%
-      	String selected = (String)poolMappers.get(0);
-      	String assignments = gums.getPoolAccountAssignments(selected);
-		if (selected!=null && !assignments.equals("")) {
+		if (poolMappers.size()>0) {
+	      	String assignments = gums.getPoolAccountAssignments(request.getParameter("accountMapper")!=null ? request.getParameter("accountMapper") : (String)poolMappers.get(0));
+			if (!assignments.equals("")) {
 %>
 	<tr>
 		<td style="text-align: right;">Current Assignments: </td>
@@ -83,7 +83,8 @@ Adds, removes, or unassigns accounts in pool.
 		</td>
     </tr>	
 <%
-	}
+			}
+		}
 %>
 	<tr>
         <td style="text-align: right;">Range: </td>

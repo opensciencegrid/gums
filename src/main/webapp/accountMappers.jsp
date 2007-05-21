@@ -332,7 +332,7 @@ else if ("edit".equals(request.getParameter("action"))
 				Pool Name:
 			</td>
 			<td>
-				<input maxlength="256" size="32" name="accountPool" value="<%=((AccountPoolMapper)accountMapper).getAccountPool()%>"/> (name stored in database - usually same as name)
+				<input maxlength="256" size="32" name="accountPool" value="<%=((AccountPoolMapper)accountMapper).getAccountPool()%>"/>
 			</td>
 		</tr>
 		<tr>
@@ -340,7 +340,7 @@ else if ("edit".equals(request.getParameter("action"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-				myPool
+				myPool  or  myPool.myPrimaryGroup.mySecondaryGroup1.mySecondaryGroup2 (LDAP only)
 		    </td>
 		</tr>
 		<tr>

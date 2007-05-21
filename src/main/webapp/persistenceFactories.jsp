@@ -361,15 +361,44 @@ else if ("edit".equals(request.getParameter("action"))
 				false)%>
 		    </td>
 		</tr>
-<%
-		if ( ((LDAPPersistenceFactory)persistenceFactory).isSynchGroups() ) {
-%>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		LDAP Group Field:
+	    		LDAP Group ID Field:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="64" name="groupField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getLdapGroupField()%>"/> (in which field group will be written)
+		    	<input maxlength="256" size="16" name="groupField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGroupIdField()%>"/> (group ID field in 'People' ou)
+		    </td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	gidNumber
+		    </td>
+		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		LDAP Account Field:
+		    </td>
+		    <td nowrap>
+		    	<input maxlength="256" size="16" name="accountField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getAccountField()%>"/> (account field in 'People' ou)
+		    </td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	uid
+		    </td>
+		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		LDAP Member Account Field:
+		    </td>
+		    <td nowrap>
+		    	<input maxlength="256" size="16" name="memAccField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getMemberAccountField()%>"/> (account field in 'Group' ou)
 		    </td>
 		</tr>
 	    <tr>
@@ -380,9 +409,6 @@ else if ("edit".equals(request.getParameter("action"))
 		    	memberUid
 		    </td>
 		</tr>
-<%
-		}
-%>
 		<tr>
     		<td nowrap style="text-align: right;">
 	    		CA Certificate File:
@@ -511,15 +537,44 @@ else if ("edit".equals(request.getParameter("action"))
 				false)%>
 		    </td>
 		</tr>
-<%
-		if ( ((LocalPersistenceFactory)persistenceFactory).isSynchGroups() ) {
-%>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		LDAP Group Field:
+	    		LDAP Group ID Field:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="64" name="groupField" value="<%=((LocalPersistenceFactory)persistenceFactory).getLdapGroupField()%>"/> (in which field group will be written)
+		    	<input maxlength="256" size="16" name="groupField" value="<%=((LocalPersistenceFactory)persistenceFactory).getGroupIdField()%>"/> (group ID field in 'People' ou)
+		    </td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	gidNumber
+		    </td>
+		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		LDAP Account Field:
+		    </td>
+		    <td nowrap>
+		    	<input maxlength="256" size="16" name="accountField" value="<%=((LocalPersistenceFactory)persistenceFactory).getAccountField()%>"/> (account field in 'People' ou)
+		    </td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	uid
+		    </td>
+		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		LDAP Member Account Field:
+		    </td>
+		    <td nowrap>
+		    	<input maxlength="256" size="16" name="memAccField" value="<%=((LocalPersistenceFactory)persistenceFactory).getMemberAccountField()%>"/> (account field in 'Group' ou)
 		    </td>
 		</tr>
 	    <tr>
@@ -530,9 +585,6 @@ else if ("edit".equals(request.getParameter("action"))
 		    	memberUid
 		    </td>
 		</tr>
-<%
-		}
-%>
 		<tr>
     		<td nowrap style="text-align: right;">
 	    		CA certificate File:
