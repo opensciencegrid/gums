@@ -29,13 +29,12 @@ public class LDAPAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
     public void setUp() throws Exception {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
-        factory.setDefaultGumsOU("ou=GUMS");
         try {
             factory.destroyMap("testPool", "map=testPool,ou=GUMS");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        db = factory.retrieveAccountPoolMapperDB("testPool");
+        db = factory.retrieveAccountPoolMapperDB("testPool.griddevGroup.griddevGroup");
         initDB();
     }
     

@@ -10,9 +10,11 @@
 
 package gov.bnl.gums.db;
 
+import gov.bnl.gums.GUMS;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMapperDB {
 	private Log log = LogFactory.getLog(LDAPAccountMapperDB.class);
+    private Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
 	private LDAPPersistenceFactory factory;
 	private String map;
 	private String mapDN;
@@ -47,7 +50,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	public LDAPAccountMapperDB(LDAPPersistenceFactory factory, String map) {
 		this.factory = factory;
 		this.map = map;
-		this.mapDN = "map=" + map + "," + factory.getDefaultGumsOU();
+		this.mapDN = "map=" + map + "," + factory.getGumsOU();
 		createGroupIfNotExists();
 		log.trace("LDAPMapDB object create: map '" + map + "' factory "
 				+ factory);
@@ -63,11 +66,12 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	 * @param groupthe UNIX primary group for the accounts assigned
 	 * @param secondaryGroups the UNIX secondary groups for the accounts assigned
 	 */
-	public LDAPAccountMapperDB(LDAPPersistenceFactory factory, String map,
-			String group, List secondaryGroups) {
+	public LDAPAccountMapperDB(LDAPPersistenceFactory factory, String map, String group, List secondaryGroups) {
 		this(factory, map);
 		this.group = group;
 		this.secondaryGroups = secondaryGroups;
+		if (group==null)
+			log.info("No primary group: factory '" + factory + "'");
 		log.trace("LDAPMapDB object create: map '" + map + "' factory "
 				+ factory + " primary group '" + group + "' secondary groups '"
 				+ secondaryGroups + "'");
@@ -91,13 +95,10 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		try {
 			LdapContext ldapContext = (LdapContext) context;
 			controlsBackup = ldapContext.getRequestControls();
-			ldapContext
-					.setRequestControls(new Control[] { new PagedResultsControl(
-							100, Control.CRITICAL) });
+			ldapContext.setRequestControls(new Control[] { new PagedResultsControl(	100, Control.CRITICAL) });
 			SearchControls ctrls = new SearchControls();
 			ctrls.setSearchScope(SearchControls.ONELEVEL_SCOPE);
-			NamingEnumeration result = context.search(mapDN, "(!(user=*))",
-					null, ctrls);
+			NamingEnumeration result = context.search(mapDN, "(!(user=*))", null, ctrls);
 			while (result.hasMore()) {
 				SearchResult res = (SearchResult) result.next();
 				Attributes atts = res.getAttributes();
@@ -130,11 +131,11 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 			}
 			factory.releaseContext(context);
 		}
+		
 		if (account != null) {
-			factory.retrieveAssigner().assignGroups(account, group,
-					secondaryGroups);
-			log.trace("Assigned gids for user '" + userDN + "' account '"
-					+ account + "'");
+			if (group!=null)
+				assignGroups(account, group, secondaryGroups);
+			log.trace("Assigned gids for user '" + userDN + "' account '" + account + "'");
 			factory.addMapEntry(userDN, account, map, mapDN);
 			log.trace("Assigned account for LDAP map '" + map + "' user '"
 					+ userDN + "' account '" + account + "'");
@@ -142,6 +143,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 			log.trace("No account to assign for LDAP map '" + map + "' user '"
 					+ userDN + "' account '" + account + "'");
 		}
+		
 		return account;
 	}
 
@@ -163,8 +165,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 			SearchControls ctrls = new SearchControls();
 			ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			log.trace("Checking if LDAP map '" + map + "' exists");
-			NamingEnumeration result = context.search(factory
-					.getDefaultGumsOU(), "(map={0})", new Object[] { map },
+			NamingEnumeration result = context.search(factory.getGumsOU(), "(map={0})", new Object[] { map },
 					ctrls);
 			return result.hasMore();
 		} catch (Exception e) {
@@ -202,8 +203,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		log.trace("Retrieving account from LDAP map '" + map + "' for user '"
 				+ userDN + "' account '" + account + "'");
 		if (account != null) {
-			factory.retrieveAssigner().reassignGroups(account, group,
-					secondaryGroups);
+			reassignGroups(account, group, secondaryGroups);
 			log.trace("Reassigned gids for user '" + userDN + "' account '"
 					+ account + "'");
 		}
@@ -337,5 +337,48 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	public void unassignUser(String userDN) {
 		factory.removeMapEntry(userDN, map, mapDN);
 	}
+    
+    /**
+     * Assigns the groups to the account for a particular domain.
+     * 
+     * @param domain The domain in which to assign the groups
+     * @param account A UNIX account (i.e. 'carcassi')
+     * @param primary A UNIX group name (i.e. 'usatlas')
+     * @param secondary A list of Strings representing secondary UNIX group names
+     */
+	private void assignGroups(String account, String primaryGroup, List secondaryGroups) {
+        try {
+        	factory.changeGroupID(account, primaryGroup);
+            log.trace("Assigned '" + primaryGroup + "' to '" + account + "'");
+            if (secondaryGroups == null) return;
+            Iterator iter = secondaryGroups.iterator();
+            while (iter.hasNext()) {
+                String group = (String) iter.next();
+                factory.addToSecondaryGroup(account, group);
+                log.trace("Assigned secondary group '" + group + "' to '" + account + "'");
+            }
+        } catch (Exception e) {
+            log.info("Couldn't assign GIDs. account '" + account + "' - primary group '" + primaryGroup + "' - secondary '" + secondaryGroups + "'", e);
+            adminLog.error("Couldn't assign GIDs: " + e.getMessage() + ". account '" + account + "' - primary group '" + primaryGroup + "' - secondary '" + secondaryGroups + "'");
+            throw new RuntimeException("Couldn't assign GIDs: " + e.getMessage() + ". account '" + account + "' - primary group '" + primaryGroup + "' - secondary '" + secondaryGroups + "'", e);
+        }
+    }
+    
+    /**
+     * Reassigns the groups to the account, refreshing something that should be
+     * already be present in LDAP. The LDAP factory controls whether this
+     * actually is performed by setting the synchGroups property.
+     * 
+     * @param account A UNIX account (i.e. 'carcassi')
+     * @param primary A UNIX group name (i.e. 'usatlas')
+     * @param secondary A list of Strings representing secondary UNIX group names
+     */
+	private void reassignGroups(String account, String primary, List secondary) {
+        if (factory.isSynchGroups()) {
+            assignGroups(account, primary, secondary);
+        } else {
+            log.trace("Skip reassign groups for account '" + account + "' - primary group '" + primary + "' - secondary '" + secondary + "'");
+        }
+    }
 
 }

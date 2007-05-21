@@ -41,15 +41,17 @@ public class ConfigurationTransform {
 	 * @param configFile
 	 * @param transformFile
 	 */
-	static public void doTransform(String configFile, String transformFile) {
-	    try {
-	    	String configFileTemp = configFile + "~";
+	static public Configuration doTransform(String configPath, String transformPath) {
+        log.trace("Transforming configuration file '" + configPath + "' using transform '" + transformPath);
+		
+		try {
+	    	String configFileTemp = configPath + "~";
         	
 	        XMLReader reader = XMLReaderFactory.createXMLReader();
-	        Source source = new SAXSource(reader, new InputSource(configFile));
+	        Source source = new SAXSource(reader, new InputSource(configPath));
 
 	        StreamResult result = new StreamResult(configFileTemp);
-	        Source style = new StreamSource(transformFile);
+	        Source style = new StreamSource(transformPath);
 
 	        TransformerFactory transFactory = TransformerFactory.newInstance();
 	        Transformer trans = transFactory.newTransformer(style);
@@ -63,9 +65,7 @@ public class ConfigurationTransform {
             digester.push(configuration);
             digester.parse(configFileTemp);
             
-            FileConfigurationStore.moveFile(configFile, configFile + ".1.1");
-
-            FileConfigurationStore.moveFile(configFileTemp, configFile);
+            new File(configFileTemp).delete();
             
             // Clean up VOMS server names
             Iterator it = new ArrayList(configuration.getVomsServers().keySet()).iterator();
@@ -138,8 +138,8 @@ public class ConfigurationTransform {
             		}
             	}
             }
-           	
-            new FileConfigurationStore().setConfiguration(configuration, false);
+            
+            return configuration;
 	     } catch (Exception e) {
 	        gumsResourceAdminLog.fatal("Could not convert older version of gums.config: " + e.getMessage());
 	        log.info("Could not convert older version of gums.config", e);

@@ -85,7 +85,7 @@ public class LDAPUserGroupTest extends TestCase {
         DirContext ctx = (DirContext) jndiCtx.lookup(principal);
         LDAPUserGroup group = new LDAPUserGroup(configuration, "group1");
         Map map = group.retrievePeopleMap(ctx);
-        assertEquals("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", map.get("cn=Jane Doe 12345,"+query));
+        assertEquals("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", map.get("uid=jdoe,"+query));
     }
     
 }

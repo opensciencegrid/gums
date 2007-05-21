@@ -22,7 +22,12 @@ gidNumber: 1001
 memberUid: jsmith
 memberUid: jdoe
 
-dn: cn=John Smith,ou=People,dc=griddev,dc=org
+dn: cn=griddevGroup2,ou=Group,dc=griddev,dc=org
+objectClass: posixGroup
+cn: griddevGroup2
+gidNumber: 1002
+
+dn: uid=jsmith,ou=People,dc=griddev,dc=org
 uid: jsmith
 objectClass: account
 objectClass: posixAccount
@@ -34,13 +39,13 @@ shadowMax: 99999
 shadowWarning: 7
 loginShell: /bin/bash
 uidNumber: 500
-gidNumber: 501
+gidNumber: 1001
 homeDirectory: /home/jsmith
 cn: John Smith
 gecos: John Smith
 description: subject=/DC=org/DC=griddev/OU=People/CN=John Smith
 
-dn: cn=Jane Doe 12345,ou=People,dc=griddev,dc=org
+dn: uid=jdoe,ou=People,dc=griddev,dc=org
 uid: jdoe
 objectClass: account
 objectClass: posixAccount
@@ -52,7 +57,7 @@ shadowMax: 99999
 shadowWarning: 7
 loginShell: /bin/bash
 uidNumber: 501
-gidNumber: 502
+gidNumber: 1001
 homeDirectory: /home/jdoe
 cn: Jane Doe 12345
 gecos: Jane Doe

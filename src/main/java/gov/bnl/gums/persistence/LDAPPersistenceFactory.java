@@ -9,7 +9,6 @@ package gov.bnl.gums.persistence;
 
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
-import gov.bnl.gums.db.LDAPGroupIDAssigner;
 import gov.bnl.gums.db.LDAPAccountMapperDB;
 import gov.bnl.gums.db.LDAPUserGroupDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
@@ -17,32 +16,20 @@ import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
 import gov.bnl.gums.*;
 
-import java.io.DataInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-import java.security.KeyStore.Entry;
-import java.security.KeyStore.ProtectionParameter;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import javax.naming.Context;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -55,7 +42,6 @@ import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
-import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,23 +51,22 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class LDAPPersistenceFactory extends PersistenceFactory {
+    private static String gumsOU = "ou=GUMS";
     static public String getTypeStatic() {
 		return "ldap";
 	}
     
     private Log log = LogFactory.getLog(LDAPPersistenceFactory.class);
     private Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-    private String defaultGumsOU = "ou=GUMS";
-    private String updateGIDdomains;
-    private List domains;
     private boolean synchGroups;
     private List contexts = Collections.synchronizedList(new LinkedList());// *** LDAP connection pool management    
 	private boolean skipReleaseContext = false;
 	private String trustStore = System.getProperty("java.home")+"/lib/security/cacerts";
 	private String trustStorePassword = "";
 	private String caCertFile = "";
-	private String ldapGroupField = "memberUid";
-    LDAPGroupIDAssigner assigner;
+	private String accountField = "uid";
+	private String memberAccountField = "memberUid";
+	private String groupIdField = "gidNumber";
     
     /**
      * Create a new ldap persistence factory.  This empty constructor is needed by the XML Digester.
@@ -147,44 +132,26 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     }
     
     /** 
-     * Adds the account to the given secondary group. It expects the base DN
-     * provided by the LDAP connection url to point to a domain (i.e. "dc-usatlas,dc=bnl,dc=gov")
-     * that will contain a "ou=People" and a "ou=Group" subtree.
+     * Adds the account to the given secondary group.
      * 
      * @param account the account to add to the secondary group (i.e. "carcassi")
      * @param groupname the secondary group name (i.e. "usatlas")
      */
     public void addToSecondaryGroup(String account, String groupname) {
-        addToSecondaryGroup(null, account, groupname);
-    }
-    
-    /** 
-     * Adds the account to the given secondary group. It expects the domain to be
-     * relative to the base DN
-     * provided by the LDAP connection url and to point to a domain (i.e. "dc-usatlas,dc=bnl,dc=gov")
-     * that will contain a "ou=People" and a "ou=Group" subtree.
-     * 
-     * @param domain the domain DN relative to be base DN
-     * @param account the account to add to the secondary group (i.e. "carcassi")
-     * @param groupname the secondary group name (i.e. "usatlas")
-     */
-    public void addToSecondaryGroup(String domain, String account, String groupname) {
         DirContext context = retrieveContext();
         try {
-            DirContext subcontext = getDomainContext(context, domain);
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
             NamingEnumeration result;
-           	result = subcontext.search("cn="+groupname+",ou=Group", "("+ldapGroupField+"={0})", new Object[] {account}, ctrls);
+           	result = context.search("cn="+groupname+",ou=Group", "("+memberAccountField+"={0})", new Object[] {account}, ctrls);
             if (result.hasMore()) return;
             ModificationItem[] mods = new ModificationItem[1];
-            mods[0] = new ModificationItem(subcontext.ADD_ATTRIBUTE,
-                new BasicAttribute(ldapGroupField, account));
-            subcontext.modifyAttributes("cn="+groupname+",ou=Group", mods);
-            log.trace("Added secondary group to user - user '" + account + "' to group '" + groupname + "' at '" + domain + "'");
+            mods[0] = new ModificationItem(context.ADD_ATTRIBUTE, new BasicAttribute(memberAccountField, account));
+            context.modifyAttributes("cn="+groupname+",ou=Group", mods);
+            log.trace("Added secondary group to user - user '" + account + "' to group '" + groupname + "'");
         } catch (Exception e) {
-            log.info("Couldn't add user to secondary group - user '" + account + "' to group '" + groupname + "' at '" + domain + "'", e);
-            throw new RuntimeException("Couldn't add user to secondary group - user '" + account + "' to group '" + groupname + "' at '" + domain + "': " + e.getMessage(), e);
+            log.info("Couldn't add user to secondary group - user '" + account + "' to group '" + groupname + "'", e);
+            throw new RuntimeException("Couldn't add user to secondary group - user '" + account + "' to group '" + groupname + "': " + e.getMessage(), e);
         } finally {
             releaseContext(context);
         }
@@ -214,37 +181,17 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     }
 
     /** 
-     * Changes the primary gid for the given account. It expects the base DN
-     * provided by the LDAP connection url to point to a domain (i.e. "dc-usatlas,dc=bnl,dc=gov")
-     * that will contain a "ou=People" and a "ou=Group" subtree.
+     * Changes the primary gid for the given account.
      * 
      * @param account the account to change the primary group (i.e. "carcassi")
      * @param groupname the primary group name (i.e. "usatlas")
      */
     public void changeGroupID(String account, String groupname) {
-        String gid = findGID(null, groupname);
+        String gid = findGID(groupname);
         if (gid == null) {
             throw new RuntimeException("GID for group '" + groupname + "' wasn't found.");
         }
-        updateGID(null, account, gid);
-    }
-
-    /** 
-     * Changes the primary gid for the given account. It expects the domain to be
-     * relative to the base DN
-     * provided by the LDAP connection url and to point to a domain (i.e. "dc-usatlas,dc=bnl,dc=gov")
-     * that will contain a "ou=People" and a "ou=Group" subtree.
-     *
-     * @param domain the domain DN relative to be base DN
-     * @param account the account to change the primary group (i.e. "carcassi")
-     * @param groupname the primary group name (i.e. "usatlas")
-     */
-    public void changeGroupID(String domain, String account, String groupname) {
-        String gid = findGID(domain, groupname);
-        if (gid == null) {
-            throw new RuntimeException("GID for group '" + groupname + "' wasn't found.");
-        }
-        updateGID(domain, account, gid);
+        updateGID(account, gid);
     }
 
     public PersistenceFactory clone(Configuration configuration) {
@@ -252,7 +199,9 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	persistenceFactory.setDescription(getDescription());
     	persistenceFactory.setCaCertFile(getCaCertFile());
     	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
-    	persistenceFactory.setLdapGroupField(getLdapGroupField());
+    	persistenceFactory.setAccountField(getAccountField());
+    	persistenceFactory.setGroupIdField(getGroupIdField());
+    	persistenceFactory.setMemberAccountField(getMemberAccountField());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
     	return persistenceFactory;
@@ -339,6 +288,26 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     }
 
     /** 
+     * Deletes the account in map.
+     * 
+     * @param mapName the name of the map (i.e. "usatlasSpecialMap")
+     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap")
+     */
+    public boolean destroyAccountInMap(String account, String mapName, String mapDN) {
+        DirContext context = retrieveContext();
+        try {
+            context.destroySubcontext("account=" + account + "," + mapDN );
+            log.trace("Destroyed LDAP map '" + mapName + "' at '" + mapDN + "'");
+        } catch (Exception e) {
+            log.info("LDAPPersistence error - destroyMap - map '" + mapName + "'", e);
+            throw new RuntimeException("Couldn't destroy LDAP map '" + mapName + "': " + e.getMessage(), e);
+        } finally {
+            releaseContext(context);
+        }
+        return true;
+    }
+    
+    /** 
      * Deletes the "map=mapName" map in the LDAP GUMS tree. Will completely
      * delete the map.
      * 
@@ -364,57 +333,24 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         } finally {
             releaseContext(context);
         }
-    }
-    
-    /** 
-     * Deletes the account in map.
-     * 
-     * @param mapName the name of the map (i.e. "usatlasSpecialMap")
-     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap")
-     */
-    public boolean destroyAccountInMap(String account, String mapName, String mapDN) {
-        DirContext context = retrieveContext();
-        try {
-            context.destroySubcontext("account=" + account + "," + mapDN );
-            log.trace("Destroyed LDAP map '" + mapName + "' at '" + mapDN + "'");
-        } catch (Exception e) {
-            log.info("LDAPPersistence error - destroyMap - map '" + mapName + "'", e);
-            throw new RuntimeException("Couldn't destroy LDAP map '" + mapName + "': " + e.getMessage(), e);
-        } finally {
-            releaseContext(context);
-        }
-        return true;
     }    
 
-    /**
-     * Changes the GUMS DN in which the GUMS objects will be placed.
-     * This DN will be relative to the DN as specified in the LDAP url
-     * within the LDAP connection parameters.
-     * 
-     * @return the GUMS base DN (defaults to "ou=GUMS")
-     */
-    public String getDefaultGumsOU()   {
-
-        return this.defaultGumsOU;
-    }
-    
-    public List getDomains() {
-    	return domains;
+    public String getAccountField() {
+    	return accountField;
     }
     
     public String getCaCertFile() {
     	return caCertFile;
     }
     
-    public String getLdapGroupField() {
-    	return ldapGroupField;
-    }
-        
-    public String getTrustStorePassword() {
-    	return trustStorePassword;
+    public String getGumsOU() {
+    	return gumsOU;
     }
     
-
+    public String getGroupIdField() {
+    	return groupIdField;
+    }
+    
     /** 
      * Returns a Context ready to be used (taken from the pool).
      * This is the entry point for the pool, and it can be used
@@ -425,24 +361,19 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public DirContext getLDAPContext() {
         return retrieveContext();
     }
+        
+    public String getMemberAccountField() {
+    	return memberAccountField;
+    }
+    
+
+    public String getTrustStorePassword() {
+    	return trustStorePassword;
+    }
 
     public String getType() {
 		return "ldap";
 	}
-
-    /**
-     * Changes the list of domains to update when an account of the pool is 
-     * assigned. The values required are a comma separated set of domain DNs
-     * in the LDAP server. The domain DNs must be relative to the baseDN
-     * specified in the LDAP url within the LDAP connection parameters.
-     * <p>
-     * If set to null, no gid update will be performed.
-     * 
-     * @return domains for updating the GID (i.e. "dc=usatlas")
-     */
-    public String getUpdateGIDdomains() {
-        return this.updateGIDdomains;
-    }
 
     /**
      * This property forces the gid update for account pools at every access.
@@ -522,17 +453,17 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
     
-    public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
-        StringTokenizer tokens = new StringTokenizer(name, ".");
+    public AccountPoolMapperDB retrieveAccountPoolMapperDB(String nameAndGroups) {
+        StringTokenizer tokens = new StringTokenizer(nameAndGroups, ".");
         if (!tokens.hasMoreTokens()) {
-            log.trace("Creating LDAP AccountPoolMapperDB '" + name + "' (no GIDs)");
-            return new LDAPAccountMapperDB(this, name);
+            log.trace("Creating LDAP AccountPoolMapperDB '" + nameAndGroups + "' (no GIDs)");
+            return new LDAPAccountMapperDB(this, nameAndGroups);
         }
         
         String pool = tokens.nextToken();
         if (!tokens.hasMoreTokens()) {
-            log.trace("Creating LDAP AccountPoolMapperDB '" + name + "' (no GIDs)");
-            return new LDAPAccountMapperDB(this, name);
+            log.trace("Creating LDAP AccountPoolMapperDB '" + nameAndGroups + "' (no GIDs)");
+            return new LDAPAccountMapperDB(this, nameAndGroups);
         }
         
         String group = tokens.nextToken();
@@ -541,24 +472,10 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
             secondaryGroups.add(tokens.nextToken());
         }
         
-        log.trace("Creating LDAP AccountPoolMapperDB '" + name + "' primary group '" + group + "' secondary groups '" + secondaryGroups + "'");
+        log.trace("Creating LDAP AccountPoolMapperDB '" + nameAndGroups + "' primary group '" + group + "' secondary groups '" + secondaryGroups + "'");
         return new LDAPAccountMapperDB(this, pool, group, secondaryGroups);
     }
-    
-    /** 
-     * Returns the gid assigner for the given ldap, with the configured
-     * ldap domains for the factory.
-     * 
-     * @return an LDAPGroupIDAssigner preconfigured and ready to use
-     */
-    public LDAPGroupIDAssigner retrieveAssigner() {
-        if (assigner == null) {
-            assigner = new LDAPGroupIDAssigner(this, domains);
-            log.trace("New LDAPGroupsIDAssigner created " + assigner);
-        }
-        return assigner;
-    }
-    
+
     /** 
      * Retrieves an LDAP DirContext from the pool, if available and still valid,
      * or creates a new DirContext if none are found.
@@ -593,20 +510,9 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         log.trace("Creating LDAP UserGroupDB '" + name + "'");
         return new LDAPUserGroupDB(this, name);
     }
-    
-    public void setDomains(List domains) {
-    	this.domains = domains;
-    }
 
-    /**
-     * Changes the GUMS DN in which the GUMS objects will be placed.
-     * This DN will be relative to the DN as specified in the LDAP url
-     * within the LDAP connection parameters.
-     * 
-     * @param baseDN the GUMS base DN (defaults to "ou=GUMS")
-     */
-    public void setDefaultGumsOU(String defaultGumsOU)   {
-        this.defaultGumsOU = defaultGumsOU;
+    public void setAccountField(String accountField) {
+    	this.accountField = accountField;
     }
     
     public void setCaCertFile(String caCertFile) {
@@ -615,18 +521,15 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	if (!trustStorePassword.equals(""))
     		addCertToTrustStore();
     }
-
-    public void setLdapGroupField(String ldapGroupField) {
-    	this.ldapGroupField = ldapGroupField;
+    
+    public void setGroupIdField(String groupIdField) {
+    	this.groupIdField = groupIdField;
     }
     
-    public void setTrustStorePassword(String trustStorePassword) {
-       	System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword );
-        this.trustStorePassword = trustStorePassword;
-    	if (!caCertFile.equals(""))
-    		addCertToTrustStore();
+    public void setMemberAccountField(String memberAccountField) {
+    	this.memberAccountField = memberAccountField;
     }
-
+    
     /**
      * Sets the list of properties to be used to connect to LDAP, that is
      * to create the JNDI context.
@@ -650,7 +553,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 
         super.setProperties(properties);
     }
-    
+
     /**
      * This property forces the gid update for account pools at every access.
      * It's handy for when gids gets out of synch.
@@ -660,18 +563,11 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         this.synchGroups = synchGroups;
     }
     
-	/**
-     * Changes the list of domains to update when an account of the pool is 
-     * assigned. The values required are a comma separated set of domain DNs
-     * in the LDAP server. The domain DNs must be relative to the baseDN
-     * specified in the LDAP url within the LDAP connection parameters.
-     * <p>
-     * If set to null, no gid update will be performed.
-     * @param updateGIDdomains domains for updating the GID (i.e. "dc=usatlas")
-     */
-    public void setUpdateGIDdomains(String updateGIDdomains) {
-        assigner = null;
-        this.updateGIDdomains = updateGIDdomains;
+    public void setTrustStorePassword(String trustStorePassword) {
+       	System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword );
+        this.trustStorePassword = trustStorePassword;
+    	if (!caCertFile.equals(""))
+    		addCertToTrustStore();
     }
     
     public String toXML() {
@@ -681,7 +577,9 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
 			"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
 			"\t\t\ttrustStorePassword='"+trustStorePassword+"'\n"+
-			"\t\t\tldapGroupField='"+ldapGroupField+"'\n";
+			"\t\t\tgroupIdField='"+groupIdField+"'\n"+
+			"\t\t\taccountField='"+accountField+"'\n"+
+			"\t\t\tmemberAccountField='"+memberAccountField+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();
     	while(keyIt.hasNext()) {
@@ -722,38 +620,32 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		}
     }
     
-    private String findGID(String domain, String groupname) {
+    private String findGID(String groupname) {
         DirContext context = retrieveContext();
         try {
-            DirContext subcontext = getDomainContext(context, domain);
-            NamingEnumeration result = subcontext.search("ou=Group", "(cn={0})", new Object[] {groupname}, null);
+            NamingEnumeration result = context.search("ou=Group", "(cn={0})", new Object[] {groupname}, null);
             String gid = null;
             if (result.hasMore()) {
                 SearchResult item = (SearchResult) result.next();
                 Attributes atts = item.getAttributes();
-                Attribute gidAtt = atts.get("gidNumber");
+                Attribute gidAtt = atts.get(groupIdField);
                 if (gidAtt != null) {
                     gid = (String) gidAtt.get();
                 }
             }
-            log.trace("Found gid '" + gid + "' for group '" + groupname + "' at '" + domain + "'");
+            log.trace("Found gid '" + gid + "' for group '" + groupname + "'");
             return gid;
         } catch (Exception e) {
-            log.info("Couldn't retrieve gid for '" + groupname + "' at '" + domain + "'", e);
-            throw new RuntimeException("Couldn't retrieve gid for '" + groupname + "' at '" + domain + "': " + e.getMessage(), e);
+            log.info("Couldn't retrieve gid for '" + groupname + "'", e);
+            throw new RuntimeException("Couldn't retrieve gid for '" + groupname + "': " + e.getMessage(), e);
         } finally {
             releaseContext(context);
         }
     }
     
-    private DirContext getDomainContext(DirContext context, String domain) throws Exception {
-        if (domain == null) return context;
-        return (DirContext) context.lookup(domain);
-    }
-    
     private boolean isContextValid(DirContext context) {
         try {
-            context.search(getDefaultGumsOU(), "(map=*)", null);
+            context.search(gumsOU, "(map=*)", null);
             return true;
         } catch (Exception e) {
             log.trace("Removing stale LDAP connection from pool " + context, e);
@@ -762,19 +654,15 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
     
-    private void updateGID(String domain, String account, String gid) {
+    private void updateGID(String account, String gid) {
         DirContext context = retrieveContext();
         try {
-            DirContext subcontext = getDomainContext(context, domain);
             ModificationItem[] mods = new ModificationItem[1];
-            mods[0] = new ModificationItem(subcontext.REPLACE_ATTRIBUTE,
-                new BasicAttribute("gidNumber", gid));
-            
-            subcontext.modifyAttributes("uid="+account+",ou=People", mods);
-            log.trace("Changed primary gid for user '" + account + "' to gid '" + gid + "' at '" + domain + "'");
+            mods[0] = new ModificationItem(context.REPLACE_ATTRIBUTE, new BasicAttribute(groupIdField, gid));
+            context.modifyAttributes(accountField+"="+account+",ou=People", mods);
+            log.trace("Changed primary gid for user '" + account + "' to gid '" + gid + "''");
         } catch (Exception e) {
-            log.info("Couldn't change gid for user '" + account + "' to gid '" + gid + "' at '" + domain + "'", e);
-            throw new RuntimeException("Couldn't change gid for user '" + account + "' to gid '" + gid + "' at '" + domain + "': " + e.getMessage(), e);
+            log.info("Couldn't change gid for user '" + account + "' to gid '" + gid + "''", e);
         } finally {
             releaseContext(context);
         }

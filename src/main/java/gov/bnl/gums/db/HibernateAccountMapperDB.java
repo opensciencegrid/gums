@@ -445,7 +445,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
                     throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
                 }
             }
-            throw new RuntimeException("Database error: " + e.getMessage(), e);
+            throw new RuntimeException("Database error: " + map + " " + userDN + " " + e.getMessage(), e);
         } finally {
             if (session != null) {
                 try {

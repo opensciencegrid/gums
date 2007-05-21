@@ -60,7 +60,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
                 return account;
             } catch (RuntimeException e) {
                 log.trace("Group assignment failed: unassign user", e);
-                unassignUser(account);
+                unassignUser(userDN);
                 log.trace("User unassigned");
                 throw e;
             }
@@ -137,8 +137,8 @@ public class LocalPersistenceFactory extends PersistenceFactory {
      */
     public LocalPersistenceFactory(Configuration configuration) {
     	super(configuration);
-        persFactory = new HibernatePersistenceFactory();
-        ldap = new LDAPPersistenceFactory();   	
+        persFactory = new HibernatePersistenceFactory(configuration);
+        ldap = new LDAPPersistenceFactory(configuration);   	
     	log.trace("LocalPersistenceFactory instanciated");
     }
     
@@ -160,7 +160,9 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     	persistenceFactory.setDescription(getDescription());
     	persistenceFactory.setCaCertFile(getCaCertFile());
     	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
-    	persistenceFactory.setLdapGroupField(getLdapGroupField());
+    	persistenceFactory.setGroupIdField(getGroupIdField());
+    	persistenceFactory.setAccountField(getAccountField());
+    	persistenceFactory.setMemberAccountField(getMemberAccountField());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
     	return persistenceFactory;
@@ -169,9 +171,17 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     public String getCaCertFile() {
     	return ldap.getCaCertFile();
     }
+
+    public String getAccountField() {
+    	return ldap.getAccountField();
+    }    
     
-    public String getLdapGroupField() {
-    	return ldap.getLdapGroupField();
+    public String getGroupIdField() {
+    	return ldap.getGroupIdField();
+    }
+    
+    public String getMemberAccountField() {
+    	return ldap.getMemberAccountField();
     }
     
     public Properties getLDAPProperties() {
@@ -234,9 +244,17 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     public void setConfiguration(Configuration configuration) {
     	super.setConfiguration(configuration);
     }
+        
+    public void setAccountField(String accountField) {
+    	ldap.setAccountField(accountField);
+    }
     
-    public void setLdapGroupField(String groupField) {
-    	ldap.setLdapGroupField(groupField);
+    public void setMemberAccountField(String memberAccountField) {
+    	ldap.setMemberAccountField(memberAccountField);
+    }
+    
+    public void setGroupIdField(String groupIdField) {
+    	ldap.setGroupIdField(groupIdField);
     }
     
     public void setName(String name) {
@@ -264,7 +282,9 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
     		"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
     		"\t\t\ttrustStorePassword='"+getTrustStorePassword()+"'\n"+
-    		"\t\t\tldapGroupField='"+getLdapGroupField()+"'\n";
+    		"\t\t\tgroupIdField='"+getGroupIdField()+"'\n"+
+    		"\t\t\taccountField='"+getAccountField()+"'\n"+
+			"\t\t\tmemberAccountField='"+getMemberAccountField()+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();
     	while(keyIt.hasNext()) {

@@ -58,7 +58,7 @@ public class AccountPoolMapper extends AccountMapper {
 
     public AccountPoolMapperDB getDB() {
     	if (db==null)
-    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveAccountPoolMapperDB( accountPool );
+    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveAccountPoolMapperDB(accountPool);
     	return db;
     }    
 

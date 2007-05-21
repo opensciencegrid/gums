@@ -32,7 +32,6 @@ public class LDAPUserGroupDBTest extends UserGroupDBTest {
     public void setUp() throws Exception {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
-        factory.setDefaultGumsOU("ou=GUMS");
         try {
             factory.getLDAPContext().destroySubcontext("group=testUserGroup");
         } catch (Exception e) {

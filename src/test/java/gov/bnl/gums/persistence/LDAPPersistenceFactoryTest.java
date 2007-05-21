@@ -8,6 +8,8 @@
 package gov.bnl.gums.persistence;
 
 import junit.framework.*;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -17,11 +19,9 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
 
 import org.apache.commons.logging.LogFactory;
 
-import gov.bnl.gums.*;
 import gov.bnl.gums.configuration.Configuration;
 
 /**
@@ -58,20 +58,25 @@ public class LDAPPersistenceFactoryTest extends TestCase {
     protected void setUp() throws java.lang.Exception {
         factory = new LDAPPersistenceFactory(configuration, getName());
         factory.setProperties(readLdapProperties());
-        factory.setDefaultGumsOU("ou=GUMS");
         try {
-        factory.getLDAPContext().destroySubcontext("group=test,ou=GUMS");
+        	factory.getLDAPContext().destroySubcontext("group=test,ou=GUMS");
         } catch (Exception e) {
-            e.printStackTrace();
         }
         try {
-        factory.destroyMap("test", "map=test,ou=GUMS");
+            factory.destroyMap("test", "map=test,ou=GUMS");
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
     protected void tearDown() throws java.lang.Exception {
+        try {
+        	factory.getLDAPContext().destroySubcontext("group=test,ou=GUMS");
+        } catch (Exception e) {
+        }
+        try {
+            factory.destroyMap("test", "map=test,ou=GUMS");
+        } catch (Exception e) {
+        }
     }
 
     public static junit.framework.Test suite() {
@@ -121,9 +126,13 @@ public class LDAPPersistenceFactoryTest extends TestCase {
         factory.removeUserGroupEntry("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "test", "group=test,ou=GUMS");
     }
 
+    public void testChangeGroupID() {
+    	factory.changeGroupID("jsmith", "griddevGroup");
+    }
+    
     public void testAddToSecondaryGroupEntry() {
-    	factory.addToSecondaryGroup("jsmith", "griddevGroup");
     	factory.addToSecondaryGroup("jdoe", "griddevGroup");
+    	factory.addToSecondaryGroup("jsmith", "griddevGroup");
     }
     
 //    public static void main(String[] args) {

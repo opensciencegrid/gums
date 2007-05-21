@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -102,11 +103,14 @@ public class FileConfigurationStore implements ConfigurationStore {
      * Used to instantiate class when run as a unit test.
      */
     public FileConfigurationStore() {
-        String configDir = getClass().getClassLoader().getResource("gums.config").getPath().replace("/gums.config", "");
-        this.configPath = configDir+"/gums.config";
-        this.schemaPath = configDir+"/gums.config.schema";
-        this.transformPath = configDir+"/gums.config.transform";   
-        this.configBackupDir = configDir+"/backup";
+    	URL resource = getClass().getClassLoader().getResource("gums.config");
+    	if (resource!=null) {
+	        String configDir = resource.getPath().replace("/gums.config", "");
+	        this.configPath = configDir+"/gums.config";
+	        this.schemaPath = configDir+"/gums.config.schema";
+	        this.transformPath = configDir+"/gums.config.transform";   
+	        this.configBackupDir = configDir+"/backup";
+    	}
     }
     
     /**
@@ -311,8 +315,14 @@ public class FileConfigurationStore implements ConfigurationStore {
     private void reloadConfiguration() {
 		conf = null;
         try {
+            if (ConfigurationToolkit.getVersion(configPath).equals("1.1")) {
+            	copyFile(configPath,configPath+".1.1");
+            	Configuration configuration = ConfigurationTransform.doTransform(configPath, transformPath);
+                setConfiguration(configuration, false);
+            }
+
             log.debug("Attempting to load configuration from gums.config");
-    		conf = ConfigurationToolkit.loadConfiguration(configPath, schemaPath, transformPath);
+    		conf = ConfigurationToolkit.loadConfiguration(configPath, schemaPath);
             log.trace("Configuration reloaded from '" + configPath + "'");
             gumsResourceAdminLog.info("Configuration reloaded from '" + configPath + "'");
             gumsSiteAdminLog.info("Configuration reloaded from '" + configPath + "'");

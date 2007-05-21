@@ -40,7 +40,7 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     public LDAPUserGroupDB(LDAPPersistenceFactory factory, String group) {
         this.factory = factory;
         this.group = group;
-        this.groupDN = "group=" + group + "," + factory.getDefaultGumsOU();
+        this.groupDN = "group=" + group + "," + factory.getGumsOU();
         createGroupIfNotExists();
         log.trace("LDAPUserGroupDB object create: group '" + group + "' factory " + factory);
     }
@@ -54,7 +54,7 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         try {
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            NamingEnumeration result = context.search(factory.getDefaultGumsOU(), "(&(group={0})(user={1}))", new Object[] {group, gridID(user)}, ctrls);
+            NamingEnumeration result = context.search(factory.getGumsOU(), "(&(group={0})(user={1}))", new Object[] {group, gridID(user)}, ctrls);
             log.trace("Checking whether user '" + user + "' belongs to group '" + group + "': " + result.hasMore());
             return result.hasMore();
         } catch (Exception e) {
@@ -181,7 +181,7 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         try {
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            NamingEnumeration result = context.search(factory.getDefaultGumsOU(), "(group={0})", new Object[] {group}, ctrls);
+            NamingEnumeration result = context.search(factory.getGumsOU(), "(group={0})", new Object[] {group}, ctrls);
             log.trace("Checking whether group '" + group + "' exists: " + result.hasMore());
             return result.hasMore();
         } catch (Exception e) {
