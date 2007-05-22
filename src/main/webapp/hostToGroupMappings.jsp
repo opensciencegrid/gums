@@ -174,7 +174,7 @@ if (request.getParameter("action")==null ||
 		while(g2AMappingsIt.hasNext())
 		{
 			String g2AMapping = (String)g2AMappingsIt.next();
-			out.write( "<a href=\"groupToAccount.jsp?action=edit&name=" + g2AMapping + "\">" + g2AMapping + "</a>" );
+			out.write( "<a href=\"groupToAccountMappings.jsp?action=edit&name=" + g2AMapping + "\">" + g2AMapping + "</a>" );
 			if( g2AMappingsIt.hasNext() )
 				out.write(", ");
 		}

@@ -51,29 +51,34 @@ Adds, removes, or unassigns accounts in pool.
   <table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
     <tbody>
 	  <tr>
-        <td style="text-align: right;">Pool Account Mapper: </td>
+        <td style="text-align: right;">Account Pool Mapper: </td>
         <td style="text-align: left;">
 <%
-		ArrayList poolMappers = new ArrayList();
+		ArrayList accountMappers = new ArrayList();
 		Iterator it = configuration.getAccountMappers().values().iterator();
 		while(it.hasNext()) {
 			AccountMapper accountMapper = (AccountMapper)it.next();
 			if (accountMapper instanceof AccountPoolMapper)
-				poolMappers.add( ((AccountPoolMapper)accountMapper).getName() );
+				accountMappers.add( ((AccountPoolMapper)accountMapper).getName()  );
 		}
 
 		out.write(
 			ConfigurationWebToolkit.createSelectBox("accountMapper", 
-				poolMappers, 
+				accountMappers, 
 				(request.getParameter("accountMapper")!=null ? request.getParameter("accountMapper") : null),
 				"onchange=\"document.forms[0].action='accountRange_form.jsp';document.forms[0].submit();\"",
 				false) );
 %>   
 		</td>
 	</tr>
+	<tr>
+        <td style="text-align: right;">Account Pool: </td>
+        <td style="text-align: left;"><%=((AccountPoolMapper)configuration.getAccountMapper(request.getParameter("accountMapper")!=null ? request.getParameter("accountMapper") : (String)accountMappers.get(0))).getAccountPoolRoot()%>
+		</td>
+	</tr>
 <%
-		if (poolMappers.size()>0) {
-	      	String assignments = gums.getPoolAccountAssignments(request.getParameter("accountMapper")!=null ? request.getParameter("accountMapper") : (String)poolMappers.get(0));
+		if (accountMappers.size()>0) {
+	      	String assignments = gums.getPoolAccountAssignments(request.getParameter("accountMapper")!=null ? request.getParameter("accountMapper") : (String)accountMappers.get(0));
 			if (!assignments.equals("")) {
 %>
 	<tr>
@@ -88,7 +93,7 @@ Adds, removes, or unassigns accounts in pool.
 %>
 	<tr>
         <td style="text-align: right;">Range: </td>
-        <td style="text-align: left;"><input type="text" name="range" maxlength="256" size="16"/></td>
+        <td style="text-align: left;"><input type="text" name="range" maxlength="256" size="20"/></td>
 	</tr>
 	<tr>
         <td style="text-align: right;">i.e.: </td>

@@ -126,7 +126,7 @@ if (request.getParameter("action")==null ||
 <%
 		} else if (accountMapper instanceof ManualAccountMapper) {
 %>
-				    		Manual Account Mapper:<%=System.getProperty("log4j.configuration")%>
+				    		Manual Account Mapper:
 				    		<a href="accountMappers.jsp?action=edit&name=<%=accountMapper.getName()%>">
 				    			<%=accountMapper.getName()%>
 				    		</a><br>	
@@ -329,10 +329,10 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 		<tr>
 			<td nowrap style="text-align: right;">
-				Pool Name:
+				Pool Name / Groups:
 			</td>
 			<td>
-				<input maxlength="256" size="32" name="accountPool" value="<%=((AccountPoolMapper)accountMapper).getAccountPool()%>"/>
+				<input maxlength="256" size="34" name="accountPool" value="<%=((AccountPoolMapper)accountMapper).getAccountPool()%>"/> (groups are assigned only if using LDAP persistence factory)
 			</td>
 		</tr>
 		<tr>
@@ -340,7 +340,7 @@ else if ("edit".equals(request.getParameter("action"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-				myPool  or  myPool.myPrimaryGroup.mySecondaryGroup1.mySecondaryGroup2 (LDAP only)
+				myPool.myPrimaryGroup.mySecondaryGroup1.mySecondaryGroup2...
 		    </td>
 		</tr>
 		<tr>

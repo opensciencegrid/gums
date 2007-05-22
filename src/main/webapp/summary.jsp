@@ -84,8 +84,8 @@ while (h2GMappingsIt.hasNext()) {
 %>
 
 	<tr>
-		<%= (!cH2GMapping.getName().equals(lastH2GMapping)?"<td bgcolor=\"#FFEE77\"><a href=\"hostToGroup.jsp?action=edit&name="+cH2GMapping.getName()+"\">"+cH2GMapping.getName().replaceAll(",","<br>")+"</a></td>":"<td></td>") %>
-		<%= (!g2AMapping.getName().equals(lastG2AMapping)?"<td bgcolor=\"#FFEE77\"><a href=\"groupToAccount.jsp?action=edit&name="+g2AMapping.getName()+"\">"+g2AMapping.getName()+"</a></td>":"<td></td>") %>
+		<%= (!cH2GMapping.getName().equals(lastH2GMapping)?"<td bgcolor=\"#FFEE77\"><a href=\"hostToGroupMappings.jsp?action=edit&name="+cH2GMapping.getName()+"\">"+cH2GMapping.getName().replaceAll(",","<br>")+"</a></td>":"<td></td>") %>
+		<%= (!g2AMapping.getName().equals(lastG2AMapping)?"<td bgcolor=\"#FFEE77\"><a href=\"groupToAccountMappings.jsp?action=edit&name="+g2AMapping.getName()+"\">"+g2AMapping.getName()+"</a></td>":"<td></td>") %>
 		<%= (!userGroup.getName().equals(lastUserGroup)?userGroup.toString("#FFEE77"):"<td></td><td></td><td></td><td></td><td></td><td></td>") %>
 		<%= accountMapper.toString("#FFEE77") %>
 	</tr>
