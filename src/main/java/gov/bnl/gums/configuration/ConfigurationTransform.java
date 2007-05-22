@@ -131,8 +131,10 @@ public class ConfigurationTransform {
 	            					groupToAccountMapping.getAccountMappers().remove(index);
 	            					groupToAccountMapping.getAccountMappers().add(index, name);
 	            					it3 = groupToAccountMapping.getAccountMappers().iterator();
+	            					index = 0;
 	            				}
-	            				index++;
+	            				else
+	            					index++;
 	            			}
 	            		}
             		}

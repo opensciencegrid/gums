@@ -34,9 +34,7 @@ public class LDAPUserGroupDBTest extends UserGroupDBTest {
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
         try {
             factory.getLDAPContext().destroySubcontext("group=testUserGroup");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {}
         db = factory.retrieveUserGroupDB("testUserGroup");
         initDB();
     }

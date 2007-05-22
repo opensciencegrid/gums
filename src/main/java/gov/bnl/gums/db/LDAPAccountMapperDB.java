@@ -133,8 +133,9 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		}
 		
 		if (account != null) {
-			if (group!=null)
+			if (group!=null) {
 				assignGroups(account, group, secondaryGroups);
+			}
 			log.trace("Assigned gids for user '" + userDN + "' account '" + account + "'");
 			factory.addMapEntry(userDN, account, map, mapDN);
 			log.trace("Assigned account for LDAP map '" + map + "' user '"

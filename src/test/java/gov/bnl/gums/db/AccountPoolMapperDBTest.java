@@ -102,25 +102,25 @@ public class AccountPoolMapperDBTest extends TestCase {
             n++;
         }
         assertEquals(10, n);
-        db.addAccount("newAccount");
-        assertEquals("newAccount", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        db.addAccount("pool10");
+        assertEquals("pool10", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
 
         db.unassignUser("/DC=org/DC=griddev/OU=People/CN=John Smith");
         
         try {
-            db.addAccount("newAccount");
+            db.addAccount("pool10");
         } catch (Exception e) {
             // exception was thrown as it should be
         	// since account already exists
         }
         
-        db.removeAccount("newAccount");
+        db.removeAccount("pool10");
         
-        db.addAccount("newAccount");
-        assertEquals("newAccount", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        db.addAccount("pool10");
+        assertEquals("pool10", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
 
-        db.unassignAccount("newAccount");
-        assertEquals("newAccount", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=Jane Doe"));
+        db.unassignAccount("pool10");
+        assertEquals("pool10", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=Jane Doe"));
     }
     
     public static void main(String args[]) {

@@ -297,8 +297,8 @@ public class VOMSUserGroup extends UserGroup {
 
     public String toXML() {
     	String retStr = "\t\t<vomsUserGroup\n"+
-		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tname='"+getName()+"'\n"+
+		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tdescription='"+getDescription()+"'\n"+
         "\t\t\tvomsServer='"+vomsServer+"'\n";
     	if (!remainderUrl.equals(""))

@@ -7,6 +7,7 @@
 package gov.bnl.gums.admin;
 
 import gov.bnl.gums.*;
+import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.account.AccountPoolMapper;
 import gov.bnl.gums.account.ManualAccountMapper;
 import gov.bnl.gums.configuration.Configuration;
@@ -81,8 +82,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 	        }
     	}
 		else {
-	        gumsResourceAdminLog.info(logUserAccess() + "Failed to add account range because user doesn't have write access");
-			siteLog.info(logUserAccess() + "Failed to add account range because user doesn't have write access");
+	        gumsResourceAdminLog.info(logUserAccess() + "Failed to add account range because user doesn't have administrative access");
+			siteLog.info(logUserAccess() + "Failed to add account range because user doesn't have administrative access");
 			throw new AuthorizationDeniedException();
 		}
     }
@@ -91,8 +92,8 @@ public class GUMSAPIImpl implements GUMSAPI {
     	if (hasWriteAccess(currentUser()))
     		gums().setConfiguration(gums().getConfiguration(), true);
     	else {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to backup configuration because user doesn't have write access");
-    		siteLog.info(logUserAccess() + "Failed to backup configuration because user doesn't have write access");
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to backup configuration because user doesn't have administrative access");
+    		siteLog.info(logUserAccess() + "Failed to backup configuration because user doesn't have administrative access");
     		throw new AuthorizationDeniedException();
     	}
     }
@@ -101,8 +102,8 @@ public class GUMSAPIImpl implements GUMSAPI {
     	if (hasWriteAccess(currentUser()))
     		gums().deleteBackupConfiguration(dateStr);
     	else {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to delete configuration because user doesn't have write access");
-    		siteLog.info(logUserAccess() + "Failed to delete configuration because user doesn't have write access");
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to delete configuration because user doesn't have administrative access");
+    		siteLog.info(logUserAccess() + "Failed to delete configuration because user doesn't have administrative access");
     		throw new AuthorizationDeniedException();
     	}   	
     }
@@ -164,24 +165,13 @@ public class GUMSAPIImpl implements GUMSAPI {
         }   	
     }
     
-    public String getPoolAccountAssignments(String accountMapper) {
-    	if (hasWriteAccess(currentUser())) {
-    		return ((AccountPoolMapper)gums().getConfiguration().getAccountMapper(accountMapper)).getAssignments();
-    	}
-    	else {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have write access");
-    		siteLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have write access");
-    		throw new AuthorizationDeniedException();
-    	}    	
-    }
-    
     public Collection getBackupConfigDates() {
     	Collection backupConfigDates = null;
     	if (hasWriteAccess(currentUser()))
     		backupConfigDates = gums().getBackupConfigDates();
     	else {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have write access");
-    		siteLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have write access");
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have administrative access");
+    		siteLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have administrative access");
     		throw new AuthorizationDeniedException();
     	}    	
     	return backupConfigDates;
@@ -191,10 +181,21 @@ public class GUMSAPIImpl implements GUMSAPI {
     	if (hasWriteAccess(currentUser()))
     		return gums().getConfiguration();
     	else {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to get configuration because user doesn't have write access");
-    		siteLog.info(logUserAccess() + "Failed to get configuration because user doesn't have write access");
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to get configuration because user doesn't have administrative access");
+    		siteLog.info(logUserAccess() + "Failed to get configuration because user doesn't have administrative access");
     		throw new AuthorizationDeniedException();
     	}
+    }
+    
+    public String getPoolAccountAssignments(String accountPoolMapperName) {
+    	if (hasWriteAccess(currentUser())) {
+    		return ((AccountPoolMapper)gums().getConfiguration().getAccountMapper(accountPoolMapperName)).getAssignments();
+    	}
+    	else {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to get pool account assignments because user doesn't have administrative access");
+    		siteLog.info(logUserAccess() + "Failed to get pool account assignments because user doesn't have administrative access");
+    		throw new AuthorizationDeniedException();
+    	}    	
     }
     
     public String getVersion() {
@@ -344,8 +345,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 	        }
     	}
 		else {
-	        gumsResourceAdminLog.info(logUserAccess() + "Failed to remove account range because user doesn't have write access");
-			siteLog.info(logUserAccess() + "Failed to remove account range because user doesn't have write access");
+	        gumsResourceAdminLog.info(logUserAccess() + "Failed to remove account range because user doesn't have administrative access");
+			siteLog.info(logUserAccess() + "Failed to remove account range because user doesn't have administrative access");
 			throw new AuthorizationDeniedException();
 		}
     }
@@ -354,8 +355,8 @@ public class GUMSAPIImpl implements GUMSAPI {
     	if (hasWriteAccess(currentUser()))
     		gums().restoreConfiguration(dateStr);
     	else {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
-    		siteLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to set configuration because user doesn't have administrative access");
+    		siteLog.info(logUserAccess() + "Failed to set configuration because user doesn't have administrative access");
     		throw new AuthorizationDeniedException();
     	}  	
     }
@@ -364,8 +365,8 @@ public class GUMSAPIImpl implements GUMSAPI {
     	if (hasWriteAccess(currentUser()))
     		gums().setConfiguration(configuration, false);
     	else {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
-    		siteLog.info(logUserAccess() + "Failed to set configuration because user doesn't have write access");
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to set configuration because user doesn't have administrative access");
+    		siteLog.info(logUserAccess() + "Failed to set configuration because user doesn't have administrative access");
     		throw new AuthorizationDeniedException();
     	}
     }
@@ -398,8 +399,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 	        siteLog.info(logUserAccess() + "Unassigned accounts from account mapper '" + accountPoolMapperName + "'");
     	}
     	else {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to unassign accounts because user doesn't have write access");
-    		siteLog.info(logUserAccess() + "Failed to unassign accounts because user doesn't have write access");
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to unassign accounts because user doesn't have administrative access");
+    		siteLog.info(logUserAccess() + "Failed to unassign accounts because user doesn't have administrative access");
     		throw new AuthorizationDeniedException();
     	}
     }
@@ -434,17 +435,28 @@ public class GUMSAPIImpl implements GUMSAPI {
         }
     }
 
+    private String getAccountPoolMapper(String pool) {
+    	Collection accountMappers = gums().getConfiguration().getAccountMappers().values();
+    	Iterator it = accountMappers.iterator();
+    	while (it.hasNext()) {
+    		AccountMapper accountMapper = (AccountMapper)it.next();
+    		if ( accountMapper instanceof AccountPoolMapper && ((AccountPoolMapper)accountMapper).getAccountPoolRoot().equals(pool))
+    			return accountMapper.getName();
+    	}
+    	return null;
+    }
+
     private AccountPoolMapperDB getAccountPoolMapperDB(String accountPoolMapperName) {
         return ((AccountPoolMapper) gums().getConfiguration().getAccountMapper(accountPoolMapperName)).getDB();
     }
-
+    
     private ManualAccountMapperDB getManualAccountMapperDB(String manualAccountMapperName) {
     	return ((ManualAccountMapper) gums().getConfiguration().getAccountMapper(manualAccountMapperName)).getDB();
     }
     
     private ManualUserGroupDB getManualUserGroupDB(String manualUserGroupName) {
     	return ((ManualUserGroup) gums().getConfiguration().getUserGroup(manualUserGroupName)).getDB();
-    }
+    }    
     
     private GUMS gums() {
         if (gums == null) {
@@ -453,8 +465,8 @@ public class GUMSAPIImpl implements GUMSAPI {
             gums = new GUMS(confStore);
         }
         return gums;
-    }    
-    
+    }
+
     private boolean hasReadAllAccess(GridUser user, String hostname) {
         if (user == null) return false;
         if (gums().getConfiguration().getReadAllUserGroups() != null) {
@@ -470,7 +482,7 @@ public class GUMSAPIImpl implements GUMSAPI {
         	return user.getCertificateDN().indexOf(hostname) != -1;
         return false;
     }
-
+    
     private boolean hasReadSelfAccess(GridUser currentUser) {
         if (currentUser == null) return false;
         if (gums().getConfiguration().getReadSelfUserGroups() == null)

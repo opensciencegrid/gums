@@ -29,11 +29,6 @@ public class LDAPAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
     public void setUp() throws Exception {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
-        try {
-            factory.destroyMap("testPool", "map=testPool,ou=GUMS");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         db = factory.retrieveAccountPoolMapperDB("testPool.griddevGroup.griddevGroup");
         initDB();
     }
@@ -55,26 +50,23 @@ public class LDAPAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
     }
     
     public void testResetPool() {
-        db.addAccount("grid001");
-        db.addAccount("grid002");
-        db.addAccount("grid003");
-        db.addAccount("grid004");
-        db.addAccount("grid005");
-        db.addAccount("grid006");
-        assertEquals("grid001", db.assignAccount("test"));
-        assertEquals("grid002", db.assignAccount("test2"));
-        assertEquals("grid003", db.assignAccount("test3"));
+        ((LDAPAccountMapperDB) db).unassignAccount("pool0");
+        ((LDAPAccountMapperDB) db).unassignAccount("pool1");
+        ((LDAPAccountMapperDB) db).unassignAccount("pool2");
+        assertEquals("pool0", db.assignAccount("test"));
+        assertEquals("pool1", db.assignAccount("test2"));
+        assertEquals("pool2", db.assignAccount("test3"));
         ((LDAPAccountMapperDB) db).unassignUser("test");
         ((LDAPAccountMapperDB) db).unassignUser("test2");
         ((LDAPAccountMapperDB) db).unassignUser("test3");
-        assertEquals("grid001", db.assignAccount("test4"));
-        assertEquals("grid002", db.assignAccount("test5"));
-        assertEquals("grid003", db.assignAccount("test6"));
-        ((LDAPAccountMapperDB) db).unassignAccount("grid001");
-        ((LDAPAccountMapperDB) db).unassignAccount("grid002");
-        ((LDAPAccountMapperDB) db).unassignAccount("grid003");
-        assertEquals("grid001", db.assignAccount("test4"));
-        assertEquals("grid002", db.assignAccount("test5"));
-        assertEquals("grid003", db.assignAccount("test6"));
+        assertEquals("pool0", db.assignAccount("test4"));
+        assertEquals("pool1", db.assignAccount("test5"));
+        assertEquals("pool2", db.assignAccount("test6"));
+        ((LDAPAccountMapperDB) db).unassignAccount("pool0");
+        ((LDAPAccountMapperDB) db).unassignAccount("pool1");
+        ((LDAPAccountMapperDB) db).unassignAccount("pool2");
+        assertEquals("pool0", db.assignAccount("test4"));
+        assertEquals("pool1", db.assignAccount("test5"));
+        assertEquals("pool2", db.assignAccount("test6"));
     }
 }

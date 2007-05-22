@@ -189,6 +189,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public void changeGroupID(String account, String groupname) {
         String gid = findGID(groupname);
         if (gid == null) {
+        	log.error("GID for group '" + groupname + "' wasn't found.");
             throw new RuntimeException("GID for group '" + groupname + "' wasn't found.");
         }
         updateGID(account, gid);
@@ -662,7 +663,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
             context.modifyAttributes(accountField+"="+account+",ou=People", mods);
             log.trace("Changed primary gid for user '" + account + "' to gid '" + gid + "''");
         } catch (Exception e) {
-            log.info("Couldn't change gid for user '" + account + "' to gid '" + gid + "''", e);
+            log.warn("Couldn't change gid for user '" + account + "' to gid '" + gid + "''", e);
+            throw new RuntimeException("Couldn't change gid for user '" + account + "' to gid '" + gid + "''", e);
         } finally {
             releaseContext(context);
         }

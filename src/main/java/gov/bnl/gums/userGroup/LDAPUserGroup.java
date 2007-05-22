@@ -217,8 +217,8 @@ public class LDAPUserGroup extends UserGroup {
     
     public String toXML() {
     	return "\t\t<ldapUserGroup\n"+
-		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tname='"+getName()+"'\n"+
+		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tdescription='"+getDescription()+"'\n"+
     	"\t\t\tserver='"+server+"'\n" +
 		"\t\t\tquery='"+query+"'\n" +

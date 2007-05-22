@@ -114,8 +114,8 @@ public class ManualUserGroup extends UserGroup {
     
     public String toXML() {
     	return "\t\t<manualUserGroup\n"+
-		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tname='"+getName()+"'\n"+
+		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tdescription='"+getDescription()+"'\n"+
 		"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }    

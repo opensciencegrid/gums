@@ -55,6 +55,14 @@ public class AccountPoolMapper extends AccountMapper {
     public String getAccountPool() {
     	return accountPool;
     }
+    
+    public String getAccountPoolRoot() {
+    	int index = accountPool.indexOf(".");
+    	if (index != -1)
+    		return accountPool.substring(0, index);
+    	else
+    		return accountPool;
+    }
 
     public AccountPoolMapperDB getDB() {
     	if (db==null)
@@ -88,7 +96,7 @@ public class AccountPoolMapper extends AccountMapper {
     	it = accountRoots.keySet().iterator();
     	while (it.hasNext()) {
     		String accountRoot = (String)it.next();
-    		retStr += accountRoot + "X(" + 
+    		retStr += accountRoot + "(" + 
     			((Integer[])accountRoots.get(accountRoot))[1] + "/" + 
     			((Integer[])accountRoots.get(accountRoot))[0] + ")";
     		if (it.hasNext())

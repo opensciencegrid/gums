@@ -31,9 +31,7 @@ public class LDAPManualAccountMapperDBTest extends ManualAccountMapperDBTest {
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
         try {
             factory.destroyMap("testManual", "map=testManual,ou=GUMS");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {}
         db = factory.retrieveManualAccountMapperDB("testManual");
     }
     

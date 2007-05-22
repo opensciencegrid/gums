@@ -35,9 +35,7 @@ public class LDAPManualUserGroupDBTest extends ManualUserGroupDBTest {
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
         try {
             factory.getLDAPContext().destroySubcontext("group=testManualUserGroup,ou=GUMS");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {}
         db = factory.retrieveManualUserGroupDB("testManualUserGroup");
     }
     
