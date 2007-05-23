@@ -83,9 +83,7 @@ public class VomsServer {
 	}
 	
 	public UserGroupDB getDB(String userGroup) {
-    	if (db==null)
-            db = configuration.getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( userGroup );
-    	return db;
+    	return configuration.getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( userGroup );
     }
 	
     public String getName() {

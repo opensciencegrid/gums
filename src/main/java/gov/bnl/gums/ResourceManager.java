@@ -221,7 +221,8 @@ public class ResourceManager {
 		                        gridMapfileBuffer.append(' ');
 		                        gridMapfileBuffer.append(account );
 		                        gridMapfileBuffer.append("\n");
-		                        usersInMap.add(user.getCertificateDN());
+		                        if (!includeFQAN)
+		                        	usersInMap.add(user.getCertificateDN());
 		                    } else {
 		                        resourceAdminLog.warn("User " + user + " from group " + gMap.getUserGroups() + " can't be mapped.");
 		                    }

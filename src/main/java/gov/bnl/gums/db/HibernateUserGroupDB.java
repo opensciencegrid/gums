@@ -45,6 +45,8 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         this.group = group;
     }
 
+    public String getGroup(){return group;};
+    
     public void addMember(GridUser user) {
         Session session = null;
         Transaction tx = null;
