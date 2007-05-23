@@ -159,7 +159,7 @@ if (request.getParameter("action")==null ||
 <%
 			}
 			
-			out.write(	"Non-VOMS certificates are: " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "" : "not ") + "accepted<br>");
+			out.write(	"Accept non-VOMS certificates: " + (((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN() ? "true<br>" : "false<br>"));
 
 %>
 			VOMS certificate's FQAN is matched as: <%=((VOMSUserGroup)userGroup).getMatchFQAN()%><br>
@@ -406,8 +406,8 @@ else if ("edit".equals(request.getParameter("action"))
 				</td>
 				<td>
 					<select name="nVOMS" onchange="document.forms[0].elements['action'].value='reload';document.forms[0].submit();">
-						<option <%=(((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"selected":"")%>>allowed</option>
-						<option <%=(((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"":"selected")%>>not allowed</option>
+						<option <%=(((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"selected":"")%>>true</option>
+						<option <%=(((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"":"selected")%>>false</option>
 					</select>
 				</td>
 			</tr>
@@ -418,7 +418,7 @@ else if ("edit".equals(request.getParameter("action"))
 				<td>
 					<%=ConfigurationWebToolkit.createSelectBox("matchFQAN", 
 							VOMSUserGroup.getMatchFQANTypes(), 
-							"exact",
+							((VOMSUserGroup)userGroup).getMatchFQAN(),
 							null,
 							false)%>
 				</td>
