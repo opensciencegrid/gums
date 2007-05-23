@@ -71,13 +71,15 @@ Adds, removes, or unassigns accounts in pool.
 %>   
 		</td>
 	</tr>
+<%
+		if (accountMappers.size()>0) {
+%>
 	<tr>
         <td style="text-align: right;">Account Pool: </td>
         <td style="text-align: left;"><%=((AccountPoolMapper)configuration.getAccountMapper(request.getParameter("accountMapper")!=null ? request.getParameter("accountMapper") : (String)accountMappers.get(0))).getAccountPoolRoot()%>
 		</td>
 	</tr>
 <%
-		if (accountMappers.size()>0) {
 	      	String assignments = gums.getPoolAccountAssignments(request.getParameter("accountMapper")!=null ? request.getParameter("accountMapper") : (String)accountMappers.get(0));
 			if (!assignments.equals("")) {
 %>

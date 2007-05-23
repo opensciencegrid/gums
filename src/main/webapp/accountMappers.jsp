@@ -123,6 +123,7 @@ if (request.getParameter("action")==null ||
 				    			<%=accountMapper.getName()%>
 				    		</a><br>
 				    		Description: <%=accountMapper.getDescription()%><br>	
+				    		Account: <%=((GroupAccountMapper)accountMapper).getAccountName()%><br>	
 <%
 		} else if (accountMapper instanceof ManualAccountMapper) {
 %>

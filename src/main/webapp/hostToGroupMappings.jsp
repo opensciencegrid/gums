@@ -44,7 +44,7 @@ try {
 }
 if (configuration.getGroupToAccountMappings().size()==0) {
 %>
-	<p><div class="failure">You must first create a "group to account" element.</div></p>
+	<p><div class="failure">You must first create a 'group to account mapping'.</div></p>
 	</div>
 	<%@include file="bottomNav.jspf"%>
 	</body>
@@ -71,8 +71,8 @@ if (request.getParameter("action")==null ||
 	if ("save".equals(request.getParameter("action"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			int index = newConfiguration.getHostToGroupMappings().indexOf( newConfiguration.getHostToGroupMapping(request.getParameter("name")) );
-			newConfiguration.removeHostToGroupMapping( request.getParameter("name") );
+			int index = newConfiguration.getHostToGroupMappings().indexOf( newConfiguration.getHostToGroupMapping(request.getParameter("originalName")) );
+			newConfiguration.removeHostToGroupMapping( request.getParameter("originalName") );
 			if (index!=-1)
 				newConfiguration.addHostToGroupMapping( index, ConfigurationWebToolkit.parseHostToGroupMapping(request) );
 			else
@@ -235,6 +235,7 @@ else if ("edit".equals(request.getParameter("action"))
 %>
 <form action="hostToGroupMappings.jsp" method="get">
 	<input type="hidden" name="action" value="">
+	<input type="hidden" name="originalName" value="<%=("reload".equals(request.getParameter("action")) ? request.getParameter("originalName") : request.getParameter("name"))%>"/>
 	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
@@ -242,9 +243,6 @@ else if ("edit".equals(request.getParameter("action"))
 	    		Hosts:
 		    </td>
 		    <td nowrap>
-<%
-	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction"))) {
-%>
 		    	<input maxlength="256" size="48" name="name" value="<%=cH2GMapping.getName()%>"/>
 				cn<input type="radio" name="type" value="cn" <%=(cH2GMapping.getDn()==null?"checked":"")%>>
 			    dn<input type="radio" name="type" value="dn" <%=(cH2GMapping.getDn()!=null?"checked":"")%>>
@@ -259,18 +257,6 @@ else if ("edit".equals(request.getParameter("action"))
 				*.host1.com, *.host2.com
 		    </td>
 		</tr>
-<%	    
-	}
-	else {
-%>
-		    	<%=cH2GMapping.getName()%>
-		    	<input type="hidden" name="name" value="<%=cH2GMapping.getName()%>"/>
-		    	<input type="hidden" name="type" value="<%=(cH2GMapping.getDn()!=null?"dn":"cn")%>"/>
-		    </td>
-		</tr>
-<%	
-	}
-%>
 		<tr>
 			<td nowrap style="text-align: right;">
 	    		Description:

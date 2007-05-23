@@ -164,13 +164,16 @@ if (request.getParameter("action")==null ||
 %>
 			VOMS certificate's FQAN is matched as: <%=((VOMSUserGroup)userGroup).getMatchFQAN()%><br>
 <%
-
+			if (!((VOMSUserGroup)userGroup).getVoGroup().equals("")) {
 %>
-			VO/Group: <%=((VOMSUserGroup)userGroup).getVoGroup()%><br>
+				VO/Group: <%=((VOMSUserGroup)userGroup).getVoGroup()%><br>
 <%
+			}
+			if (!((VOMSUserGroup)userGroup).getRole().equals("")) {
 %>
-			Role: <%=((VOMSUserGroup)userGroup).getRole()%><br>
+				Role: <%=((VOMSUserGroup)userGroup).getRole()%><br>
 <%
+			}
 		}
 %>
 								GUMS Access: <%=userGroup.getAccess()%>

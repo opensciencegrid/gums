@@ -82,12 +82,14 @@
 										<include name="log4j.properties.template"/>
 										<include name="gums.config.schema"/>
 										<include name="gums.config.transform"/>
+										<include name="gums.config.barebones"/>
 										<include name="sql/**"/>
 										<include name="scripts/**"/>
 									</patternset>
 				                </unzip>
 				                
 				                <copyfile src="src/main/resources/gums.config.template" dest="src/main/config/gums.config" forceoverwrite="no"/>
+				                <copyfile src="src/main/resources/gums.config.barebones" dest="src/main/config/backup/gums.config.barebones" forceoverwrite="no"/>
 				                <copyfile src="src/main/resources/log4j.properties.template" dest="src/main/config/log4j.properties" forceoverwrite="no"/>
 							</tasks>
 						</configuration>
