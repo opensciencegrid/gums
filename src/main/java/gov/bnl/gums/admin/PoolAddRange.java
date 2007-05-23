@@ -21,7 +21,7 @@ public class PoolAddRange extends RemoteCommand {
     public PoolAddRange() {
         syntax = "[-g GUMSURL] ACCOUNTMAPPER RANGE";
         description = "Adds range of accounts to a pool. " +
-            "ACCOUNTMAPPER is the name of the account mapper. " +
+        	"ACCOUNTMAPPER is the name of the account mapper. " +
             "RANGE is the group of accounts to be added (i.e. grid0050-125).";
     }
 
