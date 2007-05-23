@@ -199,8 +199,9 @@ public class FileConfigurationStore implements ConfigurationStore {
     }
     
     public synchronized Configuration restoreConfiguration(String dateStr) {
-    	moveFile(configPath, configBackupDir + "/gums.config.old");
-    	copyFile(configBackupDir + "/gums.config." + dateStr, configPath);
+       	moveFile(configPath, configBackupDir + "/gums.config~");
+       	copyFile(configBackupDir + "/gums.config." + dateStr, configPath);
+       	moveFile(configBackupDir + "/gums.config~", configBackupDir + "/gums.config.prev");
         return retrieveConfiguration();
     }
     
@@ -294,9 +295,9 @@ public class FileConfigurationStore implements ConfigurationStore {
 
         new File(configBackupDir).mkdir();
         
-        // copy gums.config to gums.config_old
+        // copy gums.config to gums.config.prev
         if (!backupCopy && new File(configPath).exists())
-        	copyFile(configPath, configBackupDir+"/gums.config.old");
+        	copyFile(configPath, configBackupDir+"/gums.config.prev");
 
         // move temp file to gums.config or gums.config.date
     	moveFile(tempGumsConfigPath, (backupCopy?configBackupDir+"/gums.config."+format.format(new Date()):configPath));

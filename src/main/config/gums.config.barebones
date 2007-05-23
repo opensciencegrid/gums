@@ -1,7 +1,7 @@
 <gums version='1.2'>
 	<persistenceFactories>
 		<hibernatePersistenceFactory
-			tname='mysql'
+			name='mysql'
 			description=''
 			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
 			hibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'
