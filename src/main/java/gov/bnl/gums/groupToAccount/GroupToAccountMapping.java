@@ -30,7 +30,7 @@ public class GroupToAccountMapping {
     private String name = "";
 	private String description = "";
     private String accountingVo = "";
-    private String accountingDesc = "";
+    private String accountingVoSubgroup = "";
     private Configuration configuration = null;
 
 	/**
@@ -86,8 +86,8 @@ public class GroupToAccountMapping {
     public GroupToAccountMapping clone(Configuration configuration) {
     	GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping(configuration, name);
     	groupToAccountMapping.setDescription(getDescription());
+    	groupToAccountMapping.setAccountingVoSubgroup(accountingVoSubgroup);
     	groupToAccountMapping.setAccountingVo(accountingVo);
-    	groupToAccountMapping.setAccountingDesc(accountingDesc);
     	Iterator it = getUserGroups().iterator();
     	while (it.hasNext())
     		groupToAccountMapping.addUserGroup( (String)it.next() );
@@ -111,23 +111,23 @@ public class GroupToAccountMapping {
     }
     
     /**
-     * Getter for property accountingDesc.
-     * 
-     * @return Value of property accountingDesc.
-     */
-    public String getAccountingDesc() {
-
-        return this.accountingDesc;
-    }    
-    
-    /**
      * Getter for property accountingVo.
      * 
      * @return Value of property accountingVo.
      */
-    public String getAccountingVo()  {
+    public String getAccountingVo() {
 
         return this.accountingVo;
+    }    
+    
+    /**
+     * Getter for property accountingVoSubgroup.
+     * 
+     * @return Value of property accountingVoSubgroup.
+     */
+    public String getAccountingVoSubgroup()  {
+
+        return this.accountingVoSubgroup;
     }    
     
     /**
@@ -176,12 +176,12 @@ public class GroupToAccountMapping {
     }
     
     /**
-     * Setter for property accountingDesc.
-     * @param accountingDesc New value of property accountingDesc.
+     * Setter for property accountingVo.
+     * @param accountingVo New value of property y.
      */
-    public void setAccountingDesc(String accountingDesc) {
+    public void setAccountingVo(String accountingVo) {
 
-        this.accountingDesc = accountingDesc;
+        this.accountingVo = accountingVo;
     }
 
     /**
@@ -189,9 +189,9 @@ public class GroupToAccountMapping {
      * 
      * @param accountingVo New value of property accountingVo.
      */
-    public void setAccountingVo(java.lang.String accountingVo)  {
+    public void setAccountingVoSubgroup(java.lang.String accountingVoSubgroup)  {
 
-        this.accountingVo = accountingVo;
+        this.accountingVoSubgroup = accountingVoSubgroup;
     }
 
     /**
@@ -221,6 +221,10 @@ public class GroupToAccountMapping {
 		this.name = name;
 	}
     
+    public String toString(String bgColor) {
+    	return "<td bgcolor=\""+bgColor+"\"><a href=\"groupToAccountMappings.jsp?action=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getAccountingVoSubgroup() + "</td><td bgcolor=\""+bgColor+"\">" + getAccountingVo() + "</td>";
+    }
+    
     /**
      * Get XML representation of this object for writing to gums.config
      * 
@@ -230,8 +234,8 @@ public class GroupToAccountMapping {
     	String retStr = "\t\t<groupToAccountMapping\n"+
 		"\t\t\tname='"+name+"'\n"+
 		"\t\t\tdescription='"+getDescription()+"'\n"+
+		"\t\t\taccountingVoSubgroup='"+accountingVoSubgroup+"'\n"+
 		"\t\t\taccountingVo='"+accountingVo+"'\n"+
-		"\t\t\taccountingDesc='"+accountingDesc+"'\n"+
 		"\t\t\tuserGroups='";
 
 	    List userGroups = getUserGroups();

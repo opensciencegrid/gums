@@ -50,8 +50,8 @@ public class ConfigurationTest extends TestCase {
 
         GroupToAccountMapping gMap = new GroupToAccountMapping(conf, "mockGroup");
         conf.addGroupToAccountMapping(gMap);
+        gMap.setAccountingVoSubgroup("mock");
         gMap.setAccountingVo("mock");
-        gMap.setAccountingDesc("mock");
         UserGroup userGroup = new MockUserGroup(conf, "mockUserGroup");
         conf.addUserGroup(userGroup);
         gMap.addUserGroup(userGroup.getName());

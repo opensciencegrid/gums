@@ -234,8 +234,8 @@
     			<groupToAccountMapping
 					name='{../@name}'
 					description=''
-					accountingVo='{../@accountingVo}'
-					accountingDesc='{../@accountingDesc}'
+					accountingVoSubgroup='{../@accountingVo}'
+					accountingVo='{../@accountingDesc}'
 					userGroups='{../userGroup/@name}'
 					accountMappers='{concat(@name,@groupName,translate(@jndiNisUrl,",","_"),translate(@jndiLdapUrl,",","_"))}'
 				/>
@@ -244,8 +244,8 @@
     			<groupToAccountMapping
 					name='{../../@name}'
 					description=''
-					accountingVo='{../../@accountingVo}'
-					accountingDesc='{../../@accountingDesc}'
+					accountingVoSubgroup='{../../@accountingVo}'
+					accountingVo='{../../@accountingDesc}'
 					userGroups='{../../userGroup/@name}'
 					accountMappers='{concat(@name,@groupName,translate(@jndiNisUrl,",","_"),translate(@jndiLdapUrl,",","_"))}'
 				/>

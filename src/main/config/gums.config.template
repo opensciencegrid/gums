@@ -26,8 +26,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://lcg-voms.cern.ch:8443/voms'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -36,8 +36,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://voms.fnal.gov:8443/voms'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 			
@@ -46,8 +46,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://grid03.uits.indiana.edu:8443/edg-voms-admin/vos/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -56,8 +56,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://voms.cnaf.infn.it:8443/voms/cdf/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -66,8 +66,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://voms.compbiogrid.org:8443/voms/CompBioGrid/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -76,8 +76,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://thegrid.dpcc.uta.edu:8443/edg-voms-admin/dosar/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -86,8 +86,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://osg-engage.renci.org:8443/voms/Engage/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -96,8 +96,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://glow-voms.cs.wisc.edu:8443/edg-voms-admin/GLOW/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -106,8 +106,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://t2.unl.edu:8443/voms/gpn/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -116,8 +116,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://dylan.ccr.buffalo.edu:8443/edg-voms-admin/GRASE/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -126,8 +126,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://grow-voms.its.uiowa.edu:8443/edg-voms-admin/grow/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -136,8 +136,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://gugrid.arc.georgetown.edu:8443/voms/GUGrid/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -146,8 +146,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://ligo-web.aset.psu.edu:8443/voms/LIGO/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -156,8 +156,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://www-mariachi.physics.sunysb.edu:8443/voms/mariachi/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -166,8 +166,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://vo.rcac.purdue.edu:8443/voms/NWICG/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -176,8 +176,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://voms.opensciencegrid.org:8443/voms/osg/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -186,8 +186,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://vo.racf.bnl.gov:8443/voms/star/services/VOMSAdmin'
-			sslKey='/etc/grid-security/http/httpkey.pem'
-			sslCertfile='/etc/grid-security/http/httpcert.pem'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -921,376 +921,376 @@
 		<groupToAccountMapping
 			name='LIGO'
 			description=''
+			accountingVoSubgroup='LIGO'
 			accountingVo='LIGO'
-			accountingDesc='LIGO'
 			userGroups='LIGO'
 			accountMappers='ligo'/>
 
 		<groupToAccountMapping
 			name='cdf'
 			description=''
-			accountingVo='cdf'
-			accountingDesc='CDF'
+			accountingVoSubgroup='cdf'
+			accountingVo='CDF'
 			userGroups='cdf'
 			accountMappers='cdf'/>
 
 		<groupToAccountMapping
 			name='cmsuser'
 			description=''
-			accountingVo='uscms'
-			accountingDesc='CMS'
+			accountingVoSubgroup='uscms'
+			accountingVo='CMS'
 			userGroups='cmsuser'
 			accountMappers='uscmsPool'/>
 			
 		<groupToAccountMapping
 			name='cmsuser-null'
 			description=''
-			accountingVo='uscms'
-			accountingDesc='CMS'
+			accountingVoSubgroup='uscms'
+			accountingVo='CMS'
 			userGroups='cmsuser-null'
 			accountMappers='uscmsPool'/>
 
 		<groupToAccountMapping
 			name='uscmsfrontier'
 			description=''
-			accountingVo='uscms'
-			accountingDesc='CMS'
+			accountingVoSubgroup='uscms'
+			accountingVo='CMS'
 			userGroups='cmsfrontier'
 			accountMappers='cmsfrontier'/>
 
 		<groupToAccountMapping
 			name='uscmsphedex'
 			description=''
-			accountingVo='uscms'
-			accountingDesc='CMS'
+			accountingVoSubgroup='uscms'
+			accountingVo='CMS'
 			userGroups='cmsphedex'
 			accountMappers='cmsphedex'/>
 
 		<groupToAccountMapping
 			name='uscmsprod'
 			description=''
-			accountingVo='uscms'
-			accountingDesc='CMS'
+			accountingVoSubgroup='uscms'
+			accountingVo='CMS'
 			userGroups='cmsprod'
 			accountMappers='cmsprod'/>
 
 		<groupToAccountMapping
 			name='uscmssoft'
 			description=''
-			accountingVo='uscms'
-			accountingDesc='CMS'
+			accountingVoSubgroup='uscms'
+			accountingVo='CMS'
 			userGroups='cmssoft'
 			accountMappers='cmssoft'/>
 
 		<groupToAccountMapping
 			name='uscmst2admin'
 			description=''
-			accountingVo='uscms'
-			accountingDesc='CMS'
+			accountingVoSubgroup='uscms'
+			accountingVo='CMS'
 			userGroups='cmst2admin'
 			accountMappers='cmst2admin'/>
 
 		<groupToAccountMapping
 			name='uscmsuser'
 			description=''
-			accountingVo='uscms'
-			accountingDesc='CMS'
+			accountingVoSubgroup='uscms'
+			accountingVo='CMS'
 			userGroups='uscmsuser'
 			accountMappers='uscmsPool'/>
 
 		<groupToAccountMapping
 			name='compbiogrid'
 			description=''
-			accountingVo='compbiogrid'
-			accountingDesc='CompBioGrid'
+			accountingVoSubgroup='compbiogrid'
+			accountingVo='CompBioGrid'
 			userGroups='compbiogrid'
 			accountMappers='compbiogrid'/>
 
 		<groupToAccountMapping
 			name='des'
 			description=''
-			accountingVo='des'
-			accountingDesc='DES'
+			accountingVoSubgroup='des'
+			accountingVo='DES'
 			userGroups='des'
 			accountMappers='des'/>
 			
 		<groupToAccountMapping
 			name='des-production'
 			description=''
-			accountingVo='des'
-			accountingDesc='DES'
+			accountingVoSubgroup='des'
+			accountingVo='DES'
 			userGroups='des-production'
 			accountMappers='des'/>		
 
 		<groupToAccountMapping
 			name='dosar'
 			description=''
+			accountingVoSubgroup='DOSAR'
 			accountingVo='DOSAR'
-			accountingDesc='DOSAR'
 			userGroups='dosar-admin'
 			accountMappers='dosar'/>
 
 		<groupToAccountMapping
 			name='dzeroana'
 			description=''
-			accountingVo='dzero'
-			accountingDesc='DZERO'
+			accountingVoSubgroup='dzero'
+			accountingVo='DZERO'
 			userGroups='dzeroana'
 			accountMappers='dzeroana'/>
 
 		<groupToAccountMapping
 			name='dzeroservice'
 			description=''
-			accountingVo='dzero'
-			accountingDesc='DZERO'
+			accountingVoSubgroup='dzero'
+			accountingVo='DZERO'
 			userGroups='dzeroservice'
 			accountMappers='sam'/>
 
 		<groupToAccountMapping
 			name='dzerouser'
 			description=''
-			accountingVo='dzero'
-			accountingDesc='DZERO'
+			accountingVoSubgroup='dzero'
+			accountingVo='DZERO'
 			userGroups='dzerouser'
 			accountMappers='samgrid'/>
 
 		<groupToAccountMapping
 			name='engage'
 			description=''
-			accountingVo='engage'
-			accountingDesc='Engage'
+			accountingVoSubgroup='engage'
+			accountingVo='Engage'
 			userGroups='engage'
 			accountMappers='engage'/>
 
 		<groupToAccountMapping
 			name='fermilab'
 			description=''
-			accountingVo='fermilab'
-			accountingDesc='Fermilab'
+			accountingVoSubgroup='fermilab'
+			accountingVo='Fermilab'
 			userGroups='fermilab'
 			accountMappers='fermilab'/>
 
 		<groupToAccountMapping
 			name='fmri'
 			description=''
-			accountingVo='fmri'
-			accountingDesc='fMRI'
+			accountingVoSubgroup='fmri'
+			accountingVo='fMRI'
 			userGroups='fmri'
 			accountMappers='fmri'/>
 
 		<groupToAccountMapping
 			name='gadu'
 			description=''
-			accountingVo='gadu'
-			accountingDesc='GADU'
+			accountingVoSubgroup='gadu'
+			accountingVo='GADU'
 			userGroups='gadu'
 			accountMappers='gadu'/>
 
 		<groupToAccountMapping
 			name='geant4'
 			description=''
-			accountingVo='geant4'
-			accountingDesc='GEANT4'
+			accountingVoSubgroup='geant4'
+			accountingVo='GEANT4'
 			userGroups='geant4'
 			accountMappers='geant4'/>
 
 		<groupToAccountMapping
 			name='glow'
 			description=''
-			accountingVo='glow'
-			accountingDesc='GLOW'
+			accountingVoSubgroup='glow'
+			accountingVo='GLOW'
 			userGroups='glow'
 			accountMappers='glow'/>
 
 		<groupToAccountMapping
 			name='gpn'
 			description=''
+			accountingVoSubgroup='gpn'
 			accountingVo='gpn'
-			accountingDesc='gpn'
 			userGroups='gpn'
 			accountMappers='gpn'/>
 
 		<groupToAccountMapping
 			name='grase'
 			description=''
-			accountingVo='grase'
-			accountingDesc='GRASE'
+			accountingVoSubgroup='grase'
+			accountingVo='GRASE'
 			userGroups='grase'
 			accountMappers='grase'/>
 
 		<groupToAccountMapping
 			name='gridex'
 			description=''
-			accountingVo='gridex'
-			accountingDesc='GRIDEX'
+			accountingVoSubgroup='gridex'
+			accountingVo='GRIDEX'
 			userGroups='gridex'
 			accountMappers='gridex'/>
 
 		<groupToAccountMapping
 			name='grow'
 			description=''
-			accountingVo='grow'
-			accountingDesc='GROW'
+			accountingVoSubgroup='grow'
+			accountingVo='GROW'
 			userGroups='grow'
 			accountMappers='grow'/>
 
 		<groupToAccountMapping
 			name='gugrid'
 			description=''
-			accountingVo='gugrid'
-			accountingDesc='GUGrid'
+			accountingVoSubgroup='gugrid'
+			accountingVo='GUGrid'
 			userGroups='gugrid'
 			accountMappers='gugrid'/>
 
 		<groupToAccountMapping
 			name='i2u2'
 			description=''
-			accountingVo='i2u2'
-			accountingDesc='I2U2'
+			accountingVoSubgroup='i2u2'
+			accountingVo='I2U2'
 			userGroups='i2u2'
 			accountMappers='i2u2'/>
 
 		<groupToAccountMapping
 			name='ilc'
 			description=''
-			accountingVo='ilc'
-			accountingDesc='ILC'
+			accountingVoSubgroup='ilc'
+			accountingVo='ILC'
 			userGroups='ilc'
 			accountMappers='ilc'/>
 
 		<groupToAccountMapping
 			name='ivdgl'
 			description=''
-			accountingVo='ivdgl'
-			accountingDesc='iVDgL'
+			accountingVoSubgroup='ivdgl'
+			accountingVo='iVDgL'
 			userGroups='ivdgl'
 			accountMappers='ivdgl'/>
 
 		<groupToAccountMapping
 			name='mariachi'
 			description=''
-			accountingVo='mariachi'
-			accountingDesc='MARIACHI'
+			accountingVoSubgroup='mariachi'
+			accountingVo='MARIACHI'
 			userGroups='mariachi'
 			accountMappers='mariachi'/>
 
 		<groupToAccountMapping
 			name='miniboone'
 			description=''
-			accountingVo='miniboone'
-			accountingDesc='Fermilab'
+			accountingVoSubgroup='miniboone'
+			accountingVo='Fermilab'
 			userGroups='miniboone'
 			accountMappers='minboone'/>
 
 		<groupToAccountMapping
 			name='minossoft'
 			description=''
-			accountingVo='minos'
-			accountingDesc='Fermilab'
+			accountingVoSubgroup='minos'
+			accountingVo='Fermilab'
 			userGroups='minossoft'
 			accountMappers='minsoft'/>
 
 		<groupToAccountMapping
 			name='mis'
 			description=''
-			accountingVo='mis'
-			accountingDesc='MIS'
+			accountingVoSubgroup='mis'
+			accountingVo='MIS'
 			userGroups='mis'
 			accountMappers='mis'/>
 
 		<groupToAccountMapping
 			name='nanohub'
 			description=''
-			accountingVo='nanohub'
-			accountingDesc='NANOHUB'
+			accountingVoSubgroup='nanohub'
+			accountingVo='NANOHUB'
 			userGroups='nanohub'
 			accountMappers='nanohub'/>
 
 		<groupToAccountMapping
 			name='newAtlas'
 			description=''
-			accountingVo='usatlas'
-			accountingDesc='ATLAS'
+			accountingVoSubgroup='usatlas'
+			accountingVo='ATLAS'
 			userGroups='newatlas'
 			accountMappers='usatlas4'/>
 
 		<groupToAccountMapping
 			name='newUsatlas'
 			description=''
-			accountingVo='usatlas'
-			accountingDesc='ATLAS'
+			accountingVoSubgroup='usatlas'
+			accountingVo='ATLAS'
 			userGroups='newusatlas'
 			accountMappers='usatlas3'/>
 
 		<groupToAccountMapping
 			name='newUsatlasProd'
 			description=''
-			accountingVo='usatlas'
-			accountingDesc='ATLAS'
+			accountingVoSubgroup='usatlas'
+			accountingVo='ATLAS'
 			userGroups='newUsatlasProd'
 			accountMappers='usatlas1'/>
 
 		<groupToAccountMapping
 			name='newUsatlasSoft'
 			description=''
-			accountingVo='usatlas'
-			accountingDesc='ATLAS'
+			accountingVoSubgroup='usatlas'
+			accountingVo='ATLAS'
 			userGroups='newUsatlasSoft'
 			accountMappers='usatlas2'/>
 
 		<groupToAccountMapping
 			name='nwicg'
 			description=''
+			accountingVoSubgroup='nwicg'
 			accountingVo='nwicg'
-			accountingDesc='nwicg'
 			userGroups='nwicg'
 			accountMappers='nwicg'/>
 
 		<groupToAccountMapping
 			name='ops'
 			description=''
-			accountingVo='ops'
-			accountingDesc='OPS'
+			accountingVoSubgroup='ops'
+			accountingVo='OPS'
 			userGroups='ops'
 			accountMappers='ops'/>
 
 		<groupToAccountMapping
 			name='osg'
 			description=''
-			accountingVo='osg'
-			accountingDesc='OSG'
+			accountingVoSubgroup='osg'
+			accountingVo='OSG'
 			userGroups='osg'
 			accountMappers='osg'/>
 
 		<groupToAccountMapping
 			name='osgedu'
 			description=''
-			accountingVo='osgedu'
-			accountingDesc='OSGEDU'
+			accountingVoSubgroup='osgedu'
+			accountingVo='OSGEDU'
 			userGroups='osgedu'
 			accountMappers='osgedu'/>
 
 		<groupToAccountMapping
 			name='sdss'
 			description=''
-			accountingVo='sdss'
-			accountingDesc='SDSS'
+			accountingVoSubgroup='sdss'
+			accountingVo='SDSS'
 			userGroups='sdss'
 			accountMappers='sdss'/>
 
 		<groupToAccountMapping
 			name='star'
 			description=''
-			accountingVo='star'
-			accountingDesc='STAR'
+			accountingVoSubgroup='star'
+			accountingVo='STAR'
 			userGroups='star'
 			accountMappers='star'/>
 
 		<groupToAccountMapping
 			name='minos'
 			description=''
-			accountingVo='ukminos'
-			accountingDesc='Fermilab'
+			accountingVoSubgroup='ukminos'
+			accountingVo='Fermilab'
 			userGroups='ukminos, usminos, minos'
 			accountMappers='minos'/>
 
