@@ -320,12 +320,12 @@ else if ("edit".equals(request.getParameter("action"))
 			</td>
 		</tr>
 		<tr>
-    		<td nowrap style="text-align: right;">Accounting VO: </td>
-		    <td nowrap><input maxlength="256" size="32" name="vo" value="<%=g2AMapping.getAccountingVo()%>"/> (non-empty to be included in Grid3-User-VO-Map)</td>
+    		<td nowrap style="text-align: right;">Accounting VO Subgroup: </td>
+		    <td nowrap><input maxlength="256" size="16" name="accVoSub" value="<%=g2AMapping.getAccountingVoSubgroup()%>"/> (to be included in Grid3-User-VO-Map)</td>
 		</tr>
 		<tr>
-    		<td nowrap style="text-align: right;">Accounting Description: </td>
-		    <td nowrap><input maxlength="256" size="64" name="desc" value="<%=g2AMapping.getAccountingDesc()%>"/> (included in Grid3-User-VO-Map)</td>
+    		<td nowrap style="text-align: right;">Accounting VO: </td>
+		    <td nowrap><input maxlength="256" size="16" name="accVo" value="<%=g2AMapping.getAccountingVo()%>"/> (to be included in Grid3-User-VO-Map)</td>
 		</tr>
 		<tr>
 	        <td colspan=2>

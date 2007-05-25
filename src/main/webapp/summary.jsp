@@ -51,8 +51,8 @@ Displays configuration summary.
 
 <table id="form" cellpadding="2" cellspacing="2" border="1" width="95%">
 <thead>
-	<tr><th rowspan=\"2\">Host</th><th rowspan=\"2\">Group</th><th colspan="6">User Group</th><th colspan="3">Account Mapper</th></tr>
-	<tr><th>Name</th><th>Type</th><th>Match FQAN</th><th>Accept Grid-Proxies</th><th>VO Group</th><th>VO Role</th><th>Name</th><th>Type</th><th>Account</th></tr>
+	<tr><th rowspan=\"2\">Host To Group Mapping</th><th colspan="3">Group To Account Mapping</th><th colspan="6">User Group</th><th colspan="3">Account Mapper</th></tr>
+	<tr><th>Name</th><th>Acc. VO Subgroup</th><th>Accounting VO</th><th>Name</th><th>Type</th><th>Match FQAN</th><th>Accept Grid-Proxies</th><th>VO Group</th><th>VO Role</th><th>Name</th><th>Type</th><th>Account</th></tr>
 <thead>
 <tbody>
 
@@ -84,9 +84,9 @@ while (h2GMappingsIt.hasNext()) {
 %>
 
 	<tr>
-		<%= (!cH2GMapping.getName().equals(lastH2GMapping)?"<td bgcolor=\"#FFEE77\"><a href=\"hostToGroupMappings.jsp?action=edit&name="+cH2GMapping.getName()+"\">"+cH2GMapping.getName().replaceAll(",","<br>")+"</a></td>":"<td></td>") %>
-		<%= (!g2AMapping.getName().equals(lastG2AMapping)?"<td bgcolor=\"#FFEE77\"><a href=\"groupToAccountMappings.jsp?action=edit&name="+g2AMapping.getName()+"\">"+g2AMapping.getName()+"</a></td>":"<td></td>") %>
-		<%= (!userGroup.getName().equals(lastUserGroup)?userGroup.toString("#FFEE77"):"<td></td><td></td><td></td><td></td><td></td><td></td>") %>
+		<%= (!cH2GMapping.getName().equals(lastH2GMapping) ? "<td bgcolor=\"#FFEE77\"><a href=\"hostToGroupMappings.jsp?action=edit&name="+cH2GMapping.getName()+"\">"+cH2GMapping.getName().replaceAll(",","<br>")+"</a></td>" : "<td></td>") %>
+		<%= (!g2AMapping.getName().equals(lastG2AMapping) ? g2AMapping.toString("#FFEE77") : "<td></td><td></td><td></td>") %>
+		<%= (!userGroup.getName().equals(lastUserGroup) ? userGroup.toString("#FFEE77") : "<td></td><td></td><td></td><td></td><td></td><td></td>") %>
 		<%= accountMapper.toString("#FFEE77") %>
 	</tr>
 	

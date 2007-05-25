@@ -67,11 +67,25 @@ public class ConfigurationWebToolkit implements Remote {
 			counter++;
 		}
 		
-		if (request.getParameter("vo")!=null)
-			groupToAccountMapping.setAccountingVo(request.getParameter("vo").trim());
+		if (request.getParameter("accVoSub")!=null && !request.getParameter("accVoSub").equals("")) {
+			String trimmed = request.getParameter("accVoSub").trim();
+			if (trimmed.indexOf(" ")!=-1)
+				throw new RuntimeException("There cannot be a space in the accounting VO Subgroup");
+			if (request.getParameter("accVo").equals(""))
+				throw new RuntimeException("You must specify neither or both accounting VO subgroup and account VO");
+			groupToAccountMapping.setAccountingVoSubgroup(trimmed);
+			
+		}
 		
-		if (request.getParameter("desc")!=null)
-			groupToAccountMapping.setAccountingDesc(request.getParameter("desc").trim());
+		if (request.getParameter("accVo")!=null && !request.getParameter("accVo").equals("")) {
+			String trimmed = request.getParameter("accVo").trim();
+			if (trimmed.indexOf(" ")!=-1)
+				throw new RuntimeException("There cannot be a space in the accounting VO");
+			if (request.getParameter("accVoSub").equals(""))
+				throw new RuntimeException("You must specify neither or both accounting VO subgroup and account VO");
+			groupToAccountMapping.setAccountingVo(trimmed);
+			
+		}
 		
 		return groupToAccountMapping;
 	}		
