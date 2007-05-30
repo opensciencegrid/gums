@@ -25,10 +25,15 @@ Java HotSpot(TM) Client VM (build 1.4.2_04-b05, mixed mode)
  If you do not have java installed, go to {{{http://java.sun.com}http://java.sun.com}}
 and follow the instructions to get the latest version. Then add java to $PATH.
 
-** Prepare the Database
+** Install the Persistence Factory
 
- You will need a MySQL server with version 4.0.18 or greater installed. You can 
-either install one from scratch or you can use an installation you have ready. 
+ User membership and account mappings need to be stored in a "persistence factory".  This can be done either
+via a MySQL database (4.0.18 or greater) or LDAP or both. 
+We recommend using LDAP so that all user information is stored and retrieved from one place.  The other advantage of LDAP
+is that GUMS will assign primary and secondary group information to accounts within your site's main LDAP tree.  
+Install a database and/or LDAP from scratch or you can use an installation you have ready.  The default GUMS
+configuration assumes MySQL is installed on the local machine, but it does not have to be.  LDAP will most likely already 
+be on another machine, but does not have to be. 
 
 ** Prepare the Certificate Directory
  
@@ -64,6 +69,16 @@ Next, review the configuration of the server as:
                clientAuth="true" sslProtocol="TLS" />
 +---------------------------------------+
 
+ You will probably want to increase the maximum memory size set in java since the default is low (64Mb in 1.4.2).  
+This can be set in /etc/tomcat5/tomcat5.conf using JAVA_OPTS.  For example, to change the maximum memory size to 400m, add
+the following entry:
+
++---------------------------------------+
+JAVA_OPTS="-server -Xmx400m"
++---------------------------------------+
+
+ Once you have completed the configuration of Tomcat, be sure to restart it for the changes to take effect.
+ 
 ** Download the GUMS Service
 
  The service itself is a standard java web application. Grab the latest 
@@ -71,9 +86,17 @@ gums-service war from {{{http://grid.racf.bnl.gov/mvn/gums/gums-service/1.2.0/gu
 http://grid.racf.bnl.gov/mvn/gums/gums-service/1.2.0/gums-service-1.2.0.war}} and extract it in the
 webapps directory of tomcat.
 
-** Create the Database
+** Configure Persistence Factory
 
- You will need to create the database. You can do this by running the 
+*** MySQL Persistence
+
+ Run MySQL.  Assuming it is installed by RPM, this is done as:
+
++----------------------------------------------+	
+[root@gums /]# /etc/init.d/mysqld start
++----------------------------------------------+
+
+ If using MySQL, you will need to create the database. On the machine with MySQL running, you can do this by running the 
 setupDatabase script as:
 	
 +----------------------------------------------+	
@@ -95,38 +118,84 @@ MYSQLPARAM="-p"
 ..
 +----------------------------------------------+
 
-** Add an Administrator
-
- You must add yourself to the admins user group using the addAdmin script as:
+ You must also add yourself to the admins user group in the MySQL database using the addMySqlAdmin script as:
  
 +----------------------------------------------+
-[root@gums scripts]# ./addAdmin
+[root@gums scripts]# ./addMySqlAdmin
 Adds an admin in the GUMS database on localhost
-Usage: ./addAdmin [DN for administrator]
-[root@gums scripts]# ./addAdmin "/DC=org/DC=doegrids/OU=People/CN=Your Self 83753"
+Usage: ./addMySqlAdmin [mysql|ldap] [DN for administrator]
+[root@gums scripts]# ./addMySqlAdmin mysql "/DC=org/DC=doegrids/OU=People/CN=Your Self 83753"
 +----------------------------------------------+	 
 
  All additional users may be added through the web interface or client tools.
 
-** Configure timeout
+*** LDAP Persistence
+
+ If using LDAP, you will need to configure LDAP.  In your LDAP domain, you (or your site's LDAP administrator) 
+should add all accounts under
+"ou=People" and all groups under "ou=Groups" if they do not exist.  During the configuration phase of GUMS, you will
+choose whether to use a "LDAP persistence factory" or a "local persistence factory" (you should not use both).  Both of them
+use LDAP to assign primary and secondary groups to the main LDAP tree, but the LDAP persistence
+factory stores GUMS specific information in LDAP whereas the local persistence factory stores it in MySQL.  
+
+ If you are using the LDAP persistence factory, you (or your site's LDAP administrator) or will need to further 
+configure the LDAP server to understand the GUMS LDAP schema.  
+Downloaded the schema from {{{gums.schema}here}} and should be put in /etc/openldap/schema.  
+Restart the LDAP server for the changes to take effect as:
+
++----------------------------------------------+
+[root@ldap /]# /etc/init.d/ldap restart
++----------------------------------------------+
+
+ Also, an object of type GUMSStruct needs to be created named 'GUMS'.  Do this by downloading {{{gums.ldif}this}} LDIF file 
+and running something like: 
+
++----------------------------------------------+
+ ldapadd -x -h localhost -D uid=Manager,dc=mydomain,dc=org -w secret -f gums.ldif
++----------------------------------------------+
+
+ You must also add yourself to the admins user group in LDAP.  Create a file named admins.ldif with the
+following contents:
+ 
++----------------------------------------------+
+dn: group=admins,ou=GUMS,dc=griddev,dc=org
+objectClass: GUMStruct
+objectClass: GUMSGroup
+group: admins
+user: /DC=org/DC=doegrids/OU=People/CN=Your Self 83753
++----------------------------------------------+	 
+
+ and add these using openldap's "ldapadd" command.  All additional users may be added through 
+the web interface or client tools.  
+
+ See openldap documentation for more information at {{{http://www.openldap.org/doc/admin23/}{http://www.openldap.org/doc/admin23/}}
+
+** Configure GUMS for Admin Lookup
+
+ Open WEB-INF/config/gums.config (main GUMS configuration file) and ensure the persistence factory at which you 
+added the administrator DN is set up in the persistenceFactories section.  If using MySQL to 
+store the admin, check that the url, username, and password are correct.  If using LDAP to store the admin, 
+see the {{{use_configuration.html}configuration}} section for instructions how to set up a ldapPersistenceFactory; 
+also make sure the admins userGroup refers to this by name in the "persistenceFactory" field.  From this point
+on, you no longer need to manually edit the gums.config file, but can configure GUMS using the web interface.
+
+** Configure Timeout
 
  for user groups that specify a server and a persistence factory, the DNs are retrieved
-from the server and put into the persistence factory at a regular interval.  The persistence
-factory is the source from which the matching occurs.  The default is 720 minutes (12 hours),
+from the server and put into the persistence factory at a regular interval.  The default is 720 minutes (12 hours),
 but this can be changed in WEB-INF/web.xml at 'env-entry/env-entry-value'.
 
 ** Run Tomcat and MySQL
 
- Run Tomcat and MySQL.  Assuming they are installed by RPM, this is done as:
+ Run Tomcat.  Assuming it is installed by RPM, this is done as:
 
 +----------------------------------------------+	
 [root@gums /]# /etc/init.d/tomcat5 start
-[root@gums /]# /etc/init.d/mysqld start
 +----------------------------------------------+	
 
 ** Test
 
- Using a browser in which you have your grid certificate, go to:
+ Using a browser in which you have imported your grid certificate, go to:
 {{{https://machine:8443/gums}https://machine:8443/gums}} or with
 the port you configured Tomcat with.  You should
 see the GUMS web interface. You might need to wait a bit for tomcat to 

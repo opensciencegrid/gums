@@ -226,14 +226,15 @@ in the VOMS user group.  This allows for sharing a server serving multiple VOs.
 	stores Java object in a relational database.  GUMS currently supports MySQL but could be extended to support other databases
 	will mimimal effort (i.e. Postgres, Oracle, ...).
 
-	* <<ldap>> - for storing user information in a site's LDAP server.  Except for the group field, the information is stored 
-	in a special GUMS structure.  To support this LDAP needs access to the GUMS LDAP schema file which can 
-	be downloaded {{{gums.schema}here}}. Also, an object of type GUMSStruct needs to be created named 'GUMS' for which
-	an LDIF file can be used to add this downloaded from from {{{gums.ldif}here}}.  See openldap 
-	documentation for more information at {{{http://www.openldap.org/doc/admin23/}{http://www.openldap.org/doc/admin23/}}.
+	* <<ldap>> - for storing user information in a special GUMS area within a site's LDAP server as well as for assigning
+	primary and secondary groups to accounts in the main LDAP tree.  To support this LDAP needs access to the GUMS LDAP schema file.  
+	Please see the {{{installation_manual.html}manual installation}} section for instructions on how to configure LDAP.  New to GUMS 1.2, you may
+	choose the names of various LDAP fields if the defaults don't match your site's LDAP fields.
 	
-	* <<local>> - for storing user information in a database and setting the group within a site's LDAP server as well.
-	LDAP doesn't need to be set up with the GUMS schema for this type.
+	* <<local>> - for storing user information in a MySQL database as well as for assigning
+	primary and secondary groups to accounts in the main LDAP tree.  LDAP doesn't need to be set 
+	up with the GUMS schema for this type.  New to GUMS 1.2, you may choose the names of various 
+	LDAP fields if the defaults don't match your site's LDAP fields.
 
 ** Account Mappers
 
@@ -250,8 +251,9 @@ in the VOMS user group.  This allows for sharing a server serving multiple VOs.
 	
 	* <<gecosLdap>> - for mapping a user to an account in LDAP if the user's name from her certificate CN matches a 
 	name found in the gecos attribute of LDAP.  The 'gecos' attribute is the default but can be set to another.  Likewise, 
-	the attribute that contains the account can also be set ('uid' is the default).  LDAP doesn't need to be set up with 
-	the GUMS schema for this type.  
+	the attribute that contains the account can also be set ('uid' is the default).  This type is independent of
+	the LDAP persistence factory and doesn't require LDAP be configured to use the GUMS LDAP schema.  Note that this 
+	type only reads from LDAP.
  
  Keep in mind that GUMS does not create accounts, it only returns the account name.  Therefore, a prerequisite to using
 GUMS is to create all the accounts that GUMS can map to at your local site.
@@ -269,7 +271,8 @@ GUMS is to create all the accounts that GUMS can map to at your local site.
 	is where the checking occurs.
 	
 	* <<ldap>> - for checking membership against users from LDAP. The LDAP field to contain the certificate DN can be specified 
-	('description' is the default).  LDAP need not be set up with the GUMS schema for this type.
+	('description' is the default).  This type is independent of the LDAP persistence factory and doesn't require LDAP be configured to 
+	use the GUMS LDAP schema.  Note that this type only reads from LDAP.
  
  Keep in mind that GUMS does not create accounts, it only returns the account name.  Therefore, a prerequisite to using
 GUMS is to create all the accounts that GUMS maps to at your local site.
