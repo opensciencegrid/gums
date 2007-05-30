@@ -381,11 +381,6 @@
             <version>1.0.1</version>
         </dependency>
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>jta</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
             <groupId>c3p0</groupId>
             <artifactId>c3p0</artifactId>
             <version>0.8.4.5</version>

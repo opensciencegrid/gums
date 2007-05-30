@@ -135,11 +135,6 @@ public class LDAPPersistenceFactoryTest extends TestCase {
     	factory.addToSecondaryGroup("jsmith", "griddevGroup");
     }
     
-    /*public void runTest(){
-    	factory.createMap("blah", "map=blah,ou=GUMS");
-		//factory.addMapEntry("/DC=blah/DC=Jay Packard", "grid9999", "blah", "map=blah");
-	}*/
-    
 //    public static void main(String[] args) {
 //        LDAPPersistenceFactory factory = new LDAPPersistenceFactory();
 //        java.util.Properties jndiProperties = new java.util.Properties();

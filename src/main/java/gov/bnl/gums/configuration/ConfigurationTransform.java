@@ -2,17 +2,12 @@ package gov.bnl.gums.configuration;
 
 import gov.bnl.gums.GUMS;
 import gov.bnl.gums.account.AccountMapper;
-import gov.bnl.gums.admin.CertCache;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.userGroup.UserGroup;
 import gov.bnl.gums.userGroup.VOMSUserGroup;
 import gov.bnl.gums.userGroup.VomsServer;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 

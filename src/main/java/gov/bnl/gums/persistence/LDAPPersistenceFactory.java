@@ -100,7 +100,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * @param userDN the certificate DN of the user (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith")
      * @param account the account to whith to map the DN (i.e. "carcassi")
      * @param mapName the name of the map (i.e. "usatlasSpecialMap")
-     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap")
+     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap, ou=GUMS")
      */
     public void addMapEntry(String userDN, String account, String mapName, String mapDN) {
         DirContext context = retrieveContext();
@@ -162,7 +162,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * 
      * @param userDN the certificate DN of the user (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith")
      * @param groupName the name of the group (i.e. "usatlas")
-     * @param groupDN the group DN (i.e. "group=usatlas")
+     * @param groupDN the group DN (i.e. "group=usatlas, ou=GUMS")
      */
     public void addUserGroupEntry(String userDN, String groupName, String groupDN) {
         DirContext context = retrieveContext();
@@ -214,7 +214,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * 
      * @param account the account to whith to map the DN (i.e. "grid0001")
      * @param mapName the name of the map (i.e. "usatlasSpecialMap")
-     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap")
+     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap, ou=GUMS")
      */
     public void createAccountInMap(String account, String mapName, String mapDN) {
         DirContext context = retrieveContext();
@@ -240,7 +240,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * Creates a new "map=mapName" entry in the LDAP GUMS tree.
      * 
      * @param mapName the name of the map (i.e. "usatlasSpecialMap")
-     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap")
+     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap, ou=GUMS")
      */
     public void createMap(String mapName, String mapDN) {
         DirContext context = retrieveContext();
@@ -266,7 +266,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * Creates a new "group=groupName" entry in the LDAP GUMS tree.
      * 
      * @param groupName the name of the group (i.e. "usatlas")
-     * @param groupDN the group DN (i.e. "group=usatlas")
+     * @param groupDN the group DN (i.e. "group=usatlas, ou=GUMS")
      */
     public void createUserGroup(String groupName, String groupDN) {
         DirContext context = retrieveContext();
@@ -292,7 +292,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * Deletes the account in map.
      * 
      * @param mapName the name of the map (i.e. "usatlasSpecialMap")
-     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap")
+     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap, ou=GUMS")
      */
     public boolean destroyAccountInMap(String account, String mapName, String mapDN) {
         DirContext context = retrieveContext();
@@ -313,7 +313,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * delete the map.
      * 
      * @param mapName the name of the map (i.e. "usatlasSpecialMap")
-     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap")
+     * @param mapDN the map DN (i.e. "map=usatlasSpecialMap, ou=GUMS")
      */
     public void destroyMap(String mapName, String mapDN) {
         DirContext context = retrieveContext();
