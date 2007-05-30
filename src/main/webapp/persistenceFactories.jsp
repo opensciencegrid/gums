@@ -357,7 +357,7 @@ else if ("edit".equals(request.getParameter("action"))
 			<%=ConfigurationWebToolkit.createSelectBox("synchGroups", 
 				trueFalse, 
 				((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"true":"false",
-				"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+				NULL,
 				false)%>
 		    </td>
 		</tr>
@@ -533,7 +533,7 @@ else if ("edit".equals(request.getParameter("action"))
 			<%=ConfigurationWebToolkit.createSelectBox("synchGroups", 
 				trueFalse, 
 				((LocalPersistenceFactory)persistenceFactory).isSynchGroups()?"true":"false",
-				"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+				NULL,
 				false)%>
 		    </td>
 		</tr>

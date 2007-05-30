@@ -270,7 +270,7 @@ public class ConfigurationWebToolkit implements Remote {
 		properties.put((includeLdap?"ldap.":"") + "java.naming.security.principal", (request.getParameter("ldapPrincipal")!=null ? request.getParameter("ldapPrincipal").trim() : ""));
 		properties.put((includeLdap?"ldap.":"") + "java.naming.security.credentials", (request.getParameter("ldapCredentials")!=null ? request.getParameter("ldapCredentials").trim() : ""));
 		properties.put((includeLdap?"ldap.":"") + "java.naming.provider.url", (request.getParameter("ldapUrl")!=null ? request.getParameter("ldapUrl").trim() : ""));
-		properties.put((includeLdap?"ldap.":"") + "java.naming.factory.initial", "net.sf.hibernate.dialect.MySQLDialect");
+		properties.put((includeLdap?"ldap.":"") + "java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
 		return properties;
 	}
 	
