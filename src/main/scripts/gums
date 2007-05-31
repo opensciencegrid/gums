@@ -29,7 +29,7 @@ exit_confused () {
 #
 # Defaults
 #
-DEBUG=0
+DEBUG=1
 MODE="CLIENT"
 
 #
@@ -75,7 +75,7 @@ TRUST_OPTS="-Daxis.socketSecureFactory=org.glite.security.trustmanager.axis.AXIS
 HOST_CERT=${X509_HOST_CERT-/etc/grid-security/hostcert.pem}
 HOST_KEY=${X509_HOST_KEY-/etc/grid-security/hostkey.pem}
 USER_CERT=${X509_USER_CERT-$HOME/.globus/usercert.pem}
-USER_KEY=${X509_USER_CERT-$HOME/.globus/userkey.pem}
+USER_KEY=${X509_USER_KEY-$HOME/.globus/userkey.pem}
 
 #
 # Distinguish between Maven development tree, Maven assembly tarball, VDT install, or RPM
@@ -202,6 +202,9 @@ if [ $DEBUG -eq 1 ] ; then
 	echo "[DEBUG] Security opts are: $SECURITY_OPTS"
 	echo "[DEBUG] Pass-through args are $ARGS"
 	echo "[DEBUG] Mode is $MODE"
+	for arg ; do
+		echo "[DEBUG] Arg: $arg"
+	done
 fi
 
 #

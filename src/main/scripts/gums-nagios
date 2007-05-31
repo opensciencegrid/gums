@@ -1,3 +1,15 @@
 #!/bin/bash
+# gums nagios wrapper
+#
+#
+
 BINDIR=$(dirname $0)
-$BINDIR/gums --nagios $@
+#
+# Quotes all arguments in order to hand arguments with spaces in them, like DNs 
+#
+qargs=""
+for arg in "$@" ; do
+	echo \"$arg\"
+	qargs="$qargs \"$arg\""
+done	
+eval $BINDIR/gums --nagios $qargs

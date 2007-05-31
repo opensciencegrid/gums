@@ -1,3 +1,13 @@
 #!/bin/bash
+# gums-host wrapper
+#
 BINDIR=$(dirname $0)
-$BINDIR/gums --host $@
+#
+# Quotes all arguments in order to hand arguments with spaces in them, like DNs 
+#
+qargs=""
+for arg in "$@" ; do
+	echo \"$arg\"
+	qargs="$qargs \"$arg\""
+done	
+eval $BINDIR/gums --host $qargs
