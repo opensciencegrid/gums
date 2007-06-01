@@ -18,7 +18,7 @@ log4j.rootLogger=ERROR
 # As a default the log is sent just to a file.
 # You can also send the error to e-mail, but you have to setup the mail appender
 # later in the file
-#log4j.logger.gums.resourceAdmin=INFO, adminFile
+log4j.logger.gums.resourceAdmin=INFO, adminFile
 #log4j.logger.gums.resourceAdmin=INFO, mail, adminFile
 
 # Log for cybersecurity

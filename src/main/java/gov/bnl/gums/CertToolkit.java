@@ -10,8 +10,6 @@
 
 package gov.bnl.gums;
 
-import gov.bnl.gums.account.GecosAccountMapper;
-
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
