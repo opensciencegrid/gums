@@ -19,7 +19,7 @@ public class ManualMappingRemove extends RemoteCommand {
      * Creates a new ManualMappingRemove object.
      */
     public ManualMappingRemove() {
-        syntax = "[-g GUMSURL] ACCOUNTMAPPER USERDN";
+        syntax = "[-g GUMSURL] MANUALACCOUNTMAPPER USERDN";
         description = "Maps a DN to a user in a manually managed mapping. " +
             "ACCOUNTMAPPER is the name of the manual account mapper.";
     }
@@ -36,7 +36,7 @@ public class ManualMappingRemove extends RemoteCommand {
 
     protected void execute(org.apache.commons.cli.CommandLine cmd)
         throws Exception {
-        if (cmd.getArgs().length < 3) {
+        if (cmd.getArgs().length < 2) {
             failForWrongParameters("Missing parameters...");
         }
 

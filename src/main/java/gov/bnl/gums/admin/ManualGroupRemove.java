@@ -19,7 +19,7 @@ public class ManualGroupRemove extends RemoteCommand {
      * Creates a new ManualGroupRemove object.
      */
     public ManualGroupRemove() {
-        syntax = "[-g GUMSURL] USERGROUP USERDN1 [USERDN2] ...";
+        syntax = "[-g GUMSURL] MANUALUSERGROUP USERDN1 [USERDN2] ...";
         description = "Removes a user from a manually managed group. " +
             "USERGROUP is the name of the manual user group.";
     }
@@ -44,7 +44,7 @@ public class ManualGroupRemove extends RemoteCommand {
 
         String gumsUrl = (cmd.getOptionValue("g", null));
         
-        for (int nArg = 2; nArg < cmd.getArgs().length; nArg++) {
+        for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
             getGums(gumsUrl).manualGroupRemove(userGroup, cmd.getArgs()[nArg]);
         }
     }

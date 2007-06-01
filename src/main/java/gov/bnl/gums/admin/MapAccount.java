@@ -45,11 +45,11 @@ public class MapAccount extends RemoteCommand {
 
         String gumsUrl = (cmd.getOptionValue("g", null));
 	    
-        String dN = getGums(gumsUrl).mapAccount(accountName);
-        if (dN == null) {
+        String dNs = getGums(gumsUrl).mapAccount(accountName);
+        if (dNs == null) {
             System.err.println("No map was found for account " + accountName);
             System.exit(-1);
         }
-        System.out.println(accountName);
+        System.out.println(dNs);
 	}
 }

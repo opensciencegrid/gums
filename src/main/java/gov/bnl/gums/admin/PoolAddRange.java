@@ -19,10 +19,10 @@ public class PoolAddRange extends RemoteCommand {
      * Creates a new PoolAddRange object.
      */
     public PoolAddRange() {
-        syntax = "[-g GUMSURL] ACCOUNTMAPPER RANGE";
+        syntax = "[-g GUMSURL] POOLACCOUNTMAPPER RANGE";
         description = "Adds range of accounts to a pool. " +
         	"ACCOUNTMAPPER is the name of the account mapper. " +
-            "RANGE is the group of accounts to be added (i.e. grid0050-125).";
+            "RANGE is the group of accounts to be added (i.e. grid0050-0125).";
     }
 
     protected org.apache.commons.cli.Options buildOptions() {
@@ -45,7 +45,7 @@ public class PoolAddRange extends RemoteCommand {
         
         String gumsUrl = (cmd.getOptionValue("g", null));
 
-        for (int nArg = 2; nArg < cmd.getArgs().length; nArg++) {
+        for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
         	getGums(gumsUrl).addAccountRange(accountMapper, cmd.getArgs()[nArg]);
         }
     }

@@ -19,10 +19,10 @@ public class PoolUnassignRange extends RemoteCommand {
      * Creates a new PoolUnassignRange object.
      */
     public PoolUnassignRange() {
-        syntax = "[-g GUMSURL] ACCOUNTMAPPER RANGE";
+        syntax = "[-g GUMSURL] POOLACCOUNTMAPPER RANGE";
         description = "Unassigns range of accountsfrom a pool. " +
             "ACCOUNTMAPPER is the name of the account mapper. " +
-            "RANGE is the group of accounts to be unassigned (i.e. grid0050-125).";
+            "RANGE is the group of accounts to be unassigned (i.e. grid0050-0125).";
     }
 
     protected org.apache.commons.cli.Options buildOptions() {
@@ -45,7 +45,7 @@ public class PoolUnassignRange extends RemoteCommand {
 
         String gumsUrl = (cmd.getOptionValue("g", null));
         
-        for (int nArg = 2; nArg < cmd.getArgs().length; nArg++) {
+        for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
         	getGums(gumsUrl).unassignAccountRange(accountMapper, cmd.getArgs()[nArg]);
         }
     }
