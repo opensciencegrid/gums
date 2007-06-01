@@ -1,0 +1,23 @@
+<gums version='1.2'>
+	<persistenceFactories>
+		<hibernatePersistenceFactory
+			name='mysql'
+			description=''
+			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
+			hibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'
+			hibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_1'
+			hibernate.connection.username='gums'
+			hibernate.connection.password=''
+			hibernate.connection.autoReconnect='true'
+			hibernate.c3p0.min_size='3'
+			hibernate.c3p0.max_size='20'
+			hibernate.c3p0.timeout='180' />
+	</persistenceFactories>
+	<userGroups>
+		<manualUserGroup
+			name='admins'
+			description=''
+			persistenceFactory='mysql'
+			access='write'/>
+	</userGroups>
+</gums>
