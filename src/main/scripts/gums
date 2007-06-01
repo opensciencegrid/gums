@@ -15,6 +15,9 @@
 # --nagios
 #    HostCommandLine, hostcert + key, + nagios probe functionality
 #
+# --gumsdebug
+#    Turns on script debugging
+#
 # Author: John R. Hover <jhover@bnl.gov> 
 # based on initial gums script by Gabriele Carcassi.
 # Nagios probe section: Jay Packard <jpackard@bnl.gov> 
@@ -29,7 +32,7 @@ exit_confused () {
 #
 # Defaults
 #
-DEBUG=1
+DEBUG=0
 MODE="CLIENT"
 
 #
@@ -37,10 +40,12 @@ MODE="CLIENT"
 #
 ARGS=""
 for opt in $@ ; do
-	if [ $DEBUG -eq 1 ] ; then 
-		echo "[DEBUG]: Opt is $opt"
-	fi
+
 	case $opt in
+		--gumsdebug)
+		DEBUG=1
+		;;
+
 		--host)
 		MODE="HOST"
 		;;
@@ -60,6 +65,9 @@ for opt in $@ ; do
 		*)
 		ARGS="$ARGS $opt"
 	esac
+	if [ $DEBUG -eq 1 ] ; then 
+		echo "[DEBUG]: Opt is $opt"
+	fi
 done
 
 #
