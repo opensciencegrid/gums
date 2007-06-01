@@ -9,7 +9,6 @@ BINDIR=$(dirname $0)
 #
 qargs=""
 for arg in "$@" ; do
-	echo \"$arg\"
 	qargs="$qargs \"$arg\""
 done	
 eval $BINDIR/gums --nagios $qargs
