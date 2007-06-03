@@ -3,10 +3,16 @@
 #
 BINDIR=$(dirname $0)
 #
-# Quotes all arguments in order to hand arguments with spaces in them, like DNs 
+# Quotes all arguments with spaces in them, like DNs 
 #
-qargs=""
-for arg in "$@" ; do
-	qargs="$qargs \"$arg\""
-done	
-eval $BINDIR/gums --host $qargs
+for arg in "$@"; do 
+	origlen=${#arg}
+	nospace=${arg//' '/''}
+	newlen=${#nospace}
+	if [ $newlen -lt $origlen ]; then
+		ARGS="$ARGS \"$arg\""
+	else
+		ARGS="$ARGS $arg"
+	fi
+done 
+eval $BINDIR/gums --host $ARGS

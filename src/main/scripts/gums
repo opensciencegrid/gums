@@ -63,10 +63,19 @@ for opt in $@ ; do
 		;;
 
 		*)
-		ARGS="$ARGS $opt"
+		origlen=${#opt}
+		nospace=${opt//' '/''}
+		newlen=${#nospace}
+		if [ $newlen -lt $origlen ]; then
+			ARGS="$ARGS \"$opt\""
+		else
+			ARGS="$ARGS $opt"
+		fi
+		
 	esac
 	if [ $DEBUG -eq 1 ] ; then 
 		echo "[DEBUG]: Opt is $opt"
+		echo "[DEBUG] ARGS are: $ARGS"
 	fi
 done
 
@@ -137,7 +146,7 @@ else
 	if [ -d $GUMSDIR/scripts ]; then
 		BIN=$GUMSDIR/scripts
 	elif [ -d $GUMSDIR/bin ]; then
-		BIN=$GUMSDIR/scripts
+		BIN=$GUMSDIR/bin
 	else
 		exit_confused
 	fi
@@ -161,6 +170,7 @@ else
 	if [ -d $LIB/endorsed ]; then
 		ENDORSED=$LIB/endorsed
 	else
+		echo "[ERROR] $GUMSDIR/lib/endorsed not found. You probably need to symlink all target libs there."
 		exit_confused
 	fi
 fi
@@ -210,6 +220,7 @@ if [ $DEBUG -eq 1 ] ; then
 	echo "[DEBUG] Security opts are: $SECURITY_OPTS"
 	echo "[DEBUG] Pass-through args are $ARGS"
 	echo "[DEBUG] Mode is $MODE"
+	echo "[DEBUG] ARGS are $ARGS"
 	for arg ; do
 		echo "[DEBUG] Arg: $arg"
 	done
@@ -219,7 +230,7 @@ fi
 # Execute correct main class with proper arguments depending on mode.
 #
 if [ "$MODE" != "NAGIOS" ] ; then
-	java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp $GUMSCP $MAINCLASS $ARGS
+	eval java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp $GUMSCP $MAINCLASS $ARGS
 else
 #
 # Perform nagios probe...
