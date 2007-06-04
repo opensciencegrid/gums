@@ -131,7 +131,7 @@ public class AccountPoolMapper extends AccountMapper {
     }
 
     public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?action=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">" + getAssignments() + "</td>";
+    	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?command=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">" + getAssignments() + "</td>";
     }
     
     public String toXML() {

@@ -13,9 +13,9 @@
 			hibernate.c3p0.max_size='20'
 			hibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'
 			hibernate.c3p0.min_size='3'
-			hibernate.connection.username='gums'
-			hibernate.connection.url='jdbc:mysql://localhost:3306/GUMS_1_1'
-			hibernate.connection.password=''/>
+			hibernate.connection.username='@USER@'
+			hibernate.connection.url='jdbc:mysql://@SERVER@/GUMS_1_1'
+			hibernate.connection.password='@PASSWORD@'/>
 
 	</persistenceFactories>
 

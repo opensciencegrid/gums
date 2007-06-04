@@ -130,6 +130,7 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
             StringTokenizer tokens = new StringTokenizer(cn, ",");
             while (tokens.hasMoreTokens()) {
                 String regex = tokens.nextToken();
+		regex = regex.trim();
                 regex = regex.replaceAll("\\.", "\\.");
                 regex = regex.replaceAll("\\*", "[^\\./=]*");
                 regexs.add("(/[^=]*=[^=]*)*/CN=" + regex + "(/[^=]*=[^=]*)*");
@@ -139,6 +140,7 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
             StringTokenizer tokens = new StringTokenizer(dn, ",");
             while (tokens.hasMoreTokens()) {
                 String regex = tokens.nextToken();
+		regex = regex.trim();
                 regex = regex.replaceAll("\\.", "\\.");
                 regex = regex.replaceAll("\\*", "[^\\./=]*");
                 regexs.add(regex);

@@ -69,7 +69,7 @@ public class GroupAccountMapper extends AccountMapper {
 	}
     
     public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?action=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">" + accountName + "</td>";
+    	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?command=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">" + accountName + "</td>";
     }      
     
     public String toXML() {

@@ -460,7 +460,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     private GUMS gums() {
         if (gums == null) {
-            System.setProperty("log4j.configuration","file:"+CertCache.getConfigDir()+"/log4j.properties");
+            System.setProperty("log4j.configuration","file:"+CertCache.getConfigDir().replace("//","/")+"/log4j.properties");
         	FileConfigurationStore confStore = new FileConfigurationStore(CertCache.getConfigDir(), CertCache.getResourceDir(), true);
             gums = new GUMS(confStore);
         }

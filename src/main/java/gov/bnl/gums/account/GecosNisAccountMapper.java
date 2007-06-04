@@ -120,7 +120,7 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     }
 
     public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?action=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\"></td>";
+    	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?command=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\"></td>";
     }
 
     public String toXML() {
