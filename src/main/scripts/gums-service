@@ -2,7 +2,7 @@
 # gums-service wrapper
 # 
 
-BINDIR=$(dirname $0)#
+BINDIR=$(dirname $0)
 DEBUG=0
 #
 # Quotes all arguments with spaces in them, like DNs 
