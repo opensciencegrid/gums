@@ -3,16 +3,36 @@
 # 
 
 BINDIR=$(dirname $0)#
+DEBUG=0
+#
 # Quotes all arguments with spaces in them, like DNs 
 #
-for arg in "$@"; do 
-	origlen=${#arg}
-	nospace=${arg//' '/''}
-	newlen=${#nospace}
-	if [ $newlen -lt $origlen ]; then
-		ARGS="$ARGS \"$arg\""
-	else
+ARGS=""
+
+for arg ; do 
+	case $arg in
+		
+		--gumsdebug)
+		DEBUG=1
+		echo "[DEBUG] gums-host: Setting debug."
 		ARGS="$ARGS $arg"
-	fi
+		;;
+	
+		*)
+		origlen=${#arg}
+		nospace=${arg//' '/''}
+		newlen=${#nospace}
+		if [ $newlen -lt $origlen ]; then
+			ARGS="$ARGS \"$arg\""
+		else
+			ARGS="$ARGS $arg"
+		fi
+		;;
+		
+	esac
+	if [ $DEBUG -eq 1 ] ; then
+		echo "[DEBUG] gums-host: Arg is $arg"
+		echo "[DEBUG] gums-host: ARGS are: $ARGS"
+	fi 
 done 
-eval $BINDIR/gums --service $ARGS
+eval $BINDIR/gums --service "$ARGS"

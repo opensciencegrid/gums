@@ -39,9 +39,12 @@ MODE="CLIENT"
 # Differentiate script args, collect other arguments to pass to Java CLI...
 #
 ARGS=""
-for opt in $@ ; do
-
-	case $opt in
+for arg ; do
+	if [ $DEBUG -eq 1 ] ; then 
+		echo "[DEBUG] gums: Arg is $arg"
+		echo "[DEBUG] gums: ARGS are: $ARGS"
+	fi
+	case $arg in
 		--gumsdebug)
 		DEBUG=1
 		;;
@@ -63,20 +66,18 @@ for opt in $@ ; do
 		;;
 
 		*)
-		origlen=${#opt}
-		nospace=${opt//' '/''}
+		origlen=${#arg}
+		nospace=${arg//' '/''}
 		newlen=${#nospace}
 		if [ $newlen -lt $origlen ]; then
-			ARGS="$ARGS \"$opt\""
+			ARGS="$ARGS \"$arg\""
 		else
-			ARGS="$ARGS $opt"
+			ARGS="$ARGS $arg"
 		fi
+		;;
 		
 	esac
-	if [ $DEBUG -eq 1 ] ; then 
-		echo "[DEBUG]: Opt is $opt"
-		echo "[DEBUG] ARGS are: $ARGS"
-	fi
+
 done
 
 #
@@ -110,16 +111,16 @@ cd $OLDDIR
 GUMSDIR=`dirname $INVOKE_DIR`
 
 if [ $DEBUG -eq 1 ] ; then 
-	echo "[DEBUG] Invoke is $INVOKE"
-	echo "[DEBUG] Dirpath is $DIRPATH"
-	echo "[DEBUG] Invoke directory is $INVOKE_DIR"
-	echo "[DEBUG] Gumsdir is $GUMSDIR"
+	echo "[DEBUG] gums: Invoke is $INVOKE"
+	echo "[DEBUG] gums: Dirpath is $DIRPATH"
+	echo "[DEBUG] gums: Invoke directory is $INVOKE_DIR"
+	echo "[DEBUG] gums: Gumsdir is $GUMSDIR"
 fi
 
 # Handle VDT install
 if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ] ; then
 	if [ $DEBUG -eq 1 ] ; then
-		echo "[DEBUG] Setting paths using VDT_LOCATION..."
+		echo "[DEBUG] gums: Setting paths using VDT_LOCATION..."
 	fi
 	BIN=$VDT_LOCATION/gums/bin/
 	ETC=$VDT_LOCATION/gums/etc/
@@ -129,7 +130,7 @@ if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ] ; then
 # Handle RPM install
 elif [ "$INVOKE_DIR" == "/usr/bin" ] && [ -d /etc/gums/ ] ; then
 	if [ $DEBUG -eq 1 ] ; then
-		echo "[DEBUG] Seems to be an RPM install. Setting paths..."
+		echo "[DEBUG] gums: Seems to be an RPM install. Setting paths..."
 	fi
 	BIN=/usr/bin
 	ETC=/etc/gums
@@ -139,7 +140,7 @@ elif [ "$INVOKE_DIR" == "/usr/bin" ] && [ -d /etc/gums/ ] ; then
 # Handle tarball/ development location	
 else
 	if [ $DEBUG -eq 1 ] ; then
-		echo "[DEBUG]: Setting paths by guessing based on script location."
+		echo "[DEBUG] gums: Setting paths by guessing based on script location."
 	fi
 	
 	# Handle scripts/bin directory
@@ -170,7 +171,7 @@ else
 	if [ -d $LIB/endorsed ]; then
 		ENDORSED=$LIB/endorsed
 	else
-		echo "[ERROR] $GUMSDIR/lib/endorsed not found. You probably need to symlink all target libs there."
+		echo "[ERROR] gums: $GUMSDIR/lib/endorsed not found. You probably need to symlink all target libs there."
 		exit_confused
 	fi
 fi
@@ -202,27 +203,27 @@ elif [ "$MODE" = "SERVICE" ]; then
 	MAINCLASS=gov.bnl.gums.admin.AdminCommandLine
 	CERT_OPTS="-DsslCertfile=$USER_CERT -DsslKey=$USER_KEY"
 else
-	echo "ERROR: Unknown mode $MODE. Exitting."
+	echo "[ERROR] gums: Unknown mode $MODE. Exitting."
 	exit 1
 fi	
 
 SECURITY_OPTS="$TRUST_OPTS $CERT_OPTS"
 
 if [ $DEBUG -eq 1 ] ; then 
-	echo "[DEBUG] Program is $PROG"
-	echo "[DEBUG] Program dir is $BINDIR"
-	echo "[DEBUG] Binary dir is $BIN"
-	echo "[DEBUG] Config dir is $ETC"
-	echo "[DEBUG] Library dir is $LIB"
-	echo "[DEBUG] Endorsed lib dir is $ENDORSED"
-	echo "[DEBUG] Cert dir is $CERTDIR"
-	echo "[DEBUG] Full classpath is: $GUMSCP"
-	echo "[DEBUG] Security opts are: $SECURITY_OPTS"
-	echo "[DEBUG] Pass-through args are $ARGS"
-	echo "[DEBUG] Mode is $MODE"
-	echo "[DEBUG] ARGS are $ARGS"
+	echo "[DEBUG] gums: Program is $PROG"
+	echo "[DEBUG] gums: Program dir is $BINDIR"
+	echo "[DEBUG] gums: Binary dir is $BIN"
+	echo "[DEBUG] gums: Config dir is $ETC"
+	echo "[DEBUG] gums: Library dir is $LIB"
+	echo "[DEBUG] gums: Endorsed lib dir is $ENDORSED"
+	echo "[DEBUG] gums: Cert dir is $CERTDIR"
+	echo "[DEBUG] gums: Full classpath is: $GUMSCP"
+	echo "[DEBUG] gums: Security opts are: $SECURITY_OPTS"
+	echo "[DEBUG] gums: Pass-through args are $ARGS"
+	echo "[DEBUG] gums: Mode is $MODE"
+	echo "[DEBUG] gums: ARGS are $ARGS"
 	for arg ; do
-		echo "[DEBUG] Arg: $arg"
+		echo "[DEBUG] gums: Arg: $arg"
 	done
 fi
 
@@ -230,6 +231,9 @@ fi
 # Execute correct main class with proper arguments depending on mode.
 #
 if [ "$MODE" != "NAGIOS" ] ; then
+	if [ $DEBUG -eq 1 ] ; then
+		echo java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp $GUMSCP $MAINCLASS $ARGS
+	fi
 	eval java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp $GUMSCP $MAINCLASS $ARGS
 else
 #
