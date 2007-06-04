@@ -71,11 +71,11 @@ Configures group to account mappings.
 <%
 String message = null;
 
-if (request.getParameter("action")==null || 
-	"save".equals(request.getParameter("action")) || 
-	"delete".equals(request.getParameter("action"))) {
+if (request.getParameter("command")==null || 
+	"save".equals(request.getParameter("command")) || 
+	"delete".equals(request.getParameter("command"))) {
 	
-	if ("save".equals(request.getParameter("action"))) {
+	if ("save".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
 			newConfiguration.removeGroupToAccountMapping( request.getParameter("name") );
@@ -88,7 +88,7 @@ if (request.getParameter("action")==null ||
 		}
 	}
 
-	if ("delete".equals(request.getParameter("action"))) {
+	if ("delete".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
 			String references = ConfigurationWebToolkit.getHostToGroupReferences(newConfiguration, request.getParameter("name"));
@@ -122,10 +122,10 @@ if (request.getParameter("action")==null ||
 		
 %>	
 	   	<tr>
-			<td width="55" valign="top">
+			<td width="1" valign="top">
 				<form action="groupToAccountMappings.jsp" method="get">
-					<input type="image" src="images/Edit24.gif" name="action" value="edit">
-					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this group to account mapping?'))return false;">
+					<input type="submit" style="width:80px" name="command" value="edit">
+					<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this group to account mapping?'))return false;">
 					<input type="hidden" name="name" value="<%=g2AMapping.getName()%>">
 				</form>
 			</td>
@@ -134,7 +134,7 @@ if (request.getParameter("action")==null ||
 		  			<tr>
 			    		<td>
 							Name:
-							<a href="groupToAccountMappings.jsp?action=edit&name=<%=g2AMapping.getName()%>">
+							<a href="groupToAccountMappings.jsp?command=edit&name=<%=g2AMapping.getName()%>">
 								<%=g2AMapping.getName()%>
 							</a><br>
 							Description: <%=g2AMapping.getDescription()%><br>		    		
@@ -145,7 +145,7 @@ if (request.getParameter("action")==null ||
 		while(userGroupsIt.hasNext())
 		{
 			String userGroup = (String)userGroupsIt.next();
-			out.write( "<a href=\"userGroups.jsp?action=edit&name=" + userGroup + "\">" + userGroup + "</a>" );
+			out.write( "<a href=\"userGroups.jsp?command=edit&name=" + userGroup + "\">" + userGroup + "</a>" );
 			if( userGroupsIt.hasNext() )
 				out.write(", ");
 		}
@@ -158,7 +158,7 @@ if (request.getParameter("action")==null ||
 		while(accountMappersIt.hasNext())
 		{
 			String accountMapper = (String)accountMappersIt.next();
-			out.write( "<a href=\"accountMappers.jsp?action=edit&name=" + accountMapper + "\">" + accountMapper + "</a>" );
+			out.write( "<a href=\"accountMappers.jsp?command=edit&name=" + accountMapper + "\">" + accountMapper + "</a>" );
 			if( accountMappersIt.hasNext() )
 				out.write(", ");
 		}
@@ -175,7 +175,7 @@ if (request.getParameter("action")==null ||
 		<tr>
 	        <td colspan=2>
 	        	<form action="groupToAccountMappings.jsp" method="get">
-	        		<div style="text-align: center;"><button type="submit" name="action" value="add">Add</button></div>
+	        		<div style="text-align: center;"><button type="submit" name="command" value="add">Add</button></div>
 	        	</form>
 	        </td>
 		</tr>
@@ -184,15 +184,15 @@ if (request.getParameter("action")==null ||
 <%
 }
 
-else if ("edit".equals(request.getParameter("action"))
-	|| "add".equals(request.getParameter("action"))
-	|| "reload".equals(request.getParameter("action"))) {
+else if ("edit".equals(request.getParameter("command"))
+	|| "add".equals(request.getParameter("command"))
+	|| "reload".equals(request.getParameter("command"))) {
 	
 	Collection g2AMappings = configuration.getGroupToAccountMappings().values();
 	
 	GroupToAccountMapping g2AMapping = null;
 	
-	if ("edit".equals(request.getParameter("action"))) {
+	if ("edit".equals(request.getParameter("command"))) {
 		try {
 			g2AMapping = (GroupToAccountMapping)configuration.getGroupToAccountMappings().get( request.getParameter("name") );
 		} catch(Exception e) {
@@ -201,7 +201,7 @@ else if ("edit".equals(request.getParameter("action"))
 		}
 	}
 
-	if ("reload".equals(request.getParameter("action"))) {
+	if ("reload".equals(request.getParameter("command"))) {
 		try{
 			g2AMapping = ConfigurationWebToolkit.parseGroupToAccountMapping(request);
 		} catch(Exception e) {
@@ -210,14 +210,14 @@ else if ("edit".equals(request.getParameter("action"))
 		}
 	}
 		
-	else if ("add".equals(request.getParameter("action"))) {
+	else if ("add".equals(request.getParameter("command"))) {
 		g2AMapping = new GroupToAccountMapping(configuration);
 	}
 %>
 
 <form action="groupToAccountMappings.jsp" method="get">
-	<input type="hidden" name="action" value="">
-	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"))%>">
+	<input type="hidden" name="command" value="">
+	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalAction") : request.getParameter("command"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
@@ -226,7 +226,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    <td nowrap>
 <%
 
-	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction"))) {
+	if ("add".equals(request.getParameter("command")) || "add".equals(request.getParameter("originalAction"))) {
 %>
 		    	<input maxlength="256" size="32" name="name" value="<%=(g2AMapping.getName()!=null ? g2AMapping.getName() : "")%>"/>
 		    </td>
@@ -274,7 +274,7 @@ else if ("edit".equals(request.getParameter("action"))
 				ConfigurationWebToolkit.createSelectBox("uG"+counter, 
 					configuration.getUserGroups().values(), 
 					(String)userGroupsIt.next(),
-					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+					"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
 					true) );
 			counter++;
 		}
@@ -283,7 +283,7 @@ else if ("edit".equals(request.getParameter("action"))
 		ConfigurationWebToolkit.createSelectBox("uG"+counter, 
 			configuration.getUserGroups().values(), 
 			null,
-			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+			"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
 			true)+
 			" (validate membership from first successful user group)");
 %>
@@ -304,7 +304,7 @@ else if ("edit".equals(request.getParameter("action"))
 				ConfigurationWebToolkit.createSelectBox("aM"+counter, 
 					configuration.getAccountMappers().values(), 
 					(String)accountMappersIt.next(),
-					"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+					"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
 					true) );
 			counter++;
 		}
@@ -313,7 +313,7 @@ else if ("edit".equals(request.getParameter("action"))
 		ConfigurationWebToolkit.createSelectBox("aM"+counter, 
 			configuration.getAccountMappers().values(), 
 			null,
-			"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+			"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
 			true)+
 			" (get account from first successful account mapper)");
 %>

@@ -52,11 +52,11 @@ Configures manual account mappings.
 Map accountMappers = configuration.getAccountMappers();
 String message = null;
 
-if (request.getParameter("action")==null || 
-	"save".equals(request.getParameter("action")) || 
-	"delete".equals(request.getParameter("action"))) {
+if (request.getParameter("command")==null || 
+	"save".equals(request.getParameter("command")) || 
+	"delete".equals(request.getParameter("command"))) {
 	
-	if ("save".equals(request.getParameter("action"))) {
+	if ("save".equals(request.getParameter("command"))) {
 		ManualAccountMapper manualAccountMapper = (ManualAccountMapper)accountMappers.get(request.getParameter("accountMapper"));
 		try{
 			gums.manualMappingAdd(manualAccountMapper.getName(), request.getParameter("dn"), request.getParameter("account"));
@@ -66,7 +66,7 @@ if (request.getParameter("action")==null ||
 		}
 	}
 
-	if ("delete".equals(request.getParameter("action"))) {
+	if ("delete".equals(request.getParameter("command"))) {
 		ManualAccountMapper manualAccountMapper = (ManualAccountMapper)accountMappers.get(request.getParameter("accountMapper"));
 		try{
 			gums.manualMappingRemove(manualAccountMapper.getName(), request.getParameter("dn"));
@@ -101,7 +101,7 @@ if (request.getParameter("action")==null ||
    	<tr>
 		<td width="25" valign="top">
 			<form action="manualAccounts.jsp" method="get">
-				<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this mapping?'))return false;">
+				<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this mapping?'))return false;">
 				<input type="hidden" name="dn" value="<%=mapping.getDn()%>">
 				<input type="hidden" name="accountMapper" value="<%=manualAccountMapper.getName()%>">
 			</form>
@@ -111,8 +111,8 @@ if (request.getParameter("action")==null ||
 	  			<tr>
 		    		<td>
 			    		DN: <%=mapping.getDn()%><br>
-			    		account mapper: <a href="accountMappers.jsp?name=<%=manualAccountMapper.getName()%>&action=edit"><%=manualAccountMapper.getName()%></a><br>
-			    		account: <%=mapping.getAccount()%><br>
+			    		Account Mapper: <a href="accountMappers.jsp?name=<%=manualAccountMapper.getName()%>&command=edit"><%=manualAccountMapper.getName()%></a><br>
+			    		Account: <%=mapping.getAccount()%><br>
 		    		</td>
 	  			</tr>
 			</table>
@@ -127,7 +127,7 @@ if (request.getParameter("action")==null ||
 	<tr>
 		<td colspan=2>
 			<form action="manualAccounts.jsp" method="get">
-				<div style="text-align: center;"><button type="submit" name="action" value="add">Add</button></div>
+				<div style="text-align: center;"><button type="submit" name="command" value="add">Add</button></div>
 			</form>
 	    </td>
 	</tr>
@@ -136,7 +136,7 @@ if (request.getParameter("action")==null ||
 <%
 }
 
-else if ("add".equals(request.getParameter("action"))) {
+else if ("add".equals(request.getParameter("command"))) {
 	HibernateMapping mapping = new HibernateMapping();
 
 	// Retrieve mappings in Manual Account Mappers
@@ -150,19 +150,11 @@ else if ("add".equals(request.getParameter("action"))) {
 		
 %>
 <form action="manualAccounts.jsp" method="get">
-	<input type="hidden" name="action" value="">
+	<input type="hidden" name="command" value="">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
-			<td nowrap style="text-align: right;">
-				When mapped by account mapper 
-			</td>
-			<td>
-				<%=ConfigurationWebToolkit.createSelectBox("accountMapper", manualAccountMappers, null, null, manualAccountMappers.size()>1)%> ,
-			</td>
-		</tr>
-		<tr>
     		<td nowrap style="text-align: right;">
-	    		map user with DN
+	    		DN:
 		    </td>
 		    <td nowrap>
 			   <input maxlength="256" size="64" name="dn" value=""/>
@@ -178,7 +170,15 @@ else if ("add".equals(request.getParameter("action"))) {
 		</tr>	
 		<tr>
 			<td nowrap style="text-align: right;">
-				to account 
+				Account Mapper: 
+			</td>
+			<td>
+				<%=ConfigurationWebToolkit.createSelectBox("accountMapper", manualAccountMappers, null, null, manualAccountMappers.size()>1)%>
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				Account: 
 			</td>
 			<td>
 				<input maxlength="256" size="32" name="account" value=""/>
@@ -195,7 +195,7 @@ else if ("add".equals(request.getParameter("action"))) {
 		<tr>
 	        <td colspan=2>
 	        	<div style="text-align: center;">
-	        		<button type="submit" onclick="document.forms[0].elements['action'].value='save'; return true;">Add</button>
+	        		<button type="submit" onclick="document.forms[0].elements['command'].value='save'; return true;">Add</button>
 	        	</div>
 	        </td>
 		</tr>

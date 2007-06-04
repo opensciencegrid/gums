@@ -2,7 +2,7 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="gov.bnl.gums.*"%>
 <%@page import="gov.bnl.gums.account.*"%>
-<%  String action = request.getParameter("action");%>
+<%  String command = request.getParameter("command");%>
 <%  String accountMapper = request.getParameter("accountMapper");%>
 <%  String range = request.getParameter("range"); if (range!=null)range = range.trim();%>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
@@ -24,7 +24,7 @@
 <p>
 <BR>
 <% 
-	if ("add".equals(action)) {
+	if ("add".equals(command)) {
 		try {
 			gums.addAccountRange( accountMapper, range ); 
 			out.println("Accounts have been added to the pool.");
@@ -32,7 +32,7 @@
 			out.println("<div class=\"failure\">Error saving pool account range: " + e.getMessage() + "</div>");
 		}
 	}
-	else if ("remove".equals(action)) {	
+	else if ("remove".equals(command)) {	
 		try {
 			gums.removeAccountRange( accountMapper, range ); 
 			out.println("Accounts have been removed from the pool.");
@@ -40,7 +40,7 @@
 			out.println("<div class=\"failure\">Error removing pool account range: " + e.getMessage() + "</div>");
 		}
 	}
-	else if ("unassign".equals(action)) {	
+	else if ("unassign".equals(command)) {	
 		try {
 			gums.unassignAccountRange( accountMapper, range ); 
 			out.println("Accounts have been unassigned.");

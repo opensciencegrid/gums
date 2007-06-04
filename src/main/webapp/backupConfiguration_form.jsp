@@ -23,7 +23,7 @@
 Backs up current configuration to gums.config.{date}.
 </p>
 
-<form action="backupConfiguration.jsp" method="get">
+<form command="backupConfiguration.jsp" method="get">
   <table id="form" border="0" cellpadding="2" cellspacing="2">
     <tbody>
       <tr>

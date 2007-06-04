@@ -50,11 +50,11 @@ Configures VOMS servers.
 <%
 String message = null;
 
-if (request.getParameter("action")==null || 
-	"save".equals(request.getParameter("action")) || 
-	"delete".equals(request.getParameter("action"))) {
+if (request.getParameter("command")==null || 
+	"save".equals(request.getParameter("command")) || 
+	"delete".equals(request.getParameter("command"))) {
 	
-	if ("save".equals(request.getParameter("action"))) {
+	if ("save".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
 			newConfiguration.removeVomsServer( request.getParameter("name") );
@@ -67,7 +67,7 @@ if (request.getParameter("action")==null ||
 		}
 	}
 
-	if ("delete".equals(request.getParameter("action"))) {
+	if ("delete".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
 			String references = ConfigurationWebToolkit.getVOMSUserGroupReferences(newConfiguration, request.getParameter("name"));
@@ -101,10 +101,10 @@ if (request.getParameter("action")==null ||
 		
 %>
 	   	<tr>
-			<td width="55" valign="top">
+			<td width="1" valign="top">
 				<form action="vomsServers.jsp" method="get">
-					<input type="image" src="images/Edit24.gif" name="action" value="edit">
-					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this VOMS server?'))return false;">
+					<input type="submit" style="width:80px" name="command" value="edit">
+					<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this VOMS server?'))return false;">
 					<input type="hidden" name="name" value="<%=vomsServer.getName()%>">
 				</form>
 			</td>
@@ -113,13 +113,13 @@ if (request.getParameter("action")==null ||
 		  			<tr>
 			    		<td>
 				    		VOMS Server:
-				    		<a href="vomsServers.jsp?action=edit&name=<%=vomsServer.getName()%>">
+				    		<a href="vomsServers.jsp?command=edit&name=<%=vomsServer.getName()%>">
 				    			<%=vomsServer.getName()%>
 				    		</a><br>			    	
 				    		Description: <%=vomsServer.getDescription()%><br>		
 				    		Base URL: <%=vomsServer.getBaseUrl()%>{remainder url}<br>	
 							Persistence Factory:
-				    		<a href="persistenceFactories.jsp?action=edit&name=<%=vomsServer.getPersistenceFactory()%>">
+				    		<a href="persistenceFactories.jsp?command=edit&name=<%=vomsServer.getPersistenceFactory()%>">
 				    			<%=vomsServer.getPersistenceFactory()%>
 				    		</a><br>
 						</td>
@@ -134,7 +134,7 @@ if (request.getParameter("action")==null ||
 		<tr>
 	        <td colspan=2>
 	        	<form action="vomsServers.jsp" method="get">
-	        		<div style="text-align: center;"><button type="submit" name="action" value="add">Add</button></div>
+	        		<div style="text-align: center;"><button type="submit" name="command" value="add">Add</button></div>
 	        	</form>
 	        </td>
 		</tr>
@@ -143,15 +143,15 @@ if (request.getParameter("action")==null ||
 <%
 }
 
-else if ("edit".equals(request.getParameter("action"))
-	|| "add".equals(request.getParameter("action"))
-	|| "reload".equals(request.getParameter("action"))) {
+else if ("edit".equals(request.getParameter("command"))
+	|| "add".equals(request.getParameter("command"))
+	|| "reload".equals(request.getParameter("command"))) {
 	
 	Collection vomsServers = configuration.getVomsServers().values();
 	
 	VomsServer vomsServer = null;
 	
-	if ("edit".equals(request.getParameter("action"))) {
+	if ("edit".equals(request.getParameter("command"))) {
 		try {
 			vomsServer = (VomsServer)configuration.getVomsServers().get( request.getParameter("name") );
 		} catch(Exception e) {
@@ -160,7 +160,7 @@ else if ("edit".equals(request.getParameter("action"))
 		}
 	}
 
-	if ("reload".equals(request.getParameter("action"))) {
+	if ("reload".equals(request.getParameter("command"))) {
 		try{
 			vomsServer = ConfigurationWebToolkit.parseVomsServer(request);
 		} catch(Exception e) {
@@ -169,13 +169,13 @@ else if ("edit".equals(request.getParameter("action"))
 		}
 	}
 		
-	else if ("add".equals(request.getParameter("action"))) {
+	else if ("add".equals(request.getParameter("command"))) {
 		vomsServer = new VomsServer(configuration);
 	}		
 %>
 <form action="vomsServers.jsp" method="get">
-	<input type="hidden" name="action" value="">
-	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"))%>">
+	<input type="hidden" name="command" value="">
+	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalAction") : request.getParameter("command"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
@@ -183,7 +183,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    </td>
 		    <td nowrap>
 <%
-	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction"))) {
+	if ("add".equals(request.getParameter("command")) || "add".equals(request.getParameter("originalAction"))) {
 %>
 		    	<input maxlength="256" size="32" name="name" value="<%=(vomsServer.getName()!=null ? vomsServer.getName() : "")%>"/>
 		    </td>

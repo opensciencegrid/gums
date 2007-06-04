@@ -47,7 +47,7 @@ Adds, removes, or unassigns accounts in pool.
 </p>
 
 <form action="accountRange.jsp" method="get">
-  <input type="hidden" name="action">
+  <input type="hidden" name="command">
   <table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
     <tbody>
 	  <tr>
@@ -66,7 +66,7 @@ Adds, removes, or unassigns accounts in pool.
 			ConfigurationWebToolkit.createSelectBox("accountMapper", 
 				accountMappers, 
 				(request.getParameter("accountMapper")!=null ? request.getParameter("accountMapper") : null),
-				"onchange=\"document.forms[0].action='accountRange_form.jsp';document.forms[0].submit();\"",
+				"onchange=\"document.forms[0].command='accountRange_form.jsp';document.forms[0].submit();\"",
 				false) );
 %>   
 		</td>
@@ -103,9 +103,9 @@ Adds, removes, or unassigns accounts in pool.
 	</tr>
 	<tr>
 		<td colspan="2" style="text-align: center;">
-        	<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} document.forms[0].elements['action'].value='add'">Add Account Range</button>
-        	<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} if(!confirm('Are you sure you want to remove this account range?'))return false; document.forms[0].elements['action'].value='remove'">Remove Account Range</button>
-			<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} if(!confirm('Are you sure you want to unassign accounts?'))return false; document.forms[0].elements['action'].value='unassign'">Unassign Account Range</button>
+        	<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} document.forms[0].elements['command'].value='add'">Add Account Range</button>
+        	<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} if(!confirm('Are you sure you want to remove this account range?'))return false; document.forms[0].elements['command'].value='remove'">Remove Account Range</button>
+			<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} if(!confirm('Are you sure you want to unassign accounts?'))return false; document.forms[0].elements['command'].value='unassign'">Unassign Account Range</button>
 		</td>
 	</tr>
     </tbody>

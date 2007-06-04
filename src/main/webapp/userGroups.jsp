@@ -51,11 +51,11 @@ Configures user groups.
 <%
 String message = null;
 
-if (request.getParameter("action")==null || 
-	"save".equals(request.getParameter("action")) || 
-	"delete".equals(request.getParameter("action"))) {
+if (request.getParameter("command")==null || 
+	"save".equals(request.getParameter("command")) || 
+	"delete".equals(request.getParameter("command"))) {
 	
-	if ("save".equals(request.getParameter("action"))) {
+	if ("save".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
 			newConfiguration.removeUserGroup( request.getParameter("name") );
@@ -68,7 +68,7 @@ if (request.getParameter("action")==null ||
 		}
 	}
 
-	if ("delete".equals(request.getParameter("action"))) {
+	if ("delete".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
 			String references = ConfigurationWebToolkit.getGroupToAccountMappingReferences(newConfiguration, request.getParameter("name"), "gov.bnl.gums.userGroup.UserGroup");
@@ -103,10 +103,10 @@ if (request.getParameter("action")==null ||
 		
 %>
 	   	<tr>
-			<td width="55" valign="top">
+			<td width="1" valign="top">
 				<form action="userGroups.jsp" method="get">
-					<input type="image" src="images/Edit24.gif" name="action" value="edit">
-					<input type="image" src="images/Remove24.gif" name="action" value="delete" onclick="if(!confirm('Are you sure you want to delete this user group?'))return false;">
+					<input type="submit" style="width:80px" name="command" value="edit">
+					<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this user group?'))return false;">
 					<input type="hidden" name="name" value="<%=userGroup.getName()%>">
 				</form>
 			</td>
@@ -118,38 +118,38 @@ if (request.getParameter("action")==null ||
 		if (userGroup instanceof ManualUserGroup) {
 %>
 				    		Manual User Group:
-				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
+				    		<a href="userGroups.jsp?command=edit&name=<%=userGroup.getName()%>">
 				    			<%=userGroup.getName()%>
 				    		</a><br>
 				    		Description: <%=userGroup.getDescription()%><br>	
 				    		Persistence Factory:
-							<a href="persistenceFactories.jsp?action=edit&name=<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>">
+							<a href="persistenceFactories.jsp?command=edit&name=<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>">
 								<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>
 							</a><br>
 <%
 		} else if (userGroup instanceof LDAPUserGroup) {
 %>
 				    		LDAP User Group:
-				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
+				    		<a href="userGroups.jsp?command=edit&name=<%=userGroup.getName()%>">
 				    			<%=userGroup.getName()%>
 				    		</a><br>
 				    		Description: <%=userGroup.getDescription()%><br>	
 							LDAP Server: <%=((LDAPUserGroup)userGroup).getServer()%><br>	
 							Query: <%=((LDAPUserGroup)userGroup).getQuery()%><br>
 							Persistence factory:
-							<a href="persistenceFactories.jsp?action=edit&name=<%=((LDAPUserGroup)userGroup).getPersistenceFactory()%>">
+							<a href="persistenceFactories.jsp?command=edit&name=<%=((LDAPUserGroup)userGroup).getPersistenceFactory()%>">
 								<%=((LDAPUserGroup)userGroup).getPersistenceFactory()%>
 							</a><br>
 <%
 		} else if (userGroup instanceof VOMSUserGroup) {
 %>
 				    		VOMS User Group:
-				    		<a href="userGroups.jsp?action=edit&name=<%=userGroup.getName()%>">
+				    		<a href="userGroups.jsp?command=edit&name=<%=userGroup.getName()%>">
 				    			<%=userGroup.getName()%>
 				    		</a><br>
 				    		Description: <%=userGroup.getDescription()%><br>	
 							VOMS Server:
-							<a href="vomsServers.jsp?action=edit&name=<%=((VOMSUserGroup)userGroup).getVomsServer()%>">
+							<a href="vomsServers.jsp?command=edit&name=<%=((VOMSUserGroup)userGroup).getVomsServer()%>">
 								<%=((VOMSUserGroup)userGroup).getVomsServer()%>
 							</a><br>			
 <%
@@ -189,7 +189,7 @@ if (request.getParameter("action")==null ||
 		<tr>
 	        <td colspan=2>
 	        	<form action="userGroups.jsp" method="get">
-	        		<div style="text-align: center;"><button type="submit" name="action" value="add">Add</button></div>
+	        		<div style="text-align: center;"><button type="submit" name="command" value="add">Add</button></div>
 	        	</form>
 	        </td>
 		</tr>
@@ -198,9 +198,9 @@ if (request.getParameter("action")==null ||
 <%
 }
 
-else if ("edit".equals(request.getParameter("action"))
-	|| "add".equals(request.getParameter("action"))
-	|| "reload".equals(request.getParameter("action"))) {
+else if ("edit".equals(request.getParameter("command"))
+	|| "add".equals(request.getParameter("command"))
+	|| "reload".equals(request.getParameter("command"))) {
 	
 	Collection userGroups = configuration.getUserGroups().values();
 	
@@ -211,7 +211,7 @@ else if ("edit".equals(request.getParameter("action"))
 	userGroupTypes.add(ManualUserGroup.getTypeStatic());
 	userGroupTypes.add(VOMSUserGroup.getTypeStatic());
 	
-	if ("edit".equals(request.getParameter("action"))) {
+	if ("edit".equals(request.getParameter("command"))) {
 		try {
 			userGroup = (UserGroup)configuration.getUserGroups().get( request.getParameter("name") );
 		} catch(Exception e) {
@@ -220,7 +220,7 @@ else if ("edit".equals(request.getParameter("action"))
 		}
 	}
 
-	if ("reload".equals(request.getParameter("action"))) {
+	if ("reload".equals(request.getParameter("command"))) {
 		try{
 			userGroup = ConfigurationWebToolkit.parseUserGroup(request);
 		} catch(Exception e) {
@@ -229,14 +229,14 @@ else if ("edit".equals(request.getParameter("action"))
 		}
 	}
 		
-	else if ("add".equals(request.getParameter("action"))) {
+	else if ("add".equals(request.getParameter("command"))) {
 		userGroup = new VOMSUserGroup(configuration);
 	}		
 		
 %>
 <form action="userGroups.jsp" method="get">
-	<input type="hidden" name="action" value="">
-	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("action")) ? request.getParameter("originalAction") : request.getParameter("action"))%>">
+	<input type="hidden" name="command" value="">
+	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalAction") : request.getParameter("command"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
@@ -244,7 +244,7 @@ else if ("edit".equals(request.getParameter("action"))
 		    </td>
 		    <td nowrap>
 <%
-	if ("add".equals(request.getParameter("action")) || "add".equals(request.getParameter("originalAction"))) {
+	if ("add".equals(request.getParameter("command")) || "add".equals(request.getParameter("originalAction"))) {
 %>
 		    	<input maxlength="256" size="32" name="name" value="<%=(userGroup.getName()!=null ? userGroup.getName() : "")%>"/>
 		    </td>
@@ -284,7 +284,7 @@ else if ("edit".equals(request.getParameter("action"))
 			<%=ConfigurationWebToolkit.createSelectBox("type", 
 				userGroupTypes, 
 				userGroup.getType(),
-				"onchange=\"document.forms[0].elements['action'].value='reload';document.forms[0].submit();\"",
+				"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
 				false)%>
 		    </td>
 		</tr>
@@ -405,7 +405,7 @@ else if ("edit".equals(request.getParameter("action"))
 					Accept non-VOMS certificates:
 				</td>
 				<td>
-					<select name="nVOMS" onchange="document.forms[0].elements['action'].value='reload';document.forms[0].submit();">
+					<select name="nVOMS" onchange="document.forms[0].elements['command'].value='reload';document.forms[0].submit();">
 						<option <%=(((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"selected":"")%>>true</option>
 						<option <%=(((VOMSUserGroup)userGroup).isAcceptProxyWithoutFQAN()?"":"selected")%>>false</option>
 					</select>

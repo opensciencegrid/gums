@@ -57,10 +57,10 @@
   	<build>
    		<resources>
 	      <resource>
-	        <directory>src/main</directory>
-	        <excludes>
-	          <exclude>**</exclude>
-	        </excludes>
+	        <directory>src/main/java</directory>
+	        <includes>
+	          <include>**/*.wsdd</include>
+	        </includes>
 	      </resource>
 	    </resources> 	
 		<plugins>
@@ -88,9 +88,9 @@
 									</patternset>
 				                </unzip>
 				                
-				                <copyfile src="src/main/resources/gums.config.template" dest="src/main/config/gums.config" forceoverwrite="no"/>
-				                <copyfile src="src/main/resources/gums.config.barebones" dest="src/main/config/backup/gums.config.barebones" forceoverwrite="no"/>
-				                <copyfile src="src/main/resources/log4j.properties.template" dest="src/main/config/log4j.properties" forceoverwrite="no"/>
+				                <copyfile src="src/main/resources/gums.config.barebones" dest="src/main/config/gums.config" forceoverwrite="yes"/>
+				                <copyfile src="src/main/resources/gums.config.barebones" dest="src/main/config/backup/gums.config.barebones" forceoverwrite="yes"/>
+				                <copyfile src="src/main/resources/log4j.properties.template" dest="src/main/config/log4j.properties" forceoverwrite="yes"/>
 							</tasks>
 						</configuration>
 						<goals>

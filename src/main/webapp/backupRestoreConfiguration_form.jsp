@@ -45,12 +45,12 @@ Backs up or restores configuration.
 </p>
 
 <form action="backupRestoreConfiguration.jsp" method="get">
-  <input type="hidden" name="action" value="backup">
+  <input type="hidden" name="command" value="backup">
   <table id="form" border="0" cellpadding="2" cellspacing="2">
     <tbody>
       <tr>
         <td>
-			<div style="text-align: center;"><button type="submit" onclick="document.forms[0].elements['action'].value='backup'">Back Up Configuration</button></div>
+			<div style="text-align: center;"><button type="submit" onclick="document.forms[0].elements['command'].value='backup'">Back Up Configuration</button></div>
         </td>
       </tr>
 <%
@@ -69,8 +69,8 @@ Backs up or restores configuration.
       <tr>       
         <td>
         	<div style="text-align: center;">
-        		<button type="submit" onclick="document.forms[0].elements['action'].value='restore'">Restore Configuration</button>
-        		<button type="submit" onclick="if(!confirm('Are you sure you want to delete this configuration?'))return false; document.forms[0].elements['action'].value='delete'">Delete Configuration</button>
+        		<button type="submit" onclick="document.forms[0].elements['command'].value='restore'">Restore Configuration</button>
+        		<button type="submit" onclick="if(!confirm('Are you sure you want to delete this configuration?'))return false; document.forms[0].elements['command'].value='delete'">Delete Configuration</button>
         	</div>
         </td>
       </tr>
