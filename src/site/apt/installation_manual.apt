@@ -32,8 +32,7 @@ via a MySQL database (4.0.18 or greater) or LDAP or both.
 We recommend using LDAP so that all user information is stored and retrieved from one place.  The other advantage of LDAP
 is that GUMS will assign primary and secondary group information to accounts within your site's main LDAP tree.  
 Install a database and/or LDAP from scratch or you can use an installation you have ready.  The default GUMS
-configuration assumes MySQL is installed on the local machine, but it does not have to be.  LDAP will most likely already 
-be on another machine, but does not have to be. 
+configuration assumes MySQL is installed on the local machine, but it does not have to be.
 
 ** Prepare the Certificate Directory
  
@@ -119,7 +118,7 @@ MYSQLPARAM="-p"
 +----------------------------------------------+
 
  You must also add yourself to the admins user group in the MySQL database using the addMySqlAdmin script as:
- 
+
 +----------------------------------------------+
 [root@gums scripts]# ./addMySqlAdmin
 Adds an admin in the GUMS database on localhost
@@ -155,7 +154,7 @@ and running something like:
 +----------------------------------------------+
 
  You must also add yourself to the admins user group in LDAP.  Create a file named admins.ldif with the
-following contents:
+following contents except with your DN:
  
 +----------------------------------------------+
 dn: group=admins,ou=GUMS,dc=griddev,dc=org
@@ -168,7 +167,7 @@ user: /DC=org/DC=doegrids/OU=People/CN=Your Self 83753
  and add these using openldap's "ldapadd" command.  All additional users may be added through 
 the web interface or client tools.  
 
- See openldap documentation for more information at {{{http://www.openldap.org/doc/admin23/}{http://www.openldap.org/doc/admin23/}}
+ See openldap documentation for more information at {{{http://www.openldap.org/doc/admin23/}http://www.openldap.org/doc/admin23/}}
 
 ** Configure GUMS for Admin Lookup
 
@@ -224,7 +223,7 @@ gums-service
 [username@gums /]#
 +--------------------------------------------------+
 
- you willnotice that there are several executables in the bin directory:
+ you will notice that there are several executables in the bin directory:
 	
 	* <<gums-host>> - Allows access to the GUMS mapping services.
 	
@@ -271,4 +270,4 @@ gums.authz=https://gums.mysite.com:8443/gums/services/GUMSAuthorizationServicePo
 
 * Configure GUMS
 
- To do anything useful, you need to configure GUMS mappings, which is described in the next section.
+ To do anything useful, you need to configure GUMS mappings, which is described in the "Configure Mappings" section.
