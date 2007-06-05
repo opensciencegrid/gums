@@ -222,7 +222,7 @@ public class GroupToAccountMapping {
 	}
     
     public String toString(String bgColor) {
-    	return "<td bgcolor=\""+bgColor+"\"><a href=\"groupToAccountMappings.jsp?command=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getAccountingVoSubgroup() + "</td><td bgcolor=\""+bgColor+"\">" + getAccountingVo() + "</td>";
+    	return "<td bgcolor=\""+bgColor+"\"><a href=\"groupToAccountMappings.jsp?command=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getAccountingVoSubgroup() + "&nbsp;</td><td bgcolor=\""+bgColor+"\">" + getAccountingVo() + "&nbsp;</td>";
     }
     
     /**
