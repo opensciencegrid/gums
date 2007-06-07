@@ -430,7 +430,7 @@ public class ConfigurationWebToolkit implements Remote {
 				"document.forms[0].elements['name'].value = document.forms[0].elements['name'].value.trim();"+
 				"function doSubmit(str) {";
 		
-		if ("add".equals(request.getParameter("command")) || "add".equals(request.getParameter("originalAction"))) {
+		if ("add".equals(request.getParameter("command")) || "add".equals(request.getParameter("originalCommand"))) {
 			str += "if ( document.forms[0].elements['name'].value == '' ){ alert('First field cannot be empty'); return false; }";
 	    			
 		    Iterator it = items.iterator();

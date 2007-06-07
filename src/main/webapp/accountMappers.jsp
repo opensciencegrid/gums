@@ -239,7 +239,7 @@ else if ("edit".equals(request.getParameter("command"))
 %>
 <form action="accountMappers.jsp" method="get">
 	<input type="hidden" name="command" value="">
-	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalAction") : request.getParameter("command"))%>">
+	<input type="hidden" name="originalCommand" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalCommand") : request.getParameter("command"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
@@ -247,7 +247,7 @@ else if ("edit".equals(request.getParameter("command"))
 		    </td>
 		    <td nowrap>
 <%
-	if ("add".equals(request.getParameter("command")) || "add".equals(request.getParameter("originalAction"))) {
+	if ("add".equals(request.getParameter("command")) || "add".equals(request.getParameter("originalCommand"))) {
 %>
 		    	<input maxlength="256" size="32" name="name" value="<%=(accountMapper.getName()!=null ? accountMapper.getName() : "")%>"/>
 		    </td>
@@ -357,7 +357,7 @@ else if ("edit".equals(request.getParameter("command"))
 			</td>
 		</tr>
 <%
-		if ("add".equals(request.getParameter("command")) || "add".equals(request.getParameter("originalAction")))
+		if ("add".equals(request.getParameter("command")) || "add".equals(request.getParameter("originalCommand")))
 %>
 		<tr>
 			<td colspan="2" nowrap style="text-align: center;">

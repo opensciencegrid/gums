@@ -150,10 +150,10 @@ if (request.getParameter("command")==null ||
 			<td width="1" valign="top">
 				<form action="hostToGroupMappings.jsp#<%=cH2GMapping.getName()%>" method="get">
 					<a name="<%=cH2GMapping.getName()%>">
-						<input type="submit" style="width:80px" name="command" value="edit">
-						<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this host to group mapping?'))return false;">
-						<input type="submit" style="width:33px" name="command" value="up" alt="move up">
-						<input type="submit" style="width:43px" name="command" value="down" alt="move down">
+						<input type="submit" style="width:84px" name="command" value="edit">
+						<input type="submit" style="width:84px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this host to group mapping?'))return false;">
+						<input type="submit" style="width:40px" name="command" value="up" alt="move up">
+						<input type="submit" style="width:40px" name="command" value="down" alt="move down">
 						<input type="hidden" name="name" value="<%=cH2GMapping.getName()%>">
 					</a>
 				</form>
@@ -227,7 +227,7 @@ else if ("edit".equals(request.getParameter("command"))
 		}
 	}
 	
-	else if ("add".equals(request.getParameter("action"))) {
+	else if ("add".equals(request.getParameter("command"))) {
 		h2GMapping = new CertificateHostToGroupMapping(configuration);
 	}
 	
@@ -236,7 +236,7 @@ else if ("edit".equals(request.getParameter("command"))
 <form action="hostToGroupMappings.jsp" method="get">
 	<input type="hidden" name="command" value="">
 	<input type="hidden" name="originalName" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalName") : request.getParameter("name"))%>"/>
-	<input type="hidden" name="originalAction" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalAction") : request.getParameter("command"))%>">
+	<input type="hidden" name="originalCommand" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalCommand") : request.getParameter("command"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
