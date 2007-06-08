@@ -26,8 +26,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://lcg-voms.cern.ch:8443/voms'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -36,8 +36,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://voms.fnal.gov:8443/voms'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 			
@@ -46,8 +46,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://grid03.uits.indiana.edu:8443/edg-voms-admin/vos/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -56,8 +56,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://voms.cnaf.infn.it:8443/voms/cdf/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -66,8 +66,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://voms.compbiogrid.org:8443/voms/CompBioGrid/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -76,8 +76,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://thegrid.dpcc.uta.edu:8443/edg-voms-admin/dosar/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -86,8 +86,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://osg-engage.renci.org:8443/voms/Engage/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -96,8 +96,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://glow-voms.cs.wisc.edu:8443/edg-voms-admin/GLOW/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -106,8 +106,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://t2.unl.edu:8443/voms/gpn/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -116,8 +116,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://dylan.ccr.buffalo.edu:8443/edg-voms-admin/GRASE/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -126,8 +126,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://grow-voms.its.uiowa.edu:8443/edg-voms-admin/grow/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -136,8 +136,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://gugrid.arc.georgetown.edu:8443/voms/GUGrid/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -146,8 +146,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://ligo-web.aset.psu.edu:8443/voms/LIGO/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -156,8 +156,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://www-mariachi.physics.sunysb.edu:8443/voms/mariachi/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -166,8 +166,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://vo.rcac.purdue.edu:8443/voms/NWICG/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -176,8 +176,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://voms.opensciencegrid.org:8443/voms/osg/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 
@@ -186,8 +186,8 @@
 			description=''
 			persistenceFactory='mysql'
 			baseUrl='https://vo.racf.bnl.gov:8443/voms/star/services/VOMSAdmin'
-			sslKey='/etc/grid-security/gumskey.pem'
-			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKey='/etc/grid-security/http/httpkey.pem'
+			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
 			sslCAFiles=''/>
 

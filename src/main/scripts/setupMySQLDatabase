@@ -43,7 +43,7 @@ usage() {
 	echo "          --help [Print this message]"
 	echo
 	echo "Examples:"
-	echo "  $0 --user gums --host gums.mysite.com --password secret"
+	echo "  $0 --user gums --host gums.mysite.com:49151 --password secret"
 	echo
 	echo "This will make mysql authenticate as root with a password (-p), "
 	echo "create a <gums> user with password <secret> authorized to "
