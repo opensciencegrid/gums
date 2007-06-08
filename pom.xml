@@ -79,17 +79,17 @@
 								    </fileset>
 									<patternset>
 										<include name="gums.config.template"/>
-										<include name="log4j.properties.template"/>
+										<include name="gums.config.devel"/>
+										<include name="gums.config.osg_template"/>
 										<include name="gums.config.schema"/>
 										<include name="gums.config.transform"/>
-										<include name="gums.config.barebones"/>
+										<include name="log4j.properties.template"/>
 										<include name="sql/**"/>
 										<include name="scripts/**"/>
 									</patternset>
 				                </unzip>
 				                
-				                <copyfile src="src/main/resources/gums.config.barebones" dest="src/main/config/gums.config" forceoverwrite="yes"/>
-				                <copyfile src="src/main/resources/gums.config.barebones" dest="src/main/config/backup/gums.config.barebones" forceoverwrite="yes"/>
+				                <copyfile src="src/main/resources/gums.config.devel" dest="src/main/config/gums.config" forceoverwrite="yes"/>
 				                <copyfile src="src/main/resources/log4j.properties.template" dest="src/main/config/log4j.properties" forceoverwrite="yes"/>
 							</tasks>
 						</configuration>

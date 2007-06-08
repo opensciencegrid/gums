@@ -248,7 +248,7 @@ else if ("edit".equals(request.getParameter("command"))
 				SSL Key:
 			</td>
 			<td>
-				<input maxlength="256" size="32" name="sslKey" value="<%=vomsServer.getSslKey()%>"/> (optional)
+				<input maxlength="256" size="32" name="sslKey" value="<%=vomsServer.getSslKey()%>"/>
 			</td>
 		</tr>
 	    <tr>
@@ -264,7 +264,7 @@ else if ("edit".equals(request.getParameter("command"))
 				SSL Cert File:
 			</td>
 			<td>
-				<input maxlength="256" size="32" name="sslCert" value="<%=vomsServer.getSslCertfile()%>"/> (optional)
+				<input maxlength="256" size="32" name="sslCert" value="<%=vomsServer.getSslCertfile()%>"/>
 			</td>
 		</tr>
 	    <tr>
@@ -272,7 +272,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	/etc/grid-security/gumscert.pem
+		    	/etc/grid-security/hostcert.pem
 		    </td>
 		</tr>
 		<tr>
@@ -297,14 +297,6 @@ else if ("edit".equals(request.getParameter("command"))
 		    </td>
 		    <td nowrap>
 		    	/etc/grid-security/certificates
-		    </td>
-		</tr>
-		<tr>
-			<td nowrap style="text-align: right;">
-	    		NOTE:
-		    </td>
-		    <td nowrap>
-		    	SSL fields are only required if overriding those in server.xml
 		    </td>
 		</tr>
 		<tr>
