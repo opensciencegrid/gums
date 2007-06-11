@@ -97,6 +97,19 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
+					<execution>
+						<id>2</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+   				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/addMySQLAdmin" perm="ug+x"/>
+				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/setupMySQLDatabase" perm="ug+x"/>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin> 	
 			<plugin>
