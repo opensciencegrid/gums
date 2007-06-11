@@ -1301,7 +1301,7 @@
 		<hostToGroupMapping
 			groupToAccountMappings='cdf, fermilab, gadu, grase, ivdgl, mis, fmri, sdss, star, uscmsuser, cmsuser, uscmst2admin, uscmssoft, uscmsprod, uscmsphedex, uscmsfrontier, cmsuser-null, LIGO, dzeroservice, dzerouser, dzeroana, dosar, des, glow, grow, gridex, nanohub, geant4, i2u2, mariachi, osg, newUsatlasProd, newUsatlasSoft, newUsatlas, newAtlas, osgedu, minos, minossoft, nwicg, ops, miniboone, des-production, gugrid, gpn, compbiogrid, engage, ilc'
 			description=''
-			cn='*.mydomain.org'/>
+			cn='*.site.com'/>
 
 	</hostToGroupMappings>
 
