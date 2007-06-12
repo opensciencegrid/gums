@@ -65,6 +65,6 @@ fi
 echo
 echo Adding the admin:
 echo Enter the root mysql password
-cat ../var/sql/addAdmin.mysql | /bin/sed -e "s%@ADMINDN@%$ADMINDN%g" | mysql $MYSQLPARAM
+cat ../sql/addAdmin.mysql | /bin/sed -e "s%@ADMINDN@%$ADMINDN%g" | mysql $MYSQLPARAM
 echo
 
