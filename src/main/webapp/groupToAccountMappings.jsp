@@ -175,7 +175,7 @@ if (request.getParameter("command")==null ||
 		<tr>
 	        <td colspan=2>
 	        	<form action="groupToAccountMappings.jsp" method="get">
-	        		<div style="text-align: center;"><button type="submit" name="command" value="add">Add</button></div>
+	        		<div style="text-align: center;"><input type="submit" name="command" value="add"></div>
 	        	</form>
 	        </td>
 		</tr>
@@ -332,7 +332,7 @@ else if ("edit".equals(request.getParameter("command"))
 	        	<div style="text-align: center;">
 				<%=ConfigurationWebToolkit.createDoSubmit(g2AMappings, request)%>
 	        	<div style="text-align: center;">
-	        		<button type="submit" onclick="return doSubmit()">Save</button>
+	        		<button type="submit" onclick="return doSubmit()">save</button>
 	        	</div>
 	        	</div>
 	        </td>

@@ -50,7 +50,7 @@ Backs up or restores configuration.
     <tbody>
       <tr>
         <td>
-			<div style="text-align: center;"><button type="submit" onclick="document.forms[0].elements['command'].value='backup'">Back Up Configuration</button></div>
+			<div style="text-align: center;"><button type="submit" onclick="document.forms[0].elements['command'].value='backup'">backup</button></div>
         </td>
       </tr>
 <%
@@ -69,8 +69,8 @@ Backs up or restores configuration.
       <tr>       
         <td>
         	<div style="text-align: center;">
-        		<button type="submit" onclick="document.forms[0].elements['command'].value='restore'">Restore Configuration</button>
-        		<button type="submit" onclick="if(!confirm('Are you sure you want to delete this configuration?'))return false; document.forms[0].elements['command'].value='delete'">Delete Configuration</button>
+        		<button type="submit" onclick="document.forms[0].elements['command'].value='restore'">restore</button>
+        		<button type="submit" onclick="if(!confirm('Are you sure you want to delete this configuration?'))return false; document.forms[0].elements['command'].value='delete'">delete</button>
         	</div>
         </td>
       </tr>

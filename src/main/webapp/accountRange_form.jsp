@@ -103,9 +103,9 @@ Adds, removes, or unassigns accounts in pool.
 	</tr>
 	<tr>
 		<td colspan="2" style="text-align: center;">
-        	<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} document.forms[0].elements['command'].value='add'">Add Account Range</button>
-        	<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} if(!confirm('Are you sure you want to remove this account range?'))return false; document.forms[0].elements['command'].value='remove'">Remove Account Range</button>
-			<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} if(!confirm('Are you sure you want to unassign accounts?'))return false; document.forms[0].elements['command'].value='unassign'">Unassign Account Range</button>
+        	<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} document.forms[0].elements['command'].value='add'">add</button>
+        	<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} if(!confirm('Are you sure you want to remove this account range?'))return false; document.forms[0].elements['command'].value='remove'">remove</button>
+			<button type="submit" onclick="if(document.forms[0].elements['range'].value==''){ alert('You must enter a range'); return false;} if(!confirm('Are you sure you want to unassign accounts?'))return false; document.forms[0].elements['command'].value='unassign'">unassign</button>
 		</td>
 	</tr>
     </tbody>

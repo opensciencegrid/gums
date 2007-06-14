@@ -61,7 +61,7 @@ Determines the local account used for the grid identity on a specific service.
       </tr>
       <tr>
         <td colspan="2" rowspan="1">
-        <div style="text-align: center;"><button type="submit">Map user</button></div>
+        <div style="text-align: center;"><button type="submit">map user</button></div>
         </td>
       </tr>
     </tbody>

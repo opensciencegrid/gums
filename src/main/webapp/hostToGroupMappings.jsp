@@ -81,6 +81,7 @@ if (request.getParameter("command")==null ||
 			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">Host to group mapping has been saved.</div>";
 		}catch(Exception e){
+			gums.setConfiguration(configuration);
 			message = "<div class=\"failure\">Error saving host to group mapping: " + e.getMessage() + "</div>";
 		}
 	}
@@ -96,6 +97,7 @@ if (request.getParameter("command")==null ||
 			else
 				message = "<div class=\"failure\">Error deleting host to group mapping</div>";
 		}catch(Exception e){
+			gums.setConfiguration(configuration);
 			message = "<div class=\"failure\">Error deleting host to group mapping: " + e.getMessage() + "</div>";
 		}
 	}
@@ -192,7 +194,7 @@ if (request.getParameter("command")==null ||
 		<tr>
 	        <td colspan=2>
 	        	<form action="hostToGroupMappings.jsp" method="get">
-	        		<div style="text-align: center;"><button type="submit" name="command" value="add">Add</button></div>
+	        		<div style="text-align: center;"><input type="submit" name="command" value="add"></div>
 	        	</form>
 	        </td>
 		</tr>
@@ -299,7 +301,7 @@ else if ("edit".equals(request.getParameter("command"))
 	        <td colspan=2 style="text-align: right;">
 				<%=ConfigurationWebToolkit.createDoSubmit(h2GMappings, request)%>
 	        	<div style="text-align: center;">
-	        		<button type="submit" onclick="return doSubmit()">Save</button>
+	        		<button type="submit" onclick="return doSubmit()">save</button>
 	        	</div>
 	        </td>
 		</tr>

@@ -36,7 +36,7 @@ Determines which grid identities are mapped to a local account.
       </tr>
       <tr>
         <td colspan="2" rowspan="1">
-        <div style="text-align: center;"><button type="submit">Map Account</button></div>
+        <div style="text-align: center;"><button type="submit">map account</button></div>
         </td>
       </tr>
     </tbody>

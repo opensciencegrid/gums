@@ -45,7 +45,7 @@ Generates the grid-mapfile relative to the given service.
       </tr>      
       <tr>
         <td colspan="2" rowspan="1">
-        <div style="text-align: center;"><button type="submit">Generate Grid-Mapfile</button></div>
+        <div style="text-align: center;"><button type="submit">generate grid-mapfile</button></div>
         </td>
       </tr>
     </tbody>

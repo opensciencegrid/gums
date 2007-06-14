@@ -41,7 +41,7 @@ Generates grid3-user-VO-map for the given service.
       </tr>
       <tr>
         <td colspan="2" rowspan="1">
-        <div style="text-align: center;"><button type="submit">Generate Grid3-User-VO-Map</button></div>
+        <div style="text-align: center;"><button type="submit">generate grid3-user-VO-map</button></div>
         </td>
       </tr>
     </tbody>

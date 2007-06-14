@@ -127,7 +127,7 @@ if (request.getParameter("command")==null ||
 	<tr>
 		<td colspan=2>
 			<form action="manualAccounts.jsp" method="get">
-				<div style="text-align: center;"><button type="submit" name="command" value="add">Add</button></div>
+				<div style="text-align: center;"><input type="submit" name="command" value="add"></div>
 			</form>
 	    </td>
 	</tr>
@@ -195,7 +195,7 @@ else if ("add".equals(request.getParameter("command"))) {
 		<tr>
 	        <td colspan=2>
 	        	<div style="text-align: center;">
-	        		<button type="submit" onclick="document.forms[0].elements['command'].value='save'; return true;">Add</button>
+	        		<button type="submit" onclick="document.forms[0].elements['command'].value='save'; return true;">save</button>
 	        	</div>
 	        </td>
 		</tr>

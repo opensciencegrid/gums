@@ -134,7 +134,7 @@ if (request.getParameter("command")==null ||
 		<tr>
 	        <td colspan=2>
 	        	<form action="vomsServers.jsp" method="get">
-	        		<div style="text-align: center;"><button type="submit" name="command" value="add">Add</button></div>
+	        		<div style="text-align: center;"><input type="submit" name="command" value="add"></div>
 	        	</form>
 	        </td>
 		</tr>
@@ -303,7 +303,7 @@ else if ("edit".equals(request.getParameter("command"))
 	        <td colspan=2>
 				<%=ConfigurationWebToolkit.createDoSubmit(vomsServers, request)%>
 	        	<div style="text-align: center;">
-	        		<button type="submit" onclick="return doSubmit()">Save</button>
+	        		<button type="submit" onclick="return doSubmit()">save</button>
 	        	</div>
 	        </td>
 		</tr>

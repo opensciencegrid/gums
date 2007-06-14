@@ -29,7 +29,7 @@ Updates the list of members of each group by connecting to the different VO serv
     <tbody>
       <tr>
         <td>
-        <div style="text-align: center;"><button type="submit">Update VO Members DataBase</button></div>
+        <div style="text-align: center;"><button type="submit">update VO members database</button></div>
         </td>
       </tr>
     </tbody>
