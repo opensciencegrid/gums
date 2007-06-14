@@ -65,6 +65,6 @@ public interface ConfigurationStore {
      * 
      * @param conf 
      */
-    void setConfiguration(Configuration conf, boolean backupCopy) throws IOException;
+    void setConfiguration(Configuration conf, boolean backupCopy) throws Exception;
     
 }

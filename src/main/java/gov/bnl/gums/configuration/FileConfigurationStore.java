@@ -205,8 +205,7 @@ public class FileConfigurationStore implements ConfigurationStore {
         return retrieveConfiguration();
     }
     
-    public synchronized void setConfiguration(Configuration conf, boolean backupCopy) throws IOException {
-        this.conf = conf;
+    public synchronized void setConfiguration(Configuration conf, boolean backupCopy) throws Exception {
         log.trace("Configuration set programically");
         gumsResourceAdminLog.info("Configuration set programically");
         gumsSiteAdminLog.info("Configuration set programically");
@@ -293,10 +292,12 @@ public class FileConfigurationStore implements ConfigurationStore {
         
         out.close();
 
-        new File(configBackupDir).mkdir();
-        
+		// Make sure configuration is valid
+	    this.conf = ConfigurationToolkit.loadConfiguration(tempGumsConfigPath, schemaPath);
+	
         // copy gums.config to gums.config.prev
-        if (!backupCopy && new File(configPath).exists())
+		new File(configBackupDir).mkdir();
+		if (!backupCopy && new File(configPath).exists())
         	copyFile(configPath, configBackupDir+"/gums.config.prev");
 
         // move temp file to gums.config or gums.config.date
