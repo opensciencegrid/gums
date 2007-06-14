@@ -122,8 +122,8 @@ if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ] ; then
 	if [ $DEBUG -eq 1 ] ; then
 		echo "[DEBUG] gums: Setting paths using VDT_LOCATION..."
 	fi
-	BIN=$VDT_LOCATION/gums/bin/
-	ETC=$VDT_LOCATION/gums/etc/
+	BIN=$VDT_LOCATION/gums/scripts/
+	ETC=$VDT_LOCATION/gums/config/
 	LIB=$VDT_LOCATION/gums/lib/
 	ENDORSED=$LIB/endorsed
 

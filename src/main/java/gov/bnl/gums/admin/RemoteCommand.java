@@ -52,8 +52,7 @@ public abstract class RemoteCommand extends AbstractCommand {
                 return clientStub;
             }
         } catch (Exception e) {
-            System.out.println("Couldn't initialize GUMS client:" +
-                e.getMessage());
+            System.out.println("Couldn't initialize GUMS client:" + e.getMessage());
             log.fatal("Couldn't initialize GUMS client", e);
             System.exit(-1);
 
