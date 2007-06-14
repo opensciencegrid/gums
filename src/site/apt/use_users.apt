@@ -16,7 +16,7 @@ Manage Manual Users
 	from the server and put into the persistence factory, which is the source of the matching.  This happens at 
 	a regular interval, but you may want to update manually after new users have been added.
 	
- This functionality is also available for the client admin tool: gums-service.  Usage is:
+ This functionality is also available for the client admin tools "gums" and "gums-service".  Usage is:
  
 +-------------------------------------------+ 
 [root@gums /]# su - username

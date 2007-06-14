@@ -25,6 +25,7 @@
 	      <item name="Upgrade from Version 1.1" href="installation_upgrade.html"/>
       </item>
       <item name="Using GUMS" href="use.html">
+	      <item name="General Use" href="use_general.html"/>
 	      <item name="Configure Mappings" href="use_configuration.html"/>
 	      <item name="Manage Users" href="use_users.html"/>	
 	      <item name="Test Mappings" href="use_test.html"/>
