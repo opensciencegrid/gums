@@ -33,8 +33,8 @@ log4j.logger.gums.siteAdmin=INFO, syslogAuth, cyberFile
 # Development log
 # Sent to a separate file. If you want extra detail, changing INFO to DEBUG
 # might provide too much detail. You can set the logging on a class per class
-# basis. For example, if you need more details about mysql, you can uncomment:
-log4j.logger.gov.bnl.gums.ldap=DEBUG
+# basis. For example, if you need more details about persistence, you can uncomment:
+# log4j.logger.gov.bnl.gums.persistence=DEBUG, devFile
 log4j.logger.gov.bnl.gums=INFO, devFile
 
 # Privilege Project log

@@ -141,7 +141,7 @@ public abstract class AbstractCommand {
                         e.getCause().getMessage() + "]");
                 } else {
                     System.err.println(
-                        "An error accoured when connection to GUMS: " +
+                        "An error occurred when connection to GUMS: " +
                         e.getCause().getMessage());
                 }
                 
@@ -156,7 +156,7 @@ public abstract class AbstractCommand {
                     System.err.println(
                         "An error accoured when connecting to GUMS: " +
                         e.getMessage());
-                    log.info("An error accoured when connecting to GUMS", e);
+                    log.info("An error occurred when connecting to GUMS", e);
                 }
             }
             System.exit(-1);

@@ -460,7 +460,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     private GUMS gums() {
         if (gums == null) {
-            System.setProperty("log4j.configuration","file:"+CertCache.getConfigDir()+"/log4j.properties");
+            System.setProperty("log4j.configuration",CertCache.getConfigDir()+"/log4j.properties");
         	FileConfigurationStore confStore = new FileConfigurationStore(CertCache.getConfigDir(), CertCache.getResourceDir(), true);
             gums = new GUMS(confStore);
         }
@@ -498,14 +498,14 @@ public class GUMSAPIImpl implements GUMSAPI {
     }
     
     private boolean hasWriteAccess(GridUser user) {
-        if (user == null) return false;
+    	if (user == null) return false;
         if (gums().getConfiguration().getWriteUserGroups() == null)
             return false;
         Collection writeUserGroups = gums().getConfiguration().getWriteUserGroups();
         Iterator it = writeUserGroups.iterator();
         while (it.hasNext()) {
-        	UserGroup userGroupManager = (UserGroup)it.next();
-        	if (userGroupManager.isInGroup(user))
+        	UserGroup userGroup = (UserGroup)it.next();
+        	if (userGroup.isInGroup(user)) 
         		return true;
         }
         return false;

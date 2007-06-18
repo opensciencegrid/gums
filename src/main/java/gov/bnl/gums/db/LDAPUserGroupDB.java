@@ -186,7 +186,7 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             return result.hasMore();
         } catch (Exception e) {
             log.info("Couldn't determine whether group '" + group + "' exists", e);
-            throw new RuntimeException("Couldn't determine whether group '" + group + "' esists: " + e.getMessage(), e);
+            throw new RuntimeException("Couldn't determine whether group '" + group + "' exists: " + e.getMessage(), e);
         } finally {
             factory.releaseContext(context);
         }
