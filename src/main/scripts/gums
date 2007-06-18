@@ -193,15 +193,15 @@ if [ "$MODE" = "CLIENT" ]; then
 
 elif [ "$MODE" = "HOST" ]; then
 	MAINCLASS=gov.bnl.gums.admin.HostCommandLine
-	CERT_OPTS="-DsslCertfile=$HOST_CERT -DsslKey=$HOST_KEY" 	
+	CERT_OPTS="-DsslCAFiles=$CERTDIR/*.0 -DsslCertfile=$HOST_CERT -DsslKey=$HOST_KEY" 	
 
 elif [ "$MODE" = "NAGIOS" ]; then
 	MAINCLASS=gov.bnl.gums.admin.HostCommandLine
-	CERT_OPTS="-DsslCertfile=$HOST_CERT -DsslKey=$HOST_KEY"
+	CERT_OPTS="-DsslCAFiles=$CERTDIR/*.0 -DsslCertfile=$HOST_CERT -DsslKey=$HOST_KEY"
 
 elif [ "$MODE" = "SERVICE" ]; then
 	MAINCLASS=gov.bnl.gums.admin.AdminCommandLine
-	CERT_OPTS="-DsslCertfile=$USER_CERT -DsslKey=$USER_KEY"
+	CERT_OPTS="-DsslCAFiles=$CERTDIR/*.0 -DsslCertfile=$USER_CERT -DsslKey=$USER_KEY"
 else
 	echo "[ERROR] gums: Unknown mode $MODE. Exitting."
 	exit 1
