@@ -54,15 +54,7 @@
     	<url>https://svn.usatlas.bnl.gov/svn/privilege/gums-client</url>
 	</scm>
 
-  	<build>
-   		<resources>
-	      <resource>
-	        <directory>src/main/java</directory>
-	        <includes>
-	          <include>**/*.wsdd</include>
-	        </includes>
-	      </resource>
-	    </resources> 	
+  	<build>	
 		<plugins>
 	 		<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -90,7 +82,7 @@
 				                </unzip>
 				                
 				                <copyfile src="src/main/resources/gums.config.devel" dest="src/main/config/gums.config" forceoverwrite="yes"/>
-				                <copyfile src="src/main/resources/log4j.properties.template" dest="src/main/config/log4j.properties" forceoverwrite="yes"/>
+				                <copyfile src="src/main/resources/log4j.properties.template" dest="src/main/resources/log4j.properties" forceoverwrite="yes"/>
 							</tasks>
 						</configuration>
 						<goals>
@@ -177,6 +169,21 @@
                 </configuration>
            </plugin>
        </plugins>
+       <resources>
+	      <resource>
+	        <directory>src/main/java</directory>
+	        <includes>
+	          <include>**/*.wsdd</include>
+	          <include>**/log4j.properties</include>
+	        </includes>
+	      </resource>
+	      <resource>
+	        <directory>src/main/resources</directory>
+	        <includes>
+	          <include>**/log4j.properties</include>
+	        </includes>
+	      </resource>
+	    </resources> 
 	</build>
   
  	<dependencies> 
