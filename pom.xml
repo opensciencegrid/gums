@@ -111,7 +111,7 @@
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/gums/mail/unknown"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/edg/edg-voms-admin-api/unknown"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/edg/edg-java-security-trustmanager/unknown"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/mysql/mysql-connector-java/3.1.13"/>
+							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/mysql/mysql-connector-java/3.0.11"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/glite/bcprov/jdk14-122"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/glite/glite-security-util-java/1.0.0dev"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/glite/glite-security-trustmanager/1.6.3dev"/>
@@ -395,7 +395,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>3.1.13</version>
+            <version>3.0.11</version>
         </dependency>
         <dependency>
             <groupId>glite</groupId>

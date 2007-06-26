@@ -7,7 +7,7 @@
 #    AdminCommandLine, user proxy 
 #
 # --service
-#    AdminCommandLine, hostcert + key
+#    AdminCommandLine, usercert + key
 #
 # --host
 #    HostCommandLine, hostcert + key
