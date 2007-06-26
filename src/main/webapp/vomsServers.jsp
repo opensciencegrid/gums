@@ -296,7 +296,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	/etc/grid-security/certificates
+		    	/etc/grid-security/certificates/*.0
 		    </td>
 		</tr>
 		<tr>
