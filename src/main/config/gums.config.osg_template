@@ -29,7 +29,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='fnal'
@@ -39,7 +39,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 			
 		<vomsServer
 			name='indiana'
@@ -49,7 +49,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='cdf'
@@ -59,7 +59,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='compbiogrid'
@@ -69,7 +69,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='dosar'
@@ -79,7 +79,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='engage'
@@ -89,7 +89,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='glow'
@@ -99,7 +99,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='gpn'
@@ -109,7 +109,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='grase'
@@ -119,7 +119,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='grow'
@@ -129,7 +129,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='gugrid'
@@ -139,7 +139,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='ligo'
@@ -149,7 +149,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='mariachi'
@@ -159,7 +159,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='nwicg'
@@ -169,7 +169,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='osg'
@@ -179,7 +179,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 		<vomsServer
 			name='star'
@@ -189,7 +189,7 @@
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''
-			sslCAFiles=''/>
+			sslCAFiles='/etc/grid-security/certificates/*.0'/>
 
 	</vomsServers>
 
