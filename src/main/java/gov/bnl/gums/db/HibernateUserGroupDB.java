@@ -289,31 +289,31 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     private boolean isMemberInGroup(Session session, Transaction tx, GridUser user) throws Exception {
         Query q;
         if (user.getVoFQAN() == null) {
-            q = session.createQuery("FROM HibernateUser u WHERE u.group = '"+group+"' AND u.dn = '"+user.getCertificateDN()+"' AND u.fqan IS NULL");
+            q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan IS NULL");
         } else {
-            q = session.createQuery("FROM HibernateUser u WHERE u.group = '"+group+"' AND u.dn = '"+user.getCertificateDN()+"' AND u.fqan = '"+user.getVoFQAN().toString()+"'");
-            //q.setString(2, user.getVoFQAN().toString());
+            q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan = ?");
+            q.setString(2, user.getVoFQAN().toString());
         }
-        //q.setString(0, group);
-        //q.setString(1, user.getCertificateDN());
+        q.setString(0, group);
+        q.setString(1, user.getCertificateDN());
         List result = q.list();
         return result.size() > 0;
     }
 
     private boolean removeMember(Session session, Transaction tx, GridUser user) throws Exception {
-    	if (user.getVoFQAN() == null) {
-            int n = session.delete("FROM HibernateUser u WHERE u.group = '"+group+"' AND u.dn = '"+user.getCertificateDN()+"' AND u.fqan is null");//, new Object[] {group, user.getCertificateDN()}, new Type[] {new StringType(), new StringType()});
+        if (user.getVoFQAN() == null) {
+            int n = session.delete("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan is null", new Object[] {group, user.getCertificateDN()}, new Type[] {new StringType(), new StringType()});
             return n > 0;
         } else {
-            int n = session.delete("FROM HibernateUser u WHERE u.group = '"+group+"' AND u.dn = '"+user.getCertificateDN()+"' AND u.fqan = '"+user.getVoFQAN().toString()+"'");//, new Object[] {group, user.getCertificateDN(), user.getVoFQAN().toString()}, new Type[] {new StringType(), new StringType(), new StringType()});
+            int n = session.delete("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan = ?", new Object[] {group, user.getCertificateDN(), user.getVoFQAN().toString()}, new Type[] {new StringType(), new StringType(), new StringType()});
             return n > 0;
         }
     }
 
     private java.util.List retrieveMembers(Session session, Transaction tx) throws Exception {
         Query q;
-        q = session.createQuery("FROM HibernateUser u WHERE u.group = '"+group+"'");
-        //q.setString(0, group);
+        q = session.createQuery("FROM HibernateUser u WHERE u.group = ?");
+        q.setString(0, group);
         List hibernateUsers = q.list();
         List members = new ArrayList(hibernateUsers.size());
         Iterator iter = hibernateUsers.iterator();
