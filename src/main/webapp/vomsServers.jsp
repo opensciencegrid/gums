@@ -280,7 +280,7 @@ else if ("edit".equals(request.getParameter("command"))
 				SSL Key Password:
 			</td>
 			<td>
-				<input type="password" maxlength="256" size="32" name="sslKeyPW" value="<%=vomsServer.getSslKeyPasswd()%>"/> (optional)
+				<input type="password" maxlength="256" size="32" name="sslKeyPW" value="<%=vomsServer.getSslKeyPasswd()%>"/> (leave blank if none)
 			</td>
 		</tr>
 		<tr>
@@ -288,7 +288,7 @@ else if ("edit".equals(request.getParameter("command"))
 				SSL CA Files:
 			</td>
 			<td>
-				<input maxlength="256" size="32" name="sslCA" value="<%=vomsServer.getSslCAFiles()%>"/> (optional)
+				<input maxlength="256" size="32" name="sslCA" value="<%=vomsServer.getSslCAFiles()%>"/>
 			</td>
 		</tr>
 	    <tr>

@@ -4,7 +4,7 @@
 	<groupId>gums</groupId>
 	<artifactId>gums-service</artifactId>
 	<packaging>war</packaging>
-	<version>1.2.0</version>
+	<version>1.2.1</version>
 	<name>gums-service</name>
 	<description>GUMS Service provides web services used by the client tool and a 
 		web interface for administering GUMS</description>
