@@ -43,7 +43,7 @@ cd $RPM_BUILD_ROOT
 find .%{prefix}/* -type d | sed 's,^\.,\%dir \%attr(-\,root\,root) ,' > $RPM_BUILD_DIR/file.list.%{name}
 find .%{prefix}/bin -type f -o -type l | sed 's,^\.,\%attr(555\,root\,root) ,' >> $RPM_BUILD_DIR/file.list.%{name}
 find .%{prefix}/lib -type f -o -type l | sed 's,^\.,\%attr(444\,root\,root) ,' >> $RPM_BUILD_DIR/file.list.%{name}
-find .%{prefix}/var/log -type d -o -type l | sed 's,^\.,\%attr(1777\,root\,root) ,' >> $RPM_BUILD_DIR/file.list.%{name}
+find .%{prefix}/log -type d -o -type l | sed 's,^\.,\%attr(1777\,root\,root) ,' >> $RPM_BUILD_DIR/file.list.%{name}
 #XXX for now we just keep whatever is there. The example should be overwritten
 find .%{prefix}/etc -type f -o -type l | sed 's,^\.,\%config(noreplace) \%attr(644\,root\,root) ,' >> $RPM_BUILD_DIR/file.list.%{name}
 

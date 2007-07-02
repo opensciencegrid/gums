@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gums</groupId>
 	<artifactId>gums-client</artifactId>
-	<version>1.2.0</version>
+	<version>1.2.1</version>
 	<name>gums-client</name>
 	<description>GUMS Client provides the administrative command line tools to administer GUMS.
     It allows querying and changing the state of the GUMS server.</description>
@@ -144,8 +144,7 @@
 				                	<fileset dir="src/main/config/"/>
 				                </copy>
 
-								<mkdir dir="target/var"/>
-								<mkdir dir="target/var/log"/>
+								<mkdir dir="target/log"/>
 							</tasks>
 						</configuration>
 						<goals>
@@ -290,7 +289,7 @@
                         </mapping>             
               
                         <mapping>
-                            <directory>/var/log</directory>
+                            <directory>/log</directory>
                             <filemode>750</filemode>
                             <username>root</username>
                             <groupname>root</groupname>

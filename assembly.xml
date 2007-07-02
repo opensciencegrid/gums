@@ -18,8 +18,8 @@
 			<fileMode>0755</fileMode>
 		</fileSet>
 		<fileSet>
-			<directory>target/var/log</directory>
-			<outputDirectory>var/log</outputDirectory>
+			<directory>target/log</directory>
+			<outputDirectory>log</outputDirectory>
 		</fileSet>
 	</fileSets>
 </assembly>
