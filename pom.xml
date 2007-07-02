@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gums</groupId>
 	<artifactId>gums-core</artifactId>
-	<version>1.2.0</version>
+	<version>1.2.1</version>
 	<name>gums-core</name>
 	<description>GUMS Core provides the core functionality used by other GUMS components</description>
 

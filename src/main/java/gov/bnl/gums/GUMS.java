@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
 public class GUMS {
     static final public String siteAdminLog = "gums.siteAdmin";
     static final public String resourceAdminLog = "gums.resourceAdmin";
-    static final public String version = "1.2";
+    static final public String version = "1.2.1";
     static private Log log = LogFactory.getLog(GUMS.class);
     static private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     static private Timer timer;
