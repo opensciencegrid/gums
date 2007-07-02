@@ -26,10 +26,6 @@ CREATE TABLE `MAPPING` (
 
 CREATE INDEX complete ON MAPPING (MAP(10), DN(70));
 
-INSERT INTO USER SET DN='/DC=org/DC=doegrids/OU=People/CN=Jay Packard 335585', GROUP_NAME="admins";
-INSERT INTO USER SET DN='/DC=org/DC=doegrids/OU=People/CN=John R. Hover 47116', GROUP_NAME="admins";
-INSERT INTO USER SET DN='/DC=org/DC=doegrids/OU=People/CN=John Weigand 458491', GROUP_NAME="admins";
-
 USE mysql;
 
 FLUSH PRIVILEGES;
