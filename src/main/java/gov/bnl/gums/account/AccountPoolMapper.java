@@ -10,6 +10,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import gov.bnl.gums.GUMS;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 
@@ -24,10 +28,11 @@ import gov.bnl.gums.db.AccountPoolMapperDB;
  * @author  Gabriele Carcassi, Jay Packard
  */
 public class AccountPoolMapper extends AccountMapper {
-    static public String getTypeStatic() {
+	static public String getTypeStatic() {
 		return "pool";
 	}
     
+	private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     private AccountPoolMapperDB db;
     private String persistenceFactory = "";
 	private String accountPool = "";
@@ -116,8 +121,12 @@ public class AccountPoolMapper extends AccountMapper {
     public String mapUser(String userDN, boolean createIfDoesNotExist) {
         String account = getDB().retrieveAccount(userDN);
         if (account != null) return account;
-        if (createIfDoesNotExist)
-        	return getDB().assignAccount(userDN);
+        if (createIfDoesNotExist) {
+        	String newAccount = getDB().assignAccount(userDN);
+        	if (newAccount==null)
+        		gumsResourceAdminLog.error("Could not assign user '"+userDN+"' to account within pool account mapper '"+getName()+"'.  The most likely cause is that there are no more available pool accounts, in which case you should add more.");
+        	return newAccount;
+        }
         else
         	return null;
     }

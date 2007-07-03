@@ -17,7 +17,7 @@ public class AuthorizationDeniedException extends RuntimeException {
      * Creates a new instance of AuthorizationDeniedException
      */
     public AuthorizationDeniedException() {
-        super("Authorization denied");
+        super("You are not authorized to perform this function.  Contact your gums administrator if access is needed.");
     }
     
 }
