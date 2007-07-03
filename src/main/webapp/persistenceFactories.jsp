@@ -31,7 +31,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure">Error getting configuration: <%= e.getMessage() %></div></p>
+<p><div class="failure"><%= e.getMessage() %></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
