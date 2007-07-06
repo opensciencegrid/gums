@@ -1,3 +1,3 @@
 USE GUMS_1_1;
 
-insert into USER (GROUP_NAME, DN) select 'admins', '@ADMINDN@' from USER where not exists (select * from USER where GROUP_NAME='admins' and DN='@ADMINDN@') limit 1;
+INSERT INTO USER SET DN="@ADMINDN@", GROUP_NAME="admins";
