@@ -75,7 +75,7 @@
                   					<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-discovery/commons-discovery/0.2"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/gums/activation/unknown"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/gums/mail/unknown"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/gums/gums-core/1.2.0"/>
+							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/gums/gums-core/1.2.1"/>
                   					<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-logging/commons-logging/1.0.3"/>
 							    </copy>
 								<ant antfile="ant.xml" target="createClientStub" inheritRefs="true"/>
@@ -329,7 +329,7 @@
         <dependency>
             <groupId>gums</groupId>
             <artifactId>gums-core</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.1</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
