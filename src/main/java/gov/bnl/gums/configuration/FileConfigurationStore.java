@@ -97,6 +97,7 @@ public class FileConfigurationStore implements ConfigurationStore {
     private String schemaPath = null;
     private String transformPath = null;
     private DateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmm");
+    private String version;
 
     /**
      * Creates a new FileConfigurationStore object.
@@ -122,7 +123,8 @@ public class FileConfigurationStore implements ConfigurationStore {
      * @param create if true, a new barbones configuration file will be created
      * at given filename if no file currently exists there
      */
-    public FileConfigurationStore(String configDir, String resourceDir, boolean create) {
+    public FileConfigurationStore(String configDir, String resourceDir, String version, boolean create) {
+    	this.version = version;
         this.configPath = configDir+"/gums.config";
         this.schemaPath = resourceDir+"/gums.config.schema";
         this.transformPath = resourceDir+"/gums.config.transform";
@@ -132,7 +134,7 @@ public class FileConfigurationStore implements ConfigurationStore {
     		try {
     			BufferedWriter out = new BufferedWriter(new FileWriter(configPath));
     			out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n"+
-	    			"<gums version='"+GUMS.getVersion()+"'>\n\n"+
+	    			"<gums version='"+version+"'>\n\n"+
 	    				"\t<persistenceFactories>\n\n"+
 	    					"\t\t<hibernatePersistenceFactory\n"+
 				    			"\t\t\tname='mysql'\n"+
@@ -220,7 +222,7 @@ public class FileConfigurationStore implements ConfigurationStore {
        	
         out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n");
         
-        out.write("<gums version='"+GUMS.getVersion()+"'>\n\n");
+        out.write("<gums version='"+version+"'>\n\n");
         
         // Write persistence factories
         if( conf.getPersistenceFactories().size()>0 ) {

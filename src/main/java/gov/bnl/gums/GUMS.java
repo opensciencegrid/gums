@@ -6,10 +6,13 @@
 
 package gov.bnl.gums;
 
+import gov.bnl.gums.admin.CertCache;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.configuration.ConfigurationStore;
 import gov.bnl.gums.configuration.FileConfigurationStore;
+import gov.bnl.gums.configuration.Version;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -17,7 +20,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.*;
+import org.xml.sax.SAXException;
 
 /** 
  * Facade for the whole business logic available in GUMS. Using GUMS means
@@ -29,17 +34,9 @@ import org.apache.commons.logging.*;
 public class GUMS {
     static final public String siteAdminLog = "gums.siteAdmin";
     static final public String resourceAdminLog = "gums.resourceAdmin";
-    static final public String version = "1.2.1";
     static private Log log = LogFactory.getLog(GUMS.class);
     static private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     static private Timer timer;
-    
-    /**
-     * @return String version of current version
-     */
-    static public String getVersion() {
-    	return version;
-    }
     
     /**
      * Create a thread that updates user group membership every so often

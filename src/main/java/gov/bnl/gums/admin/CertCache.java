@@ -48,6 +48,18 @@ public class CertCache implements Filter {
 		log.trace("URL to resource dir: '" + dir + "'");
 		return dir;
 	}
+	
+	/**
+	 * Get the directory path for the resource files
+	 * 
+	 * @return resource directory as String
+	 */
+	static public String getMetaDir() {
+		String base = context.getRealPath("/");
+		String dir = base + "/META-INF";
+		log.trace("URL to meta dir: '" + dir + "'");
+		return dir;
+	}
 
 	/**
 	 * @return X509Certificate object

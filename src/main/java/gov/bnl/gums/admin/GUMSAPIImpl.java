@@ -12,6 +12,7 @@ import gov.bnl.gums.account.AccountPoolMapper;
 import gov.bnl.gums.account.ManualAccountMapper;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.configuration.FileConfigurationStore;
+import gov.bnl.gums.configuration.Version;
 import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.UserGroup;
 
@@ -19,6 +20,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -39,6 +41,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     private Log siteLog = LogFactory.getLog(GUMS.siteAdminLog);
     private boolean isInWeb = false;
+    private String version = null;
     
     {
         try {
@@ -199,7 +202,26 @@ public class GUMSAPIImpl implements GUMSAPI {
     }
     
     public String getVersion() {
-    	return GUMS.getVersion();
+    	if (version==null) {
+	    	String pomFile = CertCache.getMetaDir()+"/maven/gums/gums-service/pom.xml";
+	        Digester digester = new Digester();
+	        digester.addObjectCreate("project/version", Version.class);
+	        digester.addCallMethod("project/version","setVersion",0);
+	        log.trace("Loading GUMS version from pom file '" + pomFile + "'");
+	    	Version versionCls = null;
+	        try {
+	        	versionCls = (Version)digester.parse(pomFile);
+			} catch (Exception e) {
+				gumsResourceAdminLog.error("Cannot get version from "+pomFile);
+				log.error("Cannot get version from "+pomFile, e);
+			}
+	        if (versionCls == null)
+	        	return "?";
+	        else
+	        	log.trace("GUMS version " + versionCls.getVersion() );
+	        version = versionCls.getVersion();
+    	}
+        return version;
     }
     
     public void manualGroupAdd(String manualUserGroupName, String userDN) {
@@ -461,7 +483,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     private GUMS gums() {
         if (gums == null) {
             System.setProperty("log4j.configuration",CertCache.getConfigDir()+"/log4j.properties");
-        	FileConfigurationStore confStore = new FileConfigurationStore(CertCache.getConfigDir(), CertCache.getResourceDir(), true);
+        	FileConfigurationStore confStore = new FileConfigurationStore(CertCache.getConfigDir(), CertCache.getResourceDir(), getVersionNoPatch(), true);
             gums = new GUMS(confStore);
         }
         return gums;
@@ -517,6 +539,14 @@ public class GUMSAPIImpl implements GUMSAPI {
         } else {
             return currentUser() + " - ";
         }
+    }
+    
+    private String getVersionNoPatch() {
+    	String version = getVersion();
+    	int lastDot = version.lastIndexOf(".");
+    	if (lastDot!=-1)
+    		version = version.substring(0, lastDot);
+    	return version;
     }
 
 }

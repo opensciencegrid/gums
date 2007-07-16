@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gums</groupId>
 	<artifactId>gums-core</artifactId>
-	<version>1.2.1</version>
 	<name>gums-core</name>
+	<version>1.2.2</version>
 	<description>GUMS Core provides the core functionality used by other GUMS components</description>
 
   	<repositories>
@@ -24,11 +24,11 @@
 	
 	<distributionManagement>
 		<repository>
-	      <id>usatlas</id>
-	      <name>usatlas repository</name>
-	      <url>scp://grid.racf.bnl.gov:/var/www/html/mvn</url>
+			<id>usatlas</id>
+			<name>usatlas repository</name>
+			<url>scp://grid.racf.bnl.gov/var/www/html/mvn</url>
 		</repository>
-	</distributionManagement>	
+	</distributionManagement>
 
    	<scm>
 	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</connection>
