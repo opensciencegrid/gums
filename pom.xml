@@ -4,8 +4,8 @@
 	<groupId>gums</groupId>
 	<artifactId>gums-service</artifactId>
 	<packaging>war</packaging>
-	<version>1.2.1</version>
 	<name>gums-service</name>
+	<version>1.2.2</version>
 	<description>GUMS Service provides web services used by the client tool and a 
 		web interface for administering GUMS</description>
     
@@ -16,12 +16,6 @@
 	 		<layout>default</layout>
  			<url>http://repo1.maven.org/maven2</url>
         </repository>       
-        <repository>
-	    	<id>ibiblio</id>
-			<name>Ibiblio Maven Repository Switchboard</name>
-	 		<layout>default</layout>
-            <url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
-        </repository>
         <repository>
 	    	<id>usatlas</id>
 			<name>usatlas repository</name>
@@ -42,9 +36,9 @@
 
 	<distributionManagement>
 		<repository>
-	      <id>usatlas</id>
-	      <name>usatlas repository</name>
-	      <url>scp://grid.racf.bnl.gov:/var/www/html/mvn</url>
+			<id>usatlas</id>
+			<name>usatlas repository</name>
+			<url>scp://grid.racf.bnl.gov/var/www/html/mvn</url>
 		</repository>
 	</distributionManagement>
 	
@@ -215,7 +209,7 @@
         <dependency>
             <groupId>gums</groupId>
             <artifactId>gums-core</artifactId>
-            <version>1.2.1</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
