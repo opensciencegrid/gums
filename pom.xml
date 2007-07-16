@@ -3,18 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>gums</groupId>
   <artifactId>gums-site</artifactId>
-  <version>1.2.0</version>
+  <version>1</version>
   <packaging>pom</packaging>
   <name>Maven</name>
   <url>http://maven.apache.org/maven2</url>
   <inceptionYear>2004</inceptionYear>
-  
-  <distributionManagement>
-    <site>
-      <id>website</id>
-      <url>scp://webhost.company.com/www/website</url>
-    </site>
-  </distributionManagement>
   
   <build>
     <plugins>
@@ -154,10 +147,11 @@
             <comments>GUMS is licensed by the GNU General Public License:</comments>
         </license>
     </licenses>
+    
+	<modules>
+	    <module>../gums-core</module>
+		<module>../gums-client</module>
+		<module>../gums-service</module>
+	</modules>
   
-  <modules>
-    <module>../gums-core</module>
-    <module>../gums-client</module>
-    <module>../gums-service</module>
-  </modules>
 </project>
