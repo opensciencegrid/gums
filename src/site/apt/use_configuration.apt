@@ -204,13 +204,18 @@ to by some account mapper types to store mappings.
 		name='bnlVoms'
 		baseUrl='https://griddev01.usatlas.bnl.gov:8443/voms'
 		persistenceFactory='mysql' 
+		sslCertfile='/etc/grid-security/gumscert.pem'
+		sslKey='/etc/grid-security/gumskey.pem'
+		sslCAFiles='/etc/grid-security/certificates/*.0'
 		.../>
 +---------------------------+ 
 
  This says to lookup VO membership at the server 'griddev01.usatlas.bnl.gov' 
 and to cache the users in persistence factory 'mysql'.  The actual URL
 used for the request is the baseUrl concatenated with the remainderUrl specified
-in the VOMS user group.  This allows for sharing a server serving multiple VOs.
+in the VOMS user group.  This allows for sharing a server serving multiple VOs. Also, 
+be sure that the certificates referenced in sslCertfile, sslKey, and sslCAFiles have
+read access by Tomcat (e.g. readable by user 'daemon' in VDT/OSG).
 
  You should now understand the basic way GUMS makes mapping decisions.
 

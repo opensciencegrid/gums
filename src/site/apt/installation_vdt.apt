@@ -13,9 +13,9 @@ java, tomcat, the CAs, the globus tools that you need to generate proxies, ...)
 and preconfigured. It will run out of the box.
 
  We are not providing detailed instructions here. Specific instruction for 
-GUMS and VDT 1.7.0 are available at:
-{{{http://www.cs.wisc.edu/vdt/releases/1.7.0/gums.html}
-http://www.cs.wisc.edu/vdt/releases/1.7.0/gums.html}}.
+GUMS and VDT 1.7.1 are available at:
+{{{http://www.cs.wisc.edu/vdt/releases/1.7.1/gums.html}
+http://www.cs.wisc.edu/vdt/releases/1.7.1/gums.html}}.
 General VDT instructions are at
 {{{http://www.cs.wisc.edu/vdt/documentation.html}
 http://www.cs.wisc.edu/vdt/documentation.html}}. Look for the latest 
