@@ -272,7 +272,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	/etc/grid-security/hostcert.pem
+		    	/etc/grid-security/gumscert.pem
 		    </td>
 		</tr>
 		<tr>
