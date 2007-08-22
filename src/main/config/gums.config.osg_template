@@ -689,6 +689,11 @@
 			acceptProxyWithoutFQAN='true'
 			voGroup='/NWICG'/>
 
+		<manualUserGroup
+			 name='gums-test'
+			 access='read self'
+			 description='Testing GUMS-status with GIP Probe'
+			 persistenceFactory='mysql'/>
 	</userGroups>
 
 	<accountMappers>
@@ -913,6 +918,11 @@
 			description=''
 			persistenceFactory='mysql'
 			accountPool='uscmsPool'/>
+
+	       <groupAccountMapper
+		       name='GumsTestUserMappingSuccessful'
+		       description='Testing GUMS-status with GIP Probe'
+		       accountName='GumsTestUserMappingSuccessful'/>
 
 	</accountMappers>
 
@@ -1294,14 +1304,22 @@
 			userGroups='ukminos, usminos, minos'
 			accountMappers='minos'/>
 
+		<groupToAccountMapping
+			name='gums-test'
+			description='Testing GUMS-status with GIP Probe'
+			accountingVoSubgroup=''
+			accountingVo=''
+			userGroups='gums-test'
+			accountMappers='GumsTestUserMappingSuccessful'/>
+
 	</groupToAccountMappings>
 
 	<hostToGroupMappings>
 
 		<hostToGroupMapping
-			groupToAccountMappings='cdf, fermilab, gadu, grase, ivdgl, mis, fmri, sdss, star, uscmsuser, cmsuser, uscmst2admin, uscmssoft, uscmsprod, uscmsphedex, uscmsfrontier, cmsuser-null, LIGO, dzeroservice, dzerouser, dzeroana, dosar, des, glow, grow, gridex, nanohub, geant4, i2u2, mariachi, osg, newUsatlasProd, newUsatlasSoft, newUsatlas, newAtlas, osgedu, minos, minossoft, nwicg, ops, miniboone, des-production, gugrid, gpn, compbiogrid, engage, ilc'
+			groupToAccountMappings='cdf, fermilab, gadu, grase, ivdgl, mis, fmri, sdss, star, uscmsuser, cmsuser, uscmst2admin, uscmssoft, uscmsprod, uscmsphedex, uscmsfrontier, cmsuser-null, LIGO, dzeroservice, dzerouser, dzeroana, dosar, des, glow, grow, gridex, nanohub, geant4, i2u2, mariachi, osg, newUsatlasProd, newUsatlasSoft, newUsatlas, newAtlas, osgedu, minos, minossoft, nwicg, ops, miniboone, des-production, gugrid, gpn, compbiogrid, engage, ilc, gums-test'
 			description=''
-			cn='*.site.com'/>
+			cn='*/?*.@DOMAINNAME@'/>
 
 	</hostToGroupMappings>
 

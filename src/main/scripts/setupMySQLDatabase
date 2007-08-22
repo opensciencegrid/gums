@@ -116,7 +116,7 @@ fi
 #-------------------------------------------
 if [ "$PROMPT" -eq 1 ]
 then
-	MYSQLPARAM="-p"
+	MYSQLPARAM="-u root -p"
 else
 	# When the root doesn't have a password
 	# (like in the VDT setup), -u root doesn't
@@ -151,7 +151,8 @@ fi
 
 #-------------------------------------------
 #
-# Setup the MySQL Database
+# Setup the MySQL Database AND 
+# Add GIP Probe identity to the MySQL Database
 #
 #-------------------------------------------
 echo
@@ -162,6 +163,7 @@ then
 fi
 
 cat ../sql/setupDatabase.mysql       \
+    ../sql/addGIPProbeIDtoDatabase.mysql       \
   | /bin/sed -e s/@USER@/$USER/g         \
              -e s/@SERVER@/$SERVER/g     \
              -e s/@PASSWORD@/$PASSWORD/g \
@@ -186,8 +188,12 @@ then
 		fi
 	fi
 fi
+
+DOMAINNAME=`echo "$SERVER" | awk 'BEGIN{FS=":"}{print $1}' | awk 'BEGIN{FS="."}{for(i=2;i<=NF;i++) printf(i<NF?"%s.":"%s\n",$i)}'`
+
 cat ../gums.config.template \
   | /bin/sed -e s/@USER@/$USER/g                    \
              -e s/@SERVER@/$SERVER/g                \
              -e s/@PASSWORD@/$PASSWORD/g            \
+             -e s/@DOMAINNAME@/$DOMAINNAME/g        \
   > ../config/gums.config
