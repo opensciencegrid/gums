@@ -159,6 +159,15 @@ if (request.getParameter("command")==null ||
 				    		Description: <%=accountMapper.getDescription()%><br>	
 							JNDI LDAP service: <%=((GecosLdapAccountMapper)accountMapper).getJndiLdapUrl()%>
 <%
+		} else if (accountMapper instanceof LdapAccountMapper) {
+%>
+							LDAP Account Mapper:
+				    		<a href="accountMappers.jsp?command=edit&name=<%=accountMapper.getName()%>">
+				    			<%=accountMapper.getName()%>
+				    		</a><br>	
+				    		Description: <%=accountMapper.getDescription()%><br>	
+							JNDI LDAP service: <%=((LdapAccountMapper)accountMapper).getJndiLdapUrl()%>
+<%
 		} else if (accountMapper instanceof GecosNisAccountMapper) {
 %>
 							GECOS NIS Account Mapper:
@@ -213,6 +222,7 @@ else if ("edit".equals(request.getParameter("command"))
 	accountMapperTypes.add(ManualAccountMapper.getTypeStatic());
 	accountMapperTypes.add(AccountPoolMapper.getTypeStatic());
 	accountMapperTypes.add(GecosLdapAccountMapper.getTypeStatic());
+	accountMapperTypes.add(LdapAccountMapper.getTypeStatic());
 	
 	if ("edit".equals(request.getParameter("command"))) {
 		try {
@@ -388,7 +398,7 @@ else if ("edit".equals(request.getParameter("command"))
 				LDAP Name Field: 
 			</td>
 			<td> 
-				<input maxlength="256" size="16" name="gecosField" value="<%=((GecosLdapAccountMapper)accountMapper).getGecosField()%>"/> (which field full name is in)
+				<input maxlength="256" size="16" name="gecos" value="<%=((GecosLdapAccountMapper)accountMapper).getGecosField()%>"/> (which field full name is in)
 			</td>
 		</tr>
 	    <tr>
@@ -404,7 +414,7 @@ else if ("edit".equals(request.getParameter("command"))
 				LDAP Account Field: 
 			</td>
 			<td> 
-				<input maxlength="256" size="16" name="accountField" value="<%=((GecosLdapAccountMapper)accountMapper).getAccountField()%>"/> (which field account is in)
+				<input maxlength="256" size="16" name="account" value="<%=((GecosLdapAccountMapper)accountMapper).getAccountField()%>"/> (which field account is in)
 			</td>
 		</tr>
 	    <tr>
@@ -416,7 +426,58 @@ else if ("edit".equals(request.getParameter("command"))
 		    </td>
 		</tr>
 <%
-	}	
+	} else if (accountMapper instanceof LdapAccountMapper) {
+%>
+		<tr>
+			<td nowrap style="text-align: right;">
+				JNDI LDAP URL:
+			</td>
+			<td>
+				<input maxlength="256" size="64" name="serviceUrl" value="<%=((LdapAccountMapper)accountMapper).getJndiLdapUrl()%>"/>
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+				ldap://localhost/dc=usatlas,dc=bnl,dc=gov
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				LDAP DN Field: 
+			</td>
+			<td> 
+				<input maxlength="256" size="16" name="dn" value="<%=((LdapAccountMapper)accountMapper).getDnField()%>"/> (which field DN is in)
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	description
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				LDAP Account Field: 
+			</td>
+			<td> 
+				<input maxlength="256" size="16" name="account" value="<%=((LdapAccountMapper)accountMapper).getAccountField()%>"/> (which field account is in)
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	uid
+		    </td>
+		</tr>
+<%
+	}
 %>
 		<tr>
 	        <td colspan=2>

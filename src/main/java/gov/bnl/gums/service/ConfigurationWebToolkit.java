@@ -129,6 +129,17 @@ public class ConfigurationWebToolkit implements Remote {
 			if (request.getParameter("account")!=null)
 				((GecosLdapAccountMapper)accountMapper).setAccountField( request.getParameter("account").trim() );
 		}
+		else if (type.equals(LdapAccountMapper.getTypeStatic())) {
+			accountMapper = new LdapAccountMapper();
+			accountMapper.setName( request.getParameter("name").trim() );
+			accountMapper.setDescription( request.getParameter("description").trim() );
+			if (request.getParameter("serviceUrl")!=null)
+				((LdapAccountMapper)accountMapper).setJndiLdapUrl( request.getParameter("serviceUrl").trim() );
+			if (request.getParameter("dn")!=null)
+				((LdapAccountMapper)accountMapper).setDnField( request.getParameter("dn").trim() );
+			if (request.getParameter("account")!=null)
+				((LdapAccountMapper)accountMapper).setAccountField( request.getParameter("account").trim() );
+		}
 
 		return accountMapper;
 	}		
