@@ -243,7 +243,7 @@ read access by Tomcat (e.g. readable by user 'daemon' in VDT/OSG).
 
 ** Account Mappers
 
- There are currently four types of account mappers:
+ There are currently five types of account mappers:
  
 	* <<group>> - for mapping all users to the same account.
 	
@@ -259,6 +259,13 @@ read access by Tomcat (e.g. readable by user 'daemon' in VDT/OSG).
 	the attribute that contains the account can also be set ('uid' is the default).  This type is independent of
 	the LDAP persistence factory and doesn't require LDAP be configured to use the GUMS LDAP schema.  Note that this 
 	type only reads from LDAP.
+
+	* <<ldap>> - for mapping a user to an account in LDAP if the user's name from her certificate DN matches a 
+	name found in the 'description' attribute of LDAP.  The 'description' attribute is the default but can be set to another.  Likewise, 
+	the attribute that contains the account can also be set ('uid' is the default).  This type is independent of
+	the LDAP persistence factory and doesn't require LDAP be configured to use the GUMS LDAP schema.  Note that this 
+	type only reads from LDAP.
+
  
  Keep in mind that GUMS does not create accounts, it only returns the account name.  Therefore, a prerequisite to using
 GUMS is to create all the accounts that GUMS can map to at your local site.
