@@ -447,6 +447,10 @@ public class GUMSAPIImpl implements GUMSAPI {
         }
     }
     
+    public String getCurrentDn() {
+    	return currentUser().getCertificateDN();
+    }
+    
     private GridUser currentUser() {
         if (!isInWeb) return null;
         String DN = CertCache.getUserDN();
@@ -482,7 +486,6 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     private GUMS gums() {
         if (gums == null) {
-            System.setProperty("log4j.configuration",CertCache.getConfigDir()+"/log4j.properties");
         	FileConfigurationStore confStore = new FileConfigurationStore(CertCache.getConfigDir(), CertCache.getResourceDir(), getVersionNoPatch(), true);
             gums = new GUMS(confStore);
         }

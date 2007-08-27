@@ -187,4 +187,9 @@ public interface GUMSAPI extends Remote {
      * Update members in user groups by querying VO servers - may be time consuming
      */
     void updateGroups();
+
+    /**
+     * Get currently logged in user DN
+     */
+    String getCurrentDn();
 }

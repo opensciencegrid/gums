@@ -9,6 +9,7 @@ package gov.bnl.gums.configuration;
 import gov.bnl.gums.account.AccountPoolMapper;
 import gov.bnl.gums.account.GecosAccountMapper;
 import gov.bnl.gums.account.GecosLdapAccountMapper;
+import gov.bnl.gums.account.LdapAccountMapper;
 import gov.bnl.gums.account.GecosNisAccountMapper;
 import gov.bnl.gums.account.GroupAccountMapper;
 import gov.bnl.gums.account.ManualAccountMapper;
@@ -296,17 +297,18 @@ class ConfigurationToolkit {
         
         digester.addObjectCreate("gums/accountMappers/gecosLdapAccountMapper", GecosLdapAccountMapper.class);
         digester.addSetProperties("gums/accountMappers/gecosLdapAccountMapper");
-        digester.addRule("gums/accountMappers/gecosLdapAccountMapper", new PersistenceFactoryRule());
         digester.addSetNext("gums/accountMappers/gecosLdapAccountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
+
+        digester.addObjectCreate("gums/accountMappers/ldapAccountMapper", LdapAccountMapper.class);
+        digester.addSetProperties("gums/accountMappers/ldapAccountMapper");
+        digester.addSetNext("gums/accountMappers/ldapAccountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
         
         digester.addObjectCreate("gums/accountMappers/gecosNisAccountMapper", GecosNisAccountMapper.class);
         digester.addSetProperties("gums/accountMappers/gecosNisAccountMapper");
-        digester.addRule("gums/accountMappers/gecosNisAccountMapper", new PersistenceFactoryRule());
         digester.addSetNext("gums/accountMappers/gecosNisAccountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
 
         digester.addObjectCreate("gums/accountMappers/groupAccountMapper", GroupAccountMapper.class);
         digester.addSetProperties("gums/accountMappers/groupAccountMapper");
-        digester.addRule("gums/accountMappers/groupAccountMapper", new PersistenceFactoryRule());
         digester.addSetNext("gums/accountMappers/groupAccountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
         
         digester.addObjectCreate("gums/accountMappers/manualAccountMapper", ManualAccountMapper.class);
