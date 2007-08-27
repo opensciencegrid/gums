@@ -11,6 +11,7 @@ import gov.bnl.gums.command.Configuration;
 import org.apache.commons.cli.*;
 import org.opensciencegrid.authz.client.GRIDIdentityMappingServiceClient;
 import org.opensciencegrid.authz.common.GridId;
+import org.opensciencegrid.authz.common.LocalId;
 
 /**
  * @author Gabriele Carcassi, Jay Packard
@@ -24,7 +25,7 @@ public class MapUser extends RemoteCommand {
      * Creates a new MapUser object.
      */
     public MapUser() {
-        syntax = "[-g GUMSURL] [-s SERVICEDN] [-n TIMES] [-t NREQUESTS] [-b] [-f FQAN] [-i FQANISSUER] USERDN1 [USERDN2] ... ";
+        syntax = "[-g GUMSURL] [-s SERVICEDN] [-n TIMES] [-d] [-t NREQUESTS] [-b] [-f FQAN] [-i FQANISSUER] USERDN1 [USERDN2] ... ";
         description = "Maps the grid identity to the local account.";
     }
 
@@ -67,6 +68,11 @@ public class MapUser extends RemoteCommand {
                 "Name Issuer, that is the DN of the VOMS service that issued the attribute certificate");
 
         options.addOption(issuer);
+        
+        Option debug = new Option("d", "debug", false,
+        		"Show debug information in case of null mapping");
+
+        options.addOption(debug);
         
         return options;
     }
@@ -118,6 +124,7 @@ public class MapUser extends RemoteCommand {
         }
         
         boolean bypass = cmd.hasOption("b");
+        boolean debug = cmd.hasOption("d");
         
         long overall = System.currentTimeMillis();
         long start = System.currentTimeMillis();
@@ -134,12 +141,26 @@ public class MapUser extends RemoteCommand {
         start = System.currentTimeMillis();
         for (int n = 0; n < nTimes; n++) {
             for (int i = 0; i < userDN.length; i++) {
+            	String account = null;
                 if (!bypass) {
                     id.setUserDN(userDN[i]);
-                    System.out.println(client.mapCredentials(id));
+                    LocalId localId = client.mapCredentials(id);
+                    if (localId!=null)
+                    	account = localId.toString();
                 } else {
-               		System.out.println(getGums(gumsUrl).mapUser(hostname, userDN[i], id.getUserFQAN()));
+                	account = getGums(gumsUrl).mapUser(hostname, userDN[i], id.getUserFQAN());
                 }
+           		if (debug && (account==null || account.equals(""))) {
+           			System.out.print("Could not map user.\n");
+           			System.out.print("The GUMS server configuration may not be correct.  ");
+           			System.out.print("Please contact your administrator, or if you are the administrator, make sure you have the following elements in your gums.config (which can be easily configured from the web interface):\n");
+           			System.out.print("\t1) A hostToGroupMapping element which matches the requesting host name: "+hostname+"\n");
+           			System.out.print("\t2) A groupToAccountMapping (referenced by the hostToGroupMapping) element which contains a user group and account mapper\n");
+           			System.out.print("\t3) A userGroup element (referenced by the groupToAccountMapping) to validate membership of the requested DN\n");
+           			System.out.print("\t4) A accountMapper element (referenced by the groupToAccountMapping) to return the account for the requested DN\n");
+           		}
+           		else
+               		System.out.println(account);
             }
             if ((timing != null) && (((n+1) % requestInGroup) == 0)) {
                 end = System.currentTimeMillis();
