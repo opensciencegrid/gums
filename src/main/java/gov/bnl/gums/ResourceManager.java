@@ -89,7 +89,7 @@ public class ResourceManager {
 		            List members = userGroup.getMemberList();
 		            members = new ArrayList(members);
 		            grid3MapBuffer.append("#---- accounts for vo: " + userGroup.getName() + " ----#\n");          
-		            if (members.size()==0) {
+		            /*if (members.size()==0) {
 	                    Iterator accountMapperIt = accountMappers.iterator();
 	                    while (accountMapperIt.hasNext()) {
 	                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
@@ -108,33 +108,23 @@ public class ResourceManager {
 			                    accountsInMap.add(account);
 	                    	}
 	                    }
-		            }
-		            else {
-			            Collections.sort(members, retrieveUserComparatorByDN());
-			            Iterator memberIter = members.iterator();
-			            while (memberIter.hasNext()) {
-			                GridUser user = (GridUser) memberIter.next();
-		                    boolean accountFound = false;
-		                    Iterator accountMapperIt = accountMappers.iterator();
-		                    while (accountMapperIt.hasNext()) {
-		                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
-				                String account = accountMapper.mapUser(user.getCertificateDN(), false);
-				                if ((account != null) && !accountsInMap.contains(account)) {
-				                    grid3MapBuffer.append(account);
-				                    grid3MapBuffer.append(' ');
-				                    grid3MapBuffer.append(gMap.getAccountingVoSubgroup());
-				                    grid3MapBuffer.append("\n");
-				                    accountFound = true;
-				                    accountsInMap.add(account);
-				                }
-		                    }
-		                    if (!accountFound) {
-		                    	grid3MapBuffer.append("unknown" + Integer.toString(unknownCount++));
+		            }*/
+		            Collections.sort(members, retrieveUserComparatorByDN());
+		            Iterator memberIter = members.iterator();
+		            while (memberIter.hasNext()) {
+		                GridUser user = (GridUser) memberIter.next();
+	                    Iterator accountMapperIt = accountMappers.iterator();
+	                    while (accountMapperIt.hasNext()) {
+	                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
+			                String account = accountMapper.mapUser(user.getCertificateDN(), false);
+			                if ((account != null) && !accountsInMap.contains(account)) {
+			                    grid3MapBuffer.append(account);
 			                    grid3MapBuffer.append(' ');
 			                    grid3MapBuffer.append(gMap.getAccountingVoSubgroup());
 			                    grid3MapBuffer.append("\n");
-		                    }
-			            }
+			                    accountsInMap.add(account);
+			                }
+	                    }
 		            }
 	            }
             }
