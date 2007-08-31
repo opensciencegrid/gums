@@ -1,0 +1,12 @@
+ ------
+ GUMS Security Considerations
+ ------
+
+Security Considerations
+
+ GUMS should be protected by a firewall to avoid DOS attacks since it is a key piece of the authentication and authorization
+process.  Outside access should not be required anyway since it is an internal service.  
+
+ We recommend either putting the GUMS server behind a firewall or running iptables configured to block GUMS port 8443.
+Click {{{iptables}here}} for an example iptables configuration file.  Your iptables configuration file should be placed in 
+/etc/sysconfig.  Start iptables by executing 'service iptables start'.

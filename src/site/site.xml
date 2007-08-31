@@ -23,6 +23,7 @@
 	      <item name="VDT Installation" href="installation_vdt.html"/>
 	      <item name="Manual Installation" href="installation_manual.html"/>
 	      <item name="Upgrade from Version 1.1" href="installation_upgrade.html"/>
+	      <item name="Security Considerations" href="installation_security.html"/>
       </item>
       <item name="Using GUMS" href="use.html">
 	      <item name="General Use" href="use_general.html"/>
