@@ -3,85 +3,9 @@
 :INPUT ACCEPT [35:5488]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [22:1588]
--A INPUT  -m state --state RELATED,ESTABLISHED -j ACCEPT 
-
-# Accept all from within 131.225.0.0
--A INPUT -s 131.225.0.0/255.255.0.0  -j ACCEPT 
-
-# Allow httpd
--A INPUT -p tcp -m tcp --dport 8443 -j ACCEPT 
--A INPUT -p udp -m udp --dport 8443 -j ACCEPT 
--A INPUT -p tcp -m tcp --dport 80 -j ACCEPT 
--A INPUT -p udp -m udp --dport 80 -j ACCEPT 
-
-# Allow ftp (and passive ftp)
-# -A INPUT -p tcp --sport 1024:65535 --dport 21 -m state --state NEW,ESTABLISHED -j ACCEPT
-# -A INPUT -p tcp --sport 21 --dport 1024:65535 -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-# Allow ssh
--A INPUT -p tcp -m tcp --dport 22 -j ACCEPT 
--A INPUT -p udp -m udp --dport 22 -j ACCEPT 
-
-# Allow kerberized telnet
--A INPUT -p tcp -m tcp --dport 23 -j ACCEPT 
--A INPUT -p udp -m udp --dport 23 -j ACCEPT 
-
-# Allow klogin
--A INPUT -p tcp -m tcp --dport 543 -j ACCEPT 
--A INPUT -p udp -m udp --dport 543 -j ACCEPT 
-
-# Allow eklogin
--A INPUT -p tcp -m tcp --dport 2105 -j ACCEPT 
--A INPUT -p udp -m udp --dport 2105 -j ACCEPT 
-
-# Allow kshell
--A INPUT -p tcp -m tcp --dport 544 -j ACCEPT 
--A INPUT -p udp -m udp --dport 544 -j ACCEPT 
-
-# Allow rsync
-# -A INPUT -p tcp -m tcp --dport 873 -j ACCEPT 
-# -A INPUT -p udp -m udp --dport 873 -j ACCEPT 
-
-# Allow GridFTP
-#-A INPUT -p tcp -m tcp --dport 2811 -j ACCEPT
-#-A INPUT -p tcp -m tcp --dport 40000:50000 -j ACCEPT
-
-# Allow GridFTP2
-#-A INPUT -p tcp -m tcp --dport 2812 -j ACCEPT
-#-A INPUT -p tcp -m tcp --dport 40000:50000 -j ACCEPT
-
-# Allow GRAM Gatekeeper Service
-#-A INPUT -p tcp -m tcp --dport 2119 -j ACCEPT
-
-# Allow GRIS
-#-A INPUT -p tcp -m tcp --dport 2135 -j ACCEPT
-
-# Allow MyProxy
--A INPUT -p tcp -m tcp --dport 7512 -j ACCEPT
-
-# Allow Globus service containers
--A INPUT -p tcp -m tcp --dport 8443 -j ACCEPT
-
-# Allow RLS
-#-A INPUT -p tcp -m tcp --dport 39281 -j ACCEPT
-
-# Allow Condor negotiator and collector, respectively
-#-A INPUT -p tcp -m tcp --dport 9614 -j ACCEPT 
-#-A INPUT -p udp -m udp --dport 9614 -j ACCEPT 
-#-A INPUT -p tcp -m tcp --dport 9618 -j ACCEPT 
-#-A INPUT -p udp -m udp --dport 9618 -j ACCEPT 
-#-A INPUT -p udp -m udp --dport 61440:65535 -j ACCEPT
-
-# Allow MySQL
--A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT 
-
-# Allow VOMS ports
--A INPUT -p tcp -m tcp --dport 15001:15030 -j ACCEPT
-
-# Allow PostgreSQL
-# -A INPUT -p tcp -m udp --dport 5432 -j ACCEPT 
+-A INPUT  -m state --state RELATED,ESTABLISHED -j ACCEPT # Accept all from within 131.225.0.0
+-A INPUT -s 131.225.0.0/255.255.0.0  -j ACCEPT # Allow external access to httpd
+-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT -A INPUT -p udp -m udp --dport 80 -j ACCEPT # ...
 
 # drop everything else
--A INPUT  -j DROP 
-COMMIT
-# Completed on Fri Sep 28 15:18:52 2005
+-A INPUT  -j DROP COMMIT 
