@@ -159,6 +159,15 @@ if (request.getParameter("command")==null ||
 				    		Description: <%=accountMapper.getDescription()%><br>	
 							JNDI LDAP service: <%=((GecosLdapAccountMapper)accountMapper).getJndiLdapUrl()%>
 <%
+		} else if (accountMapper instanceof GecosNisAccountMapper) {
+%>
+							GECOS NIS Account Mapper:
+				    		<a href="accountMappers.jsp?command=edit&name=<%=accountMapper.getName()%>">
+				    			<%=accountMapper.getName()%>
+				    		</a><br>	
+				    		Description: <%=accountMapper.getDescription()%><br>	
+							JNDI LDAP service: <%=((GecosNisAccountMapper)accountMapper).getJndiNisUrl()%>
+<%
 		} else if (accountMapper instanceof LdapAccountMapper) {
 %>
 							LDAP Account Mapper:
@@ -177,14 +186,14 @@ if (request.getParameter("command")==null ||
 				    		Description: <%=accountMapper.getDescription()%><br>	
 							JNDI NIS service: <%=((GecosNisAccountMapper)accountMapper).getJndiNisUrl()%>
 <%
-		} else if (accountMapper instanceof NISAccountMapper) {
+		} else if (accountMapper instanceof GecosNisAccountMapper) {
 %>
 							NIS Account Mapper:
 				    		<a href="accountMappers.jsp?command=edit&name=<%=accountMapper.getName()%>">
 				    			<%=accountMapper.getName()%>
 				    		</a><br>	
 				    		Description: <%=accountMapper.getDescription()%><br>	
-							JNDI NIS Service: <%=((NISAccountMapper)accountMapper).getJndiNisUrl()%>
+							JNDI NIS Service: <%=((GecosNisAccountMapper)accountMapper).getJndiNisUrl()%>
 <%
 		}	
 %>	
@@ -223,6 +232,7 @@ else if ("edit".equals(request.getParameter("command"))
 	accountMapperTypes.add(AccountPoolMapper.getTypeStatic());
 	accountMapperTypes.add(GecosLdapAccountMapper.getTypeStatic());
 	accountMapperTypes.add(LdapAccountMapper.getTypeStatic());
+	accountMapperTypes.add(GecosNisAccountMapper.getTypeStatic());
 	
 	if ("edit".equals(request.getParameter("command"))) {
 		try {
@@ -415,6 +425,57 @@ else if ("edit".equals(request.getParameter("command"))
 			</td>
 			<td> 
 				<input maxlength="256" size="16" name="account" value="<%=((GecosLdapAccountMapper)accountMapper).getAccountField()%>"/> (which field account is in)
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	uid
+		    </td>
+		</tr>
+<%
+	}  else if (accountMapper instanceof GecosNisAccountMapper) {
+%>
+		<tr>
+			<td nowrap style="text-align: right;">
+				JNDI NIS URL:
+			</td>
+			<td>
+				<input maxlength="256" size="64" name="serviceUrl" value="<%=((GecosNisAccountMapper)accountMapper).getJndiNisUrl()%>"/>
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+				nis://localhost/usatlas.bnl.gov
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				NIS Name Field: 
+			</td>
+			<td> 
+				<input maxlength="256" size="16" name="gecos" value="<%=((GecosNisAccountMapper)accountMapper).getGecosField()%>"/> (which field full name is in)
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	gecos
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				NIS Account Field: 
+			</td>
+			<td> 
+				<input maxlength="256" size="16" name="account" value="<%=((GecosNisAccountMapper)accountMapper).getAccountField()%>"/> (which field account is in)
 			</td>
 		</tr>
 	    <tr>

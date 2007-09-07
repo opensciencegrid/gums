@@ -58,7 +58,13 @@
 						<phase>generate-resources</phase>
 						<configuration>
 							<tasks>
-				                
+								<delete includeemptydirs="true">
+									<fileset dir="src/main/resources" includes="log4j.properties.template"/>
+									<fileset dir="src/main/resources" includes="gums.*"/>
+									<fileset dir="src/main/resources/sql" includes="*"/>
+									<fileset dir="src/main/resources/scripts" includes="*"/>
+								</delete>
+							
 				                <unzip dest="src/main/resources">
 				                    <fileset dir="${settings.localRepository}/gums/gums-core">
         								<include name="**/gums-core-*.jar"/>
@@ -75,7 +81,8 @@
 									</patternset>
 				                </unzip>
 				                
-				                <copyfile src="src/main/resources/gums.config.devel" dest="src/main/config/gums.config" forceoverwrite="yes"/>
+				                <copy file="src/main/resources/gums.config.devel" tofile="src/main/config/gums.config" overwrite="yes"/>
+				                <copy file="src/main/resources/log4j.properties.template" tofile="src/main/classes/log4j.properties" overwrite="yes"/>
 							</tasks>
 						</configuration>
 						<goals>
@@ -124,6 +131,14 @@
 			           <directory>../gums-service/src/main/config</directory>
 			           <targetPath>WEB-INF/config</targetPath>
 			           <filtering>false</filtering>
+			         </resource>
+			         <resource>
+			           <directory>../gums-service/src/main/classes</directory>
+			           <targetPath>WEB-INF/classes</targetPath>
+			           <filtering>true</filtering>
+			           <includes>
+			              <include>log4j.properties</include>
+			           </includes>
 			         </resource>
 			         <resource>
 			           <directory>../gums-service/src/main/resources</directory>
