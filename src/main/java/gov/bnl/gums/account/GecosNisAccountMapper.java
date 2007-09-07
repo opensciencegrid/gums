@@ -24,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 /** 
  * Matches the DN with the account information retrieved from a NIS server.
  *
- * @deprecated
  * @author Gabriele Carcassi, Jay Packard
  */
 public class GecosNisAccountMapper extends GecosAccountMapper {
@@ -36,6 +35,8 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
 	}
     
 	private String jndiNisUrl = "";
+	private String gecosField = "gecos";
+	private String accountField = "cn";
     
     public GecosNisAccountMapper() {
     	super();
@@ -54,6 +55,8 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     	GecosNisAccountMapper accountMapper = new GecosNisAccountMapper(configuration, getName());
     	accountMapper.setDescription(getDescription());
     	accountMapper.setJndiNisUrl(jndiNisUrl);
+    	accountMapper.setGecosField(gecosField);
+    	accountMapper.setAccountField(accountField);
     	return accountMapper;
     }
     
@@ -64,7 +67,7 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
         int i = 0;
         for (; i < nTries; i++) {
             GecosMap map = new GecosMap();
-            log.debug("Attemp " + i + " to retrieve map for '" + jndiNisUrl + "'");
+            log.debug("Attempt " + i + " to retrieve map for '" + jndiNisUrl + "'");
             try {
                 DirContext jndiCtx = new InitialDirContext(jndiProperties);
                 NamingEnumeration nisMap = jndiCtx.search("system/passwd.byname", "(cn=*)", null);
@@ -72,8 +75,8 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
                 while (nisMap.hasMore()) {
                     SearchResult res = (SearchResult) nisMap.next();
                     Attributes atts = res.getAttributes();
-                    String account = (String) atts.get("cn").get();
-                    Attribute gecosAtt = atts.get("gecos");
+                    String account = (String) atts.get(accountField).get();
+                    Attribute gecosAtt = atts.get(gecosField);
                     if (gecosAtt != null) {
                         String gecos = gecosAtt.get().toString();
                         map.addEntry(account, gecos);
@@ -107,8 +110,24 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
         return null;
     }
     
+    public String getAccountField() {
+    	return accountField;
+    }
+    
+    public String getGecosField() {
+    	return gecosField;
+    }
+    
     public String getJndiNisUrl() {
         return jndiNisUrl;
+    }
+    
+    public void setAccountField(String accountField) {
+    	this.accountField = accountField;
+    }
+    
+    public void setGecosField(String gecosField) {
+    	this.gecosField = gecosField;
     }
     
     public String getType() {
@@ -127,7 +146,9 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     	return "\t\t<gecosNisAccountMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tdescription='"+getDescription()+"'\n"+
-			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'/>\n\n";
+			"\t\t\tjndiNisUrl='"+jndiNisUrl+"'\n"+
+    		"\t\t\tgecosField='"+gecosField+"'\n"+
+			"\t\t\taccountField='"+accountField+"'/>\n\n";
     }
 
     private Properties retrieveJndiProperties() {

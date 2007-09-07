@@ -135,7 +135,7 @@
 				                <exclude>**/*DB*Test*</exclude>
 				                <exclude>**/*LDAP*Test*</exclude>
 				                <exclude>**/*Ldap*Test*</exclude>
-				                <exclude>**/NIS*</exclude>
+				                <exclude>**/*Nis*</exclude>
 					            <exclude>**/unused/*</exclude>
 					            <exclude>**/.svn</exclude>
 				            </excludes>
@@ -191,7 +191,6 @@
 				        <artifactId>maven-surefire-plugin</artifactId>
 				        <configuration>
 				            <excludes>
-				            	<exclude>**/unused/*</exclude>
 					            <exclude>**/.svn</exclude>
 				            </excludes>
 				        </configuration>

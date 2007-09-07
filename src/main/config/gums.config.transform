@@ -131,7 +131,7 @@
 				    />
 				</xsl:if>
 				<xsl:if test="@className = 'gov.bnl.gums.NISAccountMapper'">
-				    <nisAccountMapper
+				    <gecosNisAccountMapper
 						name='{translate(@jndiNisUrl,",","_")}'
 						description=''
 						jndiNisUrl='{@jndiNisUrl}'

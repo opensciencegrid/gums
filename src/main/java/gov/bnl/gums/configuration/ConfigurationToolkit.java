@@ -13,7 +13,7 @@ import gov.bnl.gums.account.LdapAccountMapper;
 import gov.bnl.gums.account.GecosNisAccountMapper;
 import gov.bnl.gums.account.GroupAccountMapper;
 import gov.bnl.gums.account.ManualAccountMapper;
-import gov.bnl.gums.account.NISAccountMapper;
+import gov.bnl.gums.account.GecosNisAccountMapper;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.CertificateHostToGroupMapping;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
@@ -315,12 +315,6 @@ class ConfigurationToolkit {
         digester.addSetProperties("gums/accountMappers/manualAccountMapper");
         digester.addRule("gums/accountMappers/manualAccountMapper", new PersistenceFactoryRule());
         digester.addSetNext("gums/accountMappers/manualAccountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
-        
-        digester.addObjectCreate("gums/accountMappers/nisAccountMapper", NISAccountMapper.class);
-        digester.addSetProperties("gums/accountMappers/nisAccountMapper");
-        digester.addRule("gums/accountMappers/nisAccountMapper", new PassRule(new String[] {"className"}));
-        digester.addRule("gums/accountMappers/nisAccountMapper", new PersistenceFactoryRule());
-        digester.addSetNext("gums/accountMappers/nisAccountMapper", "addAccountMapper", "gov.bnl.gums.account.AccountMapper");
         
         digester.addObjectCreate("gums/groupToAccountMappings/groupToAccountMapping", GroupToAccountMapping.class);
         digester.addSetProperties("gums/groupToAccountMappings/groupToAccountMapping");

@@ -7,7 +7,7 @@
 package gov.bnl.gums.account;
 
 import gov.bnl.gums.GUMS;
-import gov.bnl.gums.NISClient;
+import gov.bnl.gums.account.NISClient;
 
 import java.io.PrintStream;
 import java.util.ArrayList;

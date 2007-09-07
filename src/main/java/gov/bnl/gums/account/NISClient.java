@@ -4,9 +4,10 @@
  * Created on March 25, 2004, 4:11 PM
  */
 
-package gov.bnl.gums;
+package gov.bnl.gums.account;
 
 import gov.bnl.gums.configuration.ReadWriteLock;
+import gov.bnl.gums.GUMS;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ import org.apache.commons.logging.LogFactory;
  * Retrieves the map from the NIS server and provide a logic to match name and
  * surname to an account.
  *
- * @deprecated
  * @author  Gabriele Carcassi, Jay Packard
  */
 public class NISClient {

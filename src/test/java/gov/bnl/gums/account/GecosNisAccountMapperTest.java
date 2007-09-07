@@ -5,19 +5,16 @@
  * Created on May 10, 2005, 11:39 AM
  */
 
-package gov.bnl.gums.unused;
+package gov.bnl.gums.account;
+
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 
 import gov.bnl.gums.account.GecosMap;
-import gov.bnl.gums.account.GecosNisAccountMapper;
 import gov.bnl.gums.configuration.Configuration;
 import junit.framework.*;
-import java.util.Properties;
-import javax.naming.NamingEnumeration;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.SearchResult;
 
 /**
  * If you want to use this junit test, you need to fill in the values for your site below
@@ -32,8 +29,15 @@ public class GecosNisAccountMapperTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        mapper = new GecosNisAccountMapper(new Configuration(), "gecosNisAccountMapper");
-        mapper.setJndiNisUrl("nis://130.199.48.26/usatlas.bnl.gov");
+        PropertyResourceBundle prop = (PropertyResourceBundle) ResourceBundle.getBundle("nis");
+        Properties properties = new Properties();
+        Enumeration keys = prop.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = (String) keys.nextElement();
+            properties.setProperty(key, prop.getString(key));
+        }
+        mapper = new GecosNisAccountMapper(new Configuration(), "GecosNisAccountMapper");
+        mapper.setJndiNisUrl( properties.getProperty("java.naming.provider.url") );
     }
 
     protected void tearDown() throws Exception {
@@ -47,8 +51,8 @@ public class GecosNisAccountMapperTest extends TestCase {
 
     public void testGetJndiNisUrl() {
         GecosMap map = mapper.createMap();
-        String account = map.findAccount("Gabriele",  "Carcassi");
-        assertEquals("carcassi", account);
+        String account = map.findAccount("John",  "Smith");
+        assertEquals("jsmith", account);
     }
     
 }
