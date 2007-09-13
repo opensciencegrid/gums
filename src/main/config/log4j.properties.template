@@ -39,7 +39,7 @@ log4j.logger.gov.bnl.gums=INFO, devFile
 
 # Privilege Project log
 # Sends the log of AuthZ callout internals to a different log.
-log4j.logger.org.opensciencegrid.authz=DEBUG, privFile
+log4j.logger.org.opensciencegrid.authz=INFO, privFile
 
 # EDG trustmanager log
 # Logs the activity of the EDG trustmanager.
