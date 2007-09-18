@@ -181,7 +181,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     }
     
     public Configuration getConfiguration() {
-    	if (hasReadAllAccess(currentUser(), null))
+    	if (hasReadAllAccess(currentUser(), null) && isInWeb)
     		return gums().getConfiguration();
     	else {
             gumsResourceAdminLog.info(logUserAccess() + "Failed to get configuration because user doesn't have administrative access");
