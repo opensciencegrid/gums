@@ -409,36 +409,12 @@ else if ("edit".equals(request.getParameter("command"))
 		    	memberUid
 		    </td>
 		</tr>
-		<tr>
-    		<td nowrap style="text-align: right;">
-	    		CA Certificate File:
-		    </td>
-		    <td nowrap>
-		    	<input maxlength="256" size="64" name="caCertFile" value="<%=((LDAPPersistenceFactory)persistenceFactory).getCaCertFile()%>"/> (required for SSL access only)
-		    </td>
-		</tr>
 	    <tr>
     		<td nowrap style="text-align: right;">
-	    		i.e.
+	    		NOTE:
 		    </td>
 		    <td nowrap>
-		    	/etc/grid-security/certificates/1c3f2ca8.0
-		    </td>
-		</tr>			
-		<tr>
-    		<td nowrap style="text-align: right;">
-	    		Trust Store Password:
-		    </td>
-		    <td nowrap>
-		    	<input type="password" maxlength="256" size="32" name="tsPassword" value="<%=((LDAPPersistenceFactory)persistenceFactory).getTrustStorePassword()%>"/> (required for SSL access only)
-		    </td>
-		</tr>
-	    <tr>
-    		<td nowrap style="text-align: right;">
-	    		i.e.
-		    </td>
-		    <td nowrap>
-		    	changeit
+		    	For SSL access to ldap, ldap can made to be trusted by adding its certificate to $JAVA_HOME/lib/security/cacerts using keytool
 		    </td>
 		</tr>	
 <%
@@ -585,38 +561,14 @@ else if ("edit".equals(request.getParameter("command"))
 		    	memberUid
 		    </td>
 		</tr>
-		<tr>
-    		<td nowrap style="text-align: right;">
-	    		CA certificate File:
-		    </td>
-		    <td nowrap>
-		    	<input maxlength="256" size="64" name="caCertFile" value="<%=((LocalPersistenceFactory)persistenceFactory).getCaCertFile()%>"/> (required for SSL access only)
-		    </td>
-		</tr>
 	    <tr>
-    		<td nowrap style="text-align: right;">
-	    		i.e.
-		    </td>
+			<td nowrap style="text-align: right;">
+				NOTE:
+			</td>
 		    <td nowrap>
-		    	/etc/grid-security/certificates/1c3f2ca8.0
+		    	For SSL access to ldap, ldap can made to be trusted by adding its certificate to $JAVA_HOME/lib/security/cacerts using keytool
 		    </td>
-		</tr>			
-		<tr>
-    		<td nowrap style="text-align: right;">
-	    		Trust Store Password
-		    </td>
-		    <td nowrap>
-		    	<input type="password" maxlength="256" size="32" name="tsPassword" value="<%=((LocalPersistenceFactory)persistenceFactory).getTrustStorePassword()%>"/> (required for SSL access only)
-		    </td>
-		</tr>
-	    <tr>
-    		<td nowrap style="text-align: right;">
-	    		i.e.
-		    </td>
-		    <td nowrap>
-		    	changeit
-		    </td>
-		</tr>
+		</tr>	
 <%
 	}
 %>	

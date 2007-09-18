@@ -81,7 +81,6 @@ if (request.getParameter("command")==null ||
 			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">Host to group mapping has been saved.</div>";
 		}catch(Exception e){
-			gums.setConfiguration(configuration);
 			message = "<div class=\"failure\">Error saving host to group mapping: " + e.getMessage() + "</div>";
 		}
 	}
@@ -97,7 +96,6 @@ if (request.getParameter("command")==null ||
 			else
 				message = "<div class=\"failure\">Error deleting host to group mapping</div>";
 		}catch(Exception e){
-			gums.setConfiguration(configuration);
 			message = "<div class=\"failure\">Error deleting host to group mapping: " + e.getMessage() + "</div>";
 		}
 	}

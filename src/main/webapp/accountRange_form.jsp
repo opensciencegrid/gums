@@ -66,7 +66,7 @@ Adds, removes, or unassigns accounts in pool.
 			ConfigurationWebToolkit.createSelectBox("accountMapper", 
 				accountMappers, 
 				(request.getParameter("accountMapper")!=null ? request.getParameter("accountMapper") : null),
-				"onchange=\"document.forms[0].command='accountRange_form.jsp';document.forms[0].submit();\"",
+				"onchange=\"document.forms[0].action='accountRange_form.jsp';document.forms[0].submit();\"",
 				false) );
 %>   
 		</td>
