@@ -61,9 +61,9 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     private boolean synchGroups;
     private List contexts = Collections.synchronizedList(new LinkedList());// *** LDAP connection pool management    
 	private boolean skipReleaseContext = false;
-	private String trustStore = System.getProperty("java.home")+"/lib/security/cacerts";
-	private String trustStorePassword = "";
-	private String caCertFile = "";
+	private String trustStore = System.getProperty("java.home")+"/lib/security/cacerts"; // doesn't do anything anymore because it required tomcat restart
+	private String trustStorePassword = ""; // doesn't do anything anymore because it required tomcat restart
+	private String caCertFile = ""; // doesn't do anything anymore because it required tomcat restart
 	private String accountField = "uid";
 	private String memberAccountField = "memberUid";
 	private String groupIdField = "gidNumber";
@@ -198,8 +198,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public PersistenceFactory clone(Configuration configuration) {
     	LDAPPersistenceFactory persistenceFactory = new LDAPPersistenceFactory(configuration, getName());
     	persistenceFactory.setDescription(getDescription());
-    	persistenceFactory.setCaCertFile(getCaCertFile());
-    	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
+//    	persistenceFactory.setCaCertFile(getCaCertFile());
+//   	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
     	persistenceFactory.setAccountField(getAccountField());
     	persistenceFactory.setGroupIdField(getGroupIdField());
     	persistenceFactory.setMemberAccountField(getMemberAccountField());
@@ -517,10 +517,10 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     }
     
     public void setCaCertFile(String caCertFile) {
-       	System.setProperty("javax.net.ssl.trustStore", trustStore );
+       	//System.setProperty("javax.net.ssl.trustStore", trustStore );
     	this.caCertFile = caCertFile;
-    	if (!trustStorePassword.equals(""))
-    		addCertToTrustStore();
+    	//if (!trustStorePassword.equals(""))
+    		//addCertToTrustStore();
     }
     
     public void setGroupIdField(String groupIdField) {
@@ -543,14 +543,14 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
         
         // For JUnit test only
-        if (properties.getProperty("caCertFile")!=null) {
+        /*if (properties.getProperty("caCertFile")!=null) {
         	setCaCertFile(properties.getProperty("caCertFile"));
         	properties.remove("caCertFile");
         }
         if (properties.getProperty("trustStorePassword")!=null) {
         	setTrustStorePassword(properties.getProperty("trustStorePassword"));
         	properties.remove("trustStorePassword");
-        }
+        }*/
 
         super.setProperties(properties);
     }
@@ -565,10 +565,10 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     }
     
     public void setTrustStorePassword(String trustStorePassword) {
-       	System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword );
+       	//System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword );
         this.trustStorePassword = trustStorePassword;
-    	if (!caCertFile.equals(""))
-    		addCertToTrustStore();
+    	//if (!caCertFile.equals(""))
+    		//addCertToTrustStore();
     }
     
     public String toXML() {
@@ -576,8 +576,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     		"\t\t\tname='"+getName()+"'\n"+
     		"\t\t\tdescription='"+getDescription()+"'\n"+
     		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
-			"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
-			"\t\t\ttrustStorePassword='"+trustStorePassword+"'\n"+
+//			"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
+//			"\t\t\ttrustStorePassword='"+trustStorePassword+"'\n"+
 			"\t\t\tgroupIdField='"+groupIdField+"'\n"+
 			"\t\t\taccountField='"+accountField+"'\n"+
 			"\t\t\tmemberAccountField='"+memberAccountField+"'\n";

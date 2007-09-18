@@ -72,7 +72,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 
         public String retrieveAccount(String userDN) {
             String account = db.retrieveAccount(userDN);
-            if (synchGroups) {
+            if (account!=null && synchGroups) {
                 assignGroups(account);
             }
             return account;
@@ -158,8 +158,8 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     public PersistenceFactory clone(Configuration configuration) {
     	LocalPersistenceFactory persistenceFactory = new LocalPersistenceFactory(configuration, getName());
     	persistenceFactory.setDescription(getDescription());
-    	persistenceFactory.setCaCertFile(getCaCertFile());
-    	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
+//   	persistenceFactory.setCaCertFile(getCaCertFile());
+//    	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
     	persistenceFactory.setGroupIdField(getGroupIdField());
     	persistenceFactory.setAccountField(getAccountField());
     	persistenceFactory.setMemberAccountField(getMemberAccountField());
@@ -280,8 +280,8 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     		"\t\t\tname='"+getName()+"'\n"+
     		"\t\t\tdescription='"+getDescription()+"'\n"+
     		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
-    		"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
-    		"\t\t\ttrustStorePassword='"+getTrustStorePassword()+"'\n"+
+//    		"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
+//    		"\t\t\ttrustStorePassword='"+getTrustStorePassword()+"'\n"+
     		"\t\t\tgroupIdField='"+getGroupIdField()+"'\n"+
     		"\t\t\taccountField='"+getAccountField()+"'\n"+
 			"\t\t\tmemberAccountField='"+getMemberAccountField()+"'\n";

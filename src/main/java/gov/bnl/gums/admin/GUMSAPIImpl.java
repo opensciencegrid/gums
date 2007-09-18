@@ -170,7 +170,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     public Collection getBackupConfigDates() {
     	Collection backupConfigDates = null;
-    	if (hasWriteAccess(currentUser()))
+    	if (hasReadAllAccess(currentUser(), null))
     		backupConfigDates = gums().getBackupConfigDates();
     	else {
             gumsResourceAdminLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have administrative access");
@@ -181,7 +181,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     }
     
     public Configuration getConfiguration() {
-    	if (hasWriteAccess(currentUser()))
+    	if (hasReadAllAccess(currentUser(), null))
     		return gums().getConfiguration();
     	else {
             gumsResourceAdminLog.info(logUserAccess() + "Failed to get configuration because user doesn't have administrative access");
@@ -191,7 +191,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     }
     
     public String getPoolAccountAssignments(String accountPoolMapperName) {
-    	if (hasWriteAccess(currentUser())) {
+    	if (hasReadAllAccess(currentUser(), null)) {
     		return ((AccountPoolMapper)gums().getConfiguration().getAccountMapper(accountPoolMapperName)).getAssignments();
     	}
     	else {
@@ -448,7 +448,12 @@ public class GUMSAPIImpl implements GUMSAPI {
     }
     
     public String getCurrentDn() {
-    	return currentUser().getCertificateDN();
+    	try {
+    		return currentUser().getCertificateDN();
+    	}
+    	catch(Exception e) {
+    		return "UNKNOWN";
+    	}
     }
     
     private GridUser currentUser() {
