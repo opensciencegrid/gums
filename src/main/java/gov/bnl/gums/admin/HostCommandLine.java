@@ -25,8 +25,10 @@ public class HostCommandLine extends GUMSCommandLine {
     		"Generate a VO grid-mapfile for a given service/host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.MapUser",
             "Local credential used for a particular user.");
-        GUMSCommandLine.addCommand("gov.bnl.gums.admin.Version",
-            "Retrieve GUMS client version.");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.ServerVersion",
+        	"Retrieve GUMS server version.");
+	    GUMSCommandLine.addCommand("gov.bnl.gums.admin.ClientVersion",
+	    	"Retrieve GUMS client version.");
     }
 
 }

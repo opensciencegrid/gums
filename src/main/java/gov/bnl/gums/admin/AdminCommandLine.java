@@ -44,8 +44,10 @@ public class AdminCommandLine extends GUMSCommandLine {
         	"Get printout of current pool account assignments.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.UpdateGroups",
             "Contact VO servers and retrieve user lists.");
-        GUMSCommandLine.addCommand("gov.bnl.gums.admin.Version",
-            "Retrieve GUMS client version.");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.ServerVersion",
+            "Retrieve GUMS server version.");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.ClientVersion",
+        	"Retrieve GUMS client version.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.MapAccount",
         	"Maps a local account to a grid identity.");
     }
