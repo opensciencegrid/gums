@@ -65,8 +65,6 @@ public class GUMSAPIImpl implements GUMSAPI {
 	        String nLastAccountString = Integer.toString(nLastAccount);
 	        last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
 	        
-	        System.out.println("Adding accounts between '" + firstAccount + "' and '" + last.toString() + "' to pool '" + accountPoolMapperName + "'");
-	        
 	        StringBuffer buf = new StringBuffer(firstAccount);
 	        int len = firstAccount.length();
 	        Map reverseMap = getAccountPoolMapperDB(accountPoolMapperName).retrieveReverseAccountMap();
@@ -81,7 +79,6 @@ public class GUMSAPIImpl implements GUMSAPI {
 	            String nAccount = Integer.toString(account);
 	            buf.replace(len - nAccount.length(), len, nAccount);
 	            getAccountPoolMapperDB(accountPoolMapperName).addAccount(buf.toString());
-	            System.out.println(buf.toString() + " added");
 	        }
     	}
 		else {
@@ -355,15 +352,12 @@ public class GUMSAPIImpl implements GUMSAPI {
 	        String nLastAccountString = Integer.toString(nLastAccount);
 	        last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
 	        
-	        System.out.println("Removing accounts between '" + firstAccount + "' and '" + last.toString() + "' from pool '" + accountPoolMapperName + "'");
-	        
 	        StringBuffer buf = new StringBuffer(firstAccount);
 	        int len = firstAccount.length();
 	        for (int account = nFirstAccount; account <= nLastAccount; account++) {
 	            String nAccount = Integer.toString(account);
 	            buf.replace(len - nAccount.length(), len, nAccount);
 	            getAccountPoolMapperDB(accountPoolMapperName).removeAccount(buf.toString());
-	            System.out.println(buf.toString() + " removed");
 	        }
     	}
 		else {
@@ -406,15 +400,12 @@ public class GUMSAPIImpl implements GUMSAPI {
             String nLastAccountString = Integer.toString(nLastAccount);
             last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
             
-            System.out.println("Unassigning accounts between '" + firstAccount + "' and '" + last.toString() + "' from pool '" + accountPoolMapperName + "'");
-            
             StringBuffer buf = new StringBuffer(firstAccount);
             int len = firstAccount.length();
             for (int account = nFirstAccount; account <= nLastAccount; account++) {
                 String nAccount = Integer.toString(account);
                 buf.replace(len - nAccount.length(), len, nAccount);
                 getAccountPoolMapperDB(accountPoolMapperName).unassignAccount(buf.toString());
-                System.out.println(buf.toString() + " unassigned");
             }
     		
 	        gumsResourceAdminLog.info(logUserAccess() + "Unassigned accounts from account mapper '" + accountPoolMapperName + "'");
