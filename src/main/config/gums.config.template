@@ -33,7 +33,7 @@
 
 	<accountMappers>
 		<groupAccountMapper
-			name='GumsTestUserMappingSuccessful'
+			name='gums-test'
 			description='Testing GUMS-status with GIP Probe'
 			accountName='GumsTestUserMappingSuccessful'/>
 	</accountMappers>
@@ -45,7 +45,7 @@
 			accountingVoSubgroup=''
 			accountingVo=''
 			userGroups='gums-test'
-			accountMappers='GumsTestUserMappingSuccessful'/>
+			accountMappers='gums-test'/>
 	</groupToAccountMappings>
 
 	<hostToGroupMappings>

@@ -52,7 +52,7 @@ public class GUMSAPIImpl implements GUMSAPI {
         }
     }
     
-    public void addAccountRange(String accountPoolMapperName, String range) {
+    public void addAccountRange2(String accountPoolMapperName, String range) {
     	if (hasWriteAccess(currentUser())) {
 	        String firstAccount = range.substring(0, range.indexOf('-'));
 	        String lastAccountN = range.substring(range.indexOf('-') + 1);
@@ -221,7 +221,7 @@ public class GUMSAPIImpl implements GUMSAPI {
         return version;
     }
     
-    public void manualGroupAdd(String manualUserGroupName, String userDN) {
+    public void manualGroupAdd2(String manualUserGroupName, String userDN) {
         try {
            if (hasWriteAccess(currentUser())) {
         	   getManualUserGroupDB(manualUserGroupName).addMember(new GridUser(userDN, null));
@@ -241,7 +241,7 @@ public class GUMSAPIImpl implements GUMSAPI {
         }
     }
     
-    public void manualGroupRemove(String manualUserGroupName, String userDN) {
+    public void manualGroupRemove2(String manualUserGroupName, String userDN) {
         try {
             if (hasWriteAccess(currentUser())) {
             	getManualUserGroupDB(manualUserGroupName).removeMember(new GridUser(userDN, null));
@@ -261,7 +261,7 @@ public class GUMSAPIImpl implements GUMSAPI {
         }
     }
     
-    public void manualMappingAdd(String manualAccountMapperName, String userDN, String account) {
+    public void manualMappingAdd2(String manualAccountMapperName, String userDN, String account) {
         try {
             if (hasWriteAccess(currentUser())) {
                 getManualAccountMapperDB(manualAccountMapperName).createMapping(userDN, account);
@@ -281,7 +281,7 @@ public class GUMSAPIImpl implements GUMSAPI {
         }
     }
 
-    public void manualMappingRemove(String manualAccountMapperName, String userDN) {
+    public void manualMappingRemove2(String manualAccountMapperName, String userDN) {
         try {
             if (hasWriteAccess(currentUser())) {
                 getManualAccountMapperDB(manualAccountMapperName).removeMapping(userDN);
@@ -446,6 +446,187 @@ public class GUMSAPIImpl implements GUMSAPI {
     		return "UNKNOWN";
     	}
     }
+    
+    // Depricated
+    
+    public void manualGroupAdd(String persistanceFactory, String group, String userDN) {
+        try {
+            if (hasWriteAccess(currentUser())) {
+            	Collection userGroups = gums().getConfiguration().getUserGroups().values();
+            	Iterator it = userGroups.iterator();
+            	boolean found = false;
+            	while (it.hasNext()) {
+            		UserGroup userGroup = (UserGroup)it.next();
+            		if (userGroup instanceof ManualUserGroup) {
+            			if (((ManualUserGroup)userGroup).getName().equals(group))
+            			found = true;
+            		}
+            	}
+            	if (!found)
+                    throw new RuntimeException("No manual user group named " + group);
+            	
+                PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceFactory);
+                ManualUserGroupDB db = factory.retrieveManualUserGroupDB(group);
+                db.addMember(new GridUser(userDN, null));
+                gumsResourceAdminLog.info(logUserAccess() + "Added to persistence '" + persistanceFactory + "' group '" + group + "'  user '" + userDN + "'");
+                siteLog.info(logUserAccess() + "Added to persistence '" + persistanceFactory + "' group '" + group + "'  user '" + userDN + "'");
+            } else {
+                throw new AuthorizationDeniedException();
+            }
+        } catch (AuthorizationDeniedException e) {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to add to persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Unauthorized access to add to persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "'");
+        } catch (RuntimeException e) {
+            gumsResourceAdminLog.error(logUserAccess() + "Failed to add to persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Failed to add to persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
+            throw e;
+        }
+    }
+    
+    public void manualGroupRemove(String persistanceFactory, String group, String userDN) {
+        try {
+            if (hasWriteAccess(currentUser())) {
+            	Collection userGroups = gums().getConfiguration().getUserGroups().values();
+            	Iterator it = userGroups.iterator();
+            	boolean found = false;
+            	while (it.hasNext()) {
+            		UserGroup userGroup = (UserGroup)it.next();
+            		if (userGroup instanceof ManualUserGroup) {
+            			if (((ManualUserGroup)userGroup).getName().equals(group))
+            			found = true;
+            		}
+            	}
+            	if (!found)
+                    throw new RuntimeException("No manual user group named " + group);
+            	
+                PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceFactory);
+                ManualUserGroupDB db = factory.retrieveManualUserGroupDB(group);
+                db.removeMember(new GridUser(userDN, null));
+                gumsResourceAdminLog.info(logUserAccess() + "Removed from persistence '" + persistanceFactory + "' group '" + group + "'  user '" + userDN + "'");
+                siteLog.info(logUserAccess() + "Removed from persistence '" + persistanceFactory + "' group '" + group + "'  user '" + userDN + "'");
+            } else {
+                throw new AuthorizationDeniedException();
+            }
+        } catch (AuthorizationDeniedException e) {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to remove from persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Unauthorized access to remove from persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "'");
+            throw e;
+        } catch (RuntimeException e) {
+            gumsResourceAdminLog.error(logUserAccess() + "Failed to remove from persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Failed to remove from persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
+            throw e;
+        }
+    }
+    
+    public void manualMappingAdd(String persistanceFactory, String group, String userDN, String account) {
+        try {
+            if (hasWriteAccess(currentUser())) {
+            	Collection accountMappers = gums().getConfiguration().getAccountMappers().values();
+            	Iterator it = accountMappers.iterator();
+            	boolean found = false;
+            	while (it.hasNext()) {
+            		AccountMapper accountMapper = (AccountMapper)it.next();
+            		if (accountMapper instanceof ManualAccountMapper) {
+            			if (((ManualAccountMapper)accountMapper).getName().equals(group))
+            			found = true;
+            		}
+            	}
+            	if (!found)
+                    throw new RuntimeException("No manual account mapper named " + group);
+            	
+                PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceFactory);
+                ManualAccountMapperDB db = factory.retrieveManualAccountMapperDB(group);
+                db.createMapping(userDN, account);
+                gumsResourceAdminLog.info(logUserAccess() + "Added mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "'");
+                siteLog.info(logUserAccess() + "Added mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "'");
+            } else {
+                throw new AuthorizationDeniedException();
+            }
+        } catch (AuthorizationDeniedException e) {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to add mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Unauthorized access to add mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "'");
+            throw e;
+        } catch (RuntimeException e) {
+            gumsResourceAdminLog.error(logUserAccess() + "Failed to add mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Failed to add mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "' - " + e.getMessage());
+            throw e;
+        }
+    }
+    
+    public void manualMappingRemove(String persistanceFactory, String group, String userDN) {
+        try {
+            if (hasWriteAccess(currentUser())) {
+            	Collection accountMappers = gums().getConfiguration().getAccountMappers().values();
+            	Iterator it = accountMappers.iterator();
+            	boolean found = false;
+            	while (it.hasNext()) {
+            		AccountMapper accountMapper = (AccountMapper)it.next();
+            		if (accountMapper instanceof ManualAccountMapper) {
+            			if (((ManualAccountMapper)accountMapper).getName().equals(group))
+            			found = true;
+            		}
+            	}
+            	if (!found)
+                    throw new RuntimeException("No manual account mapper named " + group);
+            	
+                PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceFactory);
+                ManualAccountMapperDB db = factory.retrieveManualAccountMapperDB(group);
+                db.removeMapping(userDN);
+                gumsResourceAdminLog.info(logUserAccess() + "Removed mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "'");
+                siteLog.info(logUserAccess() + "Removed mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "'");
+            } else {
+                throw new AuthorizationDeniedException();
+            }
+        } catch (AuthorizationDeniedException e) {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to remove mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Unauthorized access to remove mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "'");
+            throw e;
+        } catch (RuntimeException e) {
+            gumsResourceAdminLog.error(logUserAccess() + "Failed to remove mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Failed to remove mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' - " + e.getMessage());
+            throw e;
+        }
+    }
+    
+    public void poolAddAccount(String persistanceFactory, String group, String username) {
+        try {
+            if (hasWriteAccess(currentUser())) {
+            	Collection accountMappers = gums().getConfiguration().getAccountMappers().values();
+            	Iterator it = accountMappers.iterator();
+            	boolean found = false;
+            	while (it.hasNext()) {
+            		AccountMapper accountMapper = (AccountMapper)it.next();
+            		if (accountMapper instanceof AccountPoolMapper) {
+            			if (((AccountPoolMapper)accountMapper).getAccountPool().equals(group))
+            			found = true;
+            		}
+            	}
+            	if (!found)
+                    throw new RuntimeException("No pool account mapper with group " + group);
+            	
+                PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceFactory);
+                if (factory == null) {
+                    throw new RuntimeException("PersistenceFactory '" + persistanceFactory + "' does not exist");
+                }
+                AccountPoolMapperDB db = factory.retrieveAccountPoolMapperDB(group);
+                db.addAccount(username);
+                gumsResourceAdminLog.info(logUserAccess() + "Added account to pool: persistence '" + persistanceFactory + "' group '" + group + "' username '" + username + "'");
+                siteLog.info(logUserAccess() + "Added account to pool: persistence '" + persistanceFactory + "' group '" + group + "' username '" + username + "'");
+            } else {
+                throw new AuthorizationDeniedException();
+            }
+        } catch (AuthorizationDeniedException e) {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceFactory + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Unauthorized access to add account to pool: persistence '" + persistanceFactory + "' group '" + group + "' username '" + username + "'");
+            throw e;
+        } catch (RuntimeException e) {
+            gumsResourceAdminLog.error(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceFactory + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceFactory + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
+            throw e;
+        }
+    }
+    
+    ////////////
     
     private GridUser currentUser() {
         if (!isInWeb) return null;

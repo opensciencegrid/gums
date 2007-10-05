@@ -1,8 +1,14 @@
 package gov.bnl.gums.configuration;
 
 import gov.bnl.gums.GUMS;
+import gov.bnl.gums.GridUser;
 import gov.bnl.gums.account.AccountMapper;
+import gov.bnl.gums.account.GroupAccountMapper;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
+import gov.bnl.gums.hostToGroup.CertificateHostToGroupMapping;
+import gov.bnl.gums.hostToGroup.HostToGroupMapping;
+import gov.bnl.gums.persistence.PersistenceFactory;
+import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.UserGroup;
 import gov.bnl.gums.userGroup.VOMSUserGroup;
 import gov.bnl.gums.userGroup.VomsServer;
@@ -135,13 +141,83 @@ public class ConfigurationTransform {
             		}
             	}
             }
+       
+            // Insert GIP probe
+            PersistenceFactory persistenceFactory = configuration.getPersistenceFactory("mysql");
+            if (persistenceFactory==null && configuration.getPersistenceFactories().size()>0)
+            	persistenceFactory = (PersistenceFactory)configuration.getPersistenceFactories().values().iterator().next();
+            if (persistenceFactory != null) {
+            	// Add UserGroup
+            	UserGroup userGroup = configuration.getUserGroup("gums-test");
+            	if (userGroup==null || !(userGroup instanceof ManualUserGroup)) {
+                	int index = 1;
+            		while (configuration.getUserGroup("gums-test"+(index==1?"":Integer.toString(index)))!=null)
+            			index++;
+            		userGroup = new ManualUserGroup(configuration, "gums-test"+(index==1?"":Integer.toString(index)));
+            		userGroup.setDescription("Testing GUMS-status with GIP Probe");
+            		((ManualUserGroup)userGroup).setPersistenceFactory(persistenceFactory.getName());
+            		configuration.addUserGroup(userGroup);
+            	}
+            	
+            	// Add member to usergroup's database
+            	GridUser user = new GridUser();
+        		user.setCertificateDN("/GIP-GUMS-Probe-Identity");
+            	if(((ManualUserGroup)userGroup).getMemberList().indexOf(user)==-1) {
+            		((ManualUserGroup)userGroup).addMember(user);
+            	}
+            	
+            	// Add AccountMapper
+            	AccountMapper accountMapper = configuration.getAccountMapper("gums-test");
+            	if (accountMapper==null || !(accountMapper instanceof GroupAccountMapper) || !((GroupAccountMapper)accountMapper).getAccountName().equals("gums-test")) {
+                	int index = 1;
+            		while (configuration.getAccountMapper("gums-test"+(index==1?"":Integer.toString(index)))!=null)
+            			index++;
+            		accountMapper = new GroupAccountMapper(configuration, "gums-test"+(index==1?"":Integer.toString(index)));
+            		accountMapper.setDescription("Testing GUMS-status with GIP Probe");
+            		((GroupAccountMapper)accountMapper).setAccountName("GumsTestUserMappingSuccessful");
+            		configuration.addAccountMapper(accountMapper);
+            	}
+            	
+            	// Add GroupToAccountMapping
+            	GroupToAccountMapping g2aMapping = configuration.getGroupToAccountMapping("gums-test");
+            	if (g2aMapping==null) {
+                	int index = 1;
+            		while (configuration.getGroupToAccountMapping("gums-test"+(index==1?"":Integer.toString(index)))!=null)
+            			index++;
+            		g2aMapping = new GroupToAccountMapping(configuration, "gums-test"+(index==1?"":Integer.toString(index)));
+            		g2aMapping.setDescription("Testing GUMS-status with GIP Probe");
+            		configuration.addGroupToAccountMapping(g2aMapping);
+            	}
+            	if (g2aMapping.getAccountMappers().indexOf(accountMapper.getName())==-1)
+            		g2aMapping.addAccountMapper(accountMapper.getName());
+            	if (g2aMapping.getUserGroups().indexOf(userGroup.getName())==-1)
+            		g2aMapping.addUserGroup(userGroup.getName());     
+            	
+            	// add HostToGroupMapping
+            	HostToGroupMapping h2gMapping = configuration.getHostToGroupMapping("gums-test");
+            	String domainName = java.net.InetAddress.getLocalHost().getCanonicalHostName();
+            	if (domainName!=null && domainName.indexOf(".")!=-1)
+            		domainName = domainName.substring(domainName.indexOf("."),domainName.length());
+           		domainName = "*/?*" + (domainName!=null?domainName:"localdomain");
+            	if (h2gMapping==null || h2gMapping.getName().indexOf(domainName)==-1) {
+                	int index = 1;
+            		while (configuration.getHostToGroupMapping(domainName+(index==1?"":Integer.toString(index)))!=null)
+            			index++;
+            		h2gMapping = new CertificateHostToGroupMapping(configuration);
+            		h2gMapping.setDescription("Testing GUMS-status with GIP Probe");
+            		((CertificateHostToGroupMapping)h2gMapping).setCn(domainName+(index==1?"":Integer.toString(index)));
+            		configuration.addHostToGroupMapping(h2gMapping);
+            	}
+            	if (h2gMapping.getGroupToAccountMappings().indexOf(g2aMapping.getName())==-1)
+            		h2gMapping.addGroupToAccountMapping(g2aMapping.getName()); 
+            }
             
             return configuration;
 	     } catch (Exception e) {
 	        gumsResourceAdminLog.fatal("Could not convert older version of gums.config: " + e.getMessage());
 	        log.info("Could not convert older version of gums.config", e);
 	        throw new RuntimeException("Could not convert older version of gums.config");	    	 
-	     }  	
+	     } 
 	}
 
 }

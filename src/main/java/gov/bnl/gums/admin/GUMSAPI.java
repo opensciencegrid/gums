@@ -26,7 +26,7 @@ public interface GUMSAPI extends Remote {
      * @param poolAccountMapperName
      * @param range
      */
-    void addAccountRange(String accountPoolMapperName, String range);
+    void addAccountRange2(String accountPoolMapperName, String range);
     
     /**
      * Backup current configuration
@@ -101,7 +101,7 @@ public interface GUMSAPI extends Remote {
      * @param group name of manual user group
      * @param userDN
      */
-    void manualGroupAdd(String userGroupName, String userDN);
+    void manualGroupAdd2(String userGroupName, String userDN);
     
     /**
      * Remove a userDN from a manual user group
@@ -110,7 +110,7 @@ public interface GUMSAPI extends Remote {
      * @param group name of manual user group
      * @param userDN
      */
-    void manualGroupRemove(String manualUserGroupName, String userDN);
+    void manualGroupRemove2(String manualUserGroupName, String userDN);
     
     /**
      * Add a userDN to account mapping
@@ -120,7 +120,7 @@ public interface GUMSAPI extends Remote {
      * @param userDN
      * @param account
      */
-    void manualMappingAdd(String manualAccountMapperName, String userDN, String account);
+    void manualMappingAdd2(String manualAccountMapperName, String userDN, String account);
     
     /**
      * Removes a userDN from an account mapping
@@ -129,7 +129,7 @@ public interface GUMSAPI extends Remote {
      * @param accountMapperName name of manual account mapper
      * @param userDN
      */
-    void manualMappingRemove(String manualAccountMapperName, String userDN);
+    void manualMappingRemove2(String manualAccountMapperName, String userDN);
     
     /**
      * Map an account to a list of grid DNs
@@ -192,4 +192,16 @@ public interface GUMSAPI extends Remote {
      * Get currently logged in user DN
      */
     String getCurrentDn();
+    
+    // Depricated
+    
+    void manualGroupAdd(String persistanceFactory, String group, String userDN);
+    
+    void manualGroupRemove(String persistanceFactory, String group, String userDN);
+    
+    void manualMappingAdd(String persistanceFactory, String group, String userDN, String account);
+    
+    void manualMappingRemove(String persistanceFactory, String group, String userDN);
+    
+    void poolAddAccount(String persistanceFactory, String group, String username);
 }
