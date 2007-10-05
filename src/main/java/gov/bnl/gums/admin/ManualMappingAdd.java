@@ -46,6 +46,6 @@ public class ManualMappingAdd extends RemoteCommand {
         
         String gumsUrl = (cmd.getOptionValue("g", null));
 
-        getGums(gumsUrl).manualMappingAdd(accountMapper, userDN, username);
+        getGums(gumsUrl).manualMappingAdd2(accountMapper, userDN, username);
     }
 }

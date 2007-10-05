@@ -46,7 +46,7 @@ public class PoolAddRange extends RemoteCommand {
         String gumsUrl = (cmd.getOptionValue("g", null));
 
         for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
-        	getGums(gumsUrl).addAccountRange(accountMapper, cmd.getArgs()[nArg]);
+        	getGums(gumsUrl).addAccountRange2(accountMapper, cmd.getArgs()[nArg]);
         }
     }
 }

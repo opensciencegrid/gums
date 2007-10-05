@@ -50,6 +50,18 @@ public class AdminCommandLine extends GUMSCommandLine {
         	"Retrieve GUMS client version.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.MapAccount",
         	"Maps a local account to a grid identity.");
+        
+        // depricated
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.ManualGroup_Add",
+	        "Includes a DN in a group (depricated; required with 1.1 server).");
+	    GUMSCommandLine.addCommand("gov.bnl.gums.admin.ManualGroup_Remove",
+	        "Removes a DN from a group  (depricated; required with 1.1 server).");
+	    GUMSCommandLine.addCommand("gov.bnl.gums.admin.ManualMapping_Add",
+	        "Adds a DN-to-username in a mapping  (depricated; required with 1.1 server).");
+	    GUMSCommandLine.addCommand("gov.bnl.gums.admin.ManualMapping_Remove",
+	        "Removes a DN from a mapping (depricated; required with 1.1 server).");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.Pool_AddRange",
+        	"Adds accounts to an account pool (depricated; required with 1.1 server).");
     }
 
 }

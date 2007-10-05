@@ -45,7 +45,7 @@ public class ManualGroupRemove extends RemoteCommand {
         String gumsUrl = (cmd.getOptionValue("g", null));
         
         for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
-            getGums(gumsUrl).manualGroupRemove(userGroup, cmd.getArgs()[nArg]);
+            getGums(gumsUrl).manualGroupRemove2(userGroup, cmd.getArgs()[nArg]);
         }
     }
 }

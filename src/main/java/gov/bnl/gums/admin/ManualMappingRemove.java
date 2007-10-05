@@ -45,6 +45,6 @@ public class ManualMappingRemove extends RemoteCommand {
         
         String gumsUrl = (cmd.getOptionValue("g", null));
 
-        getGums(gumsUrl).manualMappingRemove(accountMapper, userDN);
+        getGums(gumsUrl).manualMappingRemove2(accountMapper, userDN);
     }
 }
