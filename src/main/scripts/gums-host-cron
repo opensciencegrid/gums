@@ -100,6 +100,11 @@ function usage {
 #    - added backups directory that will maintained a maximum of 10 backups
 # 3. 12/29/06 (John Weigand)
 #    - added execution of configure_gip
+# 4. 10/05/07 (John Hover)
+#    - $PRIMA_CALLOUT_STRING shortened so that it will be caught on both
+#      32-bit and 64-bit systems.
+#
+#
 ###########################################################################
 
 function logit {
@@ -344,7 +349,7 @@ function run_configure_gip {
 #### MAIN ###############################################################
 PGM=$(basename $0)
 PRIMA_CALLOUT=/etc/grid-security/gsi-authz.conf
-PRIMA_CALLOUT_STRING="libprima_authz_module_gcc32dbg"
+PRIMA_CALLOUT_STRING="libprima_authz_module_gcc"
 GUMSDIR=$VDT_LOCATION/gums/scripts
 
 MAPFILE=/etc/grid-security/grid-mapfile
