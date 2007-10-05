@@ -26,7 +26,7 @@
 <% 
 	if ("add".equals(command)) {
 		try {
-			gums.addAccountRange( accountMapper, range ); 
+			gums.addAccountRange2( accountMapper, range ); 
 			out.println("Accounts have been added to the pool.");
 		} catch(Exception e) {
 			out.println("<div class=\"failure\">Error saving pool account range: " + e.getMessage() + "</div>");

@@ -58,7 +58,7 @@ if (request.getParameter("command")==null ||
 	if ("save".equals(request.getParameter("command"))) {
 		ManualUserGroup manualUserGroup = (ManualUserGroup)userGroups.get(request.getParameter("userGroup"));
 		try{
-			gums.manualGroupAdd(manualUserGroup.getName(), request.getParameter("dn"));
+			gums.manualGroupAdd2(manualUserGroup.getName(), request.getParameter("dn"));
 			message = "<div class=\"success\">User has been saved.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error saving user: " + e.getMessage() + "</div>";
@@ -68,7 +68,7 @@ if (request.getParameter("command")==null ||
 	if ("delete".equals(request.getParameter("command"))) {
 		ManualUserGroup manualUserGroup = (ManualUserGroup)userGroups.get(request.getParameter("userGroup"));
 		try{
-			gums.manualGroupRemove(manualUserGroup.getName(), request.getParameter("dn"));
+			gums.manualGroupRemove2(manualUserGroup.getName(), request.getParameter("dn"));
 			message = "<div class=\"success\">User has been deleted.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error deleting user: " + e.getMessage() + "</div>";

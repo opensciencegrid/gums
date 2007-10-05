@@ -59,7 +59,7 @@ if (request.getParameter("command")==null ||
 	if ("save".equals(request.getParameter("command"))) {
 		ManualAccountMapper manualAccountMapper = (ManualAccountMapper)accountMappers.get(request.getParameter("accountMapper"));
 		try{
-			gums.manualMappingAdd(manualAccountMapper.getName(), request.getParameter("dn"), request.getParameter("account"));
+			gums.manualMappingAdd2(manualAccountMapper.getName(), request.getParameter("dn"), request.getParameter("account"));
 			message = "<div class=\"success\">Mapping has been saved.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error saving mapping: " + e.getMessage() + "</div>";
@@ -69,7 +69,7 @@ if (request.getParameter("command")==null ||
 	if ("delete".equals(request.getParameter("command"))) {
 		ManualAccountMapper manualAccountMapper = (ManualAccountMapper)accountMappers.get(request.getParameter("accountMapper"));
 		try{
-			gums.manualMappingRemove(manualAccountMapper.getName(), request.getParameter("dn"));
+			gums.manualMappingRemove2(manualAccountMapper.getName(), request.getParameter("dn"));
 			message = "<div class=\"success\">Mapping has been deleted.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error deleting mapping: " + e.getMessage() + "</div>";
