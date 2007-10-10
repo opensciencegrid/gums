@@ -168,7 +168,7 @@ public class ConfigurationTransform {
             	
             	// Add AccountMapper
             	AccountMapper accountMapper = configuration.getAccountMapper("gums-test");
-            	if (accountMapper==null || !(accountMapper instanceof GroupAccountMapper) || !((GroupAccountMapper)accountMapper).getAccountName().equals("gums-test")) {
+            	if (accountMapper==null || !(accountMapper instanceof GroupAccountMapper) || !((GroupAccountMapper)accountMapper).getAccountName().equals("GumsTestUserMappingSuccessful")) {
                 	int index = 1;
             		while (configuration.getAccountMapper("gums-test"+(index==1?"":Integer.toString(index)))!=null)
             			index++;
