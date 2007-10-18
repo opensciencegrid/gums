@@ -194,18 +194,15 @@ public class ConfigurationTransform {
             		g2aMapping.addUserGroup(userGroup.getName());     
             	
             	// add HostToGroupMapping
-            	HostToGroupMapping h2gMapping = configuration.getHostToGroupMapping("gums-test");
             	String domainName = java.net.InetAddress.getLocalHost().getCanonicalHostName();
             	if (domainName!=null && domainName.indexOf(".")!=-1)
             		domainName = domainName.substring(domainName.indexOf("."),domainName.length());
-           		domainName = "*/?*" + (domainName!=null?domainName:"localdomain");
+           		domainName = "*/?*" + (domainName!=null?domainName:".localdomain");
+            	HostToGroupMapping h2gMapping = configuration.getHostToGroupMapping(domainName);
             	if (h2gMapping==null || h2gMapping.getName().indexOf(domainName)==-1) {
-                	int index = 1;
-            		while (configuration.getHostToGroupMapping(domainName+(index==1?"":Integer.toString(index)))!=null)
-            			index++;
             		h2gMapping = new CertificateHostToGroupMapping(configuration);
             		h2gMapping.setDescription("Testing GUMS-status with GIP Probe");
-            		((CertificateHostToGroupMapping)h2gMapping).setCn(domainName+(index==1?"":Integer.toString(index)));
+            		((CertificateHostToGroupMapping)h2gMapping).setCn(domainName);
             		configuration.addHostToGroupMapping(h2gMapping);
             	}
             	if (h2gMapping.getGroupToAccountMappings().indexOf(g2aMapping.getName())==-1)
