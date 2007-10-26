@@ -4,7 +4,7 @@
 	<groupId>gums</groupId>
 	<artifactId>gums-core</artifactId>
 	<name>gums-core</name>
-	<version>1.2.9</version>
+	<version>1.2.10</version>
 	<description>GUMS Core provides the core functionality used by other GUMS components</description>
 
   	<repositories>
@@ -117,6 +117,27 @@
 	-->
 	
 	<profiles>
+		<profile>
+			<id>no-test</id>
+			<build>
+				<plugins>
+				    <plugin>
+				        <groupId>org.apache.maven.plugins</groupId>
+				        <artifactId>maven-surefire-plugin</artifactId>
+				        <configuration>
+				            <excludes>
+					            <exclude>**/*</exclude>
+				            </excludes>
+				        </configuration>
+				        <executions>
+				            <execution>
+				              <phase>test</phase>
+				            </execution>
+			            </executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>	
 		<profile>
 			<id>standard-test</id>
 			<activation>
@@ -267,9 +288,9 @@
            <version>unknown</version>
         </dependency>
         <dependency>
-            <groupId>gums</groupId>
+            <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
-            <version>unknown</version>
+            <version>1.8</version>
         </dependency>
         <dependency>
             <groupId>gums</groupId>

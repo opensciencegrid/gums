@@ -53,10 +53,10 @@ public class ManualUserGroup extends UserGroup {
     }
     
     public UserGroup clone(Configuration configuration) {
-    	ManualUserGroup userGroup = new ManualUserGroup(configuration, getName());
-    	userGroup.setDescription(getDescription());
-    	userGroup.setAccess(getAccess());
-    	userGroup.setPersistenceFactory(persistenceFactory);
+    	ManualUserGroup userGroup = new ManualUserGroup(configuration, new String(getName()));
+    	userGroup.setDescription(new String(getDescription()));
+    	userGroup.setAccess(new String(getAccess()));
+    	userGroup.setPersistenceFactory(new String(persistenceFactory));
     	return userGroup;
     }
     

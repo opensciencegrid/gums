@@ -75,7 +75,7 @@ public abstract class PersistenceFactory {
 	 */
 	public abstract PersistenceFactory clone(Configuration configuration);
 
-    /**
+	/**
      * Getter for property configuration.
      * 
      * @return Value of property configuration.

@@ -32,7 +32,7 @@
 					hibernate.connection.autoReconnect='true'
 					hibernate.c3p0.min_size='3'
 					hibernate.c3p0.max_size='20'
-					hibernate.c3p0.timeout='180'/>
+					hibernate.c3p0.timeout='180'
 		        />
 		      </xsl:if>
   		      <xsl:if test="@className = 'gov.bnl.gums.LDAPPersistenceFactory'">

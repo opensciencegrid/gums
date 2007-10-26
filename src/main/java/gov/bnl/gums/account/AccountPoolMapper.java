@@ -50,10 +50,10 @@ public class AccountPoolMapper extends AccountMapper {
     }
     
     public AccountMapper clone(Configuration configuration) {
-    	AccountPoolMapper accountMapper = new AccountPoolMapper(configuration, getName());
-    	accountMapper.setDescription(getDescription());
-    	accountMapper.setAccountPool(accountPool);
-    	accountMapper.setPersistenceFactory(persistenceFactory);
+    	AccountPoolMapper accountMapper = new AccountPoolMapper(configuration, new String(getName()));
+    	accountMapper.setDescription(new String(getDescription()));
+    	accountMapper.setAccountPool(new String(accountPool));
+    	accountMapper.setPersistenceFactory(new String(persistenceFactory));
     	return accountMapper;
     }
     

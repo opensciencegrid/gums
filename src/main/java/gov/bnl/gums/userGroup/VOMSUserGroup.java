@@ -76,14 +76,14 @@ public class VOMSUserGroup extends UserGroup {
 	}
     
     public UserGroup clone(Configuration configuration) {
-    	VOMSUserGroup userGroup = new VOMSUserGroup(configuration, getName());
-    	userGroup.setDescription(getDescription());
-    	userGroup.setAccess(getAccess());
-    	userGroup.setVomsServer(getVomsServer());
-    	userGroup.setRole(getRole());
-    	userGroup.setVoGroup(getVoGroup());
-    	userGroup.setMatchFQAN(getMatchFQAN());
-    	userGroup.setRemainderUrl(getRemainderUrl());
+    	VOMSUserGroup userGroup = new VOMSUserGroup(configuration, new String(getName()));
+    	userGroup.setDescription(new String(getDescription()));
+    	userGroup.setAccess(new String(getAccess()));
+    	userGroup.setVomsServer(new String(getVomsServer()));
+    	userGroup.setRole(new String(getRole()));
+    	userGroup.setVoGroup(new String(getVoGroup()));
+    	userGroup.setMatchFQAN(new String(getMatchFQAN()));
+    	userGroup.setRemainderUrl(new String(getRemainderUrl()));
     	userGroup.setAcceptProxyWithoutFQAN(acceptProxyWithoutFQAN);
     	return userGroup;
     }

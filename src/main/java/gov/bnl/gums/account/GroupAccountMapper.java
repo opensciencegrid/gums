@@ -40,9 +40,9 @@ public class GroupAccountMapper extends AccountMapper {
     }
 
     public AccountMapper clone(Configuration configuration) {
-    	GroupAccountMapper accountMapper = new GroupAccountMapper(configuration, getName());
-    	accountMapper.setDescription(getDescription());
-    	accountMapper.setAccountName(accountName);
+    	GroupAccountMapper accountMapper = new GroupAccountMapper(configuration, new String(getName()));
+    	accountMapper.setDescription(new String(getDescription()));
+    	accountMapper.setAccountName(new String(accountName));
     	return accountMapper;
     }
 	

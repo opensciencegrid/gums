@@ -84,16 +84,16 @@ public class GroupToAccountMapping {
 	 * @return
 	 */
     public GroupToAccountMapping clone(Configuration configuration) {
-    	GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping(configuration, name);
-    	groupToAccountMapping.setDescription(getDescription());
-    	groupToAccountMapping.setAccountingVoSubgroup(accountingVoSubgroup);
-    	groupToAccountMapping.setAccountingVo(accountingVo);
+    	GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping(configuration, new String(name));
+    	groupToAccountMapping.setDescription(new String(getDescription()));
+    	groupToAccountMapping.setAccountingVoSubgroup(new String(accountingVoSubgroup));
+    	groupToAccountMapping.setAccountingVo(new String(accountingVo));
     	Iterator it = getUserGroups().iterator();
     	while (it.hasNext())
-    		groupToAccountMapping.addUserGroup( (String)it.next() );
+    		groupToAccountMapping.addUserGroup( new String((String)it.next()) );
     	it = getAccountMappers().iterator();
     	while (it.hasNext())
-    		groupToAccountMapping.addAccountMapper( (String)it.next() );
+    		groupToAccountMapping.addAccountMapper( new String((String)it.next()) );
     	return groupToAccountMapping;
     }
     

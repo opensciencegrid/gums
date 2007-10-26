@@ -52,11 +52,11 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     }
     
     public AccountMapper clone(Configuration configuration) {
-    	GecosNisAccountMapper accountMapper = new GecosNisAccountMapper(configuration, getName());
-    	accountMapper.setDescription(getDescription());
-    	accountMapper.setJndiNisUrl(jndiNisUrl);
-    	accountMapper.setGecosField(gecosField);
-    	accountMapper.setAccountField(accountField);
+    	GecosNisAccountMapper accountMapper = new GecosNisAccountMapper(configuration, new String(getName()));
+    	accountMapper.setDescription(new String(getDescription()));
+    	accountMapper.setJndiNisUrl(new String(jndiNisUrl));
+    	accountMapper.setGecosField(new String(gecosField));
+    	accountMapper.setAccountField(new String(accountField));
     	return accountMapper;
     }
     

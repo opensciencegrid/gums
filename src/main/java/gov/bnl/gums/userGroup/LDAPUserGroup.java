@@ -76,13 +76,13 @@ public class LDAPUserGroup extends UserGroup {
 	}
     
 	public UserGroup clone(Configuration configuration) {
-    	LDAPUserGroup userGroup = new LDAPUserGroup(configuration, getName());
-    	userGroup.setDescription(getDescription());
-    	userGroup.setPersistenceFactory(persistenceFactory);
-    	userGroup.setAccess(getAccess());
-    	userGroup.setQuery(getQuery());
-    	userGroup.setServer(getServer());
-    	userGroup.setCertDNField(certDNField);
+    	LDAPUserGroup userGroup = new LDAPUserGroup(configuration, new String(getName()));
+    	userGroup.setDescription(new String(getDescription()));
+    	userGroup.setPersistenceFactory(new String(persistenceFactory));
+    	userGroup.setAccess(new String(getAccess()));
+    	userGroup.setQuery(new String(getQuery()));
+    	userGroup.setServer(new String(getServer()));
+    	userGroup.setCertDNField(new String(certDNField));
     	return userGroup;
     }
     

@@ -55,14 +55,14 @@ public class VomsServer {
 	 
 	
 	public VomsServer clone(Configuration configuration) {
-    	VomsServer vomsServer = new VomsServer(configuration, name);
-    	vomsServer.setDescription(getDescription());
-    	vomsServer.setBaseUrl(baseUrl);
-    	vomsServer.setSslKey(sslKey);
-    	vomsServer.setSslCertfile(sslCertfile);
-    	vomsServer.setSslKeyPasswd(sslKeyPasswd);
-    	vomsServer.setSslCAFiles(sslCAFiles);
-    	vomsServer.setPersistenceFactory(persistenceFactory);
+    	VomsServer vomsServer = new VomsServer(configuration, new String(name));
+    	vomsServer.setDescription(new String(getDescription()));
+    	vomsServer.setBaseUrl(new String(baseUrl));
+    	vomsServer.setSslKey(new String(sslKey));
+    	vomsServer.setSslCertfile(new String(sslCertfile));
+    	vomsServer.setSslKeyPasswd(new String(sslKeyPasswd));
+    	vomsServer.setSslCAFiles(new String(sslCAFiles));
+    	vomsServer.setPersistenceFactory(new String(persistenceFactory));
     	return vomsServer;
     }
 

@@ -14,13 +14,13 @@
 										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="hibernate.connection.driver_class" type="xs:string"/>
 										<xs:attribute name="hibernate.dialect" type="xs:string"/>
-										<xs:attribute name="hibernate.connection.url" type="xs:string"/>
-										<xs:attribute name="hibernate.connection.username" type="xs:string"/>
-										<xs:attribute name="hibernate.connection.password" type="xs:string"/>
 										<xs:attribute name="hibernate.connection.autoReconnect" type="xs:boolean"/>
 										<xs:attribute name="hibernate.c3p0.min_size" type="xs:short"/>
 										<xs:attribute name="hibernate.c3p0.max_size" type="xs:short"/>
 										<xs:attribute name="hibernate.c3p0.timeout" type="xs:int"/>
+										<xs:attribute name="hibernate.connection.url" type="xs:string"/>
+										<xs:attribute name="hibernate.connection.username" type="xs:string"/>
+										<xs:attribute name="hibernate.connection.password" type="xs:string"/>
 									</xs:complexType>
 								</xs:element>	
 								<xs:element name="ldapPersistenceFactory">
@@ -48,13 +48,13 @@
 										<xs:attribute name="memberAccountField" type="xs:string"/>
 										<xs:attribute name="mysql.hibernate.connection.driver_class" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.dialect" type="xs:string" use="required"/>
-										<xs:attribute name="mysql.hibernate.connection.url" type="xs:string" use="required"/>
-										<xs:attribute name="mysql.hibernate.connection.username" type="xs:string" use="required"/>
-										<xs:attribute name="mysql.hibernate.connection.password" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.connection.autoReconnect" type="xs:boolean" use="required"/>
 										<xs:attribute name="mysql.hibernate.c3p0.min_size" type="xs:short" use="required"/>
 										<xs:attribute name="mysql.hibernate.c3p0.max_size" type="xs:short" use="required"/>
 										<xs:attribute name="mysql.hibernate.c3p0.timeout" type="xs:int" use="required"/>
+										<xs:attribute name="mysql.hibernate.connection.url" type="xs:string" use="required"/>
+										<xs:attribute name="mysql.hibernate.connection.username" type="xs:string" use="required"/>
+										<xs:attribute name="mysql.hibernate.connection.password" type="xs:string" use="required"/>
 										<xs:attribute name="ldap.java.naming.provider.url" type="xs:string" use="required"/>
 										<xs:attribute name="ldap.java.naming.factory.initial" type="xs:string" use="required"/>
 										<xs:attribute name="ldap.java.naming.security.authentication" type="xs:string" use="required"/>

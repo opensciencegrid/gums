@@ -196,13 +196,13 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     }
 
     public PersistenceFactory clone(Configuration configuration) {
-    	LDAPPersistenceFactory persistenceFactory = new LDAPPersistenceFactory(configuration, getName());
-    	persistenceFactory.setDescription(getDescription());
+    	LDAPPersistenceFactory persistenceFactory = new LDAPPersistenceFactory(configuration, new String(getName()));
+    	persistenceFactory.setDescription(new String(getDescription()));
 //    	persistenceFactory.setCaCertFile(getCaCertFile());
 //   	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
-    	persistenceFactory.setAccountField(getAccountField());
-    	persistenceFactory.setGroupIdField(getGroupIdField());
-    	persistenceFactory.setMemberAccountField(getMemberAccountField());
+    	persistenceFactory.setAccountField(new String(getAccountField()));
+    	persistenceFactory.setGroupIdField(new String(getGroupIdField()));
+    	persistenceFactory.setMemberAccountField(new String(getMemberAccountField()));
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
     	return persistenceFactory;

@@ -64,7 +64,7 @@ public class ConfigurationTransform {
         	Digester digester = ConfigurationToolkit.retrieveDigester();
         	Configuration configuration = new Configuration();
             digester.push(configuration);
-            digester.parse(configFileTemp);
+            digester.parse("file://"+configFileTemp);
             
             new File(configFileTemp).delete();
             

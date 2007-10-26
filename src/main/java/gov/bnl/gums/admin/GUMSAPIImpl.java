@@ -207,7 +207,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	        log.trace("Loading GUMS version from pom file '" + pomFile + "'");
 	    	Version versionCls = null;
 	        try {
-	        	versionCls = (Version)digester.parse(pomFile);
+	        	versionCls = (Version)digester.parse("file://"+pomFile);
 			} catch (Exception e) {
 				gumsResourceAdminLog.error("Cannot get version from "+pomFile);
 				log.error("Cannot get version from "+pomFile, e);

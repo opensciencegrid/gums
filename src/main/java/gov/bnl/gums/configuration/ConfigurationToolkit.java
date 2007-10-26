@@ -229,7 +229,7 @@ class ConfigurationToolkit {
         digester.addObjectCreate("gums", Version.class);
         digester.addSetProperties("gums");
         log.trace("Loading the version from configuration file '" + filename + "'");
-        digester.parse(filename);
+        digester.parse("file://"+filename);
         String version = ((Version)digester.getRoot()).getVersion();
         log.trace("Loaded gums.config is version " + version );
         if (version == null)
@@ -376,7 +376,7 @@ class ConfigurationToolkit {
     	Configuration configuration = new Configuration();
         digester.push(configuration);
         log.trace("Loading the configuration from file '" + configPath + "' using schema '" + schemaPath);
-        digester.parse(configPath);
+        digester.parse("file://"+configPath);
         return configuration;
     }
     

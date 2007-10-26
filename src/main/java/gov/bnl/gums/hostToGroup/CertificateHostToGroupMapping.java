@@ -44,15 +44,15 @@ public class CertificateHostToGroupMapping extends HostToGroupMapping {
 
     public HostToGroupMapping clone(Configuration configuration) {
     	CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping(configuration);
-    	hostToGroupMapping.setDescription(getDescription());
+    	hostToGroupMapping.setDescription(new String(getDescription()));
     	if (getDn()!=null)
-    		hostToGroupMapping.setDn(getDn());
+    		hostToGroupMapping.setDn(new String(getDn()));
     	if (getCn()!=null)
-    		hostToGroupMapping.setCn(getCn());
+    		hostToGroupMapping.setCn(new String(getCn()));
     	Iterator it = getGroupToAccountMappings().iterator();
     	while (it.hasNext()) {
     		String groupToAccountMapping = (String)it.next();
-    		hostToGroupMapping.addGroupToAccountMapping(groupToAccountMapping);
+    		hostToGroupMapping.addGroupToAccountMapping(new String(groupToAccountMapping));
     	}
     	return hostToGroupMapping;
     }

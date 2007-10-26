@@ -40,8 +40,8 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 	}
 	
 	private Log log = LogFactory.getLog(HibernatePersistenceFactory.class);
-    private SessionFactory sessions;
-
+    public SessionFactory sessions;
+    
 	/**
      * Create a new hibernate persistence factory.  This empty constructor is needed by the XML Digester.
 	 */
@@ -71,10 +71,19 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     }
     
     public PersistenceFactory clone(Configuration configuration) {
-    	HibernatePersistenceFactory persistenceFactory = new HibernatePersistenceFactory(configuration, getName());
-    	persistenceFactory.setDescription(getDescription());
+    	HibernatePersistenceFactory persistenceFactory = new HibernatePersistenceFactory(configuration, new String(getName()));
+    	persistenceFactory.setDescription(new String(getDescription()));
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	return persistenceFactory;
+    }
+    
+    public void finalize() {
+    	try {
+    		if (sessions!=null)
+    			sessions.close();
+		} catch (HibernateException e) {
+			log.error("Couldn't close hibernate sessions: " + e.getMessage());
+		}
     }
     
     public String getType() {
@@ -133,9 +142,9 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     private SessionFactory buildSessionFactory() {
         try {
             log.trace("Creating Hibernate Session Factory with the following properties: " + getProperties());
-            net.sf.hibernate.cfg.Configuration cfg = new net.sf.hibernate.cfg.Configuration()
             // Properties for the hibernate session are taken from the properties specified either in the
             // gums.config file, or set programmatically to the class (when unit testing)
+            net.sf.hibernate.cfg.Configuration cfg = new net.sf.hibernate.cfg.Configuration()
                 .setProperties(getProperties())
                 .addClass(gov.bnl.gums.db.HibernateMapping.class)
                 .addClass(gov.bnl.gums.db.HibernateUser.class);

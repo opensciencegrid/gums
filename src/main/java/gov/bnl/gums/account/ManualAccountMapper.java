@@ -40,9 +40,9 @@ public class ManualAccountMapper extends AccountMapper {
     }
     
     public AccountMapper clone(Configuration configuration) {
-    	ManualAccountMapper accountMapper = new ManualAccountMapper(configuration, getName());
-    	accountMapper.setDescription(getDescription());
-    	accountMapper.setPersistenceFactory(persistenceFactory);
+    	ManualAccountMapper accountMapper = new ManualAccountMapper(configuration, new String(getName()));
+    	accountMapper.setDescription(new String(getDescription()));
+    	accountMapper.setPersistenceFactory(new String(persistenceFactory));
     	return accountMapper;
     }
     

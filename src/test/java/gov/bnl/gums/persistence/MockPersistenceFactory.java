@@ -24,6 +24,8 @@ public class MockPersistenceFactory extends PersistenceFactory {
         return new MockManualAccountMapperDB();
     }
     
+    public void closeSessions(){}
+    
     public ManualUserGroupDB retrieveManualUserGroupDB(String name) {
         return new MockManualUserGroupDB();
     }

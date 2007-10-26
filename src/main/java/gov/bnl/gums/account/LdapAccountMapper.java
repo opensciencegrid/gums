@@ -55,11 +55,11 @@ public class LdapAccountMapper extends AccountMapper {
     }
     
     public AccountMapper clone(Configuration configuration) {
-    	LdapAccountMapper accountMapper = new LdapAccountMapper(configuration, getName());
-    	accountMapper.setDescription(getDescription());
-    	accountMapper.setJndiLdapUrl(jndiLdapUrl);
-    	accountMapper.setDnField(dnField);
-    	accountMapper.setAccountField(accountField);
+    	LdapAccountMapper accountMapper = new LdapAccountMapper(configuration, new String(getName()));
+    	accountMapper.setDescription(new String(getDescription()));
+    	accountMapper.setJndiLdapUrl(new String(jndiLdapUrl));
+    	accountMapper.setDnField(new String(dnField));
+    	accountMapper.setAccountField(new String(accountField));
     	return accountMapper;
     }
     

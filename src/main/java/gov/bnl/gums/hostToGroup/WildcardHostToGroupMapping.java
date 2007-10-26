@@ -58,13 +58,13 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
     }
     
     public HostToGroupMapping clone(Configuration configuration) {
-    	WildcardHostToGroupMapping hostToGroupMapping = new WildcardHostToGroupMapping(configuration, getName());
-    	hostToGroupMapping.setDescription(getDescription());
-    	hostToGroupMapping.setWildcard(getWildcard());
+    	WildcardHostToGroupMapping hostToGroupMapping = new WildcardHostToGroupMapping(configuration, new String(getName()));
+    	hostToGroupMapping.setDescription(new String(getDescription()));
+    	hostToGroupMapping.setWildcard(new String(getWildcard()));
     	Iterator it = getGroupToAccountMappings().iterator();
     	while (it.hasNext()) {
     		String groupToAccountMapping = (String)it.next();
-    		hostToGroupMapping.addGroupToAccountMapping(groupToAccountMapping);
+    		hostToGroupMapping.addGroupToAccountMapping(new String(groupToAccountMapping));
     	}
     	return hostToGroupMapping;
     }

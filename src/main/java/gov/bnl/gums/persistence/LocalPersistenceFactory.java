@@ -156,13 +156,13 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     }
  
     public PersistenceFactory clone(Configuration configuration) {
-    	LocalPersistenceFactory persistenceFactory = new LocalPersistenceFactory(configuration, getName());
-    	persistenceFactory.setDescription(getDescription());
+    	LocalPersistenceFactory persistenceFactory = new LocalPersistenceFactory(configuration, new String(getName()));
+    	persistenceFactory.setDescription(new String(getDescription()));
 //   	persistenceFactory.setCaCertFile(getCaCertFile());
 //    	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
-    	persistenceFactory.setGroupIdField(getGroupIdField());
-    	persistenceFactory.setAccountField(getAccountField());
-    	persistenceFactory.setMemberAccountField(getMemberAccountField());
+    	persistenceFactory.setGroupIdField(new String(getGroupIdField()));
+    	persistenceFactory.setAccountField(new String(getAccountField()));
+    	persistenceFactory.setMemberAccountField(new String(getMemberAccountField()));
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
     	return persistenceFactory;
