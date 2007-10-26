@@ -50,7 +50,7 @@ public class ClientVersion extends RemoteCommand {
         digester.addCallMethod("project/version","setVersion",0);
     	Version versionCls = null;
         try {
-        	versionCls = (Version)digester.parse(pomFile.toString());
+        	versionCls = (Version)digester.parse("file://"+pomFile.toString());
 		} catch (Exception e) {
 			System.out.println("Cannot get version from "+pomFile);
 		}

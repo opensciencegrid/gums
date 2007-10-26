@@ -4,7 +4,7 @@
 	<groupId>gums</groupId>
 	<artifactId>gums-client</artifactId>
 	<name>gums-client</name>
-	<version>1.2.8</version>
+	<version>1.2.10</version>
 	<description>GUMS Client provides the administrative command line tools to administer GUMS.
     It allows querying and changing the state of the GUMS server.</description>
   
