@@ -25,7 +25,7 @@
 			name='cern'
 			description=''
 			persistenceFactory='mysql'
-			baseUrl='https://lcg-voms.cern.ch:8443/voms'
+			baseUrl='https://voms.cern.ch:8443/voms'
 			sslKey='/etc/grid-security/http/httpkey.pem'
 			sslCertfile='/etc/grid-security/http/httpcert.pem'
 			sslKeyPasswd=''

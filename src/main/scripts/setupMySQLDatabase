@@ -34,8 +34,11 @@ fi
 cd $ScriptPath
 
 usage() {
-	echo "Creates the database for GUMS on localhost"
-	echo "Usage: $0 --user <mysql user for GUMS> "
+	echo "Creates the database for GUMS on localhost and creates configuration "
+	echo "with the appropriate database and host information. "
+	echo "Usage: $0 --template <name of template file (gums.config.template default)> [optional] "
+	echo "          --nocreateconfig [Create configuration configured for database] "
+	echo "          --user <mysql user for GUMS> "
 	echo "          --password  <GUMS mysql password>"
 	echo "          --host <GUMS server host>"
 	echo "          --socket <MySQL socket> [optional]"
@@ -43,11 +46,11 @@ usage() {
 	echo "          --help [Print this message]"
 	echo
 	echo "Examples:"
-	echo "  $0 --user gums --host gums.mysite.com:49151 --password secret"
+	echo "  $0 --user gums --host gums.mysite.com:49151 --password secret --template gums.config.osg_template"
 	echo
-	echo "This will make mysql authenticate as root with a password (-p), "
-	echo "create a <gums> user with password <secret> authorized to "
-	echo "connect from <gums.mysite.com>."
+	echo "This will make mysql authenticate as root with a password (-p), create "
+	echo "a <gums> user with password <secret> authorized to connect "
+	echo "from <gums.mysite.com>."
 	exit -1;
 }
 
@@ -56,10 +59,12 @@ usage() {
 # Setup global variables
 #
 #-------------------------------------------
+TEMPLATE="gums.config.template"
 USER=""
 SERVER=""
 PASSWORD=""
 PROMPT=1
+CREATECONFIG=1
 SOCKET=""
 SHOW_USAGE=0
 MYSQLPARAM=""
@@ -73,6 +78,8 @@ while [ $# -gt 0 ]
 do
   case "$1" in 
 	  --noprompt) PROMPT=0;;
+	  --nocreateconfig) CREATECONFIG=0;;
+	  --template) TEMPLATE="$2"; shift;;
 	  --user)     USER="$2";     shift;;
       --password) PASSWORD="$2"; shift;;
       --host)     SERVER="$2";   shift;;
@@ -87,19 +94,19 @@ done
 
 if [ -z "$USER" ] 
 then
-	echo "Missing parameter: You must specify the GUMS user with --user"
+	echo "Missing parameter: You must specify the mysql user with --user"
 	SHOW_USAGE=1
 fi
 
 if [ -z "$PASSWORD" ] 
 then
-	echo "Missing parameter: You must specify the GUMS password with --password"
+	echo "Missing parameter: You must specify the mysql password with --password"
 	SHOW_USAGE=1
 fi
 
 if [ -z "$SERVER" ] 
 then
-	echo "Missing parameter: You must specify the GUMS host with --host"
+	echo "Missing parameter: You must specify the mysql server host with --host"
 	SHOW_USAGE=1
 fi
 
@@ -174,26 +181,7 @@ cat ../sql/setupDatabase.mysql       \
 # Create the gums.config
 #
 #-------------------------------------------
-echo Preparing gums.config from template
-if [ -e ../config/gums.config ]
+if [ "$CREATECONFIG" -eq 1 ]
 then
-	if [ "$PROMPT" -eq 1 ]
-	then
-		echo "WARNING: gums.config already present. Would you like to overwrite it? "
-		echo "(Enter 'yes' to overwrite)"
-		read response
-		if [ "$response" != "yes" ]
-		then
-			exit -1
-		fi
-	fi
-fi
-
-DOMAINNAME=`echo "$SERVER" | awk 'BEGIN{FS=":"}{print $1}' | awk 'BEGIN{FS="."}{for(i=2;i<=NF;i++) printf(i<NF?"%s.":"%s\n",$i)}'`
-
-cat ../gums.config.template \
-  | /bin/sed -e s/@USER@/$USER/g                    \
-             -e s/@SERVER@/$SERVER/g                \
-             -e s/@PASSWORD@/$PASSWORD/g            \
-             -e s/@DOMAINNAME@/$DOMAINNAME/g        \
-  > ../config/gums.config
+	./createConfig --user $USER --host $SERVER --password $PASSWORD --template $TEMPLATE
+fi	  
