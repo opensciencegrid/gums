@@ -23,7 +23,7 @@ Manage Manual Users
 [username@gums /]# ./gums-service
 usage: gums command [command-options]
 Commands:
-  generateGrid3UserVoMap - Generate grid3-user-vo-map.txt for a given service/host.
+  generateOsgUserVoMap - Generate OSG-user-VO-map.txt for a given service/host.
   generateGridMapfile - Generate grid-mapfile for a given service/host.
   generateVoGridMapfile - Generate a VO grid-mapfile for a given service/host.
   manualGroupAdd - Includes a DN in a group.

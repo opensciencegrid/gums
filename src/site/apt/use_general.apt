@@ -23,7 +23,7 @@ three sections on the left:
  There are five GUMS client tools:
  
 	* <<gums-host>> - makes core GUMS calls: mapUser, generateGridMapfile, generateVoGridMapfile, 
-		generateGrid3UserVoMap, and version.  This command uses the host certificate/key 
+		generateOsgUserVoMap, and version.  This command uses the host certificate/key 
 		(e.g. /etc/grid-security/host*.pem).
 		
 	* <<gums>> - makes core GUMS calls plus administrative commands.  This command uses a user proxy (e.g.
@@ -31,7 +31,7 @@ three sections on the left:
 		
 	* <<gums-service>> - just like "gums" but uses the host certificate/key (e.g. /etc/grid-security/host*.pem).
 	
-	* <<gums-host-cron>> - runs as a root cron process that calls "gums-host" to periodically create a gridMapfile and a grid3UserVoMap.
+	* <<gums-host-cron>> - runs as a root cron process that calls "gums-host" to periodically create a grid-mapfile and an OSG-user-VO-map.
 	
 	* <<gums-nagios>> - used by {{{http://www.nagios.org/}Nagios}} to determine if GUMS is up or down.  For each DN/account pair in the 
 	gums-nagios.conf file, mapUser is called for the DN and the result compared to the account.

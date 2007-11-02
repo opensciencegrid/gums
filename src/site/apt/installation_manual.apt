@@ -117,13 +117,13 @@ MYSQLPARAM="-p"
 ..
 +----------------------------------------------+
 
- You must also add yourself to the admins user group in the MySQL database using the addMySqlAdmin script as:
+ You must also add yourself to the admins user group in the MySQL database using the gums-add-mysql-admin script as:
 
 +----------------------------------------------+
-[root@gums scripts]# ./addMySqlAdmin
+[root@gums scripts]# ./gums-add-mysql-admin
 Adds an admin in the GUMS database on localhost
-Usage: ./addMySqlAdmin [mysql|ldap] [DN for administrator]
-[root@gums scripts]# ./addMySqlAdmin mysql "/DC=org/DC=doegrids/OU=People/CN=Your Self 83753"
+Usage: ./gums-add-mysql-admin [mysql|ldap] [DN for administrator]
+[root@gums scripts]# ./gums-add-mysql-admin mysql "/DC=org/DC=doegrids/OU=People/CN=Your Self 83753"
 +----------------------------------------------+	 
 
  All additional users may be added through the web interface or client tools.

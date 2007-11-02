@@ -324,8 +324,8 @@ comprises the string: /<VO>/<group>/Role=<role>.
 	
  As you can see, there is a lot of flexibility for matching and user retrieval. 
  
-** Grid3-User-VO-Map
+** OSG-User-VO-Map
 
- If you need to generate a grid3-user-vo-map, which is used for VO accounting purposes, you should create a "group to account mapping"
-for each VO you want to show up in this file and fill in the VO name in the 'Accounting VO' field.
+ If you need to generate an OSG-user-VO-map, which is used for VO accounting purposes, you should create a 'group to account mapping'
+for each VO you want to show up in this file and fill in the the 'Accounting VO' and 'Accounting VO Subgroup' fields.
 
