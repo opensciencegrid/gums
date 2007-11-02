@@ -1,5 +1,5 @@
 /*
- * GUMS2MapUser.java
+ * GenerateGridMapfile.java
  *
  * Created on June 9, 2004, 1:44 PM
  */
@@ -27,7 +27,7 @@ public class GenerateGridMapfile extends GenerateMap {
         String map = null;
         map = getGums(gumsUrl).generateGridMapfile(hostname);
         if (map == null) {
-            System.err.println("Could not create grid map file.");
+            System.err.println("Could not create grid-mapfile.");
    			System.out.print("The GUMS server configuration may not be correct.  ");
    			System.out.print("Please contact your administrator, or if you are the administrator, make sure you have the following elements in your gums.config (which can be easily configured from the web interface):\n");
    			System.out.print("\t1) A hostToGroupMapping element which matches the requesting host name: "+hostname+"\n");

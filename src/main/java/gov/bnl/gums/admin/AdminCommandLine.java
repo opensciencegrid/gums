@@ -18,8 +18,8 @@ public class AdminCommandLine extends GUMSCommandLine {
     private static Log log = LogFactory.getLog(AdminCommandLine.class);
 
     static {
-        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateGrid3UserVoMap",
-            "Generate grid3-user-vo-map.txt for a given service/host.");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateOsgUserVoMap",
+            "Generate OSG-user-VO-map for a given service/host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateGridMapfile",
             "Generate grid-mapfile for a given service/host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateVoGridMapfile",
@@ -62,6 +62,8 @@ public class AdminCommandLine extends GUMSCommandLine {
 	        "Removes a DN from a mapping (depricated; required with 1.1 server).");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.Pool_AddRange",
         	"Adds accounts to an account pool (depricated; required with 1.1 server).");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateGrid3UserVoMap",
+        	"Generate Grid3-user-VO-map for a given service/host (depricated; required with 1.1 server).");
     }
 
 }

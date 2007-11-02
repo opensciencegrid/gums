@@ -1,5 +1,5 @@
 /*
- * GUMS2MapUser.java
+ * GenerateGrid3UserVoMap.java
  *
  * Created on June 9, 2004, 1:44 PM
  */
@@ -18,16 +18,16 @@ public class GenerateGrid3UserVoMap extends GenerateMap {
      */
     public GenerateGrid3UserVoMap() {
         syntax = "[-g GUMSURL] [-f FILENAME] [SERVICEDN]";
-        description = "Generates the grid3-user-vo-map.txt for a service/host. " +
-            "When using ./bin/gums, SERVICEDN must be specified. " +
-            "When using ./bin/gums-host, SERVICEDN defaults to the host certificate DN.";
+        description = "Generates the Grid3-user-VO-map for a service/host.";
+//            "When using ./bin/gums, SERVICEDN must be specified. " +
+//            "When using ./bin/gums-host, SERVICEDN defaults to the host certificate DN.";
     }
 
     protected String generateMap(String hostname, String gumsUrl) throws Exception {
         String map = null;
         map = getGums(gumsUrl).generateGrid3UserVoMap(hostname);
         if (map == null) {
-            System.err.println("Could not create grid3 user VO map.");
+            System.err.println("Could not create Grid3-user-VO-map.");
    			System.out.print("The GUMS server configuration may not be correct.  ");
    			System.out.print("Please contact your administrator, or if you are the administrator, make sure you have the following elements in your gums.config (which can be easily configured from the web interface):\n");
    			System.out.print("\t1) A hostToGroupMapping element which matches the requesting host name: "+hostname+"\n");

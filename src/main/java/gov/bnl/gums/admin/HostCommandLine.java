@@ -17,8 +17,8 @@ public class HostCommandLine extends GUMSCommandLine {
 
     static {
         GUMSCommandLine.command = "gums-host";
-        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateGrid3UserVoMap",
-            "Generate grid3-user-vo-map.txt for this host.");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateOsgUserVoMap",
+            "Generate OSG-user-VO-map.txt for this host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateGridMapfile",
             "Generate grid-mapfile for this host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateVoGridMapfile",
@@ -29,6 +29,10 @@ public class HostCommandLine extends GUMSCommandLine {
         	"Retrieve GUMS server version.");
 	    GUMSCommandLine.addCommand("gov.bnl.gums.admin.ClientVersion",
 	    	"Retrieve GUMS client version.");
+	    
+	    // depricated
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateGrid3UserVoMap",
+        	"Generate Grid3-user-VO-map for a given service/host (depricated; required with 1.1 server).");
     }
 
 }

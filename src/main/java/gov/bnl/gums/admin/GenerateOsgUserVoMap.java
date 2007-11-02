@@ -1,5 +1,5 @@
 /*
- * GenerateVoGridMapfile.java
+ * GenerateOsgUserVoMap.java
  *
  * Created on June 9, 2004, 1:44 PM
  */
@@ -8,25 +8,26 @@ package gov.bnl.gums.admin;
 /**
  * @author Gabriele Carcassi, Jay Packard
  */
-public class GenerateVoGridMapfile extends GenerateMap {
+public class GenerateOsgUserVoMap extends GenerateMap {
     static {
-        command = new GenerateVoGridMapfile();
+        command = new GenerateOsgUserVoMap();
     }
 
     /**
-     * Creates a new GenerateGridMapfile object.
+     * Creates a new GenerateOsgUserVoMap object.
      */
-    public GenerateVoGridMapfile() {
+    public GenerateOsgUserVoMap() {
         syntax = "[-g GUMSURL] [-f FILENAME] [SERVICEDN]";
-        description = "Generates the grid-vo-mapfile for a service/host. ";
+        description = "Generates the OSG-user-VO-map for a service/host.";
 //            "When using ./bin/gums, SERVICEDN must be specified. " +
 //            "When using ./bin/gums-host, SERVICEDN defaults to the host certificate DN.";
     }
 
     protected String generateMap(String hostname, String gumsUrl) throws Exception {
-        String map = getGums(gumsUrl).generateVoGridMapfile(hostname);
+        String map = null;
+        map = getGums(gumsUrl).generateOsgUserVoMap(hostname);
         if (map == null) {
-            System.err.println("Could not create VO-grid-map-file.");
+            System.err.println("Could not create OSG-user-VO-map.");
    			System.out.print("The GUMS server configuration may not be correct.  ");
    			System.out.print("Please contact your administrator, or if you are the administrator, make sure you have the following elements in your gums.config (which can be easily configured from the web interface):\n");
    			System.out.print("\t1) A hostToGroupMapping element which matches the requesting host name: "+hostname+"\n");

@@ -278,13 +278,13 @@ function generate_user_vo_mapfile {
   fi
 
   #--- generate the user-vo map file ----
-  script="$GUMSDIR/gums-host generateGrid3UserVoMap" 
+  script="$GUMSDIR/gums-host generateOsgUserVoMap" 
   logit "--------------------------------------"
   logit "Updating $(basename $INVERSEMAP)"
   logit "RUNNING: $script"
   $script  >$INVERSEMAP_NEW 2>>$LOGFILE
   if [ "$?" != "0" ];then
-    logerr "The GUMS client generateGrid3UserVoMap process failed while 
+    logerr "The GUMS client generateOsgUserVoMap process failed while 
 attempting to generate the $INVERSEMAP file.
 
 ---- output --------------------------------------
