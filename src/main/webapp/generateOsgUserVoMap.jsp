@@ -15,17 +15,17 @@
 <div id="title">
 <h1><span>GUMS <%=gums.getVersion()%></span></h1>
 <h3><span>GRID User Management System</h3>
-<h2><span>Generate Grid3-User-VO-Map</span></h2>
+<h2><span>Generate OSG-User-VO-Map</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
 <div id="body">
 <%
 	String result = null;
 	try {
-		result = gums.generateGrid3UserVoMap(hostname); 
+		result = gums.generateOsgUserVoMap(hostname); 
 %>		
 	
-<p>Grid3-user-VO-map for <%= hostname %>: </p>
+<p>OSG-user-VO-map for <%= hostname %>: </p>
   <table id="form" >
     <tbody>
       <tr>
@@ -43,7 +43,7 @@
 		
 <%		
 	} catch(Exception e) {
-		out.println("<p><div class=\"failure\">Error generating grid3-user-VO-map: " + e.getMessage() + "</div></p>");
+		out.println("<p><div class=\"failure\">Error generating OSG-user-VO-map: " + e.getMessage() + "</div></p>");
 	}
 %>
 </div>

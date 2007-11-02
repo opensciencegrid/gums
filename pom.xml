@@ -5,7 +5,7 @@
 	<artifactId>gums-service</artifactId>
 	<packaging>war</packaging>
 	<name>gums-service</name>
-	<version>1.2.10</version>
+	<version>1.2.12</version>
 	<description>GUMS Service provides web services used by the client tool and a 
 		web interface for administering GUMS</description>
     
@@ -94,8 +94,9 @@
 						<phase>package</phase>
 						<configuration>
 							<tasks>
-   				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/addMySQLAdmin" perm="ug+x"/>
-				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/setupMySQLDatabase" perm="ug+x"/>
+   				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/gums-add-mysql-admin" perm="ug+x"/>
+				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/gums-create-config" perm="ug+x"/>
+				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/gums-setup-mysql-database" perm="ug+x"/>
 							</tasks>
 						</configuration>
 						<goals>

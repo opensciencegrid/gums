@@ -321,11 +321,11 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">Accounting VO Subgroup: </td>
-		    <td nowrap><input maxlength="256" size="16" name="accVoSub" value="<%=g2AMapping.getAccountingVoSubgroup()%>"/> (to be included in Grid3-User-VO-Map)</td>
+		    <td nowrap><input maxlength="256" size="16" name="accVoSub" value="<%=g2AMapping.getAccountingVoSubgroup()%>"/> (to be included in OSG-user-VO-map)</td>
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">Accounting VO: </td>
-		    <td nowrap><input maxlength="256" size="16" name="accVo" value="<%=g2AMapping.getAccountingVo()%>"/> (to be included in Grid3-User-VO-Map)</td>
+		    <td nowrap><input maxlength="256" size="16" name="accVo" value="<%=g2AMapping.getAccountingVo()%>"/> (to be included in OSG-user-VO-map)</td>
 		</tr>
 		<tr>
 	        <td colspan=2>
