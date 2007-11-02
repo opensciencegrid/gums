@@ -41,17 +41,17 @@ public class ResourceManager {
      * @param hostname
      * @return
      */
-    public String generateGrid3UserVoMap(String hostname) {
+    public String generateOsgUserVoMap(String hostname) {
         Configuration conf = gums.getConfiguration();
         HostToGroupMapping hostGroup = hostToGroupMapping(conf, hostname);
         if (hostGroup == null)
             throw new RuntimeException("The host '" + hostname + "' is not defined in any group.");
-        StringBuffer grid3MapBuffer = new StringBuffer("");
+        StringBuffer osgMapBuffer = new StringBuffer("");
         Iterator iter = hostGroup.getGroupToAccountMappings().iterator();
         
-        grid3MapBuffer.append("#User-VO map\n");
-        grid3MapBuffer.append("# #comment line, format of each regular line line: account VO\n");
-        grid3MapBuffer.append("# Next 2 lines with VO names, same order, all lowercase, with case (lines starting with #voi, #VOc)\n");
+        osgMapBuffer.append("#User-VO map\n");
+        osgMapBuffer.append("# #comment line, format of each regular line line: account VO\n");
+        osgMapBuffer.append("# Next 2 lines with VO names, same order, all lowercase, with case (lines starting with #voi, #VOc)\n");
         
         String voi = "#voi";
         String voc = "#VOc";
@@ -68,10 +68,10 @@ public class ResourceManager {
             }
         }
         
-        grid3MapBuffer.append(voi);
-        grid3MapBuffer.append("\n");
-        grid3MapBuffer.append(voc);
-        grid3MapBuffer.append("\n");
+        osgMapBuffer.append(voi);
+        osgMapBuffer.append("\n");
+        osgMapBuffer.append(voc);
+        osgMapBuffer.append("\n");
         
         iter = hostGroup.getGroupToAccountMappings().iterator();
         
@@ -88,7 +88,7 @@ public class ResourceManager {
 	            	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupIt.next() );
 		            List members = userGroup.getMemberList();
 		            members = new ArrayList(members);
-		            grid3MapBuffer.append("#---- accounts for vo: " + userGroup.getName() + " ----#\n");          
+		            osgMapBuffer.append("#---- accounts for vo: " + userGroup.getName() + " ----#\n");          
 		            /*if (members.size()==0) {
 	                    Iterator accountMapperIt = accountMappers.iterator();
 	                    while (accountMapperIt.hasNext()) {
@@ -101,10 +101,10 @@ public class ResourceManager {
 	                    	if (account == null)
 	                    		account = "unknown" + Integer.toString(unknownCount++);
 	                    	if (!accountsInMap.contains(account)) {
-		                    	grid3MapBuffer.append(account);
-			                    grid3MapBuffer.append(' ');
-			                    grid3MapBuffer.append(gMap.getAccountingVoSubgroup());
-			                    grid3MapBuffer.append("\n");
+		                    	osgMapBuffer.append(account);
+			                    osgMapBuffer.append(' ');
+			                    osgMapBuffer.append(gMap.getAccountingVoSubgroup());
+			                    osgMapBuffer.append("\n");
 			                    accountsInMap.add(account);
 	                    	}
 	                    }
@@ -118,10 +118,10 @@ public class ResourceManager {
 	                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
 			                String account = accountMapper.mapUser(user.getCertificateDN(), false);
 			                if ((account != null) && !accountsInMap.contains(account)) {
-			                    grid3MapBuffer.append(account);
-			                    grid3MapBuffer.append(' ');
-			                    grid3MapBuffer.append(gMap.getAccountingVoSubgroup());
-			                    grid3MapBuffer.append("\n");
+			                	osgMapBuffer.append(account);
+			                	osgMapBuffer.append(' ');
+			                	osgMapBuffer.append(gMap.getAccountingVoSubgroup());
+			                	osgMapBuffer.append("\n");
 			                    accountsInMap.add(account);
 			                }
 	                    }
@@ -129,8 +129,8 @@ public class ResourceManager {
 	            }
             }
         }
-        String finalGrid3Map = grid3MapBuffer.toString();
-        return finalGrid3Map;
+        String finalOsgMap = osgMapBuffer.toString();
+        return finalOsgMap;
     }
     
     /**

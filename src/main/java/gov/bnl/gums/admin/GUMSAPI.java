@@ -45,6 +45,7 @@ public interface GUMSAPI extends Remote {
      * 
      * @param hostname Host name to generate the map for.
      * @return The map, or null if no map is found
+     * @deprecated
      */
     String generateGrid3UserVoMap(String hostname);
     
@@ -56,6 +57,14 @@ public interface GUMSAPI extends Remote {
      * @return
      */
     String generateGridMapfile(String hostname);
+    
+    /**
+     * Generate the inverse entry->VO map used by OSG.
+     * 
+     * @param hostname Host name to generate the map for.
+     * @return The map, or null if no map is found
+     */
+    String generateOsgUserVoMap(String hostname);
     
     /**
      * Genereate Vo grid map file used for accounting purposes

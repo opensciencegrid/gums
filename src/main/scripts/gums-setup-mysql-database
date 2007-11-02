@@ -183,5 +183,5 @@ cat ../sql/setupDatabase.mysql       \
 #-------------------------------------------
 if [ "$CREATECONFIG" -eq 1 ]
 then
-	./createConfig --user $USER --host $SERVER --password $PASSWORD --template $TEMPLATE
+	./gums-create-config --user $USER --host $SERVER --password $PASSWORD --template $TEMPLATE
 fi	  

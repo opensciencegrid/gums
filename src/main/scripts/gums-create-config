@@ -129,6 +129,7 @@ parseConfig() {
 if [ -z "$USER" ] 
 then
 	PARSEFIELD="connection.username"
+	PARSERESULT=""
 	parseConfig
 	USER=$PARSERESULT
 fi
@@ -136,6 +137,7 @@ fi
 if [ -z "$PASSWORD" ] 
 then
 	PARSEFIELD="connection.password"
+	PARSERESULT=""
 	parseConfig
 	PASSWORD=$PARSERESULT
 fi
@@ -143,6 +145,7 @@ fi
 if [ -z "$SERVER" ] 
 then
 	PARSEFIELD="connection.url"
+	PARSERESULT=""
 	parseConfig
 	SERVER=$PARSERESULT
 fi

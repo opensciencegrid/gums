@@ -109,22 +109,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     }
     
     public String generateGrid3UserVoMap(String hostname) {
-        try {
-            if (hasReadAllAccess(currentUser(), hostname)) {
-                String map = gums().getResourceManager().generateGrid3UserVoMap(hostname);
-                gumsResourceAdminLog.info(logUserAccess() + "Generated grid3 vo-user map for host '" + hostname + "': " + map);
-                return map;
-            } else {
-                throw new AuthorizationDeniedException();
-            }
-        } catch (AuthorizationDeniedException e) {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to generate grid3 vo-user map for host '" + hostname + "' - " + e.getMessage());
-            siteLog.info(logUserAccess() + "Unauthorized access to generate grid3 vo-user map for host '" + hostname + "'");
-            throw e;
-        } catch (RuntimeException e) {
-            gumsResourceAdminLog.error(logUserAccess() + "Failed to generate grid3 vo-user map for host '" + hostname + "' - " + e.getMessage());
-            throw e;
-        }
+        return generateOsgUserVoMap(hostname);
     }
     
     public String generateGridMapfile(String hostname) {
@@ -144,6 +129,25 @@ public class GUMSAPIImpl implements GUMSAPI {
             gumsResourceAdminLog.error(logUserAccess() + "Failed to generate mapfile for host '" + hostname + "' - " + e.getMessage());
             throw e;
         }   
+    }
+    
+    public String generateOsgUserVoMap(String hostname) {
+        try {
+            if (hasReadAllAccess(currentUser(), hostname)) {
+                String map = gums().getResourceManager().generateOsgUserVoMap(hostname);
+                gumsResourceAdminLog.info(logUserAccess() + "Generated grid3 vo-user map for host '" + hostname + "': " + map);
+                return map;
+            } else {
+                throw new AuthorizationDeniedException();
+            }
+        } catch (AuthorizationDeniedException e) {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to generate grid3 vo-user map for host '" + hostname + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Unauthorized access to generate grid3 vo-user map for host '" + hostname + "'");
+            throw e;
+        } catch (RuntimeException e) {
+            gumsResourceAdminLog.error(logUserAccess() + "Failed to generate grid3 vo-user map for host '" + hostname + "' - " + e.getMessage());
+            throw e;
+        }
     }
     
     public String generateVoGridMapfile(String hostname) {
