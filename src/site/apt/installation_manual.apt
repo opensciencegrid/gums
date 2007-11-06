@@ -178,11 +178,18 @@ see the {{{use_configuration.html}configuration}} section for instructions how t
 also make sure the admins userGroup refers to this by name in the "persistenceFactory" field.  From this point
 on, you no longer need to manually edit the gums.config file, but can configure GUMS using the web interface.
 
-** Configure Timeout
+** Setting the {Frequency} to Refresh GUMS from VOMS
 
- for user groups that specify a server and a persistence factory, the DNs are retrieved
-from the server and put into the persistence factory at a regular interval.  The default is 720 minutes (12 hours),
-but this can be changed in WEB-INF/web.xml at 'env-entry/env-entry-value'.
+ GUMS will query the various VOMS VOs defined in the <b>gums.config</b> file on a periodic basis based on a parameter defined in .../WEB-INF/web.xml. 
+The third line from the bottom contains the interval in minutes. Default is every 12 hours.
+
++----------------------------------------------+
+<verbatim>
+ <env-entry-value>720</env-entry-value>
+</verbatim>
++----------------------------------------------+	
+
+ You may want to adjust the value.  If tomcat is already running, you will need to restart it to effect the change.
 
 ** Run Tomcat and MySQL
 
