@@ -184,9 +184,12 @@ on, you no longer need to manually edit the gums.config file, but can configure 
 The third line from the bottom contains the interval in minutes. Default is every 12 hours.
 
 +----------------------------------------------+
-<verbatim>
- <env-entry-value>720</env-entry-value>
-</verbatim>
+	...
+    <env-entry-name>updateGroupsMinutes</env-entry-name>
+    <env-entry-type>java.lang.Integer</env-entry-type>
+    <env-entry-value>720</env-entry-value>
+  </env-entry>
+</web-app>
 +----------------------------------------------+	
 
  You may want to adjust the value.  If tomcat is already running, you will need to restart it to effect the change.
