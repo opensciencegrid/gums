@@ -39,16 +39,19 @@ usage() {
 	echo "within the hibernatePersistenceFactory element and cn within the "
 	echo "hostToGroupMapping.  If user, password, or host is not specified an attempt "
 	echo "will be made to extract one or more of them from the current configuration."
-	echo "Usage: $0 --template <name of template file (gums.config.template default) [optional]> "
-	echo "          --list [List available templates, optional]"
-	echo "          --user <database user for GUMS> [optional]"
-	echo "          --password  <GUMS database password> [optional]"
-	echo "          --host <GUMS database server host> [optional]"
-	echo "          --noprompt [Don't prompt user, optional]"
-	echo "          --help [Print this message]"
+	echo "Usage: $0"
+	echo "   --template <template config path (../gums.config.template is default) [optional]> "
+	echo "   --osg-template <download current osg template config> [optional]"
+	echo "   --user <database user for GUMS> [optional]"
+	echo "   --password <GUMS database password> [optional]"
+	echo "   --host <GUMS database server host> [optional]"
+	echo "   --noprompt [Don't prompt user, optional]"
+	echo "   --help [Print this message]"
 	echo
 	echo "Examples:"
-	echo "  $0 --user gums --host gums.mysite.com:49151 --password secret --template gums.config.osg_template"
+	echo "  $0 --osg-template"
+	echo "  $0 --template ../mytemplate"
+	echo "  $0 --user gums --host gums.mysite.com:49151 --password secret --template ../mytemplate"
 	echo
 
 	exit -1;
@@ -59,7 +62,8 @@ usage() {
 # Setup global variables
 #
 #-------------------------------------------
-TEMPLATE="gums.config.template"
+TEMPLATE="../gums.config.template"
+OSGTEMPLATE=0
 USER=""
 SERVER=""
 PASSWORD=""
@@ -67,7 +71,6 @@ PROMPT=1
 SHOW_USAGE=0
 PARSEFIELD=""
 PARSERESULT=""
-LISTTEMPLATES=0
 
 #-------------------------------------------
 #
@@ -78,8 +81,8 @@ while [ $# -gt 0 ]
 do
   case "$1" in 
 	  --noprompt) PROMPT=0;;
-	  --list) LISTTEMPLATES=1;;
 	  --template) TEMPLATE="$2"; shift;;
+	  --osg-template) OSGTEMPLATE=1;;
 	  --user)     USER="$2";     shift;;
       --password) PASSWORD="$2"; shift;;
       --host)     SERVER="$2";   shift;;
@@ -91,10 +94,11 @@ do
   shift
 done
 
-if [ "$LISTTEMPLATES" -eq 1 ] 
+if [ "$OSGTEMPLATE" -eq 1 ]
 then
-	ls ../ | grep gums | grep template
-	exit 0;
+	echo Downloading OSG GUMS template...
+	wget --no-verbose --output-document=/tmp/gums.template http://software.grid.iu.edu/pacman/tarballs/vo-version/gums.template
+	TEMPLATE="/tmp/gums.template"
 fi
 
 parseConfig() {
@@ -128,26 +132,47 @@ parseConfig() {
 
 if [ -z "$USER" ] 
 then
+	echo Searching for MySQL username in current configuration...
 	PARSEFIELD="connection.username"
 	PARSERESULT=""
 	parseConfig
 	USER=$PARSERESULT
+	if [ "$USER" ] 
+	then
+		echo found MySQL user \"$USER\"
+	else
+		echo WARNING: no MySQL username found
+	fi
 fi
 
 if [ -z "$PASSWORD" ] 
 then
+	echo Searching for MySQL password in current configuration...
 	PARSEFIELD="connection.password"
 	PARSERESULT=""
 	parseConfig
 	PASSWORD=$PARSERESULT
+	if [ "$PASSWORD" ] 
+	then
+		echo found MySQL password \"$PASSWORD\"
+	else
+		echo WARNING: no MySQL password found - will use blank password
+	fi
 fi
 
 if [ -z "$SERVER" ] 
 then
+	echo Searching for MySQL server in current configuration...
 	PARSEFIELD="connection.url"
 	PARSERESULT=""
 	parseConfig
 	SERVER=$PARSERESULT
+	if [ "$SERVER" ] 
+	then
+		echo found MySQL server \"$SERVER\"
+	else
+		echo WARNING: no MySQL server found
+	fi
 fi
 
 if [ "$SHOW_USAGE" -eq 1 ]
@@ -156,12 +181,21 @@ then
 	usage
 fi
 
+
+DOMAINNAME=`echo "$SERVER" | awk 'BEGIN{FS=":"}{print $1}' | awk 'BEGIN{FS="."}{for(i=2;i<=NF;i++) printf(i<NF?"%s.":"%s\n",$i)}'`
+
+if [ -z "$DOMAINNAME" ] || [ "$DOMAINNAME" == "localdomain" ]
+then
+	DOMAINNAME=`dnsdomainname`
+fi
+
+echo "will use domain name \"$DOMAINNAME\" in hostToGroupMapping"
+
 #-------------------------------------------
 #
 # Create the gums.config
 #
 #-------------------------------------------
-echo Preparing gums.config from template
 if [ -e ../config/gums.config ]
 then
 	if [ "$PROMPT" -eq 1 ]
@@ -176,9 +210,7 @@ then
 	fi
 fi
 
-DOMAINNAME=`echo "$SERVER" | awk 'BEGIN{FS=":"}{print $1}' | awk 'BEGIN{FS="."}{for(i=2;i<=NF;i++) printf(i<NF?"%s.":"%s\n",$i)}'`
-
-cat ../$TEMPLATE \
+cat $TEMPLATE \
   | /bin/sed -e s/@USER@/$USER/g                    \
              -e s/@SERVER@/$SERVER/g                \
              -e s/@PASSWORD@/$PASSWORD/g            \

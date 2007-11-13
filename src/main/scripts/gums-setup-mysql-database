@@ -36,17 +36,18 @@ cd $ScriptPath
 usage() {
 	echo "Creates the database for GUMS on localhost and creates configuration "
 	echo "with the appropriate database and host information. "
-	echo "Usage: $0 --template <name of template file (gums.config.template default)> [optional] "
-	echo "          --nocreateconfig [Create configuration configured for database] "
-	echo "          --user <mysql user for GUMS> "
-	echo "          --password  <GUMS mysql password>"
-	echo "          --host <GUMS server host>"
-	echo "          --socket <MySQL socket> [optional]"
-	echo "          --noprompt [Don't prompt user, optional]"
-	echo "          --help [Print this message]"
+	echo "Usage: $0 "
+	echo "   --template <template config path (../gums.config.template is default) [optional]> "
+	echo "   --nocreateconfig [Create configuration configured for database] "
+	echo "   --user <mysql user for GUMS> "
+	echo "   --password  <GUMS mysql password>"
+	echo "   --host <GUMS server host>"
+	echo "   --socket <MySQL socket> [optional]"
+	echo "   --noprompt [Don't prompt user, optional]"
+	echo "   --help [Print this message]"
 	echo
 	echo "Examples:"
-	echo "  $0 --user gums --host gums.mysite.com:49151 --password secret --template gums.config.osg_template"
+	echo "  $0 --user gums --host gums.mysite.com:49151 --password secret --template ../mytemplate"
 	echo
 	echo "This will make mysql authenticate as root with a password (-p), create "
 	echo "a <gums> user with password <secret> authorized to connect "
@@ -59,7 +60,7 @@ usage() {
 # Setup global variables
 #
 #-------------------------------------------
-TEMPLATE="gums.config.template"
+TEMPLATE="../gums.config.template"
 USER=""
 SERVER=""
 PASSWORD=""
