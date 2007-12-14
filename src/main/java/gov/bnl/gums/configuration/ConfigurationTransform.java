@@ -194,24 +194,27 @@ public class ConfigurationTransform {
             	if (g2aMapping.getUserGroups().indexOf(userGroup.getName())==-1)
             		g2aMapping.addUserGroup(userGroup.getName());     
             	
-           		// add HostToGroupMapping
+           		// add or alter HostToGroupMapping
            		String domainName = java.net.InetAddress.getLocalHost().getCanonicalHostName();
             	if (domainName!=null && domainName.indexOf(".")!=-1)
             		domainName = domainName.substring(domainName.indexOf("."),domainName.length());
-           		domainName = "*/?*" + (domainName!=null?domainName:".localdomain");
+           		String cn = "*/?*" + (domainName!=null?domainName:".localdomain");
            		List h2gMappings = configuration.getHostToGroupMappings();
-           		boolean flag = false;
+           		boolean foundCn = false;
            		for (int i=0; i<h2gMappings.size(); i++) {
+           			// add groupToAccountMapping to each hostToGroupMapping
            			HostToGroupMapping h2gMapping = (HostToGroupMapping)h2gMappings.get(i);
            			h2gMapping.addGroupToAccountMapping(g2aMapping.getName()); 
-           			if (h2gMapping.getName().indexOf(domainName)!=-1)
-           				flag = true;
+           			if (h2gMapping.getName().indexOf(cn)!=-1)
+           				foundCn = true;
            		}
-            	if (!flag) {
+            	if (!foundCn) {
+            		// create a new hostToGroupMapping
             		HostToGroupMapping h2gMapping = new CertificateHostToGroupMapping(configuration);
             		h2gMapping.setDescription("Testing GUMS-status with GIP Probe");
-            		((CertificateHostToGroupMapping)h2gMapping).setCn(domainName);
+            		((CertificateHostToGroupMapping)h2gMapping).setCn(cn);
             		configuration.addHostToGroupMapping(h2gMapping);
+            		h2gMapping.addGroupToAccountMapping(g2aMapping.getName()); 
             	}
             }
             
