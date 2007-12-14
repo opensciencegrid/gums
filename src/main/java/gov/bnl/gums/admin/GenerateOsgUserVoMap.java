@@ -25,7 +25,7 @@ public class GenerateOsgUserVoMap extends GenerateMap {
 
     protected String generateMap(String hostname, String gumsUrl) throws Exception {
         String map = null;
-        map = getGums(gumsUrl).generateOsgUserVoMap(hostname);
+        map = getGums(gumsUrl).generateGrid3UserVoMap(hostname); // TODO: change to generateOsgUserVoMap in GUMS version 1.3
         if (map == null) {
             System.err.println("Could not create OSG-user-VO-map.");
    			System.out.print("The GUMS server configuration may not be correct.  ");
