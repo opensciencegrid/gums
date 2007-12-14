@@ -16,6 +16,7 @@ import gov.bnl.gums.userGroup.VomsServer;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
@@ -193,20 +194,25 @@ public class ConfigurationTransform {
             	if (g2aMapping.getUserGroups().indexOf(userGroup.getName())==-1)
             		g2aMapping.addUserGroup(userGroup.getName());     
             	
-            	// add HostToGroupMapping
-            	String domainName = java.net.InetAddress.getLocalHost().getCanonicalHostName();
+           		// add HostToGroupMapping
+           		String domainName = java.net.InetAddress.getLocalHost().getCanonicalHostName();
             	if (domainName!=null && domainName.indexOf(".")!=-1)
             		domainName = domainName.substring(domainName.indexOf("."),domainName.length());
            		domainName = "*/?*" + (domainName!=null?domainName:".localdomain");
-            	HostToGroupMapping h2gMapping = configuration.getHostToGroupMapping(domainName);
-            	if (h2gMapping==null || h2gMapping.getName().indexOf(domainName)==-1) {
-            		h2gMapping = new CertificateHostToGroupMapping(configuration);
+           		List h2gMappings = configuration.getHostToGroupMappings();
+           		boolean flag = false;
+           		for (int i=0; i<h2gMappings.size(); i++) {
+           			HostToGroupMapping h2gMapping = (HostToGroupMapping)h2gMappings.get(i);
+           			h2gMapping.addGroupToAccountMapping(g2aMapping.getName()); 
+           			if (h2gMapping.getName().indexOf(domainName)!=-1)
+           				flag = true;
+           		}
+            	if (!flag) {
+            		HostToGroupMapping h2gMapping = new CertificateHostToGroupMapping(configuration);
             		h2gMapping.setDescription("Testing GUMS-status with GIP Probe");
             		((CertificateHostToGroupMapping)h2gMapping).setCn(domainName);
             		configuration.addHostToGroupMapping(h2gMapping);
             	}
-            	if (h2gMapping.getGroupToAccountMappings().indexOf(g2aMapping.getName())==-1)
-            		h2gMapping.addGroupToAccountMapping(g2aMapping.getName()); 
             }
             
             return configuration;

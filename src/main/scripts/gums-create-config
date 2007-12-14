@@ -116,9 +116,9 @@ parseConfig() {
 			fi
 			if [ "$PARSEFIELD" = "connection.url" ]
 			then
-				temp=`echo $myline | grep $PARSEFIELD | cut -d / -f 3 | cut -d \' -f 2`
+				temp=`echo $myline | grep $PARSEFIELD | sed -e s/\"/\'/g | cut -d / -f 3 | cut -d \' -f 2`
 			else
-				temp=`echo $myline | grep $PARSEFIELD | cut -d \' -f 2`
+				temp=`echo $myline | grep $PARSEFIELD | sed -e s/\"/\'/g | cut -d \' -f 2`
 			fi
 			if [ $temp ]
 			then
