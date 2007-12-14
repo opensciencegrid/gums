@@ -1,0 +1,218 @@
+#!/bin/sh
+
+# Detects where gums is installed and puts the directory
+# name in ScriptPath. Then cd to that directory.
+
+ScriptPath=""
+CommandPath=`dirname $0`
+if [ $CommandPath = "." ]
+then
+
+    # The command path is the current directory:
+    # check if file is really here
+
+    if [ ! -e "$0" ]
+    then
+        # The command is not in the current directory:
+        # must have used the path.
+        # Locating with which.
+
+        WhichFull=`which $0`
+        WhichPath=`dirname $WhichFull`
+        ScriptPath=$WhichPath
+        GumsPath=`dirname $ScriptPath`
+    else
+        # It was really the current directory
+        ScriptPath=$CommandPath
+        GumsPath=".."
+    fi
+else
+    ScriptPath=$CommandPath
+    GumsPath=`dirname $ScriptPath`
+fi
+
+cd $ScriptPath
+
+usage() {
+	echo "Copies a template configuration to the config directory, thus making "
+	echo "it the current configuration, and will also replace user, host, password "
+	echo "within the hibernatePersistenceFactory element and cn within the "
+	echo "hostToGroupMapping.  If user, password, or host is not specified an attempt "
+	echo "will be made to extract one or more of them from the current configuration."
+	echo "Usage: $0"
+	echo "   --template <template config path (../gums.config.template is default) [optional]> "
+	echo "   --osg-template <download current osg template config> [optional]"
+	echo "   --user <database user for GUMS> [optional]"
+	echo "   --password <GUMS database password> [optional]"
+	echo "   --host <GUMS database server host> [optional]"
+	echo "   --noprompt [Don't prompt user, optional]"
+	echo "   --help [Print this message]"
+	echo
+	echo "Examples:"
+	echo "  $0 --osg-template"
+	echo "  $0 --template ../mytemplate"
+	echo "  $0 --user gums --host gums.mysite.com:49151 --password secret --template ../mytemplate"
+	echo
+
+	exit -1;
+}
+
+#-------------------------------------------
+#
+# Setup global variables
+#
+#-------------------------------------------
+TEMPLATE="../gums.config.template"
+OSGTEMPLATE=0
+USER=""
+SERVER=""
+PASSWORD=""
+PROMPT=1
+SHOW_USAGE=0
+PARSEFIELD=""
+PARSERESULT=""
+
+#-------------------------------------------
+#
+# Parse command line
+#
+#-------------------------------------------
+while [ $# -gt 0 ]
+do
+  case "$1" in 
+	  --noprompt) PROMPT=0;;
+	  --template) TEMPLATE="$2"; shift;;
+	  --osg-template) OSGTEMPLATE=1;;
+	  --user)     USER="$2";     shift;;
+      --password) PASSWORD="$2"; shift;;
+      --host)     SERVER="$2";   shift;;
+      --help)     usage;;
+      -help)     usage;;
+      -h)         usage;;
+      *)          echo "Invalid parameter '$1'"; usage;;
+  esac
+  shift
+done
+
+if [ "$OSGTEMPLATE" -eq 1 ]
+then
+	echo Downloading OSG GUMS template...
+	wget --no-verbose --output-document=/tmp/gums.template http://software.grid.iu.edu/pacman/tarballs/vo-version/gums.template
+	TEMPLATE="/tmp/gums.template"
+fi
+
+parseConfig() {
+	if [ -e ../config/gums.config ]
+	then
+		unset done
+        exec 3< ../config/gums.config
+        until [ $done ]
+        do
+			read <&3 myline
+            if [ $? != 0 ]
+            then
+            	done=1
+            	continue
+			fi
+			if [ "$PARSEFIELD" = "connection.url" ]
+			then
+				temp=`echo $myline | grep $PARSEFIELD | sed -e s/\"/\'/g | cut -d / -f 3 | cut -d \' -f 2`
+			else
+				temp=`echo $myline | grep $PARSEFIELD | sed -e s/\"/\'/g | cut -d \' -f 2`
+			fi
+			if [ $temp ]
+			then
+				PARSERESULT=$temp
+				done=1
+				continue
+			fi
+        done
+	fi
+}
+
+if [ -z "$USER" ] 
+then
+	echo Searching for MySQL username in current configuration...
+	PARSEFIELD="connection.username"
+	PARSERESULT=""
+	parseConfig
+	USER=$PARSERESULT
+	if [ "$USER" ] 
+	then
+		echo found MySQL user \"$USER\"
+	else
+		echo WARNING: no MySQL username found
+	fi
+fi
+
+if [ -z "$PASSWORD" ] 
+then
+	echo Searching for MySQL password in current configuration...
+	PARSEFIELD="connection.password"
+	PARSERESULT=""
+	parseConfig
+	PASSWORD=$PARSERESULT
+	if [ "$PASSWORD" ] 
+	then
+		echo found MySQL password \"$PASSWORD\"
+	else
+		echo WARNING: no MySQL password found - will use blank password
+	fi
+fi
+
+if [ -z "$SERVER" ] 
+then
+	echo Searching for MySQL server in current configuration...
+	PARSEFIELD="connection.url"
+	PARSERESULT=""
+	parseConfig
+	SERVER=$PARSERESULT
+	if [ "$SERVER" ] 
+	then
+		echo found MySQL server \"$SERVER\"
+	else
+		echo WARNING: no MySQL server found
+	fi
+fi
+
+if [ "$SHOW_USAGE" -eq 1 ]
+then
+	echo ""
+	usage
+fi
+
+
+DOMAINNAME=`echo "$SERVER" | awk 'BEGIN{FS=":"}{print $1}' | awk 'BEGIN{FS="."}{for(i=2;i<=NF;i++) printf(i<NF?"%s.":"%s\n",$i)}'`
+
+if [ -z "$DOMAINNAME" ] || [ "$DOMAINNAME" == "localdomain" ]
+then
+	DOMAINNAME=`dnsdomainname`
+fi
+
+echo "will use domain name \"$DOMAINNAME\" in hostToGroupMapping"
+
+#-------------------------------------------
+#
+# Create the gums.config
+#
+#-------------------------------------------
+if [ -e ../config/gums.config ]
+then
+	if [ "$PROMPT" -eq 1 ]
+	then
+		echo "WARNING: gums.config already present. Would you like to overwrite it? "
+		echo "(Enter 'yes' to overwrite)"
+		read response
+		if [ "$response" != "yes" ]
+		then
+			exit -1
+		fi
+	fi
+fi
+
+cat $TEMPLATE \
+  | /bin/sed -e s/@USER@/$USER/g                    \
+             -e s/@SERVER@/$SERVER/g                \
+             -e s/@PASSWORD@/$PASSWORD/g            \
+             -e s/@DOMAINNAME@/$DOMAINNAME/g        \
+  > ../config/gums.config
