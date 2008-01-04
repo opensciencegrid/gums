@@ -18,7 +18,7 @@ import java.net.URL;
 import java.util.*;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.LogFactory; 
 import org.edg.security.voms.service.admin.*;
 
 /** A group of users residing on a VOMS vo database. This class is able to 

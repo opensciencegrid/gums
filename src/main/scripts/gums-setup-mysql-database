@@ -49,9 +49,8 @@ usage() {
 	echo "Examples:"
 	echo "  $0 --user gums --host gums.mysite.com:49151 --password secret --template ../mytemplate"
 	echo
-	echo "This will make mysql authenticate as root with a password (-p), create "
-	echo "a <gums> user with password <secret> authorized to connect "
-	echo "from <gums.mysite.com>."
+	echo "This will make mysql authenticate as root with a password (-p), create a "
+	echo "<gums> user with password <secret> authorized to connect from <gums.mysite.com>."
 	exit -1;
 }
 
@@ -184,5 +183,10 @@ cat ../sql/setupDatabase.mysql       \
 #-------------------------------------------
 if [ "$CREATECONFIG" -eq 1 ]
 then
-	./gums-create-config --user $USER --host $SERVER --password $PASSWORD --template $TEMPLATE
+	if [ "$PROMPT" -eq 1 ]
+	then
+		./gums-create-config --user $USER --host $SERVER --password $PASSWORD --template $TEMPLATE
+	else
+	    ./gums-create-config --user $USER --host $SERVER --password $PASSWORD --template $TEMPLATE --noprompt
+	fi
 fi	  
