@@ -97,6 +97,8 @@
    				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/gums-add-mysql-admin" perm="ug+x"/>
 				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/gums-create-config" perm="ug+x"/>
 				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/gums-setup-mysql-database" perm="ug+x"/>
+								<chmod file="target/gums-service-${version}/WEB-INF/scripts/addMySQLAdmin" perm="ug+x"/>
+								<chmod file="target/gums-service-${version}/WEB-INF/scripts/setupMySQLDatabase" perm="ug+x"/>
 							</tasks>
 						</configuration>
 						<goals>
