@@ -20,15 +20,12 @@ then
         WhichFull=`which $0`
         WhichPath=`dirname $WhichFull`
         ScriptPath=$WhichPath
-        GumsPath=`dirname $ScriptPath`
     else
         # It was really the current directory
         ScriptPath=$CommandPath
-        GumsPath=".."
     fi
 else
     ScriptPath=$CommandPath
-    GumsPath=`dirname $ScriptPath`
 fi
 
 cd $ScriptPath
