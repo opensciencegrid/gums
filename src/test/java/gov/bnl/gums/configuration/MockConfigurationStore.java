@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.configuration;
 
+import gov.bnl.gums.GridUser;
 import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.account.MockAccountMapper;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
@@ -32,7 +33,8 @@ public class MockConfigurationStore implements ConfigurationStore {
         MockHostToGroupMapping hMap = new MockHostToGroupMapping(conf);
         List groupMappers = new ArrayList();
         GroupToAccountMapping gMap = new GroupToAccountMapping(conf, "mockGroup");
-        UserGroup userGroup = new MockUserGroup(conf, "mockUserGroup");
+        MockUserGroup userGroup = new MockUserGroup(conf, "mockUserGroup", true);
+        userGroup.addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null));
         conf.addUserGroup(userGroup);
         gMap.addUserGroup(userGroup.getName());
         AccountMapper accountMapper = new MockAccountMapper(conf, "mockAccountMapper");

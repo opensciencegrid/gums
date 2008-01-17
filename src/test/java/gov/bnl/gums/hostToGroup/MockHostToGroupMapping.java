@@ -56,4 +56,8 @@ public class MockHostToGroupMapping extends HostToGroupMapping {
     	return "";
     }
     
+    public String getName() {
+    	return "known.site.com";
+    }
+    
 }

@@ -18,14 +18,13 @@ import gov.bnl.gums.configuration.Configuration;
 public class MockUserGroup extends UserGroup {
     private List members;
     boolean updated;
+    boolean matchFQAN;
     
     /** Creates a new instance of MockUserGroup */
-    public MockUserGroup(Configuration configuration, String name) {
+    public MockUserGroup(Configuration configuration, String name, boolean matchFQAN) {
     	super(configuration, name);
+    	this.matchFQAN = matchFQAN;
         members = new ArrayList();
-        GridUser user = new GridUser();
-        user.setCertificateDN("/DC=org/DC=griddev/OU=People/CN=John Smith");
-        members.add(user);
     }
     
     public java.util.List getMemberList() {
@@ -33,9 +32,24 @@ public class MockUserGroup extends UserGroup {
     }
     
     public boolean isInGroup(GridUser user) {
-        if (members.contains(user))
-            return true;
+    	Iterator it = members.iterator();
+    	while(it.hasNext()) {
+    		GridUser curUser = (GridUser)it.next();
+    		if (matchFQAN) {
+    			if (curUser.equals(user)) {// assumes exact matching
+    				return true;
+    			}
+    		}
+    		else {
+    			if (curUser.getCertificateDN().equals(user.getCertificateDN()))
+    				return true;  			
+    		}
+    	}
         return false;
+    }
+    
+    public void addMember(GridUser user) {
+    	members.add(user);
     }
     
     public void updateMembers() {

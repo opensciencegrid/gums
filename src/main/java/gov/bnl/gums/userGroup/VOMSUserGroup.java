@@ -281,7 +281,7 @@ public class VOMSUserGroup extends UserGroup {
     
     /**
      * Changes the role.
-     * @param voGroup The group in the VOMS (i.e. /atlas/usatlas)
+     * @param role The role in the VOMS (i.e.production)
      */
     public void setRole(String role) {
         this.role = role;

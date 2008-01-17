@@ -52,7 +52,8 @@ public class ConfigurationTest extends TestCase {
         conf.addGroupToAccountMapping(gMap);
         gMap.setAccountingVoSubgroup("mock");
         gMap.setAccountingVo("mock");
-        UserGroup userGroup = new MockUserGroup(conf, "mockUserGroup");
+        MockUserGroup userGroup = new MockUserGroup(conf, "mockUserGroup", true);
+        userGroup.addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null));
         conf.addUserGroup(userGroup);
         gMap.addUserGroup(userGroup.getName());
         AccountMapper accountMapper = new MockAccountMapper(conf, "mockAccountMapper");

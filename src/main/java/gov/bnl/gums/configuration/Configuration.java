@@ -59,11 +59,12 @@ public class Configuration {
         	log.warn("Group to account mapping " + g2AMapping.getName() + " merged with one with same name");
         	// For the sake of old versions of gums.config that may have duplicate g2AMappings with
         	// different account mappers, copy over account mappers into new groupToAccountMapping
-        	Iterator it = getGroupToAccountMapping(g2AMapping.getName()).getAccountMappers().iterator();
+        	Iterator it = g2AMapping.getAccountMappers().iterator();
         	while (it.hasNext())
-        		g2AMapping.addAccountMapper( new String((String)it.next())); 
+        		getGroupToAccountMapping(g2AMapping.getName()).addAccountMapper( new String((String)it.next()) ); 
         }
-       	groupToAccountMappings.put(g2AMapping.getName(), g2AMapping);
+        else
+        	groupToAccountMappings.put(g2AMapping.getName(), g2AMapping);
         if (g2AMapping.getConfiguration()==null)
         	g2AMapping.setConfiguration(this);
     }
