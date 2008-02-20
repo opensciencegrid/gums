@@ -42,7 +42,11 @@ Generates the grid-mapfile relative to the given service.
       <tr>
         <td style="text-align: right;">include extended attributes (FQAN): </td>
         <td><input type="checkbox" name="fqan"></td>
-      </tr>      
+      </tr>   
+      <tr>
+        <td style="text-align: right;">WARNING: </td>
+        <td>Performing this operation may assign a large number of pool accounts</td>
+      </tr>
       <tr>
         <td colspan="2" rowspan="1">
         <div style="text-align: center;"><button type="submit">generate grid-mapfile</button></div>
