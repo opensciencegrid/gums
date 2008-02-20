@@ -41,6 +41,14 @@ public interface GUMSAPI extends Remote {
     void deleteBackupConfiguration(String dateStr);
     
     /**
+     * Generate fqanmap file used to validate mappings
+     * 
+     * @param hostname
+     * @return
+     */
+    String generateFqanMapfile(String hostname);
+    
+    /**
      * Generate the inverse entry->VO map used by OSG.
      * 
      * @param hostname Host name to generate the map for.
@@ -50,7 +58,7 @@ public interface GUMSAPI extends Remote {
     String generateGrid3UserVoMap(String hostname);
     
     /**
-     * Generate gridmap files used by gateway in case GUMS is down 
+     * Generate gridmap file used by gateway in case GUMS is down 
      * and by certain applications like dCache
      * 
      * @param hostname

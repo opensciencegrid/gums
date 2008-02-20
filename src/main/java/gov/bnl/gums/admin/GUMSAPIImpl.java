@@ -107,6 +107,25 @@ public class GUMSAPIImpl implements GUMSAPI {
     		throw new AuthorizationDeniedException();
     	}   	
     }
+ 
+    public String generateFqanMapfile(String hostname) {
+        try {
+            if (hasReadAllAccess(currentUser(), hostname)) {
+                String map = gums().getResourceManager().generateFqanMapfile(hostname);
+                gumsResourceAdminLog.info(logUserAccess() + "Generated fqan mapfile for host '" + hostname + "': " + map);
+                return map;
+            } else {
+                throw new AuthorizationDeniedException();
+            }
+        } catch (AuthorizationDeniedException e) {
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to generate fqan mapfile for host '" + hostname + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Unauthorized access to generate fqan mapfile for host '" + hostname + "'");
+            throw e;
+        } catch (RuntimeException e) {
+            gumsResourceAdminLog.error(logUserAccess() + "Failed to generate fqanmapfile for host '" + hostname + "' - " + e.getMessage());
+            throw e;
+        }   
+    }        
     
     public String generateGrid3UserVoMap(String hostname) {
         return generateOsgUserVoMap(hostname);
@@ -116,17 +135,17 @@ public class GUMSAPIImpl implements GUMSAPI {
         try {
             if (hasReadAllAccess(currentUser(), hostname)) {
                 String map = gums().getResourceManager().generateGridMapfile(hostname, false);
-                gumsResourceAdminLog.info(logUserAccess() + "Generated mapfile for host '" + hostname + "': " + map);
+                gumsResourceAdminLog.info(logUserAccess() + "Generated grid mapfile for host '" + hostname + "': " + map);
                 return map;
             } else {
                 throw new AuthorizationDeniedException();
             }
         } catch (AuthorizationDeniedException e) {
-            gumsResourceAdminLog.info(logUserAccess() + "Failed to generate mapfile for host '" + hostname + "' - " + e.getMessage());
-            siteLog.info(logUserAccess() + "Unauthorized access to generate mapfile for host '" + hostname + "'");
+            gumsResourceAdminLog.info(logUserAccess() + "Failed to generate grid mapfile for host '" + hostname + "' - " + e.getMessage());
+            siteLog.info(logUserAccess() + "Unauthorized access to generate grid mapfile for host '" + hostname + "'");
             throw e;
         } catch (RuntimeException e) {
-            gumsResourceAdminLog.error(logUserAccess() + "Failed to generate mapfile for host '" + hostname + "' - " + e.getMessage());
+            gumsResourceAdminLog.error(logUserAccess() + "Failed to generate grid mapfile for host '" + hostname + "' - " + e.getMessage());
             throw e;
         }   
     }
@@ -326,7 +345,7 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     public String mapUser(String hostname, String userDN, String fqan) {
         try {
-            if ( (hasReadSelfAccess(currentUser()) && currentUser().getCertificateDN().equals(userDN)) || hasReadAllAccess(currentUser(), hostname)) {
+            if ( (hasReadSelfAccess(currentUser()) && currentUser().compareDn(userDN)==0) || hasReadAllAccess(currentUser(), hostname)) {
                 String account = gums().getResourceManager().map(hostname, new GridUser(userDN, fqan));
                 gumsResourceAdminLog.info(logUserAccess() + "Mapped on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' to '" + account + "'");
                 return account;

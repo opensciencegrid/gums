@@ -32,9 +32,25 @@ public class GridUser {
      * @param fqan The Fully Qualified Attribute name String representation (i.e. "/atlas/production/Role=Leader")
      */
     public GridUser(String userDN, String fqan) {
-        setCertificateDN(userDN);
+        setCertificateDN( userDN );
         if (fqan!=null && fqan.length()>0)
             setVoFQAN(new FQAN(fqan));
+    }
+    
+    /**
+     * @param user
+     * @return true if user DN element matches
+     */
+    public int compareDn(GridUser user) {
+    	return this.certificateDN.compareToIgnoreCase( user.getCertificateDN() );
+    }
+    
+    /**
+     * @param userDn
+     * @return true if user DN element matches
+     */
+    public int compareDn(String userDn) {
+    	return this.certificateDN.compareToIgnoreCase( removeSpaces(userDn) );
     }
     
     /**
@@ -45,7 +61,7 @@ public class GridUser {
      */
     public boolean equals(Object obj) {
         GridUser user = (GridUser) obj;
-        if ((user.getCertificateDN() == null) ? certificateDN != null : (!user.getCertificateDN().equals(certificateDN))) {
+        if ((user.getCertificateDN() == null) ? certificateDN != null : (user.compareDn(certificateDN)!=0)) {
             if (log.isTraceEnabled()) {
                 log.trace(this + " !equals " + obj + " for different DN");
             }
@@ -53,7 +69,7 @@ public class GridUser {
         }
         if ((user.voFQAN == null) ? voFQAN != null : (!user.voFQAN.equals(voFQAN))) {
             if (log.isTraceEnabled()) {
-                log.trace(this + " !equals " + obj + " for dirrent FQAN");
+                log.trace(this + " !equals " + obj + " for different FQAN");
             }
             return false;
         }
@@ -102,7 +118,7 @@ public class GridUser {
      * @param certificateDN A GRID certificate DN (i.e. "/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi")
      */
     public void setCertificateDN(String certificateDN) {
-        this.certificateDN = certificateDN;
+        this.certificateDN = removeSpaces(certificateDN);
     }
     
     /**
@@ -124,6 +140,22 @@ public class GridUser {
             return "GridID[" + certificateDN + "]";
         }
         return "GridID[" + certificateDN + ", " + voFQAN + "]";
+    }
+    
+    /**
+     * Trim and remove two or more consecutive strings
+     * 
+     * @param str
+     * @return new string
+     */
+    private String removeSpaces(String str) {
+    	if (str!=null) {
+    		str = str.trim();
+	    	String tempStr;
+	    	while ( !(tempStr=str.replaceAll("\\s\\s", " ")).equals(str) )
+	    		str = tempStr;	   	    	
+    	}
+   		return str;
     }
     
 }

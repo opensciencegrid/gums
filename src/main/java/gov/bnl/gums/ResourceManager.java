@@ -11,6 +11,7 @@ import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.HostToGroupMapping;
 import gov.bnl.gums.userGroup.UserGroup;
+import gov.bnl.gums.userGroup.VOMSUserGroup;
 
 import java.util.*;
 
@@ -134,6 +135,19 @@ public class ResourceManager {
         return finalOsgMap;
     }
     
+
+    /**
+     * Generates a fqan to account mapping for a given host and prints it to out.
+     * 
+     * @param hostname
+     * @return
+     */
+    public String generateFqanMapfile(String hostname) {
+        String mapfile;
+        mapfile = generateFqanMapfileImpl(hostname);
+        return mapfile;
+    }    
+    
     /**
      * Generates a grid mapfile for a given host and prints it to out.
      * 
@@ -208,6 +222,57 @@ public class ResourceManager {
     public void updateGroups() {
         updateGroupsImpl();
     }
+    
+    /**
+     * @param hostname
+     * @return
+     */
+    private String generateFqanMapfile(HostToGroupMapping hToGMapping) {   
+       	Configuration conf = hToGMapping.getConfiguration();
+        Iterator iter = hToGMapping.getGroupToAccountMappings().iterator();
+        TreeSet usersInMap = new TreeSet();
+        
+        StringBuffer fqanMapfileBuffer = new StringBuffer("");
+        while (iter.hasNext()) {
+            GroupToAccountMapping gMap = (GroupToAccountMapping) conf.getGroupToAccountMapping( (String)iter.next() );
+            Collection userGroups = gMap.getUserGroups();
+            Iterator userGroupIt = userGroups.iterator();
+            while (userGroupIt.hasNext()) {
+            	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupIt.next() );
+            	if (userGroup instanceof VOMSUserGroup) {
+            		VOMSUserGroup vomsUserGroup = (VOMSUserGroup)userGroup;
+            		Collection accountMappers = gMap.getAccountMappers();
+                    Iterator accountMapperIt = accountMappers.iterator();
+                    while (accountMapperIt.hasNext()) {
+                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
+                    	if (accountMapper instanceof GroupAccountMapper || accountMapper instanceof AccountPoolMapper) {
+	                		String fqan = vomsUserGroup.getVoGroup() + "/" + vomsUserGroup.getRole();
+                        	String account = null;
+	                       	if (accountMapper instanceof GroupAccountMapper) {
+	                    		GroupAccountMapper groupPoolMapper = (GroupAccountMapper)accountMapper;
+	                    		account = groupPoolMapper.getAccountName();
+	                    	}
+	                    	else if (accountMapper instanceof AccountPoolMapper){
+	                    		AccountPoolMapper accountPoolMapper = (AccountPoolMapper)accountMapper;
+	                    		account = accountPoolMapper.getAssignments();
+	                    	}
+	                       	if (account != null) {
+	                       		fqanMapfileBuffer.append('"');
+	                       		fqanMapfileBuffer.append( fqan );
+	                       		fqanMapfileBuffer.append('"');
+	                       		fqanMapfileBuffer.append(' ');
+	                       		fqanMapfileBuffer.append( account );
+	                       		fqanMapfileBuffer.append("\n");
+	                       		break;
+	                       	}
+                    	}
+                    }
+            	}
+            }
+        }
+        
+        return fqanMapfileBuffer.toString();
+    }    
     
     private String generateGridMapfile(HostToGroupMapping hToGMapping, boolean includeFQAN) {
     	Configuration conf = hToGMapping.getConfiguration();
@@ -286,12 +351,20 @@ public class ResourceManager {
         String finalGridmapfile = gridMapfileBuffer.toString();
         return finalGridmapfile;
     }
-    
-    private String generateGridMapfileImpl(String hostname, boolean generateGridMapfile) {
+ 
+    private String generateFqanMapfileImpl(String hostname) {
         Configuration conf = gums.getConfiguration();
         HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
         if (host2GroupMapper == null) return null;
-        String mapfile = generateGridMapfile(host2GroupMapper, generateGridMapfile);
+        String mapfile = generateFqanMapfile(host2GroupMapper);
+        return mapfile;
+    }
+    
+    private String generateGridMapfileImpl(String hostname, boolean includeFqan) {
+        Configuration conf = gums.getConfiguration();
+        HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
+        if (host2GroupMapper == null) return null;
+        String mapfile = generateGridMapfile(host2GroupMapper, includeFqan);
         return mapfile;
     }
     
@@ -343,7 +416,7 @@ public class ResourceManager {
             public int compare(Object o1, Object o2) {
                 GridUser user1 = (GridUser) o1;
                 GridUser user2 = (GridUser) o2;
-                return user1.getCertificateDN().compareTo(user2.getCertificateDN());
+                return user1.compareDn(user2);
             }
         };
     }

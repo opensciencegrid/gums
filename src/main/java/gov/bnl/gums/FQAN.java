@@ -72,7 +72,7 @@ public class FQAN {
     public boolean equals(Object obj) {
         if (obj == null) return false;
         FQAN fqan2 = (FQAN) obj;
-        return (fqan2.fqan == null) ? fqan == null : fqan2.fqan.equals(fqan);
+        return (fqan2.fqan == null) ? fqan == null : fqan2.fqan.equalsIgnoreCase(fqan);
     }
 
     /**
