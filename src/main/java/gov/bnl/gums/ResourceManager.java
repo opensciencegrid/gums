@@ -255,6 +255,8 @@ public class ResourceManager {
 	                    	else if (accountMapper instanceof AccountPoolMapper){
 	                    		AccountPoolMapper accountPoolMapper = (AccountPoolMapper)accountMapper;
 	                    		account = accountPoolMapper.getAssignments();
+	                    		if (account==null || account.length()==0)
+	                    			account = "null";
 	                    	}
 	                       	if (account != null) {
 	                       		fqanMapfileBuffer.append('"');
