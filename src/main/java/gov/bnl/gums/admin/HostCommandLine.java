@@ -21,6 +21,8 @@ public class HostCommandLine extends GUMSCommandLine {
             "Generate OSG-user-VO-map.txt for this host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateGridMapfile",
             "Generate grid-mapfile for this host.");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateFqanMapFile",
+        	"Generate FQAN-mapfile for a given service/host .");        
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateVoGridMapfile",
     		"Generate a VO grid-mapfile for a given service/host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.MapUser",
