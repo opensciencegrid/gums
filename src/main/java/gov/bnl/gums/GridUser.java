@@ -42,6 +42,8 @@ public class GridUser {
      * @return true if user DN element matches
      */
     public int compareDn(GridUser user) {
+		if (this.certificateDN == null || user.certificateDN == null)
+			return (this.certificateDN==user.certificateDN ? 0 : (user.certificateDN==null ? -1: 1));
     	return this.certificateDN.compareToIgnoreCase( user.getCertificateDN() );
     }
     
@@ -50,7 +52,9 @@ public class GridUser {
      * @return true if user DN element matches
      */
     public int compareDn(String userDn) {
-    	return this.certificateDN.compareToIgnoreCase( removeSpaces(userDn) );
+		if (this.certificateDN == null || userDn == null)
+			return (this.certificateDN==userDn ? 0 : (userDn==null ? -1: 1));
+    	return this.certificateDN.compareToIgnoreCase( userDn );
     }
     
     /**
