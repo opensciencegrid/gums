@@ -41,7 +41,7 @@ Generates the FQAN-mapfile relative to the given service.
       </tr>  
       <tr>
         <td style="text-align: right;">NOTE: </td>
-        <td>Only VOMS user groups and group / pool account mappers will be included</td>
+        <td>Only VOMS user groups and group and pool account mappers will be included</td>
       </tr>
       <tr>
         <td colspan="2" rowspan="1">
