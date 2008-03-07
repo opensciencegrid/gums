@@ -212,7 +212,10 @@ public class GUMSAPIImpl implements GUMSAPI {
     
     public String getPoolAccountAssignments(String accountPoolMapperName) {
     	if (hasReadAllAccess(currentUser(), null)) {
-    		return ((AccountPoolMapper)gums().getConfiguration().getAccountMapper(accountPoolMapperName)).getAssignments();
+    		if (gums().getConfiguration().getAccountMapper(accountPoolMapperName) instanceof AccountPoolMapper)
+    			return ((AccountPoolMapper)gums().getConfiguration().getAccountMapper(accountPoolMapperName)).getAssignments();
+    		else
+    			return "";
     	}
     	else {
             gumsResourceAdminLog.info(logUserAccess() + "Failed to get pool account assignments because user doesn't have administrative access");
@@ -698,8 +701,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 	        Collection readAllUserGroups = gums().getConfiguration().getReadAllUserGroups();
 	        Iterator it = readAllUserGroups.iterator();
 	        while (it.hasNext()) {
-	        	UserGroup userGroupManager = (UserGroup)it.next();
-	        	if (userGroupManager.isInGroup(user))
+	        	UserGroup userGroup = (UserGroup)it.next();
+	        	if (userGroup.isInGroup(user))
 	        		return true;
 	        }
         }
@@ -715,8 +718,8 @@ public class GUMSAPIImpl implements GUMSAPI {
         Collection readSelfUserGroups = gums().getConfiguration().getReadSelfUserGroups();
         Iterator it = readSelfUserGroups.iterator();
         while (it.hasNext()) {
-        	UserGroup userGroupManager = (UserGroup)it.next();
-        	if (userGroupManager.isInGroup(currentUser))
+        	UserGroup userGroup = (UserGroup)it.next();
+        	if (userGroup.isInGroup(currentUser))
         		return true;
         }
         return false;

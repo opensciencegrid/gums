@@ -30,14 +30,6 @@ public interface AccountPoolMapperDB {
     void addAccount(String account);
     
     /** 
-     * Removes account from the pool of free accounts.
-     * 
-     * @param account the account to be removed
-     * @return if account was removed
-     */
-    boolean removeAccount(String account);
-    
-    /** 
      * Assigns a new account from the pool to the user. If the user is already
      * mapped, will throw an exception.
      * 
@@ -46,6 +38,20 @@ public interface AccountPoolMapperDB {
      * @return the account or null if no more accounts are available
      */
     String assignAccount(String userDN);
+    
+    /**
+     * 
+     * @return whether changes require a cache refresh
+     */
+    boolean needsCacheRefresh();
+    
+    /** 
+     * Removes account from the pool of free accounts.
+     * 
+     * @param account the account to be removed
+     * @return if account was removed
+     */
+    boolean removeAccount(String account);
     
     /** Retrieves the account associated to the Grid identity.
      * 
@@ -67,21 +73,21 @@ public interface AccountPoolMapperDB {
      * @return a Map between the userDN (String) as the key and the account (String).
      */
     Map retrieveReverseAccountMap();
-    
+
     /** 
-     * Retrieve the list of account not in use since the given date.
+     * Retrieve the list of accounts not in use since the given date.
      * 
      * @param date the time since the accounts haven't been used.
      * @return a list of String with the accounts
      */
     List retrieveUsersNotUsedSince(Date date);
-
-    /** 
-     * Removes user from the mapping, and renders it available to the pool.
+    
+    /**
+     * Set when cache has been refreshed
      * 
-     * @param user the user that shouldn't be mapped anymore
+     * @param value
      */
-    void unassignUser(String user);
+    void setNeedsCacheRefresh(boolean value);
     
     /** 
      * Unassigns whatever user is assigned to this account from the account mapping
@@ -90,4 +96,11 @@ public interface AccountPoolMapperDB {
      * @param account that should be unassigned
      */
     void unassignAccount(String account);
+    
+    /** 
+     * Removes user from the mapping, and renders it available to the pool.
+     * 
+     * @param user the user that shouldn't be mapped anymore
+     */
+    void unassignUser(String user);
 }

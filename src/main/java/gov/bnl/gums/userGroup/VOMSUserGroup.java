@@ -372,6 +372,7 @@ public class VOMSUserGroup extends UserGroup {
             return entries;
         } catch (Throwable e) {
             log.error("Couldn't retrieve VOMS users: ", e);
+            System.out.println(e);
             throw new RuntimeException("Couldn't retrieve users from VOMS server: " + e.getMessage(), e);
         }
     }

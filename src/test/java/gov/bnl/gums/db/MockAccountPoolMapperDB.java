@@ -48,6 +48,10 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
         return account;
     }
     
+    public boolean needsCacheRefresh() {
+    	return true;
+    }
+    
     public boolean removeAccount(String account) {
     	Iterator it = freeAccounts.iterator();
     	boolean wasRemoved = false;
@@ -117,6 +121,9 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
         return Collections.unmodifiableList(oldUsers);
     }
  
+    public void setNeedsCacheRefresh(boolean value) {
+    }
+    
     public void unassignAccount(String account) {
     	String user = (String)retrieveReverseAccountMap().get(account);
     	if (!user.equals(""))

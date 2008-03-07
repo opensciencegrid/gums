@@ -87,7 +87,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 			}
 		}
 	}
-
+	
 	public String assignAccount(String userDN) {
 		DirContext context = factory.retrieveContext();
 		String account = null;
@@ -155,7 +155,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 					+ "' didn't exist, and it was created");
 		}
 	}
-
+	
 	public void createMapping(String userDN, String account) {
 		factory.addMapEntry(userDN, account, map, mapDN);
 	}
@@ -177,6 +177,10 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		} finally {
 			factory.releaseContext(context);
 		}
+	}
+
+	public boolean needsCacheRefresh() {
+		return true;
 	}
 
 	public boolean removeAccount(String account) {
@@ -307,6 +311,9 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	public java.util.List retrieveUsersNotUsedSince(java.util.Date date) {
 		throw new UnsupportedOperationException(
 				"retrieveUsersNotUsedSince is not supported anymore");
+	}
+
+	public synchronized void setNeedsCacheRefresh(boolean value) {
 	}
 
 	public void unassignAccount(String account) {

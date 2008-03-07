@@ -66,6 +66,10 @@ public class LocalPersistenceFactory extends PersistenceFactory {
             }
         }
         
+        public boolean needsCacheRefresh() {
+        	return true;
+        }
+        
         public boolean removeAccount(String account) {
         	return db.removeAccount(account);
         }
@@ -88,6 +92,9 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 
         public List retrieveUsersNotUsedSince(Date date) {
             return db.retrieveUsersNotUsedSince(date);
+        }
+        
+        synchronized public void setNeedsCacheRefresh(boolean value) {
         }
 
         public void unassignAccount(String account) {

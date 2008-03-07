@@ -6,6 +6,8 @@
 
 package gov.bnl.gums.account;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -36,6 +38,8 @@ public class AccountPoolMapper extends AccountMapper {
     private AccountPoolMapperDB db;
     private String persistenceFactory = "";
 	private String accountPool = "";
+	private String assignmentString = "";
+	private String assignments = "";
     
     public AccountPoolMapper() {
     	super();
@@ -79,35 +83,59 @@ public class AccountPoolMapper extends AccountMapper {
      * @return String representation of how many accounts are assigned in database for each root account
      */
     public String getAssignments() {
-    	String retStr = new String();
-    	Map accountReverseMap = getDB().retrieveReverseAccountMap();
-    	TreeMap accountRoots = new TreeMap();
-    	Iterator it = accountReverseMap.keySet().iterator();
-    	while (it.hasNext()) {
-    		String account = (String)it.next();
-    		String accountRoot = getRoot(account);
-    		Integer[] stats = (Integer[])accountRoots.get(accountRoot);
-    		if (stats==null) {
-    			stats = new Integer[2];
-    			stats[0] = new Integer(1); // total
-   				stats[1] = new Integer(!accountReverseMap.get(account).equals("")?1:0); // assigned
-    		} else {
-    			stats[0] = new Integer(stats[0].intValue() + 1);
+		if (getDB().needsCacheRefresh()) {
+	    	String retStr = new String();
+
+	    	Map accountReverseMap = getDB().retrieveReverseAccountMap();
+	    	TreeMap accountRoots = new TreeMap();
+	    	Iterator it = accountReverseMap.keySet().iterator();
+	    	while (it.hasNext()) {
+	    		String account = (String)it.next();
+	    		String accountRoot = getRoot(account);
+	    		String accountNumber = getNumber(account);
+	    		Object[] stats = (Object[])accountRoots.get(accountRoot);
+	    		if (stats==null) {
+	    			stats = new Object[3];
+	    			stats[0] = new Integer(0); // total
+	   				stats[1] = new Integer(0); // assigned
+	   				stats[2] = new ArrayList(); // number list
+	    		}
+    			stats[0] = new Integer(((Integer)stats[0]).intValue() + 1); // total
     			if (!accountReverseMap.get(account).equals(""))
-    				stats[1] = new Integer(stats[1].intValue() + 1);
-    		}
-    		accountRoots.put(accountRoot, stats);
+    				stats[1] = new Integer(((Integer)stats[1]).intValue() + 1); // assigned
+   				((ArrayList)stats[2]).add(accountNumber); // number list
+	    		accountRoots.put(accountRoot, stats);
+	    	}
+	    	it = accountRoots.keySet().iterator();
+	    	while (it.hasNext()) {
+	    		String accountRoot = (String)it.next();
+	    		retStr += accountRoot;
+	    		ArrayList numbers = (ArrayList)((Object[])accountRoots.get(accountRoot))[2];
+	    		Collections.sort(numbers);
+	    		Iterator numIt = numbers.iterator();
+	    		String lastNumber = null;
+	    		while(numIt.hasNext()) {
+	    			String number = (String)numIt.next();
+	    			if(lastNumber==null)
+    					retStr += number;
+	    			else if(greaterThanOne(lastNumber, number))
+    					retStr += "-" + lastNumber + "," + number;
+	    			else if(!numIt.hasNext())
+	    				retStr += "-" + number;
+	    			lastNumber = number;
+	    		}
+	    		retStr += "(" + 
+	    			((Object[])accountRoots.get(accountRoot))[1] + "/" + 
+	    			((Object[])accountRoots.get(accountRoot))[0] + ")";
+	    		if (it.hasNext())
+	    			retStr += ", ";
+	    	}
+	    	getDB().setNeedsCacheRefresh(false);
+	    	assignments = retStr;
+	    	return retStr;
     	}
-    	it = accountRoots.keySet().iterator();
-    	while (it.hasNext()) {
-    		String accountRoot = (String)it.next();
-    		retStr += accountRoot + "(" + 
-    			((Integer[])accountRoots.get(accountRoot))[1] + "/" + 
-    			((Integer[])accountRoots.get(accountRoot))[0] + ")";
-    		if (it.hasNext())
-    			retStr += ", ";
-    	}
-    	return retStr;
+		else 
+			return assignments;
     }
  
     public String getPersistenceFactory() {
@@ -158,5 +186,22 @@ public class AccountPoolMapper extends AccountMapper {
     	while (i<len && lower.charAt(i)!=upper.charAt(i))
     		i++;
     	return new String( account.substring(0,i) );
+    }
+    
+    private static String getNumber(String account) {
+    	String upper = account.toUpperCase();
+    	String lower = account.toLowerCase();
+    	int i = 0, len = lower.length();
+    	while (i<len && lower.charAt(i)!=upper.charAt(i))
+    		i++;
+    	return new String( account.substring(i) );
+    }    
+    
+    private static boolean greaterThanOne(String smaller, String larger) {
+    	if (smaller.length() != larger.length())
+    		return true;
+    	int i1 = Integer.parseInt(smaller);
+    	int i2 = Integer.parseInt(larger);
+    	return (i2 > i1+1);
     }
 }

@@ -11,11 +11,16 @@
 package gov.bnl.gums.db;
 
 
-import java.util.*;
-
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
 
-import net.sf.hibernate.*;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.hibernate.Query;
+import net.sf.hibernate.Session;
+import net.sf.hibernate.Transaction;
 import net.sf.hibernate.type.StringType;
 import net.sf.hibernate.type.Type;
 
@@ -30,6 +35,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
     private Log log = LogFactory.getLog(HibernateAccountMapperDB.class);
     private HibernatePersistenceFactory persistenceFactory;
     private String map;
+    private boolean needsCacheRefresh = true;
     
     /** Creates a new instance of HibernateMapping */
     public HibernateAccountMapperDB(HibernatePersistenceFactory persistenceFactory, String map) {
@@ -115,7 +121,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             }
         }
     }
-    
+
     public void createMapping(String userDN, String account) {
         Session session = null;
         Transaction tx = null;
@@ -152,41 +158,11 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             }
         }
     }
-
-    public boolean removeMapping(String userDN) {
-        Session session = null;
-        Transaction tx = null;
-        try {
-            log.trace("Removing mapping from map '" + map + "' for DN '" + userDN + "'");
-            session = persistenceFactory.retrieveSessionFactory().openSession();
-            tx = session.beginTransaction();
-            boolean result = removeMapping(session, tx, userDN);
-            tx.commit();
-            return result;
-        // Handles when transaction goes wrong...
-        } catch (Exception e) {
-            log.error("Couldn't remove mapping from '" + map + "' for DN '" + userDN + "'", e);
-            if (tx != null) {
-                try {
-                    tx.rollback();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: rollback failed", e1);
-                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
-                }
-            }
-            throw new RuntimeException("Database error: " + e.getMessage(), e);
-        } finally {
-            if (session != null) {
-                try {
-                    session.close();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: couldn't close session", e1);
-                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
-                }
-            }
-        }
-    }
     
+    public boolean needsCacheRefresh() {
+    	return needsCacheRefresh;
+    }
+
     public boolean removeAccount(String account) {
         Session session = null;
         Transaction tx = null;
@@ -220,7 +196,41 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             }
         }
     }
-    
+        
+    public boolean removeMapping(String userDN) {
+        Session session = null;
+        Transaction tx = null;
+        try {
+            log.trace("Removing mapping from map '" + map + "' for DN '" + userDN + "'");
+            session = persistenceFactory.retrieveSessionFactory().openSession();
+            tx = session.beginTransaction();
+            boolean result = removeMapping(session, tx, userDN);
+            tx.commit();
+            return result;
+        // Handles when transaction goes wrong...
+        } catch (Exception e) {
+            log.error("Couldn't remove mapping from '" + map + "' for DN '" + userDN + "'", e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: rollback failed", e1);
+                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
+                }
+            }
+            throw new RuntimeException("Database error: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: couldn't close session", e1);
+                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
+                }
+            }
+        }
+    }
+
     public String retrieveAccount(String userDN) {
         Session session = null;
         Transaction tx = null;
@@ -302,7 +312,77 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             }
         }
     }
-        
+
+    public String retrieveMapping(String userDN) {
+        Session session = null;
+        Transaction tx = null;
+        try {
+            log.trace("Retrieving mapping from map '" + map + "' for DN '" + userDN + "'");
+            session = persistenceFactory.retrieveSessionFactory().openSession();
+            tx = session.beginTransaction();
+            HibernateMapping map = retrieveMapping(session, tx, userDN);
+            tx.commit();
+            if (map == null) return null;
+            return map.getAccount();
+        // Handles when transaction goes wrong...
+        } catch (Exception e) {
+            log.error("Couldn't retrieve mapping from '" + map + "' for DN '" + userDN + "'", e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: rollback failed", e1);
+                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
+                }
+            }
+            throw new RuntimeException("Database error: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: couldn't close session", e1);
+                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
+                }
+            }
+        }
+    }
+    
+    public java.util.List retrieveMappings() {
+        Session session = null;
+        Transaction tx = null;
+        try {
+            // Retrieving members from the db
+            log.trace("Retrieving mappings from map " + map);
+            session = persistenceFactory.retrieveSessionFactory().openSession();
+            tx = session.beginTransaction();
+            List mappings = retrieveMappings(session, tx);
+            tx.commit();
+            return mappings;
+        // Handles when transaction goes wrong...
+        } catch (Exception e) {
+            log.error("Couldn't retrieve members from map " + map, e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: rollback failed", e1);
+                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
+                }
+            }
+            throw new RuntimeException("Database error: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: couldn't close session", e1);
+                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
+                }
+            }
+        }
+    }
+
     public java.util.Map retrieveReverseAccountMap() {
         Session session = null;
         Transaction tx = null;
@@ -344,118 +424,14 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
                 }
             }
         }
-    }    
+    }
     
-    public String retrieveMapping(String userDN) {
-        Session session = null;
-        Transaction tx = null;
-        try {
-            log.trace("Retrieving mapping from map '" + map + "' for DN '" + userDN + "'");
-            session = persistenceFactory.retrieveSessionFactory().openSession();
-            tx = session.beginTransaction();
-            HibernateMapping map = retrieveMapping(session, tx, userDN);
-            tx.commit();
-            if (map == null) return null;
-            return map.getAccount();
-        // Handles when transaction goes wrong...
-        } catch (Exception e) {
-            log.error("Couldn't retrieve mapping from '" + map + "' for DN '" + userDN + "'", e);
-            if (tx != null) {
-                try {
-                    tx.rollback();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: rollback failed", e1);
-                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
-                }
-            }
-            throw new RuntimeException("Database error: " + e.getMessage(), e);
-        } finally {
-            if (session != null) {
-                try {
-                    session.close();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: couldn't close session", e1);
-                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
-                }
-            }
-        }
-    }
-
-    public java.util.List retrieveMappings() {
-        Session session = null;
-        Transaction tx = null;
-        try {
-            // Retrieving members from the db
-            log.trace("Retrieving mappings from map " + map);
-            session = persistenceFactory.retrieveSessionFactory().openSession();
-            tx = session.beginTransaction();
-            List mappings = retrieveMappings(session, tx);
-            tx.commit();
-            return mappings;
-        // Handles when transaction goes wrong...
-        } catch (Exception e) {
-            log.error("Couldn't retrieve members from map " + map, e);
-            if (tx != null) {
-                try {
-                    tx.rollback();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: rollback failed", e1);
-                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
-                }
-            }
-            throw new RuntimeException("Database error: " + e.getMessage(), e);
-        } finally {
-            if (session != null) {
-                try {
-                    session.close();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: couldn't close session", e1);
-                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
-                }
-            }
-        }
-    }
-
     public java.util.List retrieveUsersNotUsedSince(java.util.Date date) {
         throw new UnsupportedOperationException("retrieveUsersNotUsedSince is not supported anymore");
     }
 
-    public void unassignUser(String userDN) {
-        Session session = null;
-        Transaction tx = null;
-        try {
-            log.trace("Unassign account for user '" + userDN + "' from pool '" + map + "'");
-            session = persistenceFactory.retrieveSessionFactory().openSession();
-            tx = session.beginTransaction();
-            Query q;
-            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ? ORDER BY m.account LIMIT 1");
-            q.setString(0, map);
-            q.setString(1, userDN);
-            HibernateMapping mapping = (HibernateMapping) q.uniqueResult();
-            mapping.setDn(null);
-            tx.commit();
-        // Handles when transaction goes wrong...
-        } catch (Exception e) {
-            log.error("Couldn't unassign account for user '" + userDN + "' from pool '" + map + "'", e);
-            if (tx != null) {
-                try {
-                    tx.rollback();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: rollback failed", e1);
-                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
-                }
-            }
-            throw new RuntimeException("Database error: " + map + " " + userDN + " " + e.getMessage(), e);
-        } finally {
-            if (session != null) {
-                try {
-                    session.close();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: couldn't close session", e1);
-                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
-                }
-            }
-        }
+    public synchronized void setNeedsCacheRefresh(boolean value) {
+    	needsCacheRefresh = value;
     }
     
     public void unassignAccount(String account) {
@@ -499,25 +475,66 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             }
         }
     }
-
+    
+    public void unassignUser(String userDN) {
+        Session session = null;
+        Transaction tx = null;
+        try {
+            log.trace("Unassign account for user '" + userDN + "' from pool '" + map + "'");
+            session = persistenceFactory.retrieveSessionFactory().openSession();
+            tx = session.beginTransaction();
+            Query q;
+            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ? ORDER BY m.account LIMIT 1");
+            q.setString(0, map);
+            q.setString(1, userDN);
+            HibernateMapping mapping = (HibernateMapping) q.uniqueResult();
+            mapping.setDn(null);
+            tx.commit();
+        // Handles when transaction goes wrong...
+        } catch (Exception e) {
+            log.error("Couldn't unassign account for user '" + userDN + "' from pool '" + map + "'", e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: rollback failed", e1);
+                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
+                }
+            }
+            throw new RuntimeException("Database error: " + map + " " + userDN + " " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: couldn't close session", e1);
+                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
+                }
+            }
+        }
+    }
+    
     private void createMapping(Session session, Transaction tx, String userDN, String account) throws Exception {
 	    HibernateMapping hMapping = new HibernateMapping();
 	    hMapping.setMap(map);
 	    hMapping.setDn(userDN);
 	    hMapping.setAccount(account);
 	    session.save(hMapping);
+        setNeedsCacheRefresh(true);
+    }
+
+    private boolean removeAccount(Session session, Transaction tx, String account) throws Exception {
+        int n = session.delete("FROM HibernateMapping m WHERE m.map = ? AND m.account = ?", new Object[] {map, account}, new Type[] {new StringType(), new StringType()});
+        setNeedsCacheRefresh(true);
+        return n > 0;
     }
 
     private boolean removeMapping(Session session, Transaction tx, String userDN) throws Exception {
         int n = session.delete("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ?", new Object[] {map, userDN}, new Type[] {new StringType(), new StringType()});
+        setNeedsCacheRefresh(true);
         return n > 0;
-    }
+    }    
     
-    private boolean removeAccount(Session session, Transaction tx, String account) throws Exception {
-        int n = session.delete("FROM HibernateMapping m WHERE m.map = ? AND m.account = ?", new Object[] {map, account}, new Type[] {new StringType(), new StringType()});
-        return n > 0;
-    }
-
     private HibernateMapping retrieveMapping(Session session, Transaction tx, String userDN) throws Exception{
         Query q;
         q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ?");

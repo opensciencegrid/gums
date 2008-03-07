@@ -44,7 +44,7 @@ public class GridUser {
     public int compareDn(GridUser user) {
 		if (this.certificateDN == null || user.certificateDN == null)
 			return (this.certificateDN==user.certificateDN ? 0 : (user.certificateDN==null ? -1: 1));
-    	return this.certificateDN.compareToIgnoreCase( user.getCertificateDN() );
+    	return this.compareDn( user.getCertificateDN() );
     }
     
     /**
@@ -54,7 +54,7 @@ public class GridUser {
     public int compareDn(String userDn) {
 		if (this.certificateDN == null || userDn == null)
 			return (this.certificateDN==userDn ? 0 : (userDn==null ? -1: 1));
-    	return this.certificateDN.compareToIgnoreCase( userDn );
+    	return this.certificateDN.compareTo( userDn );//compareToIgnoreCase( userDn );
     }
     
     /**
@@ -122,7 +122,7 @@ public class GridUser {
      * @param certificateDN A GRID certificate DN (i.e. "/DC=org/DC=doegrids/OU=People/CN=Gabriele Carcassi")
      */
     public void setCertificateDN(String certificateDN) {
-        this.certificateDN = removeSpaces(certificateDN);
+        this.certificateDN = certificateDN;//removeSpaces(certificateDN);
     }
     
     /**
