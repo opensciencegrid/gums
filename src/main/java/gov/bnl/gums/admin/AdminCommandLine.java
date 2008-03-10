@@ -22,7 +22,7 @@ public class AdminCommandLine extends GUMSCommandLine {
             "Generate OSG-user-VO-map for a given service/host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateGridMapfile",
             "Generate grid-mapfile for a given service/host.");
-        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateFqanMapFile",
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateFqanMapfile",
         	"Generate FQAN-mapfile for a given service/host .");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateVoGridMapfile",
         	"Generate a VO grid-mapfile for a given service/host.");
