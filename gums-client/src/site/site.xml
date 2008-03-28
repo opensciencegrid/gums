@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="GUMS">
+    <bannerLeft>
+        <name>GUMS</name>
+    </bannerLeft>
+    <body>
+        <links>
+            <item name="GUMS home" href="http://grid.racf.bnl.gov/GUMS"/>
+        </links>
+		${reports}
+    </body>
+</project>
