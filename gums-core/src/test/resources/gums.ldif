@@ -1,0 +1,65 @@
+dn: dc=griddev,dc=org
+dc: griddev
+description: Root dc 
+objectClass: dcObject
+objectClass: organization
+o: Example, Inc.
+
+dn: ou=People,dc=griddev,dc=org
+ou: People
+description: All people in organization
+objectClass: organizationalUnit
+
+dn: ou=Group,dc=griddev,dc=org
+ou: Group
+description: All groups in organization
+objectClass: organizationalUnit
+
+dn: ou=GUMS,dc=griddev,dc=org
+ou: GUMS
+description: All groups in organization
+objectClass: organizationalUnit
+
+dn: cn=griddevGroup,ou=Group,dc=griddev,dc=org
+objectClass: posixGroup
+cn: griddevGroup
+gidNumber: 1001
+memberUid: jsmith
+memberUid: jdoe
+
+dn: cn=John Smith,ou=People,dc=griddev,dc=org
+uid: jsmith
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 500
+gidNumber: 501
+homeDirectory: /home/jsmith
+cn: John Smith
+gecos: John Smith
+description: subject=/DC=org/DC=griddev/OU=People/CN=John Smith
+
+dn: cn=Jane Doe 12345,ou=People,dc=griddev,dc=org
+uid: jdoe
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 502
+homeDirectory: /home/jdoe
+cn: Jane Doe 12345
+gecos: Jane Doe
+description: subject=/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345
+

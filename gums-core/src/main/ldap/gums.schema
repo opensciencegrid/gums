@@ -1,0 +1,49 @@
+##
+## Robert Petkus - 9/21/05
+## BNL's OID is 467, RCF/ACF OID is 4
+
+attributetype ( 1.3.6.1.4.1.467.4.1.1 NAME 'group'
+       DESC 'GUMS User Group'
+       EQUALITY caseIgnoreMatch
+       SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255} )
+
+attributetype ( 1.3.6.1.4.1.467.4.1.2 NAME 'map'
+       DESC 'GUMS User Account Mapping'
+       EQUALITY caseIgnoreMatch
+       SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255} )
+
+attributetype ( 1.3.6.1.4.1.467.4.1.3 NAME 'user'
+       DESC 'GUMS User ID'
+       EQUALITY caseIgnoreMatch
+       SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255} )
+
+attributetype ( 1.3.6.1.4.1.467.4.1.4 NAME 'account'
+       DESC 'GUMS Account'
+       EQUALITY caseIgnoreMatch
+       SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255} SINGLE-VALUE )
+
+objectclass ( 1.3.6.1.4.1.467.4.2.1
+       NAME 'GUMStruct'
+       DESC 'Grid User Management System'
+       SUP top STRUCTURAL
+       MAY ( group $ map $ account $ user ) )
+
+objectclass ( 1.3.6.1.4.1.467.4.2.2
+       NAME 'GUMSGroup'
+       DESC 'GUMS group container'
+       SUP top AUXILIARY
+       MUST group
+       MAY  user )
+
+objectclass ( 1.3.6.1.4.1.467.4.2.3
+       NAME 'GUMSMap'
+       DESC 'GUMS Map container'
+       SUP top AUXILIARY
+       MUST map )
+
+objectclass ( 1.3.6.1.4.1.467.4.2.4
+       NAME 'GUMSAccount'
+       DESC 'GUMS Account container'
+       SUP top AUXILIARY
+       MAY ( account $ user) ) 
+
