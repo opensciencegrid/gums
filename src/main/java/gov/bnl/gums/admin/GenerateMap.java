@@ -19,7 +19,7 @@ public abstract class GenerateMap extends RemoteCommand {
     protected org.apache.commons.cli.Options buildOptions() {
         Options options = new Options();
 
-        Option mapfile = new Option("g", "GUMS URL", true,
+        Option mapfile = new Option("g", "gumsUrl", true,
     		"Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
         options.addOption(mapfile);
         

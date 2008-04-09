@@ -32,12 +32,12 @@ public class MapUser extends RemoteCommand {
     protected org.apache.commons.cli.Options buildOptions() {
         Options options = new Options();
         
-        Option gumsUrl = new Option("g", "GUMS URL", true,
+        Option gumsUrl = new Option("g", "gumsUrl", true,
                 "Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
 
         options.addOption(gumsUrl);
         
-        Option host = new Option("s", "service", true,
+        Option host = new Option("s", "serv", true,
                 "DN of the service. When using gums-host, it defaults to the host credential DN.");
 
         options.addOption(host);

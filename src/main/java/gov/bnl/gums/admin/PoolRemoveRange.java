@@ -28,7 +28,7 @@ public class PoolRemoveRange extends RemoteCommand {
     protected org.apache.commons.cli.Options buildOptions() {
         Options options = new Options();
 
-        Option gumsUrl = new Option("g", "GUMS URL", true,
+        Option gumsUrl = new Option("g", "gumsUrl", true,
         "Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
         options.addOption(gumsUrl);
         
