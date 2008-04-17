@@ -219,7 +219,7 @@
 						name='{@name}'
 						description=''
 						persistenceFactory='{@persistenceFactory}'
-						access='write'
+						access='read all'
 					/>
 				</xsl:if>	
 			</xsl:for-each>
