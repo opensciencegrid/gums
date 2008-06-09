@@ -114,7 +114,7 @@
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/edg/edg-voms-admin-api/unknown"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/edg/edg-java-security-trustmanager/unknown"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/mysql/mysql-connector-java/3.0.11"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/glite/bcprov/jdk14-122"/>
+							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/glite/bcprov/jdk15-137"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/glite/glite-security-util-java/1.0.0dev"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/glite/glite-security-trustmanager/1.6.3dev"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/opensciencegrid/privilege/1.0.1.3"/>
@@ -401,7 +401,7 @@
         <dependency>
             <groupId>glite</groupId>
             <artifactId>bcprov</artifactId>
-            <version>jdk14-122</version>
+            <version>jdk15-137</version>
         </dependency>
         <dependency>
             <groupId>glite</groupId>
