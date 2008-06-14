@@ -37,7 +37,14 @@ public class GridUser {
             setVoFQAN(new FQAN(fqan));
     }
     
-    /**
+    public GridUser(String userDN, String fqan, String issuerDN) {
+        setCertificateDN( userDN );
+	setIssuerDN( issuerDN  );
+        if (fqan!=null && fqan.length()>0)
+            setVoFQAN(new FQAN(fqan));	
+    }
+
+  /**
      * @param user
      * @return true if user DN element matches
      */
@@ -91,7 +98,7 @@ public class GridUser {
     public String getCertificateDN() {
         return this.certificateDN;
     }
-    
+
     /**
      * Retrieve the VOMS Fully Qualified Attribute name.
      * 

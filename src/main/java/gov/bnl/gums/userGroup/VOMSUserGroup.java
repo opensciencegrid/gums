@@ -107,7 +107,10 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     public java.util.List getMemberList() {
-        return getVoDB().retrieveMembers();
+	if (getVoDB()!=null)
+        	return getVoDB().retrieveMembers();
+	else
+		return null;
     }
     
     public String getRemainderUrl() {
@@ -119,7 +122,10 @@ public class VOMSUserGroup extends UserGroup {
 	}
     
     public String getUrl() {
-    	return getVoObject().getBaseUrl() + remainderUrl;
+	if (getVoObject()!=null)
+    		return getVoObject().getBaseUrl() + remainderUrl;
+	else
+		return "";
     }
     
     /**
@@ -185,7 +191,7 @@ public class VOMSUserGroup extends UserGroup {
         
         // If the user comes in without FQAN and we accept proxies without it,
         // we simply check whether the DN is in the database
-        if (user.getVoFQAN()==null && isAcceptProxyWithoutFQAN()) {
+        if (user.getVoFQAN()==null && isAcceptProxyWithoutFQAN() && getVoDB()!=null) {
             if (getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan)))
                 return true;
             return false;
@@ -229,7 +235,10 @@ public class VOMSUserGroup extends UserGroup {
         
         // FQAN matches, let's look up if the DN is in the db
         // If not, he's kicked out
-        return getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan));
+	if (getVoDB()!=null)
+        	return getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan));
+	else
+		return true;
     }
 
     /**
@@ -317,16 +326,20 @@ public class VOMSUserGroup extends UserGroup {
     }
 
     public void updateMembers() {
+	if (getVoDB()!=null)
    		getVoDB().loadUpdatedList(retrieveMembers());
     }
     
     private UserGroupDB getVoDB() {
-    	return getVoObject().getDB( getName() );
+	if (getVoObject()!=null)
+    		return getVoObject().getDB( getName() );
+	else
+		return null;
     }
     
     private VomsServer getVoObject() {
     	if (getConfiguration()==null)
-    		throw new RuntimeException("Configuration has not yet been set for this class");    	
+    		throw new RuntimeException("Configuration has not yet been set for this class");
     	return getConfiguration().getVomsServer(vomsServer);
     }
 
@@ -342,6 +355,8 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     private List retrieveMembers() {
+	if (getVoObject()==null)
+		return null;
         Properties p = System.getProperties();
         try {
             setProperties();
@@ -379,18 +394,20 @@ public class VOMSUserGroup extends UserGroup {
     
     private void setProperties() {
     	VomsServer voObject = getVoObject();
-        log.debug( "SSL properties set: sslCertfile='" + voObject.getSslCertfile() + "' sslKey='" + voObject.getSslKey() + "' sslKeyPasswd set:" + (!voObject.getSslKeyPasswd().equals("")) + " sslCAFiles='" + voObject.getSslCAFiles() + "'" ); 
-        if (!voObject.getSslCertfile().equals("")) {
-            System.setProperty("sslCertfile", voObject.getSslCertfile());
-        }
-        if (!voObject.getSslKey().equals("")) {
-            System.setProperty("sslKey", voObject.getSslKey());
-        }
-        if (!voObject.getSslKeyPasswd().equals("")) {
-            System.setProperty("sslKeyPasswd", voObject.getSslKeyPasswd());
-        }
-        if (!voObject.getSslCAFiles().equals("")) {
-            System.setProperty("sslCAFiles", voObject.getSslCAFiles());
-        }
+	if (voObject!=null) {
+        	log.debug( "SSL properties set: sslCertfile='" + voObject.getSslCertfile() + "' sslKey='" + voObject.getSslKey() + "' sslKeyPasswd set:" + (!voObject.getSslKeyPasswd().equals("")) + " sslCAFiles='" + voObject.getSslCAFiles() + "'" ); 
+        	if (!voObject.getSslCertfile().equals("")) {
+            		System.setProperty("sslCertfile", voObject.getSslCertfile());
+        	}
+        	if (!voObject.getSslKey().equals("")) {
+            		System.setProperty("sslKey", voObject.getSslKey());
+        	}
+        	if (!voObject.getSslKeyPasswd().equals("")) {
+           		System.setProperty("sslKeyPasswd", voObject.getSslKeyPasswd());
+        	}
+        	if (!voObject.getSslCAFiles().equals("")) {
+            		System.setProperty("sslCAFiles", voObject.getSslCAFiles());
+        	}
+	}
     }
 }

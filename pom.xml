@@ -326,7 +326,7 @@
         <dependency>
             <groupId>glite</groupId>
             <artifactId>bcprov</artifactId>
-            <version>jdk14-122</version>
+            <version>jdk15-137</version>
         </dependency>
         <dependency>
             <groupId>glite</groupId>

@@ -706,9 +706,13 @@ public class GUMSAPIImpl implements GUMSAPI {
 	        		return true;
 	        }
         }
-        if (hostname!=null)
-        	return user.getCertificateDN().indexOf(hostname) != -1;
-        return false;
+	// return true if user certificate (issuer in reality - see CertToolkit) matches host certificate
+        if (hostname!=null && user.getCertificateDN().indexOf(hostname) != -1)
+		return true;
+	// return true if user certificate (issuer in reality - see CertToolkit) matches any of the hostToGroupMappings
+      	if (hostToGroupMapping(user.getCertificateDN()) != null)
+		return true;  
+	return false;
     }
     
     private boolean hasReadSelfAccess(GridUser currentUser) {
@@ -737,6 +741,18 @@ public class GUMSAPIImpl implements GUMSAPI {
         		return true;
         }
         return false;
+    }
+
+    private HostToGroupMapping hostToGroupMapping(String hostname) {
+        Collection hostToGroupMappers = gums().getConfiguration().getHostToGroupMappings();
+        Iterator it = hostToGroupMappers.iterator();
+        while (it.hasNext()) {
+            HostToGroupMapping hostToGroupMapper = (HostToGroupMapping) it.next();
+            if (hostToGroupMapper.isInGroup(hostname)) {
+                return hostToGroupMapper;
+            }
+        }
+        return null;
     }
     
     private String logUserAccess() {
