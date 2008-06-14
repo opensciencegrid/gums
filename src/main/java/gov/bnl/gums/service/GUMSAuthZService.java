@@ -18,7 +18,6 @@ public class GUMSAuthZService extends AuthorizationServiceBindingSkeleton {
     /** Creates an authorization service using GUMS as the implementation. */
     public GUMSAuthZService() {
         super(new BasicMappingAuthZService(new GUMSAuthZServiceImpl()));
-        gov.bnl.gums.admin.GUMSAPIImpl temp;
     }
     
 }

@@ -50,6 +50,14 @@
 
   	<build>	
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+ 				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>								<target>1.5</target>
+				</configuration>
+			</plugin>
+
 	 		<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
@@ -296,7 +304,7 @@
         <dependency>
             <groupId>glite</groupId>
             <artifactId>bcprov</artifactId>
-            <version>jdk14-122</version>
+            <version>jdk15-137</version>
         </dependency>
         <dependency>
             <groupId>glite</groupId>
@@ -316,8 +324,18 @@
         <dependency>
             <groupId>opensaml</groupId>
             <artifactId>opensaml</artifactId>
-            <version>1.0.1</version>
+            <version>trunk-jdk-1.5</version>
         </dependency>
+        <dependency>
+            <groupId>opensaml</groupId>
+            <artifactId>xmltooling</artifactId>
+            <version>trunk-jdk-1.5</version>        
+        </dependency>
+        <dependency>
+            <groupId>joda</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>1.5.1</version>        
+        </dependency>        
         <dependency>
             <groupId>xml-security</groupId>
             <artifactId>xmlsec</artifactId>

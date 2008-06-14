@@ -381,7 +381,7 @@ else if ("edit".equals(request.getParameter("command"))
 							configuration.getVomsServers().values(), 
 							((VOMSUserGroup)userGroup).getVomsServer(),
 							null,
-							false)%>
+							true)%> (Choose none if FQAN is cryptographically validated at the gatekeeper)
 				</td>
 			</tr>
 			<tr>

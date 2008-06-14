@@ -6,13 +6,24 @@
 
 package gov.bnl.gums.service;
 
-import gov.bnl.gums.admin.GUMSAPI;
-import gov.bnl.gums.admin.GUMSAPIImpl;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+import org.joda.time.DateTime;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+
+import gov.bnl.gums.admin.GUMSAPI;
+import gov.bnl.gums.admin.GUMSAPIImpl;
+
 import org.opensciencegrid.authz.common.GridId;
 import org.opensciencegrid.authz.common.LocalId;
-import org.opensciencegrid.authz.service.GRIDIdentityMappingService;
+import org.opensciencegrid.authz.saml.service.GRIDIdentityMappingService;
 
 /** Implements a GRID Identity Mapping Service by using GUMS logic.
  *
@@ -26,13 +37,14 @@ public class GUMSAuthZServiceImpl implements GRIDIdentityMappingService {
         log.debug("Mapping credentials on '" + gridID.getHostDN() + "' for '" + gridID.getUserDN() + "' coming as '" + gridID.getUserFQAN() + "' authenticated by '" + gridID.getUserFQANIssuer() + "'");
         if (gridID.getHostDN() == null) throw new RuntimeException("The request had a null host");
         String account = gums.mapUser(gridID.getHostDN(), gridID.getUserDN(), gridID.getUserFQAN());
-        log.debug("Denied access");
-        if (account == null)
+        if (account == null) {
+            log.debug("Denied access on '" + gridID.getHostDN() + "' for '" + gridID.getUserDN() + "' with fqan '" + gridID.getUserFQAN() + "'");
             return null;
+        }
+        else
+        	log.debug("Credentials mapped on '" + gridID.getHostDN() + "' for '" + gridID.getUserDN() + "' with fqan '" + gridID.getUserFQAN() + "' to '" + account + "'");
         LocalId id = new LocalId();
         id.setUserName(account);
-        log.debug("Credentials mapped on '" + gridID.getHostDN() + "' to '" + id.getUserName() + "' part of '" + id.getGroupName() + "'");
         return id;
     }
-    
-}
+}    

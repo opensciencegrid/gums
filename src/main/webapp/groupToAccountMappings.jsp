@@ -218,6 +218,8 @@ else if ("edit".equals(request.getParameter("command"))
 <form action="groupToAccountMappings.jsp" method="get">
 	<input type="hidden" name="command" value="">
 	<input type="hidden" name="originalCommand" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalCommand") : request.getParameter("command"))%>">
+	<input type="hidden" name="uGInsertCounter" value="<%=request.getParameter("uGInsertCounter")!=null ? request.getParameter("uGInsertCounter") : ""%>">
+	<input type="hidden" name="aMInsertCounter" value="<%=request.getParameter("aMInsertCounter")!=null ? request.getParameter("aMInsertCounter") : ""%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
@@ -265,58 +267,62 @@ else if ("edit".equals(request.getParameter("command"))
 	
 	// Create multiple user groups
 	int counter = 0;
-	if (g2AMapping!=null) {
-		Collection userGroups = g2AMapping.getUserGroups();
-		Iterator userGroupsIt = userGroups.iterator();
-		while(userGroupsIt.hasNext())
-		{
+	Collection userGroups = g2AMapping.getUserGroups();
+	Iterator userGroupsIt = userGroups.iterator();
+	int lastCounter = userGroups.length();
+	int insertCounter = lastCounter;
+	if (request.getParameter("uGInsertCounter")!=null)
+		insertCounter = Integer.parseInt(request.getParameter("uGInsertCounter"));
+	while(counter <= lastCounter)
+	{
+		out.write("<button type=\"submit\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['uGInsertCounter'].value='"+counter+"';return doSubmit()\">+</button>");
+		int numRepetitions = (insertCounter==counter || insertCounter==lastCounter)?2:1;
+		int repetitionIt = 0;
+		while (repetitionIt++<numRepetitions) {
 			out.write( 
 				ConfigurationWebToolkit.createSelectBox("uG"+counter, 
 					configuration.getUserGroups().values(), 
-					(String)userGroupsIt.next(),
+					((numRepetitions==1 && lastCounter>0) || (numRepetitions==2 && repetitionIt==1 && insertCounter==counter && insertCounter!=lastCounter) || (numRepititions==2 && repetitionIt==0 && insertCounter==lastCounter))?(String)userGroupsIt.next():null,
 					"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
 					true) );
 			counter++;
 		}
 	}
-	out.write( 
-		ConfigurationWebToolkit.createSelectBox("uG"+counter, 
-			configuration.getUserGroups().values(), 
-			null,
-			"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
-			true)+
-			" (validate membership from first successful user group)");
+        out.write("<button type=\"submit\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['uGInsertCounter'].value='"+lastCounter+"';return doSubmit()\">+</button>");
 %>
+			 (validate membership from first successful user group)
 		    </td>
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">Account Mapper(s): </td>
 			<td>
 <%	
-	// Create multiple group to account mappings
+	// Create multiple account mappings
 	counter = 0;
-	if (g2AMapping!=null) {
-		Collection accountMappers = g2AMapping.getAccountMappers();
-		Iterator accountMappersIt = accountMappers.iterator();
-		while(accountMappersIt.hasNext())
-		{
-			out.write( 
-				ConfigurationWebToolkit.createSelectBox("aM"+counter, 
-					configuration.getAccountMappers().values(), 
-					(String)accountMappersIt.next(),
-					"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
-					true) );
-			counter++;
-		}
-	}
-	out.write( 
-		ConfigurationWebToolkit.createSelectBox("aM"+counter, 
-			configuration.getAccountMappers().values(), 
-			null,
-			"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
-			true)+
-			" (get account from first successful account mapper)");
+	Collection accountMappers = g2AMapping.getAccountMappers();
+	Iterator accountMappersIt = accountMappers.iterator();
+        int lastCounter = acountMappers.length();
+        int insertCounter = lastCounter;
+        if (request.getParameter("aMInsertCounter")!=null)
+                insertCounter = Integer.parseInt(request.getParameter("aMInsertCounter"));
+        while(counter <= lastCounter)
+        {
+                out.write("<button type=\"submit\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['aMInsertCounter'].value='"+counter+"';return doSubmit()\">+</button>");
+                int numRepetitions = (insertCounter==counter || insertCounter==lastCounter)?2:1;
+                int repetitionIt = 0;
+                while (repetitionIt++<numRepetitions) {
+                       out.write(
+                              ConfigurationWebToolkit.createSelectBox("aM"+counter,
+                                    configuration.getUserGroups().values(),
+                                    ((numRepetitions==1 && lastCounter>0) || (numRepetitions==2 && repetitionIt==1 && insertCounter==counter && insertCounter!=lastCounter) || (numRepititions==2 && repetitionIt==0 && insertCounter==lastCounter))?(String)userGroupsIt.next():null,
+                                     "onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
+                                     true) );
+                       counter++;
+        	}
+        }
+	out.write("<button type=\"submit\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['aMInsertCounter'].value='"+lastCounter+"';return doSubmit()\">+</button>");
 %>
+                         (map using first successful account mapper)
 			</td>
 		</tr>
 		<tr>

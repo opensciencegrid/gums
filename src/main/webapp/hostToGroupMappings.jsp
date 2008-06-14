@@ -237,6 +237,7 @@ else if ("edit".equals(request.getParameter("command"))
 	<input type="hidden" name="command" value="">
 	<input type="hidden" name="originalName" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalName") : request.getParameter("name"))%>"/>
 	<input type="hidden" name="originalCommand" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalCommand") : request.getParameter("command"))%>">
+	<input type="hidden" name="insertCounter" value="<%=request.getParameter("insertCounter")!=null ? request.getParameter("insertCounter") : ""%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
     		<td nowrap style="text-align: right;">
@@ -271,28 +272,30 @@ else if ("edit".equals(request.getParameter("command"))
 <%
 	// Create multiple group to account mappings
 	int counter = 0;
-	if (cH2GMapping!=null) {
-		Collection g2AMappings = cH2GMapping.getGroupToAccountMappings();
-		Iterator g2AMappingsIt = g2AMappings.iterator();
-		while(g2AMappingsIt.hasNext())
-		{
+	Collection g2AMappings = cH2GMapping.getGroupToAccountMappings();
+	Iterator g2AMappingsIt = g2AMappings.iterator();
+	int lastCounter = g2AMappings.length();
+        int insertCounter = lastCounter;
+        if (request.getParameter("insertCounter")!=null)
+              insertCounter = Integer.parseInt(request.getParameter("insertCounter"));
+		
+	while(counter <= lastCounter) 
+	{
+		out.write("<button type=\"submit\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['insertCounter'].value='"+counter+"';return doSubmit()\">+</button>");
+                int numRepetitions = (insertCounter==counter || insertCounter==lastCounter)?2:1;
+                int repetitionIt = 0;
+                while (repetitionIt++<numRepetitions) {
 			out.write( 
 				ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
 					configuration.getGroupToAccountMappings().values(), 
-					(String)g2AMappingsIt.next(),
+					((numRepetitions==1 && lastCounter>0) || (numRepetitions==2 && repetitionIt==1 && insertCounter!=lastCounter) || (numRepititions==2 && repetitionIt==0 && insertCounter==lastCounter))?(String)g2AMappingsIt.next():null,
 					"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
 					true) );
 			counter++;
 		}
 	}
-	out.write( 
-		ConfigurationWebToolkit.createSelectBox("g2AM"+counter, 
-			configuration.getGroupToAccountMappings().values(), 
-			null,
-			"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
-			true)+
-			" (return account from first successful mapping)");
 %>	
+				(return account from first successful mapping)
 			</td>
 		</tr>
 		<tr>
