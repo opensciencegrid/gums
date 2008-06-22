@@ -67,7 +67,14 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	private String accountField = "uid";
 	private String memberAccountField = "memberUid";
 	private String groupIdField = "gidNumber";
-    
+	private String groupField = "cn";
+	private String peopleTree = "";
+	private String peopleObject = null;
+	private String peopleContext = null;
+	private String groupTree = "";
+	private String groupObject = null;
+	private String groupContext = null; 
+
     /**
      * Create a new ldap persistence factory.  This empty constructor is needed by the XML Digester.
      */
@@ -138,16 +145,16 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * @param groupname the secondary group name (i.e. "usatlas")
      */
     public void addToSecondaryGroup(String account, String groupname) {
-        DirContext context = retrieveContext();
+        DirContext context = retrieveGroupContext();
         try {
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
             NamingEnumeration result;
-           	result = context.search("cn="+groupname+",ou=Group", "("+memberAccountField+"={0})", new Object[] {account}, ctrls);
+           	result = context.search(groupField+"="+groupname+","+groupObject, "("+memberAccountField+"={0})", new Object[] {account}, ctrls);
             if (result.hasMore()) return;
             ModificationItem[] mods = new ModificationItem[1];
             mods[0] = new ModificationItem(context.ADD_ATTRIBUTE, new BasicAttribute(memberAccountField, account));
-            context.modifyAttributes("cn="+groupname+",ou=Group", mods);
+            context.modifyAttributes(groupField+"="+groupname+","+groupObject, mods);
             log.trace("Added secondary group to user - user '" + account + "' to group '" + groupname + "'");
         } catch (Exception e) {
             log.info("Couldn't add user to secondary group - user '" + account + "' to group '" + groupname + "'", e);
@@ -201,9 +208,12 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 //    	persistenceFactory.setCaCertFile(getCaCertFile());
 //   	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
     	persistenceFactory.setAccountField(new String(getAccountField()));
+	persistenceFactory.setGroupField(new String(getGroupField()));
     	persistenceFactory.setGroupIdField(new String(getGroupIdField()));
     	persistenceFactory.setMemberAccountField(new String(getMemberAccountField()));
-    	persistenceFactory.setProperties((Properties)getProperties().clone());
+    	persistenceFactory.setGroupTree(new String(getGroupTree()));
+	persistenceFactory.setPeopleTree(new String(getPeopleTree()));
+	persistenceFactory.setProperties((Properties)getProperties().clone());
     	persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
     	return persistenceFactory;
     }
@@ -348,8 +358,20 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	return gumsOU;
     }
     
+    public String getGroupTree() {
+        return groupTree;
+    }
+
+    public String getGroupField() {
+        return groupField;
+    }
+
     public String getGroupIdField() {
     	return groupIdField;
+    }
+
+    public String getPeopleTree() {
+        return peopleTree;
     }
     
     /** 
@@ -496,6 +518,23 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         log.trace("New LDAP connection created " + context);
         return context;
     }
+
+    public DirContext retrieveGroupContext() {
+        DirContext context = retrieveContext();
+	if (groupContext!=null)
+            return context.lookup(groupContext);
+        else
+            return context;
+    }
+
+    public DirContext retrievePeopleContext() {
+        DirContext context = retrieveContext();
+        return context.lookup(peopleContext);
+        if (peopleContext!=null)
+            return context.lookup(peopleContext);
+        else
+            return context;
+    }
     
     public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
         log.trace("Creating LDAP ManualAccountMapperDB '" + name + "'");
@@ -522,14 +561,29 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	//if (!trustStorePassword.equals(""))
     		//addCertToTrustStore();
     }
-    
+   
+    public void setGroupField(String groupField) {
+        this.groupField = groupField;
+    }
+ 
     public void setGroupIdField(String groupIdField) {
     	this.groupIdField = groupIdField;
+    }
+
+    public void setGroupTree(String groupTree) {
+        this.groupTree = groupTree;
+        this.groupObject = groupTree.substring(0, groupTree.indexOf(','));
+        this.groupContext = groupTree.substring(groupTree.indexOf(',')+1);   
     }
     
     public void setMemberAccountField(String memberAccountField) {
     	this.memberAccountField = memberAccountField;
     }
+
+    public void setPeopleTree(String peopleTree) {
+        this.peopleTree = peopleTree;
+        this.peopleObject = peopleTree.substring(0, peopleTree.indexOf(','));
+        this.peopleContext = peopleTree.substring(peopleTree.indexOf(',')+1);       }
     
     /**
      * Sets the list of properties to be used to connect to LDAP, that is
@@ -538,8 +592,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * @param properties a set of JNDI properties
      */
     public void setProperties(Properties properties) {
-        if (properties.getProperty("java.naming.factory.initial") == null) {
-            properties.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
+        if (properties.getProperty(INITIAL_CONTEXT_FACTORY) == null) {
+            properties.put(INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         }
         
         // For JUnit test only
@@ -580,6 +634,9 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 //			"\t\t\ttrustStorePassword='"+trustStorePassword+"'\n"+
 			"\t\t\tgroupIdField='"+groupIdField+"'\n"+
 			"\t\t\taccountField='"+accountField+"'\n"+
+			"\t\t\tgroupField='"+groupField+"'\n"+
+			"\t\t\tgroupTree='"+groupTree+"'\n"+
+			"\t\t\tpeopleTree='"+peopleTree+"'\n"+
 			"\t\t\tmemberAccountField='"+memberAccountField+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();
@@ -622,9 +679,9 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     }
     
     private String findGID(String groupname) {
-        DirContext context = retrieveContext();
+        DirContext context = retrieveGroupContext();
         try {
-            NamingEnumeration result = context.search("ou=Group", "(cn={0})", new Object[] {groupname}, null);
+            NamingEnumeration result = context.search(groupObject, "("+groupField+"={0})", new Object[] {groupname}, null);
             String gid = null;
             if (result.hasMore()) {
                 SearchResult item = (SearchResult) result.next();
@@ -656,11 +713,11 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     }
     
     private void updateGID(String account, String gid) {
-        DirContext context = retrieveContext();
+        DirContext context = retrievePeopleContext();
         try {
             ModificationItem[] mods = new ModificationItem[1];
             mods[0] = new ModificationItem(context.REPLACE_ATTRIBUTE, new BasicAttribute(groupIdField, gid));
-            context.modifyAttributes(accountField+"="+account+",ou=People", mods);
+            context.modifyAttributes(accountField+"="+account+","+peopleObject, mods);
             log.trace("Changed primary gid for user '" + account + "' to gid '" + gid + "''");
         } catch (Exception e) {
             log.warn("Couldn't change gid for user '" + account + "' to gid '" + gid + "''", e);

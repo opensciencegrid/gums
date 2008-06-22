@@ -36,6 +36,7 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
 	private String jndiLdapUrl = "";
 	private String gecosField = "gecos";
 	private String accountField = "uid";
+        private String peopleObject = "ou=People";
     
     public GecosLdapAccountMapper() {
     	super();
@@ -55,7 +56,8 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
     	accountMapper.setJndiLdapUrl(new String(jndiLdapUrl));
     	accountMapper.setGecosField(new String(gecosField));
     	accountMapper.setAccountField(new String(accountField));
-    	return accountMapper;
+    	accountMapper.setPeopleObject(new String(peopleObject));
+	return accountMapper;
     }
     
     public String getAccountField() {
@@ -70,6 +72,10 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
         return jndiLdapUrl;
     }
     
+    public String getPeopleObject() {
+        return peopleObject;
+    }
+
     public String getType() {
 		return "gecosLdap";
 	}
@@ -86,6 +92,10 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
         this.jndiLdapUrl = jndiLdapUrl;
     }
 
+    public void setPeopleObject(String peopleObject) {
+        this.peopleObject = peopleObject;
+    }
+
     public String toString(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?command=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">&nbsp;</td>";
     }
@@ -95,9 +105,9 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
 			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tdescription='"+getDescription()+"'\n"+
 			"\t\t\tjndiLdapUrl='"+jndiLdapUrl+"'\n"+
-    		"\t\t\tgecosField='"+gecosField+"'\n"+
-			"\t\t\taccountField='"+accountField+"'/>\n\n";
-
+    			"\t\t\tgecosField='"+gecosField+"'\n"+
+			"\t\t\taccountField='"+accountField+"'\n"+
+			"\t\t\tpeopleObject='"+peopleObject+"'/>\n\n";
     }
 
     private Properties retrieveJndiProperties() {
@@ -118,7 +128,7 @@ public class GecosLdapAccountMapper extends GecosAccountMapper {
             log.debug("Attempt " + i + " to retrieve map for '" + jndiLdapUrl + "'");
             try {
                 DirContext jndiCtx = new InitialDirContext(jndiProperties);
-                NamingEnumeration nisMap = jndiCtx.search("ou=People", "(cn=*)", null);
+                NamingEnumeration nisMap = jndiCtx.search(peopleObject, "("+accountField+"=*)", null);
                 log.trace("Server responded");
                 while (nisMap.hasMore()) {
                     SearchResult res = (SearchResult) nisMap.next();

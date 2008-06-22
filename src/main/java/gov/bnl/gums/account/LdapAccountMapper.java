@@ -39,9 +39,10 @@ public class LdapAccountMapper extends AccountMapper {
 		return "ldap";
 	}
     private String jndiLdapUrl = "";
-	private String dnField = "description";
-	private String accountField = "uid";
-    
+    private String dnField = "description";
+    private String accountField = "uid";    
+    private String peopleObject = "ou=People";
+
     public LdapAccountMapper() {
     	super();
     }
@@ -60,7 +61,8 @@ public class LdapAccountMapper extends AccountMapper {
     	accountMapper.setJndiLdapUrl(new String(jndiLdapUrl));
     	accountMapper.setDnField(new String(dnField));
     	accountMapper.setAccountField(new String(accountField));
-    	return accountMapper;
+    	accountMapper.setPeopleObject(new String(peopleObject));
+	return accountMapper;
     }
     
     public String getAccountField() {
@@ -75,9 +77,13 @@ public class LdapAccountMapper extends AccountMapper {
         return jndiLdapUrl;
     }
     
+    public String getPeopleObject() {
+        return peopleObject;
+    }
+
     public String getType() {
-		return "ldap";
-	}
+	return "ldap";
+    }
     
     public String mapUser(String userDN, boolean createIfDoesNotExist) {
     	Properties jndiProperties = retrieveJndiProperties();
@@ -88,7 +94,7 @@ public class LdapAccountMapper extends AccountMapper {
             log.debug("Attempt " + i + " to retrieve map at '" + jndiLdapUrl + "'");
             try {
                 DirContext jndiCtx = new InitialDirContext(jndiProperties);
-                NamingEnumeration nisMap = jndiCtx.search("ou=People", "(cn=*)", null);
+                NamingEnumeration nisMap = jndiCtx.search(peopleObject, "("+accountField+"=*)", null);
                 log.debug("Server responded");
                 while (nisMap.hasMore()) {
                     SearchResult res = (SearchResult) nisMap.next();
@@ -135,6 +141,10 @@ public class LdapAccountMapper extends AccountMapper {
         this.jndiLdapUrl = jndiLdapUrl;
     }
 
+    public void setPeopleObject(String peopleObject) {
+        this.peopleObject = peopleObject;
+    }
+
     public String toString(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?command=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">&nbsp;</td>";
     }
@@ -145,7 +155,8 @@ public class LdapAccountMapper extends AccountMapper {
 			"\t\t\tdescription='"+getDescription()+"'\n"+
 			"\t\t\tjndiLdapUrl='"+jndiLdapUrl+"'\n"+
 			"\t\t\tdnField='"+dnField+"'\n"+
-			"\t\t\taccountField='"+accountField+"'/>\n\n";
+			"\t\t\taccountField='"+accountField+"'\n"+
+			"\t\t\tpeopleObject='"+peopleObject+"'/>\n\n";
     }
     
     private Properties retrieveJndiProperties() {

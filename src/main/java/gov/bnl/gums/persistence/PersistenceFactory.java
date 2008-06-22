@@ -37,7 +37,7 @@ public abstract class PersistenceFactory {
 	}
     
     private String name = "";
-	private String description = "";
+    private String description = "";
     private Properties properties;
     private Configuration configuration;
     

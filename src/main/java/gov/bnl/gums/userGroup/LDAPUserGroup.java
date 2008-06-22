@@ -44,15 +44,19 @@ public class LDAPUserGroup extends UserGroup {
 		return "ldap";
 	}
 	
-    private Log log = LogFactory.getLog(LDAPUserGroup.class);
-    private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-    private UserGroupDB db;
-    private String persistenceFactory = "";    
-    private Configuration conf;
-    private String server = "";
-    private String query = "";
-    private String certDNField = "description";
-	protected ConfigurationStore confStore;
+    protected Log log = LogFactory.getLog(LDAPUserGroup.class);
+    protected Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+    protected UserGroupDB db;
+    protected String persistenceFactory = "";    
+    protected Configuration conf;
+    protected String server = "";
+    protected String peopleTree = "";
+    protected String groupTree = "";
+    protected String memberField = "member";
+    protected String certDNField = "description";
+    protected ConfigurationStore confStore;    
+    protected String peopleObject = null;
+    protected String peopleContext = null;
     
     /**
      * Create a new ldap user group. This empty constructor is needed by the XML Digestor.
@@ -90,8 +94,9 @@ public class LDAPUserGroup extends UserGroup {
         if (obj instanceof LDAPUserGroup) {
             LDAPUserGroup group = (LDAPUserGroup) obj;
             if ((server == null ? group.server == null : server.equals(group.server)) &&
-               (query == null ? group.query == null : query.equals(group.query)) && 
-               (getName() == null ? group.getName() == null : getName().equals(group.getName())) && 
+ 		(peopleTree == null ? group.peopleTree == null : peopleTree.equals(group.peopleTree)) && 
+		(groupTree == null ? group.groupTree == null : groupTree.equals(group.groupTree)) &&
+		(getName() == null ? group.getName() == null : getName().equals(group.getName())) && 
                (persistenceFactory == null ? group.persistenceFactory == null : persistenceFactory.equals(group.persistenceFactory))) {
                 return true;
             }
@@ -107,6 +112,16 @@ public class LDAPUserGroup extends UserGroup {
     public String getCertDNField() {
         return certDNField;
     }
+
+    /**
+     * Getter for property groupTree
+     *
+     * @return groupTree as string
+     */
+    public String getGroupTree() {
+        return groupTree;
+    }
+
     
     public java.util.List getMemberList() {
         return getDB().retrieveMembers();
@@ -122,9 +137,19 @@ public class LDAPUserGroup extends UserGroup {
     }
     
     /**
+     * Getter for property peopleTree
+     *
+     * @return peopleTree as string
+     */
+    public String getPeopleTree() {
+        return peopleTree;
+    }
+
+    /**
      * The LDAP query used to retrieveGetter for property query.
      * 
      * @return The LDAP query used. i.e. "ou=usatlas,o=atlas,dc=eu-datagrid,dc=org"
+     * @deprecated
      */
     public String getQuery() {
         return this.query;
@@ -140,11 +165,11 @@ public class LDAPUserGroup extends UserGroup {
     }
     
     public String getType() {
-		return "ldap";
-	}
+        return "ldap";
+    }
     
     public int hashCode() {
-        return query.hashCode();
+        return new String(peopleTree + " " + groupTree).hashCode();
     }
     
     public boolean isInGroup(GridUser user) {
@@ -152,14 +177,14 @@ public class LDAPUserGroup extends UserGroup {
     }
     
     public Map retrievePeopleMap(DirContext ldap) throws javax.naming.NamingException {
-        NamingEnumeration people = ldap.search("ou=People", "("+certDNField+"=*)", null);
+        NamingEnumeration people = ldap.search(peopleObject, "("+certDNField+"=*)", null);
         Map map = new Hashtable();
         while (people.hasMore()) {
             SearchResult person = (SearchResult) people.next();
             Attributes personAtts = person.getAttributes();
             String ldapDN = person.getName();
             if (person.isRelative()) {
-                ldapDN = ldapDN + ",ou=People," + ldap.getNameInNamespace();
+                ldapDN = ldapDN + "," + peopleObject + "," + ldap.getNameInNamespace();
             }
             
             String certDN = (String) personAtts.get(certDNField).get();
@@ -180,7 +205,16 @@ public class LDAPUserGroup extends UserGroup {
     public void setCertDNField(String certDNField) {
     	this.certDNField = certDNField;
     }
-    
+   
+    /**
+     * Setter for property groupTree
+     *
+     * @param groupTree as string
+     */
+    public void setGroupTree(String groupTree) {
+        this.groupTree = groupTree;
+    }
+ 
     /**
      * Setter for property persistenceFactory
      * 
@@ -189,14 +223,49 @@ public class LDAPUserGroup extends UserGroup {
     public void setPersistenceFactory(String persistenceFactory) {
         this.persistenceFactory = persistenceFactory;
     }
+
+    /**
+     * Setter for property persistenceFactory
+     *
+     * @param persistenceFactory as string
+     */
+    public void setPersistenceFactory(String persistenceFactory) {
+        this.persistenceFactory = persistenceFactory;
+    }
+
+    /**
+     * Setter for property peopleTree
+     *
+     * @param peopleTree as string
+     */
+    public void setPeopleTree(String peopleTree) {
+        this.peopleTree = peopleTree;
+        this.peopleObject = peopleTree.substring(0, peopleTree.indexOf(','));
+	this.peopleContext = peopleTree.substring(peopleTree.indexOf(',')+1);
+    }
     
     /**
      * Changes the LDAP query used to retrieveGetter for property query.
      * 
      * @param query The LDAP query used. i.e. "ou=usatlas,o=atlas,dc=eu-datagrid,dc=org"
+     * @deprecated
      */
     public void setQuery(String query) {
         this.query = query;
+        if (query.startsWith(peopleObject+",")) {
+            peopleTree = query;
+            peopleObject = query.substring(0, query.indexOf(','));
+        } else if (query.startsWith("ou=")) {
+            peopleObject = "ou=People";
+            peopleContext = query.substring(query.indexOf(',')+1);
+        } else if (query.startsWith("o=")) {
+            peopleObject = "ou=People";
+            peopleContext = query;
+        } else {
+            throw new IllegalArgumentException("The query is not understood by the LDAP group. It is expected to start with \"ou=...\" or \"o=...\"");
+        }
+	peopleTree = peopleObject + "," + peopleContext;
+        groupTree = groupObject + "," + peopleContext;
     }
     
     /**
@@ -208,7 +277,7 @@ public class LDAPUserGroup extends UserGroup {
     }
     
     public String toString() {
-        return "LDAPGroup: ldap://"+server+"/"+query;
+        return "LDAPGroup: ldap://"+server+"/"+peopleTree+","+groupTree;
     }
     
     public String toString(String bgColor) {
@@ -220,9 +289,11 @@ public class LDAPUserGroup extends UserGroup {
 		"\t\t\tname='"+getName()+"'\n"+
 		"\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
 		"\t\t\tdescription='"+getDescription()+"'\n"+
-    	"\t\t\tserver='"+server+"'\n" +
-		"\t\t\tquery='"+query+"'\n" +
+    		"\t\t\tserver='"+server+"'\n" +
+		"\t\t\tpeopleTree='"+peopleTree+"'\n" +
+                "\t\t\tgroupTree='"+groupTree+"'\n" +
 		"\t\t\tcertDNField='"+certDNField+"'\n" +
+		"\t\t\tmemberField='"+memberField+"'\n" +
 		"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
     }
     
@@ -265,29 +336,22 @@ public class LDAPUserGroup extends UserGroup {
      */
     private synchronized List retrieveMembers() {
         java.util.Properties properties = retrieveProperties();
-        log.info("Retrieving members from '" + properties.getProperty("java.naming.provider.url") + "'  '" + query + "'");
+        log.info("Retrieving members from '" + properties.getProperty("java.naming.provider.url") + "'  '" + peopleTree + "' '" + groupTree + "'");
         try {
             javax.naming.directory.DirContext jndiCtx = new javax.naming.directory.InitialDirContext(properties);
-            if (query.startsWith("ou=People,")) {
-                String voRoot = query.substring(query.indexOf(',')+1);
-                DirContext rootCtx = (DirContext) jndiCtx.lookup(voRoot);
-                return retrieveVOMembers(rootCtx);
-            } else if (query.startsWith("ou=")) {
-                Attributes atts = jndiCtx.getAttributes(query);
-                Attribute members = atts.get("member");
+            if (!peopleTree.equals("") && groupTree.equals("")) {
+            	DirContext rootCtx = (DirContext) jndiCtx.lookup(peopleContext);
+            	return retrieveVOMembers(rootCtx);
+            }
+            else if (!groupTree.equals("") && !peopleTree.equals("")) {
+                Attributes atts = jndiCtx.getAttributes(groupTree);
+                Attribute members = atts.get(memberField);
                 if (members == null) {
                     throw new RuntimeException("Couldn't retrieve the list of members from the LDAP group: missing attribute member");
                 }
-                String voRoot = query.substring(query.indexOf(',')+1);
-                DirContext rootCtx = (DirContext) jndiCtx.lookup(voRoot);
-                return retrieveGroupMembers(rootCtx, members);
-            } else if (query.startsWith("o=")) {
-                DirContext rootCtx = (DirContext) jndiCtx.lookup(query);
-                return retrieveVOMembers(rootCtx);
-            } else {
-                throw new IllegalArgumentException("The query is not understood by the LDAP group. It is expected to start with \"ou=...\" or \"o=...\"");
+                DirContext rootCtx = (DirContext) jndiCtx.lookup(peopleContext);
+                return retrieveGroupMembers(rootCtx, members);            
             }
-
         } catch (javax.naming.NamingException e) {
             String message = "Couldn't retrieve users from LDAP server: " + e;
 /*            if (e.getRootCause() != null) {
