@@ -128,6 +128,8 @@ public class ConfigurationWebToolkit implements Remote {
 				((GecosLdapAccountMapper)accountMapper).setGecosField( request.getParameter("gecos").trim() );
 			if (request.getParameter("account")!=null)
 				((GecosLdapAccountMapper)accountMapper).setAccountField( request.getParameter("account").trim() );
+                        if (request.getParameter("peopleObject")!=null)
+                                ((GecosLdapAccountMapper)accountMapper).setPeopleObject( request.getParameter("peopleObject").trim() );
 		}
 		else if (type.equals(LdapAccountMapper.getTypeStatic())) {
 			accountMapper = new LdapAccountMapper();
@@ -139,6 +141,8 @@ public class ConfigurationWebToolkit implements Remote {
 				((LdapAccountMapper)accountMapper).setDnField( request.getParameter("dn").trim() );
 			if (request.getParameter("account")!=null)
 				((LdapAccountMapper)accountMapper).setAccountField( request.getParameter("account").trim() );
+                        if (request.getParameter("peopleObject")!=null)
+                                ((GecosLdapAccountMapper)accountMapper).setPeopleObject( request.getParameter("peopleObject").trim() );
 		}
 		else if (type.equals(GecosNisAccountMapper.getTypeStatic())) {
 			accountMapper = new GecosNisAccountMapper();
@@ -174,16 +178,16 @@ public class ConfigurationWebToolkit implements Remote {
 			userGroup.setAccess( request.getParameter("access").trim() );
 			if (request.getParameter("server")!=null)
 				((LDAPUserGroup)userGroup).setServer( request.getParameter("server").trim() );
-			if (request.getParameter("query")!=null)
-				((LDAPUserGroup)userGroup).setQuery( request.getParameter("query").trim() );
-			if (request.getParameter("persistenceFactory")!=null)
-				((LDAPUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory").trim() );
-			if (request.getParameter("query")!=null)
-				((LDAPUserGroup)userGroup).setQuery( request.getParameter("query").trim() );
+			if (request.getParameter("peopleTree")!=null)
+				((LDAPUserGroup)userGroup).setPeopleTree( request.getParameter("peopleTree").trim() );
+                        if (request.getParameter("groupTree")!=null)
+                                ((LDAPUserGroup)userGroup).setGroupTree( request.getParameter("groupTree").trim() );
 			if (request.getParameter("persistenceFactory")!=null)
 				((LDAPUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory").trim() );
 			if (request.getParameter("certDNField")!=null)
 				((LDAPUserGroup)userGroup).setCertDNField( request.getParameter("certDNField").trim() );
+                        if (request.getParameter("memberField")!=null)
+                                ((LDAPUserGroup)userGroup).setMemberField( request.getParameter("memberField").trim() );
 		} else if (type.equals(VOMSUserGroup.getTypeStatic())) {
 			userGroup = new VOMSUserGroup();
 			userGroup.setName( request.getParameter("name").trim() );
@@ -243,8 +247,14 @@ public class ConfigurationWebToolkit implements Remote {
 			((LDAPPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
 			((LDAPPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
 			((LDAPPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
+                        if (request.getParameter("groupTree")!=null)
+                                ((LDAPPersistenceFactory)persistenceFactory).setGroupTree( request.getParameter("groupTree") );
+                        if (request.getParameter("peopleTree")!=null)
+                                ((LDAPPersistenceFactory)persistenceFactory).setPeopleTree( request.getParameter("peopleTree") );			
 			if (request.getParameter("groupIdField")!=null)
 				((LDAPPersistenceFactory)persistenceFactory).setGroupIdField( request.getParameter("groupIdField") );
+			if (request.getParameter("groupField")!=null)
+                                ((LDAPPersistenceFactory)persistenceFactory).setGroupField( request.getParameter("groupField") );
 			if (request.getParameter("accountField")!=null)
 				((LDAPPersistenceFactory)persistenceFactory).setAccountField( request.getParameter("accountField") );
 			if (request.getParameter("memAccField")!=null)
@@ -258,8 +268,14 @@ public class ConfigurationWebToolkit implements Remote {
 			((LocalPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
 			((LocalPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
 			((LocalPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
+                        if (request.getParameter("groupTree")!=null)
+                                ((LDAPPersistenceFactory)persistenceFactory).setGroupTree( request.getParameter("groupTree") );
+                        if (request.getParameter("peopleTree")!=null)
+                                ((LDAPPersistenceFactory)persistenceFactory).setPeopleTree( request.getParameter("peopleTree") );			
 			if (request.getParameter("groupIdField")!=null)
 				((LocalPersistenceFactory)persistenceFactory).setGroupIdField( request.getParameter("groupIdField") );
+                        if (request.getParameter("groupField")!=null)
+                                ((LDAPPersistenceFactory)persistenceFactory).setGroupField( request.getParameter("groupField") );			
 			if (request.getParameter("accountField")!=null)
 				((LocalPersistenceFactory)persistenceFactory).setAccountField( request.getParameter("accountField") );
 			if (request.getParameter("memAccField")!=null)

@@ -411,12 +411,28 @@ else if ("edit".equals(request.getParameter("command"))
 				<input maxlength="256" size="16" name="gecos" value="<%=((GecosLdapAccountMapper)accountMapper).getGecosField()%>"/> (which field full name is in)
 			</td>
 		</tr>
+            <tr>
+                <td nowrap style="text-align: right;">
+                        i.e.
+                    </td>
+                    <td nowrap>
+                        gecos
+                    </td>
+                </tr>
+                <tr>
+                        <td nowrap style="text-align: right;">
+                                People Object:
+                        </td>
+                        <td>
+                                <input maxlength="256" size="16" name="peopleObject" value="<%=((GecosLdapAccountMapper)accountMapper).getPeopleObject()%>"/>
+                        </td>
+                </tr>
 	    <tr>
     		<td nowrap style="text-align: right;">
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	gecos
+		    	ou=People
 		    </td>
 		</tr>
 		<tr>
@@ -486,6 +502,22 @@ else if ("edit".equals(request.getParameter("command"))
 		    	uid
 		    </td>
 		</tr>
+                <tr>
+                        <td nowrap style="text-align: right;">
+                                People Object:
+                        </td>
+                        <td>
+                                <input maxlength="256" size="16" name="peopleObject" value="<%=((GecosLdapAccountMapper)accountMapper).getPeopleObject()%>"/>
+                        </td>
+                </tr>
+            <tr>
+                <td nowrap style="text-align: right;">
+                        i.e.
+                    </td>
+                    <td nowrap>
+                        ou=People
+                    </td>
+                </tr>
 <%
 	} else if (accountMapper instanceof LdapAccountMapper) {
 %>

@@ -362,11 +362,43 @@ else if ("edit".equals(request.getParameter("command"))
 		    </td>
 		</tr>
 		<tr>
+                <td nowrap style="text-align: right;">
+                        LDAP Group Tree:
+                    </td>
+                    <td nowrap>
+                        <input maxlength="256" size="16" name="groupTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getGroupTree()%>"/>
+                    </td>
+                </tr>
+            <tr>
+                <td nowrap style="text-align: right;">
+                        i.e.
+                    </td>
+                    <td nowrap>
+                        ou=Group,cn=usatlas,cn=bnl,cn=gov
+                    </td>
+                </tr>
+		<tr>
+                <td nowrap style="text-align: right;">
+                        LDAP People Tree:
+                    </td>
+                    <td nowrap>
+                        <input maxlength="256" size="16" name="peopleTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getPeopleTree()%>"/>
+                    </td>
+                </tr>
+            <tr>
+                <td nowrap style="text-align: right;">
+                        i.e.
+                    </td>
+                    <td nowrap>
+                        ou=People,cn=usatlas,cn=bnl,cn=gov
+                    </td>
+                </tr>
+		<tr>
     		<td nowrap style="text-align: right;">
 	    		LDAP Group ID Field:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="16" name="groupField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGroupIdField()%>"/> (group ID field in 'People' ou)
+		    	<input maxlength="256" size="16" name="groupIdField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGroupIdField()%>"/> (group ID field in 'People' object)
 		    </td>
 		</tr>
 	    <tr>
@@ -378,11 +410,27 @@ else if ("edit".equals(request.getParameter("command"))
 		    </td>
 		</tr>
 		<tr>
+                <td nowrap style="text-align: right;">
+                        LDAP Group Field:
+                    </td>
+                    <td nowrap>
+                        <input maxlength="256" size="16" name="groupField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGroupField()%>"/> (group name field in 'Group' object)
+                    </td>
+                </tr>
+            <tr>
+                <td nowrap style="text-align: right;">
+                        i.e.
+                    </td>
+                    <td nowrap>
+                        cn
+                    </td>
+                </tr>
+		<tr>
     		<td nowrap style="text-align: right;">
 	    		LDAP Account Field:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="16" name="accountField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getAccountField()%>"/> (account field in 'People' ou)
+		    	<input maxlength="256" size="16" name="accountField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getAccountField()%>"/> (account field in 'People' object)
 		    </td>
 		</tr>
 	    <tr>
@@ -398,7 +446,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		LDAP Member Account Field:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="16" name="memAccField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getMemberAccountField()%>"/> (account field in 'Group' ou)
+		    	<input maxlength="256" size="16" name="memAccField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getMemberAccountField()%>"/> (account field in 'Group' object)
 		    </td>
 		</tr>
 	    <tr>
@@ -513,12 +561,44 @@ else if ("edit".equals(request.getParameter("command"))
 				false)%>
 		    </td>
 		</tr>
+<tr>
+                <td nowrap style="text-align: right;">
+                        LDAP Group Tree:
+                    </td>
+                    <td nowrap>
+                        <input maxlength="256" size="16" name="groupTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getGroupTree()%>"/>
+                    </td>
+                </tr>
+            <tr>
+                <td nowrap style="text-align: right;">
+                        i.e.
+                    </td>
+                    <td nowrap>
+                        ou=Group,cn=usatlas,cn=bnl,cn=gov
+                    </td>
+                </tr>
+                <tr>
+                <td nowrap style="text-align: right;">
+                        LDAP People Tree:
+                    </td>
+                    <td nowrap>
+                        <input maxlength="256" size="16" name="peopleTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getPeopleTree()%>"/>
+                    </td>
+                </tr>
+            <tr>
+                <td nowrap style="text-align: right;">
+                        i.e.
+                    </td>
+                    <td nowrap>
+                        ou=People,cn=usatlas,cn=bnl,cn=gov
+                    </td>
+                </tr>
 		<tr>
     		<td nowrap style="text-align: right;">
 	    		LDAP Group ID Field:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="16" name="groupField" value="<%=((LocalPersistenceFactory)persistenceFactory).getGroupIdField()%>"/> (group ID field in 'People' ou)
+		    	<input maxlength="256" size="16" name="groupIdField" value="<%=((LocalPersistenceFactory)persistenceFactory).getGroupIdField()%>"/> (group ID field in 'People' ou)
 		    </td>
 		</tr>
 	    <tr>
@@ -529,6 +609,23 @@ else if ("edit".equals(request.getParameter("command"))
 		    	gidNumber
 		    </td>
 		</tr>
+                <tr>
+                <td nowrap style="text-align: right;">
+                        LDAP Group Field:
+                    </td>
+                    <td nowrap>
+                        <input maxlength="256" size="16" name="groupField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGroupField()%>"/> (group name field in 'Group' object)
+                    </td>
+                </tr>
+            <tr>
+                <td nowrap style="text-align: right;">
+                        i.e.
+                    </td>
+                    <td nowrap>
+                        cn
+                    </td>
+                </tr>
+
 		<tr>
     		<td nowrap style="text-align: right;">
 	    		LDAP Account Field:

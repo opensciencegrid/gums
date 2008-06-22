@@ -135,7 +135,8 @@ if (request.getParameter("command")==null ||
 				    		</a><br>
 				    		Description: <%=userGroup.getDescription()%><br>	
 							LDAP Server: <%=((LDAPUserGroup)userGroup).getServer()%><br>	
-							Query: <%=((LDAPUserGroup)userGroup).getQuery()%><br>
+							People Tree: <%=((LDAPUserGroup)userGroup).getPeopleTree()%><br>
+							Group Tree: <%=((LDAPUserGroup)userGroup).getGroupTree()%><br>
 							Persistence factory:
 							<a href="persistenceFactories.jsp?command=edit&name=<%=((LDAPUserGroup)userGroup).getPersistenceFactory()%>">
 								<%=((LDAPUserGroup)userGroup).getPersistenceFactory()%>
@@ -326,10 +327,10 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>		
 		<tr>
 			<td nowrap style="text-align: right;">
-				Query:
+				People Tree:
 			</td>
 			<td> 
-				<input maxlength="256" size="32" name="query" value="<%=((LDAPUserGroup)userGroup).getQuery()%>"/>
+				<input maxlength="256" size="32" name="peopleTree" value="<%=((LDAPUserGroup)userGroup).getPeopleTree()%>"/>
 			</td>
 		</tr>
 	    <tr>
@@ -337,9 +338,25 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	ou=usatlas,o=atlas,dc=eu-datagrid,dc=org
+		    	ou=People,ou=usatlas,o=atlas,dc=eu-datagrid,dc=org
 		    </td>
 		</tr>
+                <tr>
+                        <td nowrap style="text-align: right;">
+                                Group Tree:
+                        </td>
+                        <td>
+                                <input maxlength="256" size="32" name="groupTree" value="<%=((LDAPUserGroup)userGroup).getGroupTree()%>"/>
+                        </td>
+                </tr>
+            <tr>
+                <td nowrap style="text-align: right;">
+                        i.e.
+                    </td>
+                    <td nowrap>
+                        ou=usatlas,o=atlas,dc=eu-datagrid,dc=org
+                    </td>
+                </tr>
 		<tr>
 			<td nowrap style="text-align: right;">
 				Persistence Factory
@@ -360,6 +377,14 @@ else if ("edit".equals(request.getParameter("command"))
 				<input maxlength="256" size="16" name="certDNField" value="<%=((LDAPUserGroup)userGroup).getCertDNField()%>"/>  (which field certificate DN is in)
 			</td>
 		</tr>
+                <tr>
+                        <td nowrap style="text-align: right;">
+                                LDAP Member Field
+                        </td>
+                        <td>
+                                <input maxlength="256" size="16" name="memberField" value="<%=((LDAPUserGroup)userGroup).getMemberField()%>"/>  (which field contains member IDs within group)
+                        </td>
+                </tr>
 	    <tr>
     		<td nowrap style="text-align: right;">
 	    		i.e.
