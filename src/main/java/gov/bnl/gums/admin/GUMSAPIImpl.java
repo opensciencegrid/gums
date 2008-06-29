@@ -15,6 +15,7 @@ import gov.bnl.gums.configuration.FileConfigurationStore;
 import gov.bnl.gums.configuration.Version;
 import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.UserGroup;
+import gov.bnl.gums.hostToGroup.HostToGroupMapping;
 
 import java.util.Collection;
 import java.util.Iterator;

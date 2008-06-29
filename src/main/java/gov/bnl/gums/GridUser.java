@@ -37,12 +37,12 @@ public class GridUser {
             setVoFQAN(new FQAN(fqan));
     }
     
-    public GridUser(String userDN, String fqan, String issuerDN) {
+    /*public GridUser(String userDN, String fqan, String issuerDN) {
         setCertificateDN( userDN );
 	setIssuerDN( issuerDN  );
         if (fqan!=null && fqan.length()>0)
             setVoFQAN(new FQAN(fqan));	
-    }
+    }*/
 
   /**
      * @param user

@@ -27,9 +27,10 @@ import junit.framework.*;
 public class LDAPUserGroupTest extends TestCase {
     
     UserGroup group;
+    UserGroup group2;
     Configuration configuration = new Configuration();
     String server;
-    String query;
+    String peopleTree;
     String principal;
     
     public LDAPUserGroupTest(java.lang.String testName) {
@@ -53,18 +54,51 @@ public class LDAPUserGroupTest extends TestCase {
         String url = properties.getProperty("java.naming.provider.url");
         server = url.substring(url.indexOf("//")+2).split("/")[0].split(":")[0];
         principal = url.substring(url.indexOf("//")+2).split("/")[1];
-        query = "ou=People," + principal;
         ldapGroup.setServer(server);
-        ldapGroup.setQuery(query);
+	peopleTree = "ou=People," + principal;
+	//ldapGroup.setQuery(peopleTree);
+	ldapGroup.setPeopleTree(peopleTree);
+	ldapGroup.setGroupTree("cn=griddevGroup,ou=Group,dc=griddev,dc=org");
     }
     
     public void testUpdateMembers() {
         group.updateMembers();
+	assertTrue(group.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null)));
+    }
+   
+    public void testGetMemberList() {
+	group.updateMembers();
+	List members = group.getMemberList();
+        assertTrue(members.size() > 0);
+        Iterator iter = members.iterator();
+        while (iter.hasNext()) {
+            GridUser dn = (GridUser) iter.next();
+            assertTrue(group.isInGroup(dn));
+        }
+    }
+
+    public void testRetrieveMap() throws NamingException {
+        java.util.Properties jndiProperties = new java.util.Properties();
+        jndiProperties.put("java.naming.provider.url","ldap://"+server);
+        jndiProperties.put("java.naming.factory.initial","com.sun.jndi.ldap.LdapCtxFactory");
+        javax.naming.directory.DirContext jndiCtx = new javax.naming.directory.InitialDirContext(jndiProperties);
+
+        // The group has a member attribute with a list of people of the LDAP present in the VO Group
+	DirContext ctx = (DirContext) jndiCtx.lookup(principal);
+	LDAPUserGroup group = new LDAPUserGroup(configuration, "group1");
+        Map map = group.retrievePeopleMap(ctx);
+	assertEquals("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", map.get("jdoe"));
+    }
+   
+    public void testUpdateMembers2() {
+	((LDAPUserGroup)group).setGroupTree("");
+        group.updateMembers();
         assertTrue(group.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
         assertTrue(group.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null)));
     }
-    
-    public void testGetMemberList() {
+
+    public void testGetMemberList2() {
         group.updateMembers();
         List members = group.getMemberList();
         assertTrue(members.size() > 0);
@@ -74,18 +108,5 @@ public class LDAPUserGroupTest extends TestCase {
             assertTrue(group.isInGroup(dn));
         }
     }
-    
-    public void testRetrieveMap() throws NamingException {
-        java.util.Properties jndiProperties = new java.util.Properties();
-        jndiProperties.put("java.naming.provider.url","ldap://"+server);
-        jndiProperties.put("java.naming.factory.initial","com.sun.jndi.ldap.LdapCtxFactory");
-        javax.naming.directory.DirContext jndiCtx = new javax.naming.directory.InitialDirContext(jndiProperties);
-
-        // The group has a member attribute with a list of people of the LDAP present in the VO Group
-        DirContext ctx = (DirContext) jndiCtx.lookup(principal);
-        LDAPUserGroup group = new LDAPUserGroup(configuration, "group1");
-        Map map = group.retrievePeopleMap(ctx);
-        assertEquals("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", map.get("uid=jdoe,"+query));
-    }
-    
+ 
 }

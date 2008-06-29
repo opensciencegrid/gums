@@ -357,8 +357,9 @@ class ConfigurationToolkit {
 
         builder.parse(configFile); 
         
-        if (errorHandler.error)
-        	throw new ParserConfigurationException();
+        if (errorHandler.error){
+        	throw new ParserConfigurationException();       
+        }
     }
 
     /**

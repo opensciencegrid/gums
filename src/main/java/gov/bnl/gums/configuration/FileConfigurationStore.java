@@ -213,29 +213,28 @@ public class FileConfigurationStore implements ConfigurationStore {
         gumsSiteAdminLog.info("Configuration set programically");
         if (conf == null)
             throw new RuntimeException("Configuration has not been loaded");
-        
         log.debug("Attempting to store configuration");
         String tempGumsConfigPath = configPath+"~";
 
         BufferedWriter out;
         out = new BufferedWriter(new FileWriter(tempGumsConfigPath));
-       	
-        out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n");
+        
+	out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n");
         
         out.write("<gums version='"+version+"'>\n\n");
-        
-        // Write persistence factories
+	
+	// Write persistence factories
         if( conf.getPersistenceFactories().size()>0 ) {
             out.write("\t<persistenceFactories>\n\n");
         	Iterator it = conf.getPersistenceFactories().values().iterator();
         	while( it.hasNext() ) {
-        		PersistenceFactory persistenceFactory = (PersistenceFactory)it.next();
-        		out.write( persistenceFactory.toXML() );
-        	}
+			PersistenceFactory persistenceFactory = (PersistenceFactory)it.next();
+			out.write( persistenceFactory.toXML() );
+		}
             out.write("\t</persistenceFactories>\n\n");
         }
-        
-        // Write Voms Servers
+
+	// Write Voms Servers
         if( conf.getVomsServers().size()>0 ) {
             out.write("\t<vomsServers>\n\n");
         	Iterator it = conf.getVomsServers().values().iterator();
@@ -245,8 +244,8 @@ public class FileConfigurationStore implements ConfigurationStore {
         	}
             out.write("\t</vomsServers>\n\n");
         }           
-
-        // Write User Groups
+       
+	// Write User Groups
         if( conf.getUserGroups().size()>0 ) {
             out.write("\t<userGroups>\n\n");
         	Iterator it = conf.getUserGroups().values().iterator();
@@ -291,12 +290,12 @@ public class FileConfigurationStore implements ConfigurationStore {
         }                
         
         out.write("</gums>");
-        
+       
         out.close();
-
-		// Make sure configuration is valid
-	    this.conf = ConfigurationToolkit.loadConfiguration(tempGumsConfigPath, schemaPath);
 	
+	// Make sure configuration is valid
+	    this.conf = ConfigurationToolkit.loadConfiguration(tempGumsConfigPath, schemaPath);
+
         // copy gums.config to gums.config.prev
 		new File(configBackupDir).mkdir();
 		if (!backupCopy && new File(configPath).exists())

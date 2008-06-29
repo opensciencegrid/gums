@@ -45,8 +45,8 @@ public class ConfigurationTransform {
 	 */
 	static public Configuration doTransform(String configPath, String transformPath) {
         log.trace("Transforming configuration file '" + configPath + "' using transform '" + transformPath);
-		
-		try {
+	
+	try {
 	    	String configFileTemp = configPath + "~";
         	
 	        XMLReader reader = XMLReaderFactory.createXMLReader();
@@ -57,9 +57,8 @@ public class ConfigurationTransform {
 
 	        TransformerFactory transFactory = TransformerFactory.newInstance();
 	        Transformer trans = transFactory.newTransformer(style);
-	        
+	       
 	        trans.transform(source, result);
-	        
         	// Reload it to get rid of duplicates that the transform couldn't handle
         	// as well as to clean up the formatting
         	Digester digester = ConfigurationToolkit.retrieveDigester();
@@ -68,8 +67,8 @@ public class ConfigurationTransform {
             digester.parse("file://"+configFileTemp);
             
             new File(configFileTemp).delete();
-            
-            // Clean up VOMS server names
+          
+	     // Clean up VOMS server names
             Iterator it = new ArrayList(configuration.getVomsServers().keySet()).iterator();
             while (it.hasNext()) {
             	String name = (String)it.next();
@@ -98,9 +97,9 @@ public class ConfigurationTransform {
 	            				((VOMSUserGroup)userGroup).setVomsServer(name);
 	            		}
             		}
-            	}
+	         }
             }
-            
+ 
             // Clean up account mapper names
             it = new ArrayList(configuration.getAccountMappers().keySet()).iterator();
             while (it.hasNext()) {
@@ -142,13 +141,14 @@ public class ConfigurationTransform {
             		}
             	}
             }
-       
+      
             // Insert GIP probe
             PersistenceFactory persistenceFactory = configuration.getPersistenceFactory("mysql");
             if (persistenceFactory==null && configuration.getPersistenceFactories().size()>0)
             	persistenceFactory = (PersistenceFactory)configuration.getPersistenceFactories().values().iterator().next();
             if (persistenceFactory != null) {
-            	// Add UserGroup
+
+		// Add UserGroup
             	UserGroup userGroup = configuration.getUserGroup("gums-test");
             	if (userGroup==null || !(userGroup instanceof ManualUserGroup)) {
                 	int index = 1;
@@ -159,15 +159,15 @@ public class ConfigurationTransform {
             		((ManualUserGroup)userGroup).setPersistenceFactory(persistenceFactory.getName());
             		configuration.addUserGroup(userGroup);
             	}
-            	
-            	// Add member to usergroup's database
+		
+		// Add member to usergroup's database
             	GridUser user = new GridUser();
         		user.setCertificateDN("/GIP-GUMS-Probe-Identity");
             	if(((ManualUserGroup)userGroup).getMemberList().indexOf(user)==-1) {
             		((ManualUserGroup)userGroup).addMember(user);
             	}
             	
-            	// Add AccountMapper
+		// Add AccountMapper
             	AccountMapper accountMapper = configuration.getAccountMapper("gums-test");
             	if (accountMapper==null || !(accountMapper instanceof GroupAccountMapper) || !((GroupAccountMapper)accountMapper).getAccountName().equals("GumsTestUserMappingSuccessful")) {
                 	int index = 1;
@@ -217,10 +217,9 @@ public class ConfigurationTransform {
             		h2gMapping.addGroupToAccountMapping(g2aMapping.getName()); 
             	}
             }
-            
-            return configuration;
+		return configuration;
 	     } catch (Exception e) {
-	        gumsResourceAdminLog.fatal("Could not convert older version of gums.config: " + e.getMessage());
+		gumsResourceAdminLog.fatal("Could not convert older version of gums.config: " + e.getMessage());
 	        log.info("Could not convert older version of gums.config", e);
 	        throw new RuntimeException("Could not convert older version of gums.config");	    	 
 	     } 

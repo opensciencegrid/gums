@@ -30,17 +30,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.ModificationItem;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
+import javax.naming.*;
+import javax.naming.directory.*;
 import javax.naming.ldap.InitialLdapContext;
 
 import org.apache.commons.logging.Log;
@@ -64,15 +55,15 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	private String trustStore = System.getProperty("java.home")+"/lib/security/cacerts"; // doesn't do anything anymore because it required tomcat restart
 	private String trustStorePassword = ""; // doesn't do anything anymore because it required tomcat restart
 	private String caCertFile = ""; // doesn't do anything anymore because it required tomcat restart
-	private String accountField = "uid";
-	private String memberAccountField = "memberUid";
-	private String groupIdField = "gidNumber";
-	private String groupField = "cn";
+	private String uidField = "uid";
+	private String memberUidField = "memberUid";
+	private String gidNumberField = "gidNumber";
+	private String groupCnField = "cn";
 	private String peopleTree = "";
-	private String peopleObject = null;
+	private String peopleObject = "ou=People";
 	private String peopleContext = null;
 	private String groupTree = "";
-	private String groupObject = null;
+	private String groupObject = "ou=Group";
 	private String groupContext = null; 
 
     /**
@@ -145,16 +136,17 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * @param groupname the secondary group name (i.e. "usatlas")
      */
     public void addToSecondaryGroup(String account, String groupname) {
-        DirContext context = retrieveGroupContext();
+	DirContext context = null;
         try {
+            context = retrieveGroupContext();
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
             NamingEnumeration result;
-           	result = context.search(groupField+"="+groupname+","+groupObject, "("+memberAccountField+"={0})", new Object[] {account}, ctrls);
+           	result = context.search(groupCnField+"="+groupname+","+groupObject, "("+memberUidField+"={0})", new Object[] {account}, ctrls);
             if (result.hasMore()) return;
             ModificationItem[] mods = new ModificationItem[1];
-            mods[0] = new ModificationItem(context.ADD_ATTRIBUTE, new BasicAttribute(memberAccountField, account));
-            context.modifyAttributes(groupField+"="+groupname+","+groupObject, mods);
+            mods[0] = new ModificationItem(context.ADD_ATTRIBUTE, new BasicAttribute(memberUidField, account));
+            context.modifyAttributes(groupCnField+"="+groupname+","+groupObject, mods);
             log.trace("Added secondary group to user - user '" + account + "' to group '" + groupname + "'");
         } catch (Exception e) {
             log.info("Couldn't add user to secondary group - user '" + account + "' to group '" + groupname + "'", e);
@@ -194,12 +186,18 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * @param groupname the primary group name (i.e. "usatlas")
      */
     public void changeGroupID(String account, String groupname) {
-        String gid = findGID(groupname);
-        if (gid == null) {
-        	log.error("GID for group '" + groupname + "' wasn't found.");
-            throw new RuntimeException("GID for group '" + groupname + "' wasn't found.");
-        }
-        updateGID(account, gid);
+	try { 
+		String gid = findGID(groupname);
+		if (gid == null) {
+        		log.error("GID for group '" + groupname + "' wasn't found.");
+            	throw new RuntimeException("GID for group '" + groupname + "' wasn't found.");
+        	}
+        	updateGID(account, gid);
+	}
+	catch(NamingException e) {
+		log.error(e.getMessage());
+		throw new RuntimeException(e.getMessage());
+	}
     }
 
     public PersistenceFactory clone(Configuration configuration) {
@@ -207,10 +205,10 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	persistenceFactory.setDescription(new String(getDescription()));
 //    	persistenceFactory.setCaCertFile(getCaCertFile());
 //   	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
-    	persistenceFactory.setAccountField(new String(getAccountField()));
-	persistenceFactory.setGroupField(new String(getGroupField()));
-    	persistenceFactory.setGroupIdField(new String(getGroupIdField()));
-    	persistenceFactory.setMemberAccountField(new String(getMemberAccountField()));
+    	persistenceFactory.setUidField(new String(getUidField()));
+	persistenceFactory.setGroupCnField(new String(getGroupCnField()));
+    	persistenceFactory.setGidNumberField(new String(getGidNumberField()));
+    	persistenceFactory.setMemberUidField(new String(getMemberUidField()));
     	persistenceFactory.setGroupTree(new String(getGroupTree()));
 	persistenceFactory.setPeopleTree(new String(getPeopleTree()));
 	persistenceFactory.setProperties((Properties)getProperties().clone());
@@ -346,14 +344,18 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }    
 
-    public String getAccountField() {
-    	return accountField;
+    public String getUidField() {
+    	return uidField;
     }
-    
+
     public String getCaCertFile() {
     	return caCertFile;
     }
-    
+  
+    public String getGidNumberField() {
+        return gidNumberField;
+    }
+ 
     public String getGumsOU() {
     	return gumsOU;
     }
@@ -362,12 +364,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         return groupTree;
     }
 
-    public String getGroupField() {
-        return groupField;
-    }
-
-    public String getGroupIdField() {
-    	return groupIdField;
+    public String getGroupCnField() {
+        return groupCnField;
     }
 
     public String getPeopleTree() {
@@ -385,18 +383,17 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         return retrieveContext();
     }
         
-    public String getMemberAccountField() {
-    	return memberAccountField;
+    public String getMemberUidField() {
+    	return memberUidField;
     }
-    
-
+   
     public String getTrustStorePassword() {
     	return trustStorePassword;
     }
 
     public String getType() {
-		return "ldap";
-	}
+	return "ldap";
+    }
 
     /**
      * This property forces the gid update for account pools at every access.
@@ -519,19 +516,18 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         return context;
     }
 
-    public DirContext retrieveGroupContext() {
+    public DirContext retrieveGroupContext() throws NamingException {
         DirContext context = retrieveContext();
 	if (groupContext!=null)
-            return context.lookup(groupContext);
+            return (DirContext)context.lookup(groupContext);
         else
             return context;
     }
 
-    public DirContext retrievePeopleContext() {
+    public DirContext retrievePeopleContext() throws NamingException {
         DirContext context = retrieveContext();
-        return context.lookup(peopleContext);
         if (peopleContext!=null)
-            return context.lookup(peopleContext);
+            return (DirContext)context.lookup(peopleContext);
         else
             return context;
     }
@@ -551,23 +547,35 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         return new LDAPUserGroupDB(this, name);
     }
 
+    // @depricated
     public void setAccountField(String accountField) {
-    	this.accountField = accountField;
+    	this.uidField = accountField;
     }
-    
+    public void setUidField(String uidField) {
+        this.uidField = uidField;
+    }
+ 
     public void setCaCertFile(String caCertFile) {
        	//System.setProperty("javax.net.ssl.trustStore", trustStore );
     	this.caCertFile = caCertFile;
     	//if (!trustStorePassword.equals(""))
     		//addCertToTrustStore();
     }
-   
+  
+    // @depricated
     public void setGroupField(String groupField) {
-        this.groupField = groupField;
+        this.groupCnField = groupField;
     }
- 
+    public void setGroupCnField(String groupCnField) {
+        this.groupCnField = groupCnField;
+    }
+
+    // @depricated 
     public void setGroupIdField(String groupIdField) {
-    	this.groupIdField = groupIdField;
+    	this.gidNumberField = groupIdField;
+    }
+    public void setGidNumberField(String gidNumberField) {
+        this.gidNumberField = gidNumberField;
     }
 
     public void setGroupTree(String groupTree) {
@@ -575,11 +583,15 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         this.groupObject = groupTree.substring(0, groupTree.indexOf(','));
         this.groupContext = groupTree.substring(groupTree.indexOf(',')+1);   
     }
-    
+   
+    // @depricated
     public void setMemberAccountField(String memberAccountField) {
-    	this.memberAccountField = memberAccountField;
+        this.memberUidField = memberAccountField;
     }
-
+    public void setMemberUidField(String memberUidField) {
+        this.memberUidField = memberUidField;
+    }
+ 
     public void setPeopleTree(String peopleTree) {
         this.peopleTree = peopleTree;
         this.peopleObject = peopleTree.substring(0, peopleTree.indexOf(','));
@@ -592,8 +604,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
      * @param properties a set of JNDI properties
      */
     public void setProperties(Properties properties) {
-        if (properties.getProperty(INITIAL_CONTEXT_FACTORY) == null) {
-            properties.put(INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+        if (properties.getProperty(Context.INITIAL_CONTEXT_FACTORY) == null) {
+            properties.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         }
         
         // For JUnit test only
@@ -624,7 +636,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     	//if (!caCertFile.equals(""))
     		//addCertToTrustStore();
     }
-    
+
     public String toXML() {
     	String retStr = "\t\t<ldapPersistenceFactory\n"+
     		"\t\t\tname='"+getName()+"'\n"+
@@ -632,12 +644,12 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
 //			"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
 //			"\t\t\ttrustStorePassword='"+trustStorePassword+"'\n"+
-			"\t\t\tgroupIdField='"+groupIdField+"'\n"+
-			"\t\t\taccountField='"+accountField+"'\n"+
-			"\t\t\tgroupField='"+groupField+"'\n"+
+			"\t\t\tgidNumberField='"+gidNumberField+"'\n"+
+			"\t\t\tuidField='"+uidField+"'\n"+
+			"\t\t\tgroupCnField='"+groupCnField+"'\n"+
+			"\t\t\tmemberUidField='"+memberUidField+"'\n"+
 			"\t\t\tgroupTree='"+groupTree+"'\n"+
-			"\t\t\tpeopleTree='"+peopleTree+"'\n"+
-			"\t\t\tmemberAccountField='"+memberAccountField+"'\n";
+			"\t\t\tpeopleTree='"+peopleTree+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();
     	while(keyIt.hasNext()) {
@@ -678,21 +690,21 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		}
     }
     
-    private String findGID(String groupname) {
+    private String findGID(String groupname) throws NamingException {
         DirContext context = retrieveGroupContext();
         try {
-            NamingEnumeration result = context.search(groupObject, "("+groupField+"={0})", new Object[] {groupname}, null);
+            NamingEnumeration result = context.search(groupObject, "("+groupCnField+"={0})", new Object[] {groupname}, null);
             String gid = null;
-            if (result.hasMore()) {
+	    if (result.hasMore()) {
                 SearchResult item = (SearchResult) result.next();
                 Attributes atts = item.getAttributes();
-                Attribute gidAtt = atts.get(groupIdField);
-                if (gidAtt != null) {
+		Attribute gidAtt = atts.get(gidNumberField);
+		if (gidAtt != null) {
                     gid = (String) gidAtt.get();
                 }
             }
             log.trace("Found gid '" + gid + "' for group '" + groupname + "'");
-            return gid;
+	    return gid;
         } catch (Exception e) {
             log.info("Couldn't retrieve gid for '" + groupname + "'", e);
             throw new RuntimeException("Couldn't retrieve gid for '" + groupname + "': " + e.getMessage(), e);
@@ -712,12 +724,12 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }
     
-    private void updateGID(String account, String gid) {
+    private void updateGID(String account, String gid) throws NamingException {
         DirContext context = retrievePeopleContext();
-        try {
+	try {
             ModificationItem[] mods = new ModificationItem[1];
-            mods[0] = new ModificationItem(context.REPLACE_ATTRIBUTE, new BasicAttribute(groupIdField, gid));
-            context.modifyAttributes(accountField+"="+account+","+peopleObject, mods);
+            mods[0] = new ModificationItem(context.REPLACE_ATTRIBUTE, new BasicAttribute(gidNumberField, gid));
+	    context.modifyAttributes(uidField+"="+account+","+peopleObject, mods);
             log.trace("Changed primary gid for user '" + account + "' to gid '" + gid + "''");
         } catch (Exception e) {
             log.warn("Couldn't change gid for user '" + account + "' to gid '" + gid + "''", e);

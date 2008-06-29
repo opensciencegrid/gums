@@ -167,12 +167,12 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     	persistenceFactory.setDescription(new String(getDescription()));
 //   	persistenceFactory.setCaCertFile(getCaCertFile());
 //    	persistenceFactory.setTrustStorePassword(getTrustStorePassword());
-	persistenceFactory.setGroupObject(new String(getGroupObject()));
-	persistenceFactory.setPeopleObject(new String(getPeopleObject()));
-    	persistenceFactory.setGroupIdField(new String(getGroupIdField()));
-    	persistenceFactory.setGroupField(new String(getGroupField());
-	persistenceFactory.setAccountField(new String(getAccountField()));
-    	persistenceFactory.setMemberAccountField(new String(getMemberAccountField()));
+	persistenceFactory.setPeopleTree(new String(getPeopleTree()));
+	persistenceFactory.setGroupTree(new String(getGroupTree()));
+    	persistenceFactory.setGroupCnField(new String(getGroupCnField()));
+	persistenceFactory.setUidField(new String(getUidField()));
+	persistenceFactory.setGidNumberField(new String(getGidNumberField()));
+    	persistenceFactory.setMemberUidField(new String(getMemberUidField()));
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
     	return persistenceFactory;
@@ -182,24 +182,24 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     	return ldap.getCaCertFile();
     }
 
-    public String getAccountField() {
-    	return ldap.getAccountField();
-    }    
-    
-    public String getGroupIdField() {
-    	return ldap.getGroupIdField();
+    public String getMemberUidField() {
+    	return ldap.getMemberUidField();
     }
-   
-    public String getGroupField() {
-        return ldap.getGroupField();
+  
+    public String getGidNumberField() {
+        return ldap.getGidNumberField();
+    }
+ 
+    public String getGroupCnField() {
+        return ldap.getGroupCnField();
     }
 
     public String getGroupTree() {
         return ldap.getGroupTree();
     }
  
-    public String getMemberAccountField() {
-    	return ldap.getMemberAccountField();
+    public String getUidField() {
+    	return ldap.getUidField();
     }
     
     public Properties getLDAPProperties() {
@@ -211,7 +211,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     }
     
     public String getPeopleTree() {
-        return ldap.getTreeObject();
+        return ldap.getPeopleTree();
     }
 
     public String getTrustStorePassword() {
@@ -266,21 +266,37 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     public void setConfiguration(Configuration configuration) {
     	super.setConfiguration(configuration);
     }
-        
+
+    // @depricated
     public void setAccountField(String accountField) {
-    	ldap.setAccountField(accountField);
+        ldap.setAccountField(accountField);
     }
-    
+    public void setUidField(String uidField) {
+    	ldap.setUidField(uidField);
+    }
+
+    // @depricated
+    public void setGroupIdField(String groupIdField) {
+        ldap.setGroupIdField(groupIdField);
+    }
+    public void setGidNumberField(String gidNumberField) {
+        ldap.setGidNumberField(gidNumberField);
+    }
+   
+    // @depricated 
     public void setMemberAccountField(String memberAccountField) {
     	ldap.setMemberAccountField(memberAccountField);
     }
-    
-    public void setGroupIdField(String groupIdField) {
-    	ldap.setGroupIdField(groupIdField);
+    public void setMemberUidField(String memberUidField) {
+    	ldap.setMemberUidField(memberUidField);
     }
-   
+  
+    // @depricated
     public void setGroupField(String groupField) {
-        ldap.setGroupField(groupField);
+        ldap.setGroupCnField(groupField);
+    }
+    public void setGroupCnField(String groupCnField) {
+        ldap.setGroupCnField(groupCnField);
     }
 
     public void setGroupTree(String groupTree) {
@@ -316,12 +332,12 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
 //    		"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
 //    		"\t\t\ttrustStorePassword='"+getTrustStorePassword()+"'\n"+
-                "\t\t\tgroupObject='"+getGroupObject()+"'\n"+
-                "\t\t\tpeopleObject='"+getPeopleObject()+"'\n"+		
-    		"\t\t\tgroupIdField='"+getGroupIdField()+"'\n"+
-    		"\t\t\tgroupField='"+getGroupField()+"'\n"+
-		"\t\t\taccountField='"+getAccountField()+"'\n"+
-		"\t\t\tmemberAccountField='"+getMemberAccountField()+"'\n";
+                "\t\t\tgroupObject='"+getGroupTree()+"'\n"+
+                "\t\t\tpeopleObject='"+getPeopleTree()+"'\n"+		
+    		"\t\t\tgidNumberField='"+getGidNumberField()+"'\n"+
+    		"\t\t\tgroupCnField='"+getGroupCnField()+"'\n"+
+		"\t\t\tuidField='"+getUidField()+"'\n"+
+		"\t\t\tmemberUidField='"+getMemberUidField()+"'\n";
     	
     	Iterator keyIt = getProperties().keySet().iterator();
     	while(keyIt.hasNext()) {
