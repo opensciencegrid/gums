@@ -3,19 +3,18 @@
 # Very simple cron script to download mapfile for host. Requires
 # only gums-client RPM, not VDT.
 #
-# This script can be directly linked from /etc/cron.daily.
+# This script can be directly linked from /etc/cron.daily or cron.hourly.
 #
 # John R. Hover <jhover@bnl.gov>
 #
-#
 TMPFILE=`mktemp`
-MAPFILE=/etc/grid-security/grid-mapfile
+MAPFILE=/etc/grid-security/grid-vomapfile
 # Change to 1 to get debug info. Note that successful crons should have no output.
 DEBUG=0
 
 # Create new mapfile
 
-/usr/bin/gums-host generateGridMapfile > $TMPFILE 2>/dev/null
+/usr/bin/gums-host generateVoGridMapfile > $TMPFILE 2>/dev/null
 
 if [ "$?" -eq 0 ]; then
         if [ $DEBUG -eq 1 ] ; then
