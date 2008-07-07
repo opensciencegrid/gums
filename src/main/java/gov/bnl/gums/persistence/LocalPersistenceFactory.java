@@ -300,7 +300,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     }
 
     public void setGroupTree(String groupTree) {
-        ldap.setGroupTree(groupTree);
+	ldap.setGroupTree(groupTree);
     }
  
     public void setName(String name) {
@@ -308,7 +308,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     }
 
     public void setPeopleTree(String peopleTree) {
-        ldap.setPeopleTree(peopleTree);
+	ldap.setPeopleTree(peopleTree);
     }
 
     public void setProperties(Properties properties) {
@@ -332,8 +332,8 @@ public class LocalPersistenceFactory extends PersistenceFactory {
     		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
 //    		"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
 //    		"\t\t\ttrustStorePassword='"+getTrustStorePassword()+"'\n"+
-                "\t\t\tgroupObject='"+getGroupTree()+"'\n"+
-                "\t\t\tpeopleObject='"+getPeopleTree()+"'\n"+		
+                "\t\t\tgroupTree='"+getGroupTree()+"'\n"+
+                "\t\t\tpeopleTree='"+getPeopleTree()+"'\n"+		
     		"\t\t\tgidNumberField='"+getGidNumberField()+"'\n"+
     		"\t\t\tgroupCnField='"+getGroupCnField()+"'\n"+
 		"\t\t\tuidField='"+getUidField()+"'\n"+

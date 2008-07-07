@@ -344,6 +344,11 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         }
     }    
 
+    /* @depricated */
+    public String getAccountField() {
+        return uidField;
+    }
+
     public String getUidField() {
     	return uidField;
     }
@@ -351,7 +356,12 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public String getCaCertFile() {
     	return caCertFile;
     }
-  
+
+    /* @depricated */
+    public String getGroupIdField() {
+        return gidNumberField;
+    }
+ 
     public String getGidNumberField() {
         return gidNumberField;
     }
@@ -359,7 +369,11 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public String getGumsOU() {
     	return gumsOU;
     }
-    
+   
+    public String getGroupField() {
+        return groupCnField;
+    }
+ 
     public String getGroupTree() {
         return groupTree;
     }
@@ -382,7 +396,12 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public DirContext getLDAPContext() {
         return retrieveContext();
     }
-        
+     
+    /* @depricated */
+    public String getMemberAccountField() {
+        return memberUidField;
+    }
+   
     public String getMemberUidField() {
     	return memberUidField;
     }
@@ -579,9 +598,13 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     }
 
     public void setGroupTree(String groupTree) {
-        this.groupTree = groupTree;
-        this.groupObject = groupTree.substring(0, groupTree.indexOf(','));
-        this.groupContext = groupTree.substring(groupTree.indexOf(',')+1);   
+	if (groupTree.length()>0) {
+            this.groupTree = groupTree;
+	    if (groupTree.indexOf(',')!=-1) {
+        	this.groupObject = groupTree.substring(0, groupTree.indexOf(','));
+        	this.groupContext = groupTree.substring(groupTree.indexOf(',')+1);   
+            }
+        } 
     }
    
     // @depricated
@@ -593,9 +616,14 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     }
  
     public void setPeopleTree(String peopleTree) {
-        this.peopleTree = peopleTree;
-        this.peopleObject = peopleTree.substring(0, peopleTree.indexOf(','));
-        this.peopleContext = peopleTree.substring(peopleTree.indexOf(',')+1);       }
+	if (peopleTree.length()>0) {
+            this.peopleTree = peopleTree;
+            if (peopleTree.indexOf(peopleTree)!=-1) {
+                this.peopleObject = peopleTree.substring(0, peopleTree.indexOf(','));
+                this.peopleContext = peopleTree.substring(peopleTree.indexOf(',')+1);
+            }
+        }
+    }
     
     /**
      * Sets the list of properties to be used to connect to LDAP, that is

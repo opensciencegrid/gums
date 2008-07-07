@@ -49,8 +49,7 @@ public class FileConfigurationStoreTest extends TestCase {
 
     public void testFileStore() throws java.lang.Exception {
         Configuration conf = confStore.retrieveConfiguration();
-        confStore.setConfiguration(conf, false);
-        
+	 confStore.setConfiguration(conf, false);
         new FileConfigurationStore().retrieveConfiguration();
     }
     

@@ -152,7 +152,7 @@ class ConfigurationToolkit {
                 String name = attributes.getQName(nAtt);
                 String value = attributes.getValue(nAtt);
                 log.trace("Adding " + name + " " + value + " property");
-                if (name.equals("name"))
+                /*if (name.equals("name"))
                     MethodUtils.invokeMethod(digestor, "setName", new Object[] {value});
                 else if (name.equals("description"))
                     MethodUtils.invokeMethod(digestor, "setDescription", new Object[] {value});
@@ -168,7 +168,8 @@ class ConfigurationToolkit {
                     MethodUtils.invokeMethod(digestor, "setMemberAccountField", new Object[] {value});
                 else if (name.equals("trustStorePassword"))
                     MethodUtils.invokeMethod(digestor, "setTrustStorePassword", new Object[] {value});
-                else if (!name.equals("className"))
+                else if (!name.equals("className"))*/
+                if (name.indexOf(".")!=-1)
                 	properties.setProperty(name, value);
             }
             MethodUtils.invokeMethod(digestor, "setProperties", properties);
@@ -372,13 +373,13 @@ class ConfigurationToolkit {
      * @throws SAXException
      */
     public static synchronized Configuration loadConfiguration(String configPath, String schemaPath) throws ParserConfigurationException, IOException, SAXException {
-       	validate(configPath, schemaPath);
-    	Digester digester = retrieveDigester();
-    	Configuration configuration = new Configuration();
+	validate(configPath, schemaPath);
+	Digester digester = retrieveDigester();
+	Configuration configuration = new Configuration();
         digester.push(configuration);
         log.trace("Loading the configuration from file '" + configPath + "' using schema '" + schemaPath);
         digester.parse("file://"+configPath);
-        return configuration;
+	return configuration;
     }
     
 }

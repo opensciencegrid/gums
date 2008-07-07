@@ -56,7 +56,6 @@ public class LDAPUserGroup extends UserGroup {
     protected ConfigurationStore confStore;    
     protected String peopleObject = "ou=People";
     protected String peopleContext = null;
-    protected String query = null;   
     protected String memberUidField = "memberUid";
     protected String uidField = "uid";
  
@@ -161,12 +160,11 @@ public class LDAPUserGroup extends UserGroup {
      * The LDAP query used to retrieveGetter for property query.
      * 
      * @return The LDAP query used. i.e. "ou=usatlas,o=atlas,dc=eu-datagrid,dc=org"
-     * @deprecated
      */
     public String getQuery() {
-        return this.query;
+        return peopleTree;
     }
-    
+
     /**
      * Returns the name of the LDAP server used to retrieve the list of users.
      * 
@@ -261,8 +259,7 @@ public class LDAPUserGroup extends UserGroup {
      * @deprecated
      */
     public void setQuery(String query) {
-        this.query = query;
-        if (query.startsWith(peopleObject+",")) {
+ 	if (query.startsWith(peopleObject+",")) {
             peopleTree = query;
             peopleObject = query.substring(0, query.indexOf(','));
 	    peopleContext = query.substring(query.indexOf(',')+1);
