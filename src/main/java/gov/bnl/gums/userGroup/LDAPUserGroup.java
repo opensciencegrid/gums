@@ -126,16 +126,21 @@ public class LDAPUserGroup extends UserGroup {
         return groupTree;
     }
 
-    public String getMemberUidField() {
-        return memberUidField;
-    }
- 
     public java.util.List getMemberList() {
         return getDB().retrieveMembers();
     }
+ 
+    public String getMemberUidField() {
+        return memberUidField;
+    }
    
-    public String getUidField() {
-        return uidField;
+    /**
+     * Getter for property peopleTree
+     *
+     * @return peopleTree as string
+     */
+    public String getPeopleTree() {
+        return peopleTree;
     }
  
     /**
@@ -147,15 +152,6 @@ public class LDAPUserGroup extends UserGroup {
         return persistenceFactory;
     }
     
-    /**
-     * Getter for property peopleTree
-     *
-     * @return peopleTree as string
-     */
-    public String getPeopleTree() {
-        return peopleTree;
-    }
-
     /**
      * The LDAP query used to retrieveGetter for property query.
      * 
@@ -173,9 +169,13 @@ public class LDAPUserGroup extends UserGroup {
     public String getServer() {
         return this.server;
     }
-    
+
     public String getType() {
         return "ldap";
+    }
+    
+    public String getUidField() {
+        return uidField;
     }
     
     public int hashCode() {
@@ -186,26 +186,6 @@ public class LDAPUserGroup extends UserGroup {
         return getDB().isMemberInGroup(user);
     }
     
-    protected Map retrievePeopleMap(DirContext ldap) throws javax.naming.NamingException {
-	NamingEnumeration people = ldap.search(peopleObject, "("+certDNField+"=*)", null);
-	Map map = new Hashtable();
-        while (people.hasMore()) {
-	    SearchResult person = (SearchResult) people.next();
-            Attributes personAtts = person.getAttributes();
-	    String ldapDN = (String)personAtts.get(uidField).get();//person.getName();
-	    //if (person.isRelative()) {
-                //ldapDN = ldapDN + "," + peopleObject + "," + ldap.getNameInNamespace();
-            //}
-            String certDN = (String) personAtts.get(certDNField).get();
-            if (certDN.startsWith("subject=")) {
-                certDN = certDN.substring(8);
-            }
-            certDN = certDN.trim();
-	    map.put(ldapDN, certDN);
-	}
-        return map;
-    }
-    
     /**
      * Setter for property certDN
      * 
@@ -214,7 +194,7 @@ public class LDAPUserGroup extends UserGroup {
     public void setCertDNField(String certDNField) {
     	this.certDNField = certDNField;
     }
-   
+    
     /**
      * Setter for property groupTree
      *
@@ -223,22 +203,9 @@ public class LDAPUserGroup extends UserGroup {
     public void setGroupTree(String groupTree) {
         this.groupTree = groupTree;
     }
-
+   
     public void setMemberUidField(String memberUidField) {
         this.memberUidField = memberUidField;
-    }
-
-    public void setUidField(String uidField) {
-        this.uidField = uidField;
-    }
-
-    /**
-     * Setter for property persistenceFactory
-     *
-     * @param persistenceFactory as string
-     */
-    public void setPersistenceFactory(String persistenceFactory) {
-        this.persistenceFactory = persistenceFactory;
     }
 
     /**
@@ -251,7 +218,16 @@ public class LDAPUserGroup extends UserGroup {
         this.peopleObject = peopleTree.substring(0, peopleTree.indexOf(','));
 	this.peopleContext = peopleTree.substring(peopleTree.indexOf(',')+1);
     }
-    
+
+    /**
+     * Setter for property persistenceFactory
+     *
+     * @param persistenceFactory as string
+     */
+    public void setPersistenceFactory(String persistenceFactory) {
+        this.persistenceFactory = persistenceFactory;
+    }
+
     /**
      * Changes the LDAP query used to retrieveGetter for property query.
      * 
@@ -275,13 +251,17 @@ public class LDAPUserGroup extends UserGroup {
             throw new IllegalArgumentException("The query is not understood by the LDAP group. It is expected to start with \"ou=...\" or \"o=...\"");
         }
     }
-    
+
     /**
      * Changes the LDAP server used to retrieve the list of users.
      * @param server The name of the server server. i.e. "grid-vo.nikhef.nl"
      */
     public void setServer(String server) {
         this.server = server;
+    }
+    
+    public void setUidField(String uidField) {
+        this.uidField = uidField;
     }
     
     public String toString() {
@@ -315,7 +295,7 @@ public class LDAPUserGroup extends UserGroup {
             db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( getName() );
     	return db;
     }
-
+    
     private List retrieveGroupMembers(DirContext rootCtx, Attribute members) throws javax.naming.NamingException {
         Map people = retrievePeopleMap(rootCtx);
 	NamingEnumeration names = members.getAll();
@@ -336,7 +316,7 @@ public class LDAPUserGroup extends UserGroup {
         }
         return list;
     }
-    
+
     /**
      * Returns the list of member retrieved from the LDAP server. The members are not saved in the database.
      * Must be synchronized since the System properties are being set
@@ -378,7 +358,7 @@ public class LDAPUserGroup extends UserGroup {
         properties.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
         properties.put(Context.SECURITY_PROTOCOL, "none");
         return properties;
-    }    
+    }
     
     private List retrieveVOMembers(DirContext rootCtx) throws NamingException {
         Map people = retrievePeopleMap(rootCtx);
@@ -396,5 +376,25 @@ public class LDAPUserGroup extends UserGroup {
             resourceAdminLog.warn("The following group returned no members: " + this);
         }
         return users;
+    }    
+    
+    protected Map retrievePeopleMap(DirContext ldap) throws javax.naming.NamingException {
+	NamingEnumeration people = ldap.search(peopleObject, "("+certDNField+"=*)", null);
+	Map map = new Hashtable();
+        while (people.hasMore()) {
+	    SearchResult person = (SearchResult) people.next();
+            Attributes personAtts = person.getAttributes();
+	    String ldapDN = (String)personAtts.get(uidField).get();//person.getName();
+	    //if (person.isRelative()) {
+                //ldapDN = ldapDN + "," + peopleObject + "," + ldap.getNameInNamespace();
+            //}
+            String certDN = (String) personAtts.get(certDNField).get();
+            if (certDN.startsWith("subject=")) {
+                certDN = certDN.substring(8);
+            }
+            certDN = certDN.trim();
+	    map.put(ldapDN, certDN);
+	}
+        return map;
     }
 }

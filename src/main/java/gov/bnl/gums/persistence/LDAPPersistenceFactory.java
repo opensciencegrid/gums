@@ -349,43 +349,35 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
         return uidField;
     }
 
-    public String getUidField() {
-    	return uidField;
-    }
-
     public String getCaCertFile() {
     	return caCertFile;
     }
 
-    /* @depricated */
-    public String getGroupIdField() {
-        return gidNumberField;
-    }
- 
     public String getGidNumberField() {
         return gidNumberField;
-    }
- 
-    public String getGumsOU() {
-    	return gumsOU;
-    }
-   
-    public String getGroupField() {
-        return groupCnField;
-    }
- 
-    public String getGroupTree() {
-        return groupTree;
     }
 
     public String getGroupCnField() {
         return groupCnField;
     }
-
-    public String getPeopleTree() {
-        return peopleTree;
+ 
+    public String getGroupField() {
+        return groupCnField;
     }
-    
+ 
+    /* @depricated */
+    public String getGroupIdField() {
+        return gidNumberField;
+    }
+   
+    public String getGroupTree() {
+        return groupTree;
+    }
+ 
+    public String getGumsOU() {
+    	return gumsOU;
+    }
+
     /** 
      * Returns a Context ready to be used (taken from the pool).
      * This is the entry point for the pool, and it can be used
@@ -396,22 +388,30 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public DirContext getLDAPContext() {
         return retrieveContext();
     }
-     
+
     /* @depricated */
     public String getMemberAccountField() {
         return memberUidField;
     }
-   
+    
     public String getMemberUidField() {
     	return memberUidField;
+    }
+     
+    public String getPeopleTree() {
+        return peopleTree;
     }
    
     public String getTrustStorePassword() {
     	return trustStorePassword;
     }
-
+   
     public String getType() {
 	return "ldap";
+    }
+
+    public String getUidField() {
+    	return uidField;
     }
 
     /**
@@ -543,14 +543,6 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
             return context;
     }
 
-    public DirContext retrievePeopleContext() throws NamingException {
-        DirContext context = retrieveContext();
-        if (peopleContext!=null)
-            return (DirContext)context.lookup(peopleContext);
-        else
-            return context;
-    }
-    
     public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
         log.trace("Creating LDAP ManualAccountMapperDB '" + name + "'");
         return new LDAPAccountMapperDB(this, name);
@@ -559,6 +551,14 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public ManualUserGroupDB retrieveManualUserGroupDB(String name) {
         log.trace("Creating LDAP ManualUserGroupDB '" + name + "'");
         return new LDAPUserGroupDB(this, name);
+    }
+    
+    public DirContext retrievePeopleContext() throws NamingException {
+        DirContext context = retrieveContext();
+        if (peopleContext!=null)
+            return (DirContext)context.lookup(peopleContext);
+        else
+            return context;
     }
     
     public UserGroupDB retrieveUserGroupDB(String name) {
@@ -570,33 +570,29 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public void setAccountField(String accountField) {
     	this.uidField = accountField;
     }
-    public void setUidField(String uidField) {
-        this.uidField = uidField;
-    }
- 
     public void setCaCertFile(String caCertFile) {
        	//System.setProperty("javax.net.ssl.trustStore", trustStore );
     	this.caCertFile = caCertFile;
     	//if (!trustStorePassword.equals(""))
     		//addCertToTrustStore();
     }
+ 
+    public void setGidNumberField(String gidNumberField) {
+        this.gidNumberField = gidNumberField;
+    }
   
+    public void setGroupCnField(String groupCnField) {
+        this.groupCnField = groupCnField;
+    }
     // @depricated
     public void setGroupField(String groupField) {
         this.groupCnField = groupField;
-    }
-    public void setGroupCnField(String groupCnField) {
-        this.groupCnField = groupCnField;
     }
 
     // @depricated 
     public void setGroupIdField(String groupIdField) {
     	this.gidNumberField = groupIdField;
     }
-    public void setGidNumberField(String gidNumberField) {
-        this.gidNumberField = gidNumberField;
-    }
-
     public void setGroupTree(String groupTree) {
 	if (groupTree.length()>0) {
             this.groupTree = groupTree;
@@ -606,15 +602,15 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
             }
         } 
     }
-   
+
     // @depricated
     public void setMemberAccountField(String memberAccountField) {
         this.memberUidField = memberAccountField;
     }
+   
     public void setMemberUidField(String memberUidField) {
         this.memberUidField = memberUidField;
     }
- 
     public void setPeopleTree(String peopleTree) {
 	if (peopleTree.length()>0) {
             this.peopleTree = peopleTree;
@@ -624,7 +620,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
             }
         }
     }
-    
+ 
     /**
      * Sets the list of properties to be used to connect to LDAP, that is
      * to create the JNDI context.
@@ -648,7 +644,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 
         super.setProperties(properties);
     }
-
+    
     /**
      * This property forces the gid update for account pools at every access.
      * It's handy for when gids gets out of synch.
@@ -657,12 +653,16 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
     public void setSynchGroups(boolean synchGroups) {
         this.synchGroups = synchGroups;
     }
-    
+
     public void setTrustStorePassword(String trustStorePassword) {
        	//System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword );
         this.trustStorePassword = trustStorePassword;
     	//if (!caCertFile.equals(""))
     		//addCertToTrustStore();
+    }
+    
+    public void setUidField(String uidField) {
+        this.uidField = uidField;
     }
 
     public String toXML() {

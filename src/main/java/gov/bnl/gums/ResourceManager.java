@@ -246,7 +246,7 @@ public class ResourceManager {
                     while (accountMapperIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
                     	if (accountMapper instanceof GroupAccountMapper || accountMapper instanceof AccountPoolMapper) {
-	                		String fqan = vomsUserGroup.getVoGroup() + "/" + vomsUserGroup.getRole();
+	                		String fqan = vomsUserGroup.getVoGroup() + "/Role=" + vomsUserGroup.getRole();
                         	String account = null;
 	                       	if (accountMapper instanceof GroupAccountMapper) {
 	                    		GroupAccountMapper groupPoolMapper = (GroupAccountMapper)accountMapper;
