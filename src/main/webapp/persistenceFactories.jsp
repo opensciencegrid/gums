@@ -354,51 +354,51 @@ else if ("edit".equals(request.getParameter("command"))
 	    		Update group for every access: 
 		    </td>
 		    <td nowrap>
-			<%=ConfigurationWebToolkit.createSelectBox("synchGroups", 
-				trueFalse, 
-				((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"true":"false",
-				null,
-				false)%>
+				<%=ConfigurationWebToolkit.createSelectBox("synchGroups", 
+					trueFalse, 
+					((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"true":"false",
+					null,
+					false)%>
 		    </td>
 		</tr>
 		<tr>
-                <td nowrap style="text-align: right;">
-                        LDAP Group Tree:
-                    </td>
-                    <td nowrap>
-                        <input maxlength="256" size="16" name="groupTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getGroupTree()%>"/>
-                    </td>
-                </tr>
-            <tr>
-                <td nowrap style="text-align: right;">
-                        i.e.
-                    </td>
-                    <td nowrap>
-                        ou=Group,cn=usatlas,cn=bnl,cn=gov
-                    </td>
-                </tr>
+            <td nowrap style="text-align: right;">
+                LDAP Group Tree:
+            </td>
+            <td nowrap>
+                <input maxlength="256" size="64" name="groupTree" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGroupTree()%>"/>
+            </td>
+        </tr>
+        <tr>
+            <td nowrap style="text-align: right;">
+                i.e.
+            </td>
+            <td nowrap>
+                ou=Group,cn=usatlas,cn=bnl,cn=gov
+            </td>
+        </tr>
 		<tr>
-                <td nowrap style="text-align: right;">
-                        LDAP People Tree:
-                    </td>
-                    <td nowrap>
-                        <input maxlength="256" size="16" name="peopleTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getPeopleTree()%>"/>
-                    </td>
-                </tr>
-            <tr>
-                <td nowrap style="text-align: right;">
-                        i.e.
-                    </td>
-                    <td nowrap>
-                        ou=People,cn=usatlas,cn=bnl,cn=gov
-                    </td>
-                </tr>
+            <td nowrap style="text-align: right;">
+                LDAP People Tree:
+            </td>
+            <td nowrap>
+                <input maxlength="256" size="64" name="peopleTree" value="<%=((LDAPPersistenceFactory)persistenceFactory).getPeopleTree()%>"/>
+            </td>
+        </tr>
+        <tr>
+            <td nowrap style="text-align: right;">
+                i.e.
+            </td>
+            <td nowrap>
+                ou=People,cn=usatlas,cn=bnl,cn=gov
+            </td>
+        </tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		LDAP Group ID Field:
+	    		LDAP GID NUMBER FIELD:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="16" name="groupIdField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGroupIdField()%>"/> (group ID field in 'People' object)
+		    	<input maxlength="256" size="16" name="gidNumberField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGidNumberField()%>"/> (group ID number field in 'People' object)
 		    </td>
 		</tr>
 	    <tr>
@@ -410,27 +410,27 @@ else if ("edit".equals(request.getParameter("command"))
 		    </td>
 		</tr>
 		<tr>
-                <td nowrap style="text-align: right;">
-                        LDAP Group Field:
-                    </td>
-                    <td nowrap>
-                        <input maxlength="256" size="16" name="groupField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGroupField()%>"/> (group name field in 'Group' object)
-                    </td>
-                </tr>
-            <tr>
-                <td nowrap style="text-align: right;">
-                        i.e.
-                    </td>
-                    <td nowrap>
-                        cn
-                    </td>
-                </tr>
+			<td nowrap style="text-align: right;">
+                LDAP Group CN Field:
+            </td>
+            <td nowrap>
+                <input maxlength="256" size="16" name="groupCnField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGroupCnField()%>"/> (group common name field)
+            </td>
+		</tr>
+        <tr>
+            <td nowrap style="text-align: right;">
+                i.e.
+            </td>
+            <td nowrap>
+                cn
+            </td>
+        </tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		LDAP Account Field:
+	    		LDAP UID Field:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="16" name="accountField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getAccountField()%>"/> (account field in 'People' object)
+		    	<input maxlength="256" size="16" name="uidField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getUidField()%>"/> (user ID field)
 		    </td>
 		</tr>
 	    <tr>
@@ -443,10 +443,10 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		LDAP Member Account Field:
+	    		LDAP Member UID Field:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="16" name="memAccField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getMemberAccountField()%>"/> (account field in 'Group' object)
+		    	<input maxlength="256" size="16" name="memberUidField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getMemberUidField()%>"/> (fields containing user ID in 'Group' object)
 		    </td>
 		</tr>
 	    <tr>
@@ -561,44 +561,44 @@ else if ("edit".equals(request.getParameter("command"))
 				false)%>
 		    </td>
 		</tr>
-<tr>
-                <td nowrap style="text-align: right;">
-                        LDAP Group Tree:
-                    </td>
-                    <td nowrap>
-                        <input maxlength="256" size="16" name="groupTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getGroupTree()%>"/>
-                    </td>
-                </tr>
-            <tr>
-                <td nowrap style="text-align: right;">
-                        i.e.
-                    </td>
-                    <td nowrap>
-                        ou=Group,cn=usatlas,cn=bnl,cn=gov
-                    </td>
-                </tr>
-                <tr>
-                <td nowrap style="text-align: right;">
-                        LDAP People Tree:
-                    </td>
-                    <td nowrap>
-                        <input maxlength="256" size="16" name="peopleTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getPeopleTree()%>"/>
-                    </td>
-                </tr>
-            <tr>
-                <td nowrap style="text-align: right;">
-                        i.e.
-                    </td>
-                    <td nowrap>
-                        ou=People,cn=usatlas,cn=bnl,cn=gov
-                    </td>
-                </tr>
+		<tr>
+            <td nowrap style="text-align: right;">
+                LDAP Group Tree:
+            </td>
+            <td nowrap>
+                <input maxlength="256" size="64" name="groupTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getGroupTree()%>"/>
+            </td>
+		</tr>
+        <tr>
+            <td nowrap style="text-align: right;">
+                i.e.
+            </td>
+            <td nowrap>
+                ou=Group,cn=usatlas,cn=bnl,cn=gov
+            </td>
+        </tr>
+        <tr>
+        <td nowrap style="text-align: right;">
+                LDAP People Tree:
+            </td>
+            <td nowrap>
+                <input maxlength="256" size="64" name="peopleTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getPeopleTree()%>"/>
+            </td>
+        </tr>
+        <tr>
+            <td nowrap style="text-align: right;">
+                i.e.
+            </td>
+            <td nowrap>
+                ou=People,cn=usatlas,cn=bnl,cn=gov
+            </td>
+        </tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		LDAP Group ID Field:
+	    		LDAP GID NUMBER FIELD:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="16" name="groupIdField" value="<%=((LocalPersistenceFactory)persistenceFactory).getGroupIdField()%>"/> (group ID field in 'People' ou)
+		    	<input maxlength="256" size="16" name="gidNumberField" value="<%=((LocalPersistenceFactory)persistenceFactory).getGidNumberField()%>"/> (group ID number field in 'People' object)
 		    </td>
 		</tr>
 	    <tr>
@@ -609,29 +609,28 @@ else if ("edit".equals(request.getParameter("command"))
 		    	gidNumber
 		    </td>
 		</tr>
-                <tr>
-                <td nowrap style="text-align: right;">
-                        LDAP Group Field:
-                    </td>
-                    <td nowrap>
-                        <input maxlength="256" size="16" name="groupField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGroupField()%>"/> (group name field in 'Group' object)
-                    </td>
-                </tr>
-            <tr>
-                <td nowrap style="text-align: right;">
-                        i.e.
-                    </td>
-                    <td nowrap>
-                        cn
-                    </td>
-                </tr>
-
+		<tr>
+			<td nowrap style="text-align: right;">
+                LDAP Group CN Field:
+            </td>
+            <td nowrap>
+                <input maxlength="256" size="16" name="groupCnField" value="<%=((LocalPersistenceFactory)persistenceFactory).getGroupCnField()%>"/> (group common name field)
+            </td>
+		</tr>
+        <tr>
+            <td nowrap style="text-align: right;">
+                i.e.
+            </td>
+            <td nowrap>
+                cn
+            </td>
+        </tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		LDAP Account Field:
+	    		LDAP UID Field:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="16" name="accountField" value="<%=((LocalPersistenceFactory)persistenceFactory).getAccountField()%>"/> (account field in 'People' ou)
+		    	<input maxlength="256" size="16" name="uidField" value="<%=((LocalPersistenceFactory)persistenceFactory).getUidField()%>"/> (user ID field)
 		    </td>
 		</tr>
 	    <tr>
@@ -644,10 +643,10 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		LDAP Member Account Field:
+	    		LDAP Member UID Field:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="16" name="memAccField" value="<%=((LocalPersistenceFactory)persistenceFactory).getMemberAccountField()%>"/> (account field in 'Group' ou)
+		    	<input maxlength="256" size="16" name="memberUidField" value="<%=((LocalPersistenceFactory)persistenceFactory).getMemberUidField()%>"/> (fields containing user ID in 'Group' object)
 		    </td>
 		</tr>
 	    <tr>

@@ -437,10 +437,10 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				LDAP Account Field: 
+				LDAP Account UID Field: 
 			</td>
 			<td> 
-				<input maxlength="256" size="16" name="account" value="<%=((GecosLdapAccountMapper)accountMapper).getAccountField()%>"/> (which field account is in)
+				<input maxlength="256" size="16" name="account" value="<%=((GecosLdapAccountMapper)accountMapper).getAccountField()%>"/> (which field account UID is in)
 			</td>
 		</tr>
 	    <tr>
@@ -488,10 +488,10 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				NIS Account Field: 
+				NIS Account UID Field: 
 			</td>
 			<td> 
-				<input maxlength="256" size="16" name="account" value="<%=((GecosNisAccountMapper)accountMapper).getAccountField()%>"/> (which field account is in)
+				<input maxlength="256" size="16" name="account" value="<%=((GecosNisAccountMapper)accountMapper).getAccountField()%>"/> (which field account UID is in)
 			</td>
 		</tr>
 	    <tr>
@@ -539,10 +539,10 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				LDAP DN Field: 
+				LDAP Certificate DN Field: 
 			</td>
 			<td> 
-				<input maxlength="256" size="16" name="dn" value="<%=((LdapAccountMapper)accountMapper).getDnField()%>"/> (which field DN is in)
+				<input maxlength="256" size="16" name="dn" value="<%=((LdapAccountMapper)accountMapper).getDnField()%>"/> (which field grid certificate DN is in)
 			</td>
 		</tr>
 	    <tr>
@@ -555,10 +555,10 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				LDAP Account Field: 
+				LDAP Account UID Field: 
 			</td>
 			<td> 
-				<input maxlength="256" size="16" name="account" value="<%=((LdapAccountMapper)accountMapper).getAccountField()%>"/> (which field account is in)
+				<input maxlength="256" size="16" name="account" value="<%=((LdapAccountMapper)accountMapper).getAccountField()%>"/> (which field account UID is in)
 			</td>
 		</tr>
 	    <tr>

@@ -42,16 +42,6 @@ try {
 <%
 	return;
 }
-if (configuration.getGroupToAccountMappings().size()==0) {
-%>
-	<p><div class="failure">You must first create a 'group to account mapping'.</div></p>
-	</div>
-	<%@include file="bottomNav.jspf"%>
-	</body>
-	</html>
-<%
-	return;
-}
 %>
 
 <p>
@@ -88,7 +78,7 @@ if (request.getParameter("command")==null ||
 	if ("delete".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
-			if( newConfiguration.removeHostToGroupMapping( request.getParameter("hg_name") )!=null ) {
+			if( newConfiguration.removeHostToGroupMapping( request.getParameter("name") )!=null ) {
 				gums.setConfiguration(newConfiguration);
 				configuration = gums.getConfiguration();
 				message = "<div class=\"success\">Host to group mapping has been deleted.</div>";
@@ -103,13 +93,13 @@ if (request.getParameter("command")==null ||
 	if ("up".equals(request.getParameter("command"))) {
 		try{
 			Configuration newConfiguration = (Configuration)configuration.clone();
-			HostToGroupMapping h2GMapping = newConfiguration.getHostToGroupMapping( request.getParameter("hg_name") );
+			HostToGroupMapping h2GMapping = newConfiguration.getHostToGroupMapping( request.getParameter("name") );
 			int index = newConfiguration.getHostToGroupMappings().indexOf(h2GMapping);
 			newConfiguration.removeHostToGroupMapping(h2GMapping.getName());
 			newConfiguration.addHostToGroupMapping(Math.max(0, index-1), h2GMapping);
 			gums.setConfiguration(newConfiguration);
 			configuration = newConfiguration;
-			movedName = request.getParameter("hg_name");
+			movedName = request.getParameter("name");
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error moving up: " + e.getMessage() + "</div>";
 		}
@@ -118,13 +108,13 @@ if (request.getParameter("command")==null ||
 	if ("down".equals(request.getParameter("command"))) {
 		try{
 			Configuration newConfiguration = (Configuration)configuration.clone();
-			HostToGroupMapping h2GMapping = newConfiguration.getHostToGroupMapping( request.getParameter("hg_name") );
+			HostToGroupMapping h2GMapping = newConfiguration.getHostToGroupMapping( request.getParameter("name") );
 			int index = newConfiguration.getHostToGroupMappings().indexOf(h2GMapping);
 			newConfiguration.removeHostToGroupMapping(h2GMapping.getName());
 			newConfiguration.addHostToGroupMapping(Math.min(newConfiguration.getHostToGroupMappings().size(), index+1), h2GMapping);
 			gums.setConfiguration(newConfiguration);
 			configuration = newConfiguration;
-			movedName = request.getParameter("hg_name");
+			movedName = request.getParameter("name");
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error moving down: " + e.getMessage() + "</div>";
 		}
@@ -154,7 +144,7 @@ if (request.getParameter("command")==null ||
 						<input type="submit" style="width:84px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this host to group mapping?'))return false;">
 						<input type="submit" style="width:40px" name="command" value="up" alt="move up">
 						<input type="submit" style="width:40px" name="command" value="down" alt="move down">
-						<input type="hidden" name="hg_name" value="<%=cH2GMapping.getName()%>">
+						<input type="hidden" name="name" value="<%=cH2GMapping.getName()%>">
 					</a>
 				</form>
 			</td>
@@ -211,7 +201,7 @@ else if ("edit".equals(request.getParameter("command"))
 	
 	if ("edit".equals(request.getParameter("command"))) {
 		try {
-			h2GMapping = (HostToGroupMapping)configuration.getHostToGroupMapping( request.getParameter("hg_name") );
+			h2GMapping = (HostToGroupMapping)configuration.getHostToGroupMapping( request.getParameter("name") );
 		} catch(Exception e) {
 			out.write( "<div class=\"failure\">Error getting host to group mapping: " + e.getMessage() + "</div>" );
 			return;
@@ -235,7 +225,7 @@ else if ("edit".equals(request.getParameter("command"))
 %>
 <form action="hostToGroupMappings.jsp" method="get">
 	<input type="hidden" name="command" value="">
-	<input type="hidden" name="originalName" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalName") : request.getParameter("hg_name"))%>"/>
+	<input type="hidden" name="originalName" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalName") : request.getParameter("name"))%>"/>
 	<input type="hidden" name="originalCommand" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalCommand") : request.getParameter("command"))%>">
 	<input type="hidden" name="insertCounter">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
@@ -244,7 +234,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		Hosts:
 		    </td>
 		    <td nowrap>
-		    	<input maxlength="256" size="48" name="hg_name" value="<%=cH2GMapping.getName()%>"/>
+		    	<input maxlength="256" size="48" name="name" value="<%=cH2GMapping.getName()%>"/>
 				cn<input type="radio" name="hg_type" value="cn" <%=(cH2GMapping.getDn()==null?"checked":"")%>>
 			    dn<input type="radio" name="hg_type" value="dn" <%=(cH2GMapping.getDn()!=null?"checked":"")%>>
 			    (only requests from matching hosts are accepted)

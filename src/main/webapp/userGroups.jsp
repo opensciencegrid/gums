@@ -330,7 +330,7 @@ else if ("edit".equals(request.getParameter("command"))
 				People Tree:
 			</td>
 			<td> 
-				<input maxlength="256" size="32" name="peopleTree" value="<%=((LDAPUserGroup)userGroup).getPeopleTree()%>"/>
+				<input maxlength="256" size="64" name="peopleTree" value="<%=((LDAPUserGroup)userGroup).getPeopleTree()%>"/>
 			</td>
 		</tr>
 	    <tr>
@@ -346,7 +346,7 @@ else if ("edit".equals(request.getParameter("command"))
                                 Group Tree:
                         </td>
                         <td>
-                                <input maxlength="256" size="32" name="groupTree" value="<%=((LDAPUserGroup)userGroup).getGroupTree()%>"/>
+                                <input maxlength="256" size="64" name="groupTree" value="<%=((LDAPUserGroup)userGroup).getGroupTree()%>"/>
                         </td>
                 </tr>
             <tr>
