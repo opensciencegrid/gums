@@ -269,7 +269,7 @@
 									<xs:attribute name="dn" type="xs:string"/>
 									<xs:attribute name="cn" type="xs:string"/>
 									<xs:attribute name="description" type="xs:string"/>
-									<xs:attribute name="groupToAccountMappings" type="xs:string" use="required"/>
+									<xs:attribute name="groupToAccountMappings" type="xs:string"/>
 								</xs:complexType>
 							</xs:element>	
 						</xs:sequence>

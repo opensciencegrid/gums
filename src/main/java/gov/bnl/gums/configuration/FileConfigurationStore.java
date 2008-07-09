@@ -268,7 +268,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 		}             
 
 		// Write Group To Account Mappings
-		if( conf.getAccountMappers().size()>0 ) {
+		if( conf.getGroupToAccountMappings().size()>0 ) {
 			out.write("\t<groupToAccountMappings>\n\n");
 			Iterator it = conf.getGroupToAccountMappings().values().iterator();
 			while( it.hasNext() ) {
@@ -279,7 +279,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 		}                
 
 		// Write Host To Group Mappings
-		if( conf.getAccountMappers().size()>0 ) {
+		if( conf.getHostToGroupMappings().size()>0 ) {
 			out.write("\t<hostToGroupMappings>\n\n");
 			Iterator it = conf.getHostToGroupMappings().iterator();
 			while( it.hasNext() ) {

@@ -202,12 +202,12 @@ class ConfigurationToolkit {
     private static class VomsServerRule extends Rule {
         
         public void begin(String str, String str1, org.xml.sax.Attributes attributes) throws java.lang.Exception {
-            if (attributes.getValue("vomsServer") != null) {
+            if (attributes.getValue("vomsServer")!=null && !attributes.getValue("vomsServer").trim().equals("")) {
                 Configuration conf = (Configuration) getDigester().getRoot();
                 Object obj = getDigester().peek();
-                String vomsServerName = attributes.getValue("vomsServer").trim();
+            	String vomsServerName = attributes.getValue("vomsServer").trim();
                 Object vomsServer = conf.getVomsServers().get(vomsServerName);
-                if (vomsServer == null) {
+                if (vomsServer==null) {
                     throw new IllegalArgumentException("The VOMS server '" + vomsServerName + "' is used, but it was not defined.");
                 }
                 MethodUtils.invokeMethod(obj, "setVomsServer", new Object[] {vomsServerName});
