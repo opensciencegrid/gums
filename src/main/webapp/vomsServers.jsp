@@ -220,7 +220,7 @@ else if ("edit".equals(request.getParameter("command"))
 				Base URL:
 			</td>
 			<td>
-				<input maxlength="256" size="32" name="baseURL" value="<%=vomsServer.getBaseUrl()%>"/>{remainder URL}
+				<input maxlength="256" size="64" name="baseURL" value="<%=vomsServer.getBaseUrl()%>"/>{remainder URL}
 			</td>
 		</tr>
 	    <tr>

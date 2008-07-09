@@ -282,7 +282,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		Type:
 		    </td>
 		    <td nowrap>
-			<%=ConfigurationWebToolkit.createSelectBox("type", 
+			<%=ConfigurationWebToolkit.createSelectBox("ug_type", 
 				userGroupTypes, 
 				userGroup.getType(),
 				"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",
@@ -382,7 +382,7 @@ else if ("edit".equals(request.getParameter("command"))
                                 LDAP Member Field
                         </td>
                         <td>
-                                <input maxlength="256" size="16" name="memberField" value="<%=((LDAPUserGroup)userGroup).getMemberField()%>"/>  (which field contains member IDs within group)
+                                <input maxlength="256" size="16" name="memberUidField" value="<%=((LDAPUserGroup)userGroup).getMemberUidField()%>"/>  (which field contains member UID within group)
                         </td>
                 </tr>
 	    <tr>

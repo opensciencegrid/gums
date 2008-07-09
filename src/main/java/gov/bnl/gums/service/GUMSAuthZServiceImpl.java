@@ -23,7 +23,7 @@ import gov.bnl.gums.admin.GUMSAPIImpl;
 
 import org.opensciencegrid.authz.common.GridId;
 import org.opensciencegrid.authz.common.LocalId;
-import org.opensciencegrid.authz.saml.service.GRIDIdentityMappingService;
+import org.opensciencegrid.authz.service.GRIDIdentityMappingService;
 
 /** Implements a GRID Identity Mapping Service by using GUMS logic.
  *

@@ -304,7 +304,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		Type:
 		    </td>
 		    <td nowrap>
-			<%=ConfigurationWebToolkit.createSelectBox("type", 
+			<%=ConfigurationWebToolkit.createSelectBox("am_type", 
 				accountMapperTypes, 
 				accountMapper.getType(),
 				"onchange=\"document.forms[0].elements['command'].value='reload';document.forms[0].submit();\"",

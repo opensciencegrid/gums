@@ -1,5 +1,4 @@
 /*
- * ConfigurationWebToolkit.java
  *
  * Created on Oct 16, 2006, 2:03 PM
  */
@@ -22,17 +21,16 @@ import java.util.Properties;
 
 /** 
  * Toolkit for providing configuration functionality for the web pages.
- *
  * @author Jay Packard
  */
 public class ConfigurationWebToolkit implements Remote {
 	static public CertificateHostToGroupMapping parseHostToGroupMapping(HttpServletRequest request) throws Exception {
 		CertificateHostToGroupMapping hostToGroupMapping = new CertificateHostToGroupMapping();
-		String type = request.getParameter("type").trim();
-		if(type.equals("cn"))
-			hostToGroupMapping.setCn( request.getParameter("name").trim() );
-		else if(type.equals("dn"))
-			hostToGroupMapping.setDn( request.getParameter("name").trim() );
+		String type = request.getParameter("hg_type").trim();
+		if(type.equals("dn"))
+			hostToGroupMapping.setDn( request.getParameter("hg_name").trim() );
+		else
+			hostToGroupMapping.setCn( request.getParameter("hg_name").trim() );
 		hostToGroupMapping.setDescription( request.getParameter("description").trim() );
 		int counter = 0;
 		while(request.getParameter("g2AM" + counter)!=null) {
@@ -41,16 +39,16 @@ public class ConfigurationWebToolkit implements Remote {
 				hostToGroupMapping.addGroupToAccountMapping(g2AMName);
 			counter++;
 		}
-		
+
 		return hostToGroupMapping;
 	}	
-	
+
 	static public GroupToAccountMapping parseGroupToAccountMapping(HttpServletRequest request) throws Exception {
 		GroupToAccountMapping groupToAccountMapping = new GroupToAccountMapping();
 
 		groupToAccountMapping.setName( request.getParameter("name").trim() );
 		groupToAccountMapping.setDescription( request.getParameter("description").trim() );
-		
+
 		int counter = 0;
 		while(request.getParameter("aM" + counter)!=null) {
 			String accountMapperName = request.getParameter("aM" + counter).trim();
@@ -58,7 +56,7 @@ public class ConfigurationWebToolkit implements Remote {
 				groupToAccountMapping.addAccountMapper(accountMapperName);
 			counter++;
 		}
-		
+
 		counter = 0;
 		while(request.getParameter("uG" + counter)!=null) {
 			String userGroupName = request.getParameter("uG" + counter).trim();
@@ -66,7 +64,7 @@ public class ConfigurationWebToolkit implements Remote {
 				groupToAccountMapping.addUserGroup(userGroupName);
 			counter++;
 		}
-		
+
 		if (request.getParameter("accVoSub")!=null && !request.getParameter("accVoSub").equals("")) {
 			String trimmed = request.getParameter("accVoSub").trim();
 			if (trimmed.indexOf(" ")!=-1)
@@ -74,9 +72,9 @@ public class ConfigurationWebToolkit implements Remote {
 			if (request.getParameter("accVo").equals(""))
 				throw new RuntimeException("You must specify neither or both accounting VO subgroup and account VO");
 			groupToAccountMapping.setAccountingVoSubgroup(trimmed);
-			
+
 		}
-		
+
 		if (request.getParameter("accVo")!=null && !request.getParameter("accVo").equals("")) {
 			String trimmed = request.getParameter("accVo").trim();
 			if (trimmed.indexOf(" ")!=-1)
@@ -84,17 +82,17 @@ public class ConfigurationWebToolkit implements Remote {
 			if (request.getParameter("accVoSub").equals(""))
 				throw new RuntimeException("You must specify neither or both accounting VO subgroup and account VO");
 			groupToAccountMapping.setAccountingVo(trimmed);
-			
+
 		}
-		
+
 		return groupToAccountMapping;
 	}		
 
 	static public AccountMapper parseAccountMapper(HttpServletRequest request) throws Exception {
 		AccountMapper accountMapper = null;
-		
-		String type = request.getParameter("type").trim();
-		
+
+		String type = request.getParameter("am_type").trim();
+
 		if (type.equals(GroupAccountMapper.getTypeStatic())) {
 			accountMapper = new GroupAccountMapper();
 			accountMapper.setName( request.getParameter("name").trim() );
@@ -128,8 +126,8 @@ public class ConfigurationWebToolkit implements Remote {
 				((GecosLdapAccountMapper)accountMapper).setGecosField( request.getParameter("gecos").trim() );
 			if (request.getParameter("account")!=null)
 				((GecosLdapAccountMapper)accountMapper).setAccountField( request.getParameter("account").trim() );
-                        if (request.getParameter("peopleObject")!=null)
-                                ((GecosLdapAccountMapper)accountMapper).setPeopleObject( request.getParameter("peopleObject").trim() );
+			if (request.getParameter("peopleObject")!=null)
+				((GecosLdapAccountMapper)accountMapper).setPeopleObject( request.getParameter("peopleObject").trim() );
 		}
 		else if (type.equals(LdapAccountMapper.getTypeStatic())) {
 			accountMapper = new LdapAccountMapper();
@@ -141,8 +139,8 @@ public class ConfigurationWebToolkit implements Remote {
 				((LdapAccountMapper)accountMapper).setDnField( request.getParameter("dn").trim() );
 			if (request.getParameter("account")!=null)
 				((LdapAccountMapper)accountMapper).setAccountField( request.getParameter("account").trim() );
-                        if (request.getParameter("peopleObject")!=null)
-                                ((GecosLdapAccountMapper)accountMapper).setPeopleObject( request.getParameter("peopleObject").trim() );
+			if (request.getParameter("peopleObject")!=null)
+				((GecosLdapAccountMapper)accountMapper).setPeopleObject( request.getParameter("peopleObject").trim() );
 		}
 		else if (type.equals(GecosNisAccountMapper.getTypeStatic())) {
 			accountMapper = new GecosNisAccountMapper();
@@ -162,8 +160,8 @@ public class ConfigurationWebToolkit implements Remote {
 	static public UserGroup parseUserGroup(HttpServletRequest request) throws Exception {
 		UserGroup userGroup = null;
 
-		String type = request.getParameter("type");
-		
+		String type = request.getParameter("ug_type");
+
 		if (type.equals(ManualUserGroup.getTypeStatic())) {
 			userGroup = new ManualUserGroup();
 			userGroup.setName( request.getParameter("name").trim() );
@@ -180,14 +178,14 @@ public class ConfigurationWebToolkit implements Remote {
 				((LDAPUserGroup)userGroup).setServer( request.getParameter("server").trim() );
 			if (request.getParameter("peopleTree")!=null)
 				((LDAPUserGroup)userGroup).setPeopleTree( request.getParameter("peopleTree").trim() );
-                        if (request.getParameter("groupTree")!=null)
-                                ((LDAPUserGroup)userGroup).setGroupTree( request.getParameter("groupTree").trim() );
+			if (request.getParameter("groupTree")!=null)
+				((LDAPUserGroup)userGroup).setGroupTree( request.getParameter("groupTree").trim() );
 			if (request.getParameter("persistenceFactory")!=null)
 				((LDAPUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory").trim() );
 			if (request.getParameter("certDNField")!=null)
 				((LDAPUserGroup)userGroup).setCertDNField( request.getParameter("certDNField").trim() );
-                        if (request.getParameter("memberField")!=null)
-                                ((LDAPUserGroup)userGroup).setMemberField( request.getParameter("memberField").trim() );
+			if (request.getParameter("memberUidField")!=null)
+				((LDAPUserGroup)userGroup).setMemberUidField( request.getParameter("memberUidField").trim() );
 		} else if (type.equals(VOMSUserGroup.getTypeStatic())) {
 			userGroup = new VOMSUserGroup();
 			userGroup.setName( request.getParameter("name").trim() );
@@ -206,7 +204,7 @@ public class ConfigurationWebToolkit implements Remote {
 			if (request.getParameter("role")!=null)
 				((VOMSUserGroup)userGroup).setRole( request.getParameter("role") );
 		}
-		
+
 		return userGroup;
 	}
 
@@ -228,12 +226,12 @@ public class ConfigurationWebToolkit implements Remote {
 			vomsServer.setSslKeyPasswd( request.getParameter("sslKeyPW").trim() );
 		return vomsServer;
 	}	
-	
+
 	static public PersistenceFactory parsePersistenceFactory(HttpServletRequest request) throws Exception {
 		PersistenceFactory persistenceFactory = null;
-		
+
 		String type = request.getParameter("type");
-		
+
 		if (type.equals(HibernatePersistenceFactory.getTypeStatic())) {
 			persistenceFactory = new HibernatePersistenceFactory();
 			persistenceFactory.setName( request.getParameter("name").trim() );
@@ -247,14 +245,14 @@ public class ConfigurationWebToolkit implements Remote {
 			((LDAPPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
 			((LDAPPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
 			((LDAPPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
-                        if (request.getParameter("groupTree")!=null)
-                                ((LDAPPersistenceFactory)persistenceFactory).setGroupTree( request.getParameter("groupTree") );
-                        if (request.getParameter("peopleTree")!=null)
-                                ((LDAPPersistenceFactory)persistenceFactory).setPeopleTree( request.getParameter("peopleTree") );			
+			if (request.getParameter("groupTree")!=null)
+				((LDAPPersistenceFactory)persistenceFactory).setGroupTree( request.getParameter("groupTree") );
+			if (request.getParameter("peopleTree")!=null)
+				((LDAPPersistenceFactory)persistenceFactory).setPeopleTree( request.getParameter("peopleTree") );			
 			if (request.getParameter("groupIdField")!=null)
 				((LDAPPersistenceFactory)persistenceFactory).setGroupIdField( request.getParameter("groupIdField") );
 			if (request.getParameter("groupField")!=null)
-                                ((LDAPPersistenceFactory)persistenceFactory).setGroupField( request.getParameter("groupField") );
+				((LDAPPersistenceFactory)persistenceFactory).setGroupField( request.getParameter("groupField") );
 			if (request.getParameter("accountField")!=null)
 				((LDAPPersistenceFactory)persistenceFactory).setAccountField( request.getParameter("accountField") );
 			if (request.getParameter("memAccField")!=null)
@@ -268,14 +266,14 @@ public class ConfigurationWebToolkit implements Remote {
 			((LocalPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
 			((LocalPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
 			((LocalPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
-                        if (request.getParameter("groupTree")!=null)
-                                ((LDAPPersistenceFactory)persistenceFactory).setGroupTree( request.getParameter("groupTree") );
-                        if (request.getParameter("peopleTree")!=null)
-                                ((LDAPPersistenceFactory)persistenceFactory).setPeopleTree( request.getParameter("peopleTree") );			
+			if (request.getParameter("groupTree")!=null)
+				((LDAPPersistenceFactory)persistenceFactory).setGroupTree( request.getParameter("groupTree") );
+			if (request.getParameter("peopleTree")!=null)
+				((LDAPPersistenceFactory)persistenceFactory).setPeopleTree( request.getParameter("peopleTree") );			
 			if (request.getParameter("groupIdField")!=null)
 				((LocalPersistenceFactory)persistenceFactory).setGroupIdField( request.getParameter("groupIdField") );
-                        if (request.getParameter("groupField")!=null)
-                                ((LDAPPersistenceFactory)persistenceFactory).setGroupField( request.getParameter("groupField") );			
+			if (request.getParameter("groupField")!=null)
+				((LDAPPersistenceFactory)persistenceFactory).setGroupField( request.getParameter("groupField") );			
 			if (request.getParameter("accountField")!=null)
 				((LocalPersistenceFactory)persistenceFactory).setAccountField( request.getParameter("accountField") );
 			if (request.getParameter("memAccField")!=null)
@@ -287,7 +285,7 @@ public class ConfigurationWebToolkit implements Remote {
 
 		return persistenceFactory;
 	}
-	
+
 	static public Properties getHibernateProperties(PersistenceFactory persistenceFactory, HttpServletRequest request, boolean includeMySql) {
 		Properties properties = new Properties();
 		properties.put((includeMySql?"mysql.":"") + "hibernate.connection.url", (request.getParameter("mySqlUrl")!=null ? request.getParameter("mySqlUrl").trim() : ""));
@@ -311,7 +309,7 @@ public class ConfigurationWebToolkit implements Remote {
 		properties.put((includeLdap?"ldap.":"") + "java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
 		return properties;
 	}
-	
+
 	static public String getHostToGroupReferences(Configuration configuration, String g2AMappingName) {
 		String retStr = null;
 		Collection h2GMappings = configuration.getHostToGroupMappings();
@@ -333,7 +331,7 @@ public class ConfigurationWebToolkit implements Remote {
 			retStr = retStr.substring(0, retStr.length()-2);
 		return retStr;
 	}
-	
+
 	static public String getGroupToAccountMappingReferences(Configuration configuration, String name, String className) {
 		String retStr = null;
 		Collection g2AMappings = configuration.getGroupToAccountMappings().values();
@@ -369,7 +367,7 @@ public class ConfigurationWebToolkit implements Remote {
 			retStr = retStr.substring(0, retStr.length()-2);
 		return retStr;
 	}
-	
+
 	static public String getVOMSUserGroupReferences(Configuration configuration, String vomsServer) {
 		String retStr = null;
 		Collection userGroups = configuration.getUserGroups().values();
@@ -387,11 +385,11 @@ public class ConfigurationWebToolkit implements Remote {
 			retStr = retStr.substring(0, retStr.length()-2);
 		return retStr;
 	}	
-	
+
 	static public String getReferencesForPersistenceFactory(Configuration configuration, String persistenceFactory) {
 		String retStr = null;
 		Iterator it;
-		
+
 		it = configuration.getVomsServers().values().iterator();
 		while (it.hasNext()) {
 			VomsServer vomsServer = (VomsServer)it.next();
@@ -440,10 +438,10 @@ public class ConfigurationWebToolkit implements Remote {
 
 		if(retStr!=null)
 			retStr = retStr.substring(0, retStr.length()-2);
-		
+
 		return retStr;
 	}		
-	
+
 	static public String createSelectBox(String name, Collection items, String selected, String javascript, boolean includeEmptySlot) {
 		String retStr = "<select name=\""+name+"\" " + (javascript!=null?javascript:"") + ">";
 		if (includeEmptySlot)
@@ -460,31 +458,31 @@ public class ConfigurationWebToolkit implements Remote {
 		retStr += "</select> \n";
 		return retStr;
 	}
-	
+
 	static public String createDoSubmit(Collection items, HttpServletRequest request) {
 		String str = 
 			"<script language=\"javascript\">"+
-				"String.prototype.trim = function() { return this.replace(/^\\s+|\\s+$/g, \"\"); };"+
-				"document.forms[0].elements['name'].value = document.forms[0].elements['name'].value.trim();"+
-				"function doSubmit(str) {";
-		
+			"String.prototype.trim = function() { return this.replace(/^\\s+|\\s+$/g, \"\"); };"+
+			"document.forms[0].elements['name'].value = document.forms[0].elements['name'].value.trim();"+
+			"function doSubmit(str) {";
+
 		if ("add".equals(request.getParameter("command")) || "add".equals(request.getParameter("originalCommand"))) {
 			str += "if ( document.forms[0].elements['name'].value == '' ){ alert('First field cannot be empty'); return false; }";
-	    			
-		    Iterator it = items.iterator();
-		    while(it.hasNext())
-		    	str += "if ( document.forms[0].elements['name'].value == '" + getName(it.next()) + "'){ alert('Name already exists - please choose another name'); return false; }";
+
+			Iterator it = items.iterator();
+			while(it.hasNext())
+				str += "if ( document.forms[0].elements['name'].value == '" + getName(it.next()) + "'){ alert('Name already exists - please choose another name'); return false; }";
 		}
 
 		str += 
-	    			"document.forms[0].elements['command'].value='save'; return true;"+
-					"return false;"+
-				"}"+
+			"document.forms[0].elements['command'].value='save'; return true;"+
+			"return false;"+
+			"}"+
 			"</script>";
-		
+
 		return str;
 	}
-	
+
 	static private String getName(Object obj) {
 		if(obj instanceof String)
 			return (String)obj;
@@ -503,7 +501,7 @@ public class ConfigurationWebToolkit implements Remote {
 		else
 			return "";
 	}
-	
+
 	static public String stripVo(String voGroup) {
 		if(voGroup.length()>0 && voGroup.charAt(0)=='/') {
 			String subStr = voGroup.substring(1);
@@ -513,7 +511,7 @@ public class ConfigurationWebToolkit implements Remote {
 		}
 		return voGroup;
 	}
-	
+
 	static public String stripGroup(String voGroup) {
 		if(voGroup.length()>0 && voGroup.charAt(0)=='/') {
 			String subStr = voGroup.substring(1);
