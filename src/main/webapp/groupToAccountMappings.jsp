@@ -276,7 +276,7 @@ else if ("edit".equals(request.getParameter("command"))
 	while ( userGroupsIt.hasNext())
 	{
 		if (counter!=insertCounter)
-			out.write("<button type=\"submit\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['uGInsertCounter'].value='"+counter+"';return true;\">+</button> ");
+			out.write("<a href=\"javascript:void(0)\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['uGInsertCounter'].value='"+counter+"';document.forms[0].submit();\" title=\"insert here\">+</a> ");
 		int numRepetitions = (counter==insertCounter)?2:1;
         for (int i=0; i<numRepetitions; i++) {
 			out.write( 
@@ -297,7 +297,7 @@ else if ("edit".equals(request.getParameter("command"))
 				true) );
 	}
 	else
-		out.write("<button type=\"submit\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['uGInsertCounter'].value='"+lastCounter+"';return true;\">+</button> ");
+		out.write("<a href=\"javascript:void(0)\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['uGInsertCounter'].value='"+lastCounter+"';document.forms[0].submit();\" title=\"insert here\">+</a> ");
 %>
 			 (validate membership from first successful user group)
 		    </td>
@@ -317,7 +317,7 @@ else if ("edit".equals(request.getParameter("command"))
 	while ( accountMappersIt.hasNext())
 	{
 		if (counter!=insertCounter)
-			out.write("<button type=\"submit\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['aMInsertCounter'].value='"+counter+"';return true;\">+</button> ");
+			out.write("<a href=\"javascript:void(0)\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['aMInsertCounter'].value='"+counter+"';document.forms[0].submit();\" title=\"insert here\">+</a> ");
 		int numRepetitions = (counter==insertCounter)?2:1;
         for (int i=0; i<numRepetitions; i++) {
 			out.write( 
@@ -338,7 +338,7 @@ else if ("edit".equals(request.getParameter("command"))
 				true) );
 	}
 	else
-		out.write("<button type=\"submit\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['aMInsertCounter'].value='"+lastCounter+"';return true;\">+</button> ");
+		out.write("<a href=\"javascript:void(0)\" onclick=\"document.forms[0].elements['command'].value='reload';document.forms[0].elements['aMInsertCounter'].value='"+lastCounter+"';document.forms[0].submit();\" title=\"insert here\">+</a> ");
 %>
                          (map using first successful account mapper)
 			</td>
