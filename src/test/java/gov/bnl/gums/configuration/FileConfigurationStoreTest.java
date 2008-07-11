@@ -35,9 +35,9 @@ public class FileConfigurationStoreTest extends TestCase {
     }    
     
     public void testFileChange() throws java.lang.Exception {
-        Configuration conf1 = confStore.retrieveConfiguration();
-	Configuration conf2 = confStore.retrieveConfiguration();
-	assertEquals(conf1, conf2);
+    	Configuration conf1 = confStore.retrieveConfiguration();
+        Configuration conf2 = confStore.retrieveConfiguration();
+        assertEquals(conf1, conf2);
         URL url = getClass().getClassLoader().getResource("gums.config");
         URI uri = new URI(url.toString());
         File file = new File(uri);
@@ -49,7 +49,7 @@ public class FileConfigurationStoreTest extends TestCase {
 
     public void testFileStore() throws java.lang.Exception {
         Configuration conf = confStore.retrieveConfiguration();
-	 confStore.setConfiguration(conf, false);
+        confStore.setConfiguration(conf, false);
         new FileConfigurationStore().retrieveConfiguration();
     }
     

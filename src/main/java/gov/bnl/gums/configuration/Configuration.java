@@ -9,7 +9,6 @@ package gov.bnl.gums.configuration;
 import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.HostToGroupMapping;
-import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.UserGroup;
 import gov.bnl.gums.userGroup.VomsServer;
 

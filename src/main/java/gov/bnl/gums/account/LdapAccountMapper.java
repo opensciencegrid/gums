@@ -6,7 +6,6 @@
 
 package gov.bnl.gums.account;
 
-import gov.bnl.gums.GUMS;
 import gov.bnl.gums.configuration.Configuration;
 
 import java.util.*;
