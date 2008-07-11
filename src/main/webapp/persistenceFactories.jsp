@@ -322,7 +322,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	ldap://localhost/dc=racf,dc=bnl,dc=gov&nbsp;  or&nbsp;  ldaps://localhost/dc=racf,dc=bnl,dc=gov (SSL)
+		    	ldap://localhost&nbsp;  or&nbsp;  ldaps://localhost (SSL)
 		    </td>
 		</tr>	
 		<tr>
@@ -374,7 +374,7 @@ else if ("edit".equals(request.getParameter("command"))
                 i.e.
             </td>
             <td nowrap>
-                ou=Group,cn=usatlas,cn=bnl,cn=gov
+                ou=Group,dc=usatlas,dc=bnl,dc=gov
             </td>
         </tr>
 		<tr>
@@ -390,7 +390,7 @@ else if ("edit".equals(request.getParameter("command"))
                 i.e.
             </td>
             <td nowrap>
-                ou=People,cn=usatlas,cn=bnl,cn=gov
+                ou=People,dc=usatlas,dc=bnl,dc=gov
             </td>
         </tr>
 		<tr>
@@ -522,7 +522,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	ldap://localhost/dc=racf,dc=bnl,dc=gov&nbsp;  or&nbsp;  ldaps://localhost/dc=racf,dc=bnl,dc=gov (SSL)
+		    	ldap://localhost&nbsp;  or&nbsp;  ldaps://localhost (SSL)
 		    </td>
 		</tr>
 		<tr>
@@ -574,7 +574,7 @@ else if ("edit".equals(request.getParameter("command"))
                 i.e.
             </td>
             <td nowrap>
-                ou=Group,cn=usatlas,cn=bnl,cn=gov
+                ou=Group,dc=usatlas,dc=bnl,dc=gov
             </td>
         </tr>
         <tr>
@@ -590,7 +590,7 @@ else if ("edit".equals(request.getParameter("command"))
                 i.e.
             </td>
             <td nowrap>
-                ou=People,cn=usatlas,cn=bnl,cn=gov
+                ou=People,dc=usatlas,dc=bnl,dc=gov
             </td>
         </tr>
 		<tr>
