@@ -169,6 +169,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 //		persistenceFactory.setTrustStorePassword(getTrustStorePassword());
 		persistenceFactory.setPeopleTree(new String(getPeopleTree()));
 		persistenceFactory.setGroupTree(new String(getGroupTree()));
+		persistenceFactory.setGumsTree(new String(getGumsTree()));
 		persistenceFactory.setGroupCnField(new String(getGroupCnField()));
 		persistenceFactory.setUidField(new String(getUidField()));
 		persistenceFactory.setGidNumberField(new String(getGidNumberField()));
@@ -196,6 +197,14 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 
 	public String getGroupTree() {
 		return ldap.getGroupTree();
+	}
+	
+	public String getGumsTree() {
+		return ldap.getGumsTree();
+	}
+	
+	public String getGumsObject() {
+		return ldap.getGumsObject();
 	}
 
 	public String getUidField() {
@@ -302,6 +311,10 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 	public void setGroupTree(String groupTree) {
 		ldap.setGroupTree(groupTree);
 	}
+	
+	public void setGumsTree(String gumsTree) {
+		ldap.setGumsTree(gumsTree);
+	}
 
 	public void setName(String name) {
 		super.setName(name);
@@ -332,13 +345,14 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
 //		"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
 //		"\t\t\ttrustStorePassword='"+getTrustStorePassword()+"'\n"+
-		"\t\t\tgroupTree='"+getGroupTree()+"'\n"+
-		"\t\t\tpeopleTree='"+getPeopleTree()+"'\n"+		
 		"\t\t\tgidNumberField='"+getGidNumberField()+"'\n"+
 		"\t\t\tgroupCnField='"+getGroupCnField()+"'\n"+
 		"\t\t\tuidField='"+getUidField()+"'\n"+
-		"\t\t\tmemberUidField='"+getMemberUidField()+"'\n";
-
+		"\t\t\tmemberUidField='"+getMemberUidField()+"'\n"+
+		"\t\t\tgroupTree='"+getGroupTree()+"'\n"+
+		"\t\t\tgumsTree='"+getGroupTree()+"'\n"+
+		"\t\t\tpeopleTree='"+getPeopleTree()+"'\n";
+		
 		Iterator keyIt = getProperties().keySet().iterator();
 		while(keyIt.hasNext()) {
 			String key = (String)keyIt.next();

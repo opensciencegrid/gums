@@ -7,6 +7,7 @@
 package gov.bnl.gums.account;
 
 import gov.bnl.gums.configuration.Configuration;
+import gov.bnl.gums.userGroup.LDAPUserGroup;
 
 import java.util.*;
 
@@ -62,6 +63,20 @@ public class LdapAccountMapper extends AccountMapper {
 		accountMapper.setAccountField(new String(accountField));
 		accountMapper.setPeopleObject(new String(peopleObject));
 		return accountMapper;
+	}
+	
+	public boolean equals(Object obj) {
+		if (obj instanceof LdapAccountMapper) {
+			LdapAccountMapper am = (LdapAccountMapper) obj;
+			if ((jndiLdapUrl == null ? am.jndiLdapUrl == null : jndiLdapUrl.equals(am.jndiLdapUrl)) &&
+					(dnField == null ? am.dnField == null : dnField.equals(am.dnField)) && 
+					(accountField == null ? am.accountField == null : accountField.equals(am.accountField)) &&
+					(peopleObject == null ? am.peopleObject == null : peopleObject.equals(am.peopleObject)) &&
+					(getName() == null ? am.getName() == null : getName().equals(am.getName()))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public String getAccountField() {

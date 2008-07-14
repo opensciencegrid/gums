@@ -28,22 +28,17 @@
 										<xs:attribute name="name" type="xs:string" use="required"/>
 										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="synchGroups" type="xs:string"/>
-										
-<xs:attribute name="groupField" type="xs:string"/><!--depricated-->
-<xs:attribute name="groupCnField" type="xs:string"/>
-
-<xs:attribute name="groupTree" type="xs:string"/>
-
-<xs:attribute name="peopleTree" type="xs:string"/>
-
-<xs:attribute name="memberAccountField" type="xs:string"/><!--depricated-->
-<xs:attribute name="memberUidField" type="xs:string"/>
-
-<xs:attribute name="groupIdField" type="xs:string"/><!--depricated-->
-<xs:attribute name="gidNumberField" type="xs:string"/>
-				
-<xs:attribute name="accountField" type="xs:string"/><!--depricated-->
-<xs:attribute name="uidField" type="xs:string"/>
+										<xs:attribute name="groupField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="groupCnField" type="xs:string"/>
+										<xs:attribute name="groupTree" type="xs:string"/>
+										<xs:attribute name="peopleTree" type="xs:string"/>
+										<xs:attribute name="gumsTree" type="xs:string"/>
+										<xs:attribute name="memberAccountField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="memberUidField" type="xs:string"/>
+										<xs:attribute name="groupIdField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="gidNumberField" type="xs:string"/>
+										<xs:attribute name="accountField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="uidField" type="xs:string"/>
 										<xs:attribute name="java.naming.provider.url" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.factory.initial" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.security.authentication" type="xs:string" use="required"/>
@@ -56,20 +51,22 @@
 										<xs:attribute name="name" type="xs:string" use="required"/>
 										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="synchGroups" type="xs:string"/>
-			
-<xs:attribute name="groupField" type="xs:string"/><!--depricated-->
-<xs:attribute name="groupCnField" type="xs:string"/>
-
-<xs:attribute name="groupIdField" type="xs:string"/><!--depricated-->
-<xs:attribute name="gidNumberField" type="xs:string"/>
-
-<xs:attribute name="groupTree" type="xs:string"/>
-
-<xs:attribute name="peopleTree" type="xs:string"/>
+										<xs:attribute name="groupField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="groupCnField" type="xs:string"/>
+										<xs:attribute name="groupIdField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="gidNumberField" type="xs:string"/>
+										<xs:attribute name="groupTree" type="xs:string"/>
+										<xs:attribute name="peopleTree" type="xs:string"/>
+										<xs:attribute name="gumsTree" type="xs:string"/>
 										<xs:attribute name="accountField" type="xs:string"/><!--depricated-->
-<xs:attribute name="uidField" type="xs:string"/>										
-<xs:attribute name="memberAccountField" type="xs:string"/><!--depricated-->
-<xs:attribute name="memberUidField" type="xs:string"/>
+										<xs:attribute name="uidField" type="xs:string"/>										
+										<xs:attribute name="memberAccountField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="memberUidField" type="xs:string"/>
+										<xs:attribute name="ldap.java.naming.provider.url" type="xs:string"/><!--depricated-->
+										<xs:attribute name="ldap.java.naming.factory.initial" type="xs:string" use="required"/>
+										<xs:attribute name="ldap.java.naming.security.authentication" type="xs:string" use="required"/>
+										<xs:attribute name="ldap.java.naming.security.principal" type="xs:string" use="required"/>
+										<xs:attribute name="ldap.java.naming.security.credentials" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.connection.driver_class" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.dialect" type="xs:string" use="required"/>
 										<xs:attribute name="mysql.hibernate.connection.url" type="xs:string" use="required"/>
@@ -79,11 +76,6 @@
 										<xs:attribute name="mysql.hibernate.c3p0.min_size" type="xs:short" use="required"/>
 										<xs:attribute name="mysql.hibernate.c3p0.max_size" type="xs:short" use="required"/>
 										<xs:attribute name="mysql.hibernate.c3p0.timeout" type="xs:int" use="required"/>
-										<xs:attribute name="ldap.java.naming.provider.url" type="xs:string" use="required"/>
-										<xs:attribute name="ldap.java.naming.factory.initial" type="xs:string" use="required"/>
-										<xs:attribute name="ldap.java.naming.security.authentication" type="xs:string" use="required"/>
-										<xs:attribute name="ldap.java.naming.security.principal" type="xs:string" use="required"/>
-										<xs:attribute name="ldap.java.naming.security.credentials" type="xs:string" use="required"/>
 									</xs:complexType>
 								</xs:element>			
 							</xs:choice>				
@@ -150,17 +142,12 @@
 										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
 										<xs:attribute name="access" type="xs:string"/>
 										<xs:attribute name="server" type="xs:string"/>
-										<xs:attribute name="query" type="xs:string"/>
+										<xs:attribute name="query" type="xs:string"/><!--depricated-->
 										<xs:attribute name="certDNField" type="xs:string"/>
-
-<xs:attribute name="memberUidField" type="xs:string"/>
-
-<xs:attribute name="peopleTree" type="xs:string"/>
-
-<xs:attribute name="groupTree" type="xs:string"/>
-
-<xs:attribute name="uidField" type="xs:string"/>
-
+										<xs:attribute name="memberUidField" type="xs:string"/>
+										<xs:attribute name="peopleTree" type="xs:string"/>
+										<xs:attribute name="groupTree" type="xs:string"/>
+										<xs:attribute name="uidField" type="xs:string"/>
 									</xs:complexType>
 								</xs:element>						
 							</xs:choice>
@@ -212,10 +199,8 @@
 										<xs:attribute name="name" type="xs:string" use="required"/>
 										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="jndiLdapUrl" type="xs:string" use="required"/>
-										
-<xs:attribute name="peopleObject" type="xs:string"/>
-
-<xs:attribute name="gecosField" type="xs:string"/>
+										<xs:attribute name="peopleObject" type="xs:string"/>
+										<xs:attribute name="gecosField" type="xs:string"/>
 										<xs:attribute name="accountField" type="xs:string"/>
 									</xs:complexType>
 								</xs:element>
@@ -226,9 +211,7 @@
 										<xs:attribute name="jndiLdapUrl" type="xs:string" use="required"/>
 										<xs:attribute name="dnField" type="xs:string"/>
 										<xs:attribute name="accountField" type="xs:string"/>
-
-<xs:attribute name="peopleObject" type="xs:string"/>
-
+										<xs:attribute name="peopleObject" type="xs:string"/>
 									</xs:complexType>
 								</xs:element>
 							</xs:choice>

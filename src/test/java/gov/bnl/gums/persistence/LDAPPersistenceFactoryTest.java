@@ -57,9 +57,14 @@ public class LDAPPersistenceFactoryTest extends TestCase {
 
 	protected void setUp() throws java.lang.Exception {
 		factory = new LDAPPersistenceFactory(configuration, getName());
-		factory.setProperties(readLdapProperties());
+		Properties properties = readLdapProperties();
+		properties.setProperty("java.naming.provider.url", properties.getProperty("java.naming.provider.url").substring(0, properties.getProperty("java.naming.provider.url").indexOf("/dc")));
+		factory.setProperties(properties);
+		factory.setGroupTree("ou=Group,dc=griddev,dc=org");
+		factory.setPeopleTree("ou=People,dc=griddev,dc=org");
+		factory.setGumsTree("ou=GUMS,dc=griddev,dc=org");
 		try {
-			factory.getLDAPContext().destroySubcontext("group=test,ou=GUMS");
+			factory.retrieveGumsDirContext().destroySubcontext("group=test,ou=GUMS");
 		} catch (Exception e) {
 		}
 		try {
@@ -70,7 +75,7 @@ public class LDAPPersistenceFactoryTest extends TestCase {
 
 	protected void tearDown() throws java.lang.Exception {
 		try {
-			factory.getLDAPContext().destroySubcontext("group=test,ou=GUMS");
+			factory.retrieveGumsDirContext().destroySubcontext("group=test,ou=GUMS");
 		} catch (Exception e) {
 		}
 		try {
@@ -86,7 +91,7 @@ public class LDAPPersistenceFactoryTest extends TestCase {
 	}
 
 	public void testGetLDAPContext() {
-		DirContext context = factory.getLDAPContext();
+		DirContext context = factory.retrieveGumsDirContext();
 	}
 
 	public void testCreateUserGroup() {

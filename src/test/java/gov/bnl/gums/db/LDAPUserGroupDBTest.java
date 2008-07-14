@@ -33,7 +33,7 @@ public class LDAPUserGroupDBTest extends UserGroupDBTest {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
         try {
-            factory.getLDAPContext().destroySubcontext("group=testUserGroup");
+            factory.retrieveGumsDirContext().destroySubcontext("group=testUserGroup");
         } catch (Exception e) {}
         db = factory.retrieveUserGroupDB("testUserGroup");
         initDB();
@@ -43,7 +43,7 @@ public class LDAPUserGroupDBTest extends UserGroupDBTest {
     	LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
     	try {
-    		factory.getLDAPContext().destroySubcontext("group=testUserGroup,ou=GUMS");
+    		factory.retrieveGumsDirContext().destroySubcontext("group=testUserGroup,ou=GUMS");
         } catch (Exception e) {
             e.printStackTrace();
         }

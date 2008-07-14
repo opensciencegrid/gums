@@ -13,7 +13,6 @@ import gov.bnl.gums.account.LdapAccountMapper;
 import gov.bnl.gums.account.GecosNisAccountMapper;
 import gov.bnl.gums.account.GroupAccountMapper;
 import gov.bnl.gums.account.ManualAccountMapper;
-import gov.bnl.gums.account.GecosNisAccountMapper;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.CertificateHostToGroupMapping;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;

@@ -40,7 +40,7 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     public LDAPUserGroupDB(LDAPPersistenceFactory factory, String group) {
         this.factory = factory;
         this.group = group;
-        this.groupDN = "group=" + group + "," + factory.getGumsOU();
+        this.groupDN = "group=" + group + "," + factory.getGumsObject();
         createGroupIfNotExists();
         log.trace("LDAPUserGroupDB object create: group '" + group + "' factory " + factory);
     }
@@ -50,11 +50,11 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     }
     
     public boolean isMemberInGroup(gov.bnl.gums.GridUser user) {
-        DirContext context = factory.retrieveContext();
+        DirContext context = factory.retrieveGumsDirContext();
         try {
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            NamingEnumeration result = context.search(factory.getGumsOU(), "(&(group={0})(user={1}))", new Object[] {group, gridID(user)}, ctrls);
+            NamingEnumeration result = context.search(factory.getGumsObject(), "(&(group={0})(user={1}))", new Object[] {group, gridID(user)}, ctrls);
             log.trace("Checking whether user '" + user + "' belongs to group '" + group + "': " + result.hasMore());
             return result.hasMore();
         } catch (Exception e) {
@@ -133,7 +133,7 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     }
 
     public java.util.List retrieveMembers() {
-        DirContext context = factory.retrieveContext();
+        DirContext context = factory.retrieveGumsDirContext();
         try {
             DirContext groupContext = (DirContext) context.lookup(groupDN);
             Attributes atts = groupContext.getAttributes("");
@@ -177,11 +177,11 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     }
 
     private boolean doesGroupExist() {
-        DirContext context = factory.retrieveContext();
+        DirContext context = factory.retrieveGumsDirContext();
         try {
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            NamingEnumeration result = context.search(factory.getGumsOU(), "(group={0})", new Object[] {group}, ctrls);
+            NamingEnumeration result = context.search(factory.getGumsObject(), "(group={0})", new Object[] {group}, ctrls);
             log.trace("Checking whether group '" + group + "' exists: " + result.hasMore());
             return result.hasMore();
         } catch (Exception e) {

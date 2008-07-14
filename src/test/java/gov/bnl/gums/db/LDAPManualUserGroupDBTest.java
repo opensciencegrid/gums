@@ -34,7 +34,7 @@ public class LDAPManualUserGroupDBTest extends ManualUserGroupDBTest {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
         try {
-            factory.getLDAPContext().destroySubcontext("group=testManualUserGroup,ou=GUMS");
+            factory.retrieveGumsDirContext().destroySubcontext("group=testManualUserGroup,ou=GUMS");
         } catch (Exception e) {}
         db = factory.retrieveManualUserGroupDB("testManualUserGroup");
     }
@@ -43,7 +43,7 @@ public class LDAPManualUserGroupDBTest extends ManualUserGroupDBTest {
     	LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
     	try {
-    		factory.getLDAPContext().destroySubcontext("group=testManualUserGroup,ou=GUMS");
+    		factory.retrieveGumsDirContext().destroySubcontext("group=testManualUserGroup,ou=GUMS");
         } catch (Exception e) {
             e.printStackTrace();
         }

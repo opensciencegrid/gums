@@ -42,7 +42,6 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class LDAPPersistenceFactory extends PersistenceFactory {
-	private static String gumsOU = "ou=GUMS";
 	static public String getTypeStatic() {
 		return "ldap";
 	}
@@ -65,6 +64,9 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	private String groupTree = "";
 	private String groupObject = "ou=Group";
 	private String groupContext = null; 
+	private String gumsTree = "";
+	private String gumsObject = "ou=GUMS";
+	private String gumsContext = null; 
 
 	/**
 	 * Create a new ldap persistence factory.  This empty constructor is needed by the XML Digester.
@@ -101,7 +103,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	 * @param mapDN the map DN (i.e. "map=usatlasSpecialMap, ou=GUMS")
 	 */
 	public void addMapEntry(String userDN, String account, String mapName, String mapDN) {
-		DirContext context = retrieveContext();
+		DirContext context = retrieveGumsDirContext();
 		try {
 			try {
 				ModificationItem[] mods = new ModificationItem[1];
@@ -164,7 +166,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	 * @param groupDN the group DN (i.e. "group=usatlas, ou=GUMS")
 	 */
 	public void addUserGroupEntry(String userDN, String groupName, String groupDN) {
-		DirContext context = retrieveContext();
+		DirContext context = retrieveGumsDirContext();
 		try {
 			ModificationItem[] mods = new ModificationItem[1];
 			mods[0] = new ModificationItem(context.ADD_ATTRIBUTE,
@@ -211,6 +213,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		persistenceFactory.setMemberUidField(new String(getMemberUidField()));
 		persistenceFactory.setGroupTree(new String(getGroupTree()));
 		persistenceFactory.setPeopleTree(new String(getPeopleTree()));
+		persistenceFactory.setGumsTree(new String(getGumsTree()));
 		persistenceFactory.setProperties((Properties)getProperties().clone());
 		persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
 		return persistenceFactory;
@@ -225,7 +228,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	 * @param mapDN the map DN (i.e. "map=usatlasSpecialMap, ou=GUMS")
 	 */
 	public void createAccountInMap(String account, String mapName, String mapDN) {
-		DirContext context = retrieveContext();
+		DirContext context = retrieveGumsDirContext();
 		try {
 			Attributes atts = new BasicAttributes();
 			Attribute oc = new BasicAttribute("objectclass");
@@ -251,7 +254,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	 * @param mapDN the map DN (i.e. "map=usatlasSpecialMap, ou=GUMS")
 	 */
 	public void createMap(String mapName, String mapDN) {
-		DirContext context = retrieveContext();
+		DirContext context = retrieveGumsDirContext();
 		try {
 			Attributes atts = new BasicAttributes();
 			Attribute oc = new BasicAttribute("objectclass");
@@ -277,7 +280,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	 * @param groupDN the group DN (i.e. "group=usatlas, ou=GUMS")
 	 */
 	public void createUserGroup(String groupName, String groupDN) {
-		DirContext context = retrieveContext();
+		DirContext context = retrieveGumsDirContext();
 		try {
 			Attributes atts = new BasicAttributes();
 			Attribute oc = new BasicAttribute("objectclass");
@@ -303,7 +306,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	 * @param mapDN the map DN (i.e. "map=usatlasSpecialMap, ou=GUMS")
 	 */
 	public boolean destroyAccountInMap(String account, String mapName, String mapDN) {
-		DirContext context = retrieveContext();
+		DirContext context = retrieveGumsDirContext();
 		try {
 			context.destroySubcontext("account=" + account + "," + mapDN );
 			log.trace("Destroyed LDAP map '" + mapName + "' at '" + mapDN + "'");
@@ -324,7 +327,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	 * @param mapDN the map DN (i.e. "map=usatlasSpecialMap, ou=GUMS")
 	 */
 	public void destroyMap(String mapName, String mapDN) {
-		DirContext context = retrieveContext();
+		DirContext context = retrieveGumsDirContext();
 		try {
 			SearchControls ctrls = new SearchControls();
 			ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -364,7 +367,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	public String getGroupField() {
 		return groupCnField;
 	}
-
+	
 	/* @depricated */
 	public String getGroupIdField() {
 		return gidNumberField;
@@ -374,21 +377,14 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		return groupTree;
 	}
 
-	public String getGumsOU() {
-		return gumsOU;
+	public String getGumsObject() {
+		return gumsObject;
 	}
-
-	/** 
-	 * Returns a Context ready to be used (taken from the pool).
-	 * This is the entry point for the pool, and it can be used
-	 * by test cases to prepare the LDAP server.
-	 * 
-	 * @return an LDAP context
-	 */
-	public DirContext getLDAPContext() {
-		return retrieveContext();
+	
+	public String getGumsTree() {
+		return gumsTree;
 	}
-
+	
 	/* @depricated */
 	public String getMemberAccountField() {
 		return memberUidField;
@@ -446,7 +442,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	 * @return false if no mapping was removed
 	 */
 	public boolean removeMapEntry(String userDN, String mapName, String mapDN) {
-		DirContext context = retrieveContext();
+		DirContext context = retrieveGumsDirContext();
 		boolean deleted = false;
 		try {
 			SearchControls ctrls = new SearchControls();
@@ -477,7 +473,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	 * @param groupDN the group DN (i.e. "group=usatlas")
 	 */
 	public void removeUserGroupEntry(String userDN, String groupName, String groupDN) {
-		DirContext context = retrieveContext();
+		DirContext context = retrieveGumsDirContext();
 		try {
 			ModificationItem[] mods = new ModificationItem[1];
 			mods[0] = new ModificationItem(context.REMOVE_ATTRIBUTE,
@@ -514,14 +510,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		log.trace("Creating LDAP AccountPoolMapperDB '" + nameAndGroups + "' primary group '" + group + "' secondary groups '" + secondaryGroups + "'");
 		return new LDAPAccountMapperDB(this, pool, group, secondaryGroups);
 	}
-
-	/** 
-	 * Retrieves an LDAP DirContext from the pool, if available and still valid,
-	 * or creates a new DirContext if none are found.
-	 * 
-	 * @return an LDAP DirContext
-	 */
-	public DirContext retrieveContext() {
+	
+	public DirContext retrieveGroupContext() {
 		DirContext context;
 		while (contexts.size() != 0) {
 			context = (DirContext) contexts.remove(0);
@@ -530,17 +520,23 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 				return context;
 			}
 		}
-		context = createLDAPContext();
+		context = createGroupContext();
 		log.trace("New LDAP connection created " + context);
-		return context;
+		return context;	
 	}
 
-	public DirContext retrieveGroupContext() throws NamingException {
-		DirContext context = retrieveContext();
-		if (groupContext!=null)
-			return (DirContext)context.createSubcontext(groupContext);
-		else
-			return context;
+	public DirContext retrieveGumsDirContext() {
+		DirContext context;
+		while (contexts.size() != 0) {
+			context = (DirContext) contexts.remove(0);
+			if (isContextValid(context)) {
+				log.trace("Using LDAP connection from pool " + context);
+				return context;
+			}
+		}
+		context = createGumsContext();
+		log.trace("New LDAP connection created " + context);
+		return context;
 	}
 
 	public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
@@ -553,24 +549,30 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		return new LDAPUserGroupDB(this, name);
 	}
 
-	public DirContext retrievePeopleContext() throws NamingException {
-		DirContext context = retrieveContext();
-		if (peopleContext!=null)
-			return (DirContext)context.createSubcontext(peopleContext);
-		else
-			return context;
+	public DirContext retrievePeopleContext() {
+		DirContext context;
+		while (contexts.size() != 0) {
+			context = (DirContext) contexts.remove(0);
+			if (isContextValid(context)) {
+				log.trace("Using LDAP connection from pool " + context);
+				return context;
+			}
+		}
+		context = createPeopleContext();
+		log.trace("New LDAP connection created " + context);
+		return context;		
 	}
 
 	public UserGroupDB retrieveUserGroupDB(String name) {
 		log.trace("Creating LDAP UserGroupDB '" + name + "'");
 		return new LDAPUserGroupDB(this, name);
 	}
-
+	
 	// @depricated
 	public void setAccountField(String accountField) {
 		this.uidField = accountField;
 	}
-	
+
 	public void setCaCertFile(String caCertFile) {
 		//System.setProperty("javax.net.ssl.trustStore", trustStore );
 		this.caCertFile = caCertFile;
@@ -581,7 +583,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	public void setGidNumberField(String gidNumberField) {
 		this.gidNumberField = gidNumberField;
 	}
-
+	
 	public void setGroupCnField(String groupCnField) {
 		this.groupCnField = groupCnField;
 	}
@@ -607,26 +609,38 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 				this.groupObject = groupTree;
 		} 
 	}
+	
+	public void setGumsTree(String gumsTree) {
+		if (gumsTree.length()>0) {
+			this.gumsTree = gumsTree;
+			if (gumsTree.indexOf(',')!=-1) {
+				this.gumsObject = gumsTree.substring(0, gumsTree.indexOf(','));
+				this.gumsContext = gumsTree.substring(gumsTree.indexOf(',')+1);   
+			}
+			else
+				this.gumsObject = gumsTree;
+		} 
+	}
 
 	// @depricated
 	public void setMemberAccountField(String memberAccountField) {
 		this.memberUidField = memberAccountField;
 	}
-
+	
 	public void setMemberUidField(String memberUidField) {
 		this.memberUidField = memberUidField;
 	}
-	
+
 	public void setPeopleTree(String peopleTree) {
 		if (peopleTree.length()>0) {
 			this.peopleTree = peopleTree;
 			if (peopleTree.indexOf(',')!=-1) {
 				this.peopleObject = peopleTree.substring(0, peopleTree.indexOf(','));
-				this.peopleContext = peopleTree.substring(peopleTree.indexOf(',')+1);
+				this.peopleContext = peopleTree.substring(peopleTree.indexOf(',')+1);   
 			}
 			else
 				this.peopleObject = peopleTree;
-		}
+		} 
 	}
 
 	/**
@@ -685,7 +699,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		"\t\t\tgroupCnField='"+groupCnField+"'\n"+
 		"\t\t\tmemberUidField='"+memberUidField+"'\n"+
 		"\t\t\tgroupTree='"+groupTree+"'\n"+
-		"\t\t\tpeopleTree='"+peopleTree+"'\n";
+		"\t\t\tpeopleTree='"+peopleTree+"'\n"+
+		"\t\t\tgumsTree='"+gumsTree+"'\n";
 
 		Iterator keyIt = getProperties().keySet().iterator();
 		while(keyIt.hasNext()) {
@@ -751,7 +766,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 
 	private boolean isContextValid(DirContext context) {
 		try {
-			context.search(gumsOU, "(map=*)", null);
+			context.search(gumsObject, "(map=*)", null);
 			return true;
 		} catch (Exception e) {
 			log.trace("Removing stale LDAP connection from pool " + context, e);
@@ -759,7 +774,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 			return false;
 		}
 	}
-
+	
 	private void updateGID(String account, String gid) throws NamingException {
 		DirContext context = retrievePeopleContext();
 		try {
@@ -774,19 +789,48 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 			releaseContext(context);
 		}
 	}
-
-	/** Create a new LDAP DirContext based on the configuration.
-	 * 
-	 * @return a new LDAP DirContext
-	 */
-	protected DirContext createLDAPContext() {
+	
+	protected DirContext createGroupContext() {
 		try {
-			log.info("Trying to create LDAP connection with properties: " + getProperties());
-			return new InitialLdapContext(getProperties(), null);
+			Properties properties = (Properties)getProperties().clone();
+			if (groupContext!=null)
+				properties.setProperty("java.naming.provider.url", properties.getProperty("java.naming.provider.url")+"/"+(groupContext!=null?groupContext:""));
+			log.info("Trying to create LDAP connection with properties: " + properties);
+			return (DirContext)new InitialLdapContext(properties, null);
 		} catch (NamingException e) {
 			log.warn("Couldn't create LDAP connection: " + e.getMessage() + " - parameters: " + getProperties(), e);
 			throw new RuntimeException("Couldn't create LDAP connection: " + e.getMessage());
 		}
 	}
+
+	/** Create a new LDAP DirContext based on the configuration.
+	 * 
+	 * @return a new LDAP DirContext
+	 */
+	protected DirContext createGumsContext() {
+		try {		 
+			Properties properties = (Properties)getProperties().clone();
+			if (gumsContext!=null)
+				properties.setProperty(Context.PROVIDER_URL, properties.getProperty(Context.PROVIDER_URL)+"/"+(gumsContext!=null?gumsContext:""));
+			log.info("Trying to create LDAP connection with properties: " + properties);
+			return (DirContext)new InitialLdapContext(properties, null);
+		} catch (NamingException e) {
+			log.warn("Couldn't create LDAP connection: " + e.getMessage() + " - parameters: " + getProperties(), e);
+			throw new RuntimeException("Couldn't create LDAP connection: " + e.getMessage());
+		}
+	}
+
+	protected DirContext createPeopleContext() {
+		try {
+			Properties properties = (Properties)getProperties().clone();
+			if (peopleContext!=null)
+				properties.setProperty(Context.PROVIDER_URL, properties.getProperty(Context.PROVIDER_URL)+"/"+(peopleContext!=null?peopleContext:""));
+			log.info("Trying to create LDAP connection with properties: " + properties);
+			return (DirContext)new InitialLdapContext(properties, null);
+		} catch (NamingException e) {
+			log.warn("Couldn't create LDAP connection: " + e.getMessage() + " - parameters: " + getProperties(), e);
+			throw new RuntimeException("Couldn't create LDAP connection: " + e.getMessage());
+		}
+	}	
 
 }

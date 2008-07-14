@@ -295,7 +295,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 
 		// Make sure configuration is valid
 		this.conf = ConfigurationToolkit.loadConfiguration(tempGumsConfigPath, schemaPath);
-
+		
 		// copy gums.config to gums.config.prev
 		new File(configBackupDir).mkdir();
 		if (!backupCopy && new File(configPath).exists())

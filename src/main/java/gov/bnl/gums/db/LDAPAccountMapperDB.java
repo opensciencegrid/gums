@@ -50,7 +50,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	public LDAPAccountMapperDB(LDAPPersistenceFactory factory, String map) {
 		this.factory = factory;
 		this.map = map;
-		this.mapDN = "map=" + map + "," + factory.getGumsOU();
+		this.mapDN = "map=" + map + "," + factory.getGumsObject();
 		createGroupIfNotExists();
 		log.trace("LDAPMapDB object create: map '" + map + "' factory "
 				+ factory);
@@ -89,7 +89,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	}
 	
 	public String assignAccount(String userDN) {
-		DirContext context = factory.retrieveContext();
+		DirContext context = factory.retrieveGumsDirContext();
 		String account = null;
 		Control[] controlsBackup = null;
 		try {
@@ -161,12 +161,12 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	}
 
 	public boolean doesMapExist() {
-		DirContext context = factory.retrieveContext();
+		DirContext context = factory.retrieveGumsDirContext();
 		try {
 			SearchControls ctrls = new SearchControls();
 			ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			log.trace("Checking if LDAP map '" + map + "' exists");
-			NamingEnumeration result = context.search(factory.getGumsOU(), "(map={0})", new Object[] { map },
+			NamingEnumeration result = context.search(factory.getGumsObject(), "(map={0})", new Object[] { map },
 					ctrls);
 			return result.hasMore();
 		} catch (Exception e) {
@@ -216,7 +216,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	}
 
 	public java.util.Map retrieveAccountMap() {
-		DirContext context = factory.retrieveContext();
+		DirContext context = factory.retrieveGumsDirContext();
 		Map map = new Hashtable();
 		try {
 			SearchControls ctrls = new SearchControls();
@@ -246,7 +246,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	}
 
 	public String retrieveMapping(String userDN) {
-		DirContext context = factory.retrieveContext();
+		DirContext context = factory.retrieveGumsDirContext();
 		try {
 			SearchControls ctrls = new SearchControls();
 			ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -281,7 +281,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	}
 
 	public java.util.Map retrieveReverseAccountMap() {
-		DirContext context = factory.retrieveContext();
+		DirContext context = factory.retrieveGumsDirContext();
 		Map map = new Hashtable();
 		try {
 			SearchControls ctrls = new SearchControls();
@@ -317,7 +317,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	}
 
 	public void unassignAccount(String account) {
-		DirContext context = factory.retrieveContext();
+		DirContext context = factory.retrieveGumsDirContext();
 		try {
 			SearchControls ctrls = new SearchControls();
 			ctrls.setSearchScope(SearchControls.ONELEVEL_SCOPE);
