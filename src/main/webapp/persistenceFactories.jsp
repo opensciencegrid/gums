@@ -322,7 +322,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	ldap://localhost&nbsp;  or&nbsp;  ldaps://localhost (SSL)
+		    	ldaps://localhost/dc=usatlas,dc=bnl,dc=gov
 		    </td>
 		</tr>	
 		<tr>
@@ -338,7 +338,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	uid=gumsAdmin,ou=People,dc=racf,dc=bnl,dc=gov
+		    	uid=gumsAdmin,ou=People,dc=usatlas,dc=bnl,dc=gov
 		    </td>
 		</tr>
 		<tr>
@@ -363,10 +363,26 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>
 		<tr>
             <td nowrap style="text-align: right;">
+                LDAP GUMS Tree:
+            </td>
+            <td nowrap>
+                <input maxlength="256" size="32" name="gumsTree" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGumsTree()%>"/> (relative to context in LDAP URL - optional)
+            </td>
+        </tr>
+        <tr>
+            <td nowrap style="text-align: right;">
+                i.e.
+            </td>
+            <td nowrap>
+                ou=GUMS,dc=usatlas,dc=bnl,dc=gov
+            </td>
+        </tr>  		
+		<tr>
+            <td nowrap style="text-align: right;">
                 LDAP Group Tree:
             </td>
             <td nowrap>
-                <input maxlength="256" size="64" name="groupTree" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGroupTree()%>"/>
+                <input maxlength="256" size="32" name="groupTree" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGroupTree()%>"/> (relative to context in LDAP URL - optional)
             </td>
         </tr>
         <tr>
@@ -382,7 +398,7 @@ else if ("edit".equals(request.getParameter("command"))
                 LDAP People Tree:
             </td>
             <td nowrap>
-                <input maxlength="256" size="64" name="peopleTree" value="<%=((LDAPPersistenceFactory)persistenceFactory).getPeopleTree()%>"/>
+                <input maxlength="256" size="32" name="peopleTree" value="<%=((LDAPPersistenceFactory)persistenceFactory).getPeopleTree()%>"/> (relative to context in LDAP URL - optional)
             </td>
         </tr>
         <tr>
@@ -522,7 +538,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	ldap://localhost&nbsp;  or&nbsp;  ldaps://localhost (SSL)
+		    	ldaps://localhost/dc=usatlas,dc=bnl,dc=gov
 		    </td>
 		</tr>
 		<tr>
@@ -538,7 +554,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	uid=gumsAdmin,ou=People,dc=racf,dc=bnl,dc=gov
+		    	uid=gumsAdmin,ou=People,dc=usatlas,dc=bnl,dc=gov
 		    </td>
 		</tr>		
 		<tr>
@@ -563,10 +579,26 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>
 		<tr>
             <td nowrap style="text-align: right;">
+                LDAP GUMS Tree:
+            </td>
+            <td nowrap>
+                <input maxlength="256" size="32" name="gumsTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getGumsTree()%>"/> (relative to context in LDAP URL - optional)
+            </td>
+        </tr>
+        <tr>
+            <td nowrap style="text-align: right;">
+                i.e.
+            </td>
+            <td nowrap>
+                ou=GUMS,dc=usatlas,dc=bnl,dc=gov
+            </td>
+        </tr>  		
+		<tr>
+            <td nowrap style="text-align: right;">
                 LDAP Group Tree:
             </td>
             <td nowrap>
-                <input maxlength="256" size="64" name="groupTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getGroupTree()%>"/>
+                <input maxlength="256" size="32" name="groupTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getGroupTree()%>"/> (relative to context in LDAP URL - optional)
             </td>
 		</tr>
         <tr>
@@ -582,7 +614,7 @@ else if ("edit".equals(request.getParameter("command"))
                 LDAP People Tree:
             </td>
             <td nowrap>
-                <input maxlength="256" size="64" name="peopleTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getPeopleTree()%>"/>
+                <input maxlength="256" size="32" name="peopleTree" value="<%=((LocalPersistenceFactory)persistenceFactory).getPeopleTree()%>"/> (relative to context in LDAP URL - optional)
             </td>
         </tr>
         <tr>

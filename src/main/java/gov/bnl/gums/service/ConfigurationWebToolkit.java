@@ -268,6 +268,8 @@ public class ConfigurationWebToolkit implements Remote {
 				((LDAPPersistenceFactory)persistenceFactory).setGroupTree( request.getParameter("groupTree") );
 			if (request.getParameter("peopleTree")!=null)
 				((LDAPPersistenceFactory)persistenceFactory).setPeopleTree( request.getParameter("peopleTree") );			
+			if (request.getParameter("gumsTree")!=null)
+				((LDAPPersistenceFactory)persistenceFactory).setPeopleTree( request.getParameter("gumsTree") );				
 			if (request.getParameter("gidNumberField")!=null)
 				((LDAPPersistenceFactory)persistenceFactory).setGroupIdField( request.getParameter("gidNumberField") );
 			if (request.getParameter("groupCnField")!=null)
@@ -290,6 +292,8 @@ public class ConfigurationWebToolkit implements Remote {
 				((LocalPersistenceFactory)persistenceFactory).setGroupTree( request.getParameter("groupTree") );
 			if (request.getParameter("peopleTree")!=null)
 				((LocalPersistenceFactory)persistenceFactory).setPeopleTree( request.getParameter("peopleTree") );			
+			if (request.getParameter("gumsTree")!=null)
+				((LocalPersistenceFactory)persistenceFactory).setPeopleTree( request.getParameter("gumsTree") );			
 			if (request.getParameter("gidNumberField")!=null)
 				((LocalPersistenceFactory)persistenceFactory).setGroupIdField( request.getParameter("gidNumberField") );
 			if (request.getParameter("groupCnField")!=null)
