@@ -12,8 +12,10 @@ package gov.bnl.gums.persistence;
 
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
+import gov.bnl.gums.db.ConfigurationDB;
 import gov.bnl.gums.db.HibernateAccountMapperDB;
 import gov.bnl.gums.db.HibernateUserGroupDB;
+import gov.bnl.gums.db.HibernateConfigurationDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
@@ -94,6 +96,10 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
         return new HibernateAccountMapperDB(this, name);
     }
 
+	public ConfigurationDB retrieveConfigurationDB(String name) {
+		return new HibernateConfigurationDB(this, name);
+	}	
+    
     public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
         return new HibernateAccountMapperDB(this, name);
     }

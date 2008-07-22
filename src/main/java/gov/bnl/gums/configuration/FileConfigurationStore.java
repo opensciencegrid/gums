@@ -39,6 +39,18 @@ import org.apache.commons.logging.*;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class FileConfigurationStore implements ConfigurationStore {
+	private Log log = LogFactory.getLog(FileConfigurationStore.class);
+	private Log gumsSiteAdminLog = LogFactory.getLog(GUMS.siteAdminLog);
+	private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+	private Configuration conf;
+	private Date lastRetrival;
+	private String configBackupDir = null;
+	private String configPath = null;
+	private String schemaPath = null;
+	private String transformPath = null;
+	private DateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmm");
+	private String version;
+
 	/**
 	 * Copy source to target
 	 * 
@@ -75,7 +87,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Move source to target
 	 * 
@@ -85,20 +97,8 @@ public class FileConfigurationStore implements ConfigurationStore {
 	static public void moveFile(String source, String target) {
 		copyFile(source, target);
 		new File(source).delete();
-	}
-
-	private Log log = LogFactory.getLog(FileConfigurationStore.class);
-	private Log gumsSiteAdminLog = LogFactory.getLog(GUMS.siteAdminLog);
-	private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-	private Configuration conf;
-	private Date lastRetrival;
-	private String configBackupDir = null;
-	private String configPath = null;
-	private String schemaPath = null;
-	private String transformPath = null;
-	private DateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmm");
-	private String version;
-
+	}	
+	
 	/**
 	 * Creates a new FileConfigurationStore object.
 	 * Used to instantiate class when run as a unit test.
@@ -181,6 +181,10 @@ public class FileConfigurationStore implements ConfigurationStore {
 		return backupConfigDates;
 	}
 
+	public String getSchemaPath() {
+		return schemaPath;
+	}
+
 	public boolean isActive() {
 		log.debug("Checking whether gums.config is present");
 		return new File(configPath).exists();
@@ -188,6 +192,13 @@ public class FileConfigurationStore implements ConfigurationStore {
 
 	public boolean isReadOnly() {
 		return false;
+	}
+
+	public synchronized Configuration restoreConfiguration(String dateStr) {
+		moveFile(configPath, configBackupDir + "/gums.config~");
+		copyFile(configBackupDir + "/gums.config." + dateStr, configPath);
+		moveFile(configBackupDir + "/gums.config~", configBackupDir + "/gums.config.prev");
+		return retrieveConfiguration();
 	}
 
 	public synchronized Configuration retrieveConfiguration() {
@@ -200,14 +211,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 		return conf;
 	}
 
-	public synchronized Configuration restoreConfiguration(String dateStr) {
-		moveFile(configPath, configBackupDir + "/gums.config~");
-		copyFile(configBackupDir + "/gums.config." + dateStr, configPath);
-		moveFile(configBackupDir + "/gums.config~", configBackupDir + "/gums.config.prev");
-		return retrieveConfiguration();
-	}
-
-	public synchronized void setConfiguration(Configuration conf, boolean backupCopy) throws Exception {
+	public synchronized ConfigurationStore setConfiguration(Configuration conf, boolean backupCopy) throws Exception {
 		log.trace("Configuration set programically");
 		gumsResourceAdminLog.info("Configuration set programically");
 		gumsSiteAdminLog.info("Configuration set programically");
@@ -215,86 +219,17 @@ public class FileConfigurationStore implements ConfigurationStore {
 			throw new RuntimeException("Configuration has not been loaded");
 		log.debug("Attempting to store configuration");
 		String tempGumsConfigPath = configPath+"~";
-
+		ConfigurationStore confStore = this;
+		
+		// TODO: create new configuration store if in config
+		
 		BufferedWriter out;
 		out = new BufferedWriter(new FileWriter(tempGumsConfigPath));
-
-		out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n");
-
-		out.write("<gums version='"+version+"'>\n\n");
-
-		// Write persistence factories
-		if( conf.getPersistenceFactories().size()>0 ) {
-			out.write("\t<persistenceFactories>\n\n");
-			Iterator it = conf.getPersistenceFactories().values().iterator();
-			while( it.hasNext() ) {
-				PersistenceFactory persistenceFactory = (PersistenceFactory)it.next();
-				out.write( persistenceFactory.toXML() );
-			}
-			out.write("\t</persistenceFactories>\n\n");
-		}
-
-		// Write Voms Servers
-		if( conf.getVomsServers().size()>0 ) {
-			out.write("\t<vomsServers>\n\n");
-			Iterator it = conf.getVomsServers().values().iterator();
-			while( it.hasNext() ) {
-				VomsServer vo = (VomsServer)it.next();
-				out.write( vo.toXML() );
-			}
-			out.write("\t</vomsServers>\n\n");
-		}           
-
-		// Write User Groups
-		if( conf.getUserGroups().size()>0 ) {
-			out.write("\t<userGroups>\n\n");
-			Iterator it = conf.getUserGroups().values().iterator();
-			while( it.hasNext() ) {
-				UserGroup userGroup = (UserGroup)it.next();
-				out.write( userGroup.toXML() );
-			}
-			out.write("\t</userGroups>\n\n");
-		}                
-
-		// Write Account Mappers
-		if( conf.getAccountMappers().size()>0 ) {
-			out.write("\t<accountMappers>\n\n");
-			Iterator it = conf.getAccountMappers().values().iterator();
-			while( it.hasNext() ) {
-				AccountMapper accountMapper = (AccountMapper)it.next();
-				out.write( accountMapper.toXML() );
-			}
-			out.write("\t</accountMappers>\n\n");
-		}             
-
-		// Write Group To Account Mappings
-		if( conf.getGroupToAccountMappings().size()>0 ) {
-			out.write("\t<groupToAccountMappings>\n\n");
-			Iterator it = conf.getGroupToAccountMappings().values().iterator();
-			while( it.hasNext() ) {
-				GroupToAccountMapping groupToAccountMapping = (GroupToAccountMapping)it.next();
-				out.write( groupToAccountMapping.toXML() );
-			}
-			out.write("\t</groupToAccountMappings>\n\n");
-		}                
-
-		// Write Host To Group Mappings
-		if( conf.getHostToGroupMappings().size()>0 ) {
-			out.write("\t<hostToGroupMappings>\n\n");
-			Iterator it = conf.getHostToGroupMappings().iterator();
-			while( it.hasNext() ) {
-				HostToGroupMapping hostToGroupMapping = (HostToGroupMapping)it.next();
-				out.write( hostToGroupMapping.toXML() );
-			}
-			out.write("\t</hostToGroupMappings>\n\n");
-		}                
-
-		out.write("</gums>");
-
+		conf.write(out, version);
 		out.close();
 
 		// Make sure configuration is valid
-		this.conf = ConfigurationToolkit.loadConfiguration(tempGumsConfigPath, schemaPath);
+		this.conf = ConfigurationToolkit.loadConfiguration(tempGumsConfigPath, null, schemaPath);
 		
 		// copy gums.config to gums.config.prev
 		new File(configBackupDir).mkdir();
@@ -303,6 +238,8 @@ public class FileConfigurationStore implements ConfigurationStore {
 
 		// move temp file to gums.config or gums.config.date
 		moveFile(tempGumsConfigPath, (backupCopy?configBackupDir+"/gums.config."+format.format(new Date()):configPath));
+	
+		return confStore;
 	}
 
 	private Date lastModification() {
@@ -325,7 +262,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 			}
 
 			log.debug("Attempting to load configuration from gums.config");
-			conf = ConfigurationToolkit.loadConfiguration(configPath, schemaPath);
+			conf = ConfigurationToolkit.loadConfiguration(configPath, null, schemaPath);
 			log.trace("Configuration reloaded from '" + configPath + "'");
 			gumsResourceAdminLog.info("Configuration reloaded from '" + configPath + "'");
 			gumsSiteAdminLog.info("Configuration reloaded from '" + configPath + "'");

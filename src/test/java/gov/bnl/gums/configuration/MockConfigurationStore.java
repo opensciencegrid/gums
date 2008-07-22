@@ -68,8 +68,9 @@ public class MockConfigurationStore implements ConfigurationStore {
         return null;
     }
     
-    public void setConfiguration(Configuration conf, boolean backup) {
+    public ConfigurationStore setConfiguration(Configuration conf, boolean backup) {
         this.conf = conf;
+        return this;
     }
     
     public void storeConfiguration() {

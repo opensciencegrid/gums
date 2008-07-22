@@ -11,8 +11,8 @@ import gov.bnl.gums.db.AccountPoolMapperDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
+import gov.bnl.gums.db.ConfigurationDB;
 
-import java.util.Iterator;
 import java.util.Properties;
 
 /** Represent a factory for all the classes that take care of the persistance of
@@ -37,6 +37,7 @@ public abstract class PersistenceFactory {
 	}
     
     private String name = "";
+    private boolean storeConfig = false;
     private String description = "";
     private Properties properties;
     private Configuration configuration;
@@ -119,15 +120,21 @@ public abstract class PersistenceFactory {
 		return "abstract";
 	}
 
+	public String isStoreConfig() {
+		return storeConfig ? "true" : "false";
+	}
+
 	public abstract AccountPoolMapperDB retrieveAccountPoolMapperDB(String name);
+	
+	public abstract ConfigurationDB retrieveConfigurationDB(String name);
 	
 	public abstract ManualAccountMapperDB retrieveManualAccountMapperDB(String name);
 	
 	public abstract ManualUserGroupDB retrieveManualUserGroupDB(String name);
-	
+
 	public abstract UserGroupDB retrieveUserGroupDB(String name);
 	
-	/**
+    /**
      * Setter for property configuration.
      * 
      * @param configuration.
@@ -144,7 +151,7 @@ public abstract class PersistenceFactory {
     public void setDescription(String description) {
     	this.description = description;
     }
-	
+
     /**
      * Setter for property name.
      * 
@@ -153,7 +160,7 @@ public abstract class PersistenceFactory {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
     /**
      * Setter for the list of properties for the particular technology
      * deployed by the inhereted classes.
@@ -163,8 +170,12 @@ public abstract class PersistenceFactory {
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}
-	
-    /**
+
+	public void setStoreConfig(String storeConfig) {
+		this.storeConfig = "true".equalsIgnoreCase(storeConfig);
+	}
+
+	/**
      * Get XML representation of this object for writing to gums.config
      * 
      * @return xml as string

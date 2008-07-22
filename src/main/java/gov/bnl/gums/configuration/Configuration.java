@@ -12,6 +12,8 @@ import gov.bnl.gums.hostToGroup.HostToGroupMapping;
 import gov.bnl.gums.userGroup.UserGroup;
 import gov.bnl.gums.userGroup.VomsServer;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.*;
 
 import org.apache.commons.logging.*;
@@ -36,6 +38,7 @@ public class Configuration {
     private TreeMap vomsServers = new TreeMap();
     private TreeMap userGroups = new TreeMap();
     private boolean errorOnMissedMapping;
+	private boolean allowGridmapFiles = true;
     
     /**
      * @param accountMapper
@@ -375,4 +378,86 @@ public class Configuration {
     public void setErrorOnMissedMapping(boolean errorOnMissedMapping) {
         this.errorOnMissedMapping = errorOnMissedMapping;
     }
+    
+    public void write(BufferedWriter out, String version) throws IOException {
+		out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n");
+
+		out.write("<gums version='"+version+"' allowGridmapFiles='"+(getAllowGridmapFiles()?"true":"false")+"'>\n\n");
+
+		// Write persistence factories
+		if( getPersistenceFactories().size()>0 ) {
+			out.write("\t<persistenceFactories>\n\n");
+			Iterator it = getPersistenceFactories().values().iterator();
+			while( it.hasNext() ) {
+				PersistenceFactory persistenceFactory = (PersistenceFactory)it.next();
+				out.write( persistenceFactory.toXML() );
+			}
+			out.write("\t</persistenceFactories>\n\n");
+		}
+
+		// Write Voms Servers
+		if( getVomsServers().size()>0 ) {
+			out.write("\t<vomsServers>\n\n");
+			Iterator it = getVomsServers().values().iterator();
+			while( it.hasNext() ) {
+				VomsServer vo = (VomsServer)it.next();
+				out.write( vo.toXML() );
+			}
+			out.write("\t</vomsServers>\n\n");
+		}           
+
+		// Write User Groups
+		if( getUserGroups().size()>0 ) {
+			out.write("\t<userGroups>\n\n");
+			Iterator it = getUserGroups().values().iterator();
+			while( it.hasNext() ) {
+				UserGroup userGroup = (UserGroup)it.next();
+				out.write( userGroup.toXML() );
+			}
+			out.write("\t</userGroups>\n\n");
+		}                
+
+		// Write Account Mappers
+		if( getAccountMappers().size()>0 ) {
+			out.write("\t<accountMappers>\n\n");
+			Iterator it = getAccountMappers().values().iterator();
+			while( it.hasNext() ) {
+				AccountMapper accountMapper = (AccountMapper)it.next();
+				out.write( accountMapper.toXML() );
+			}
+			out.write("\t</accountMappers>\n\n");
+		}             
+
+		// Write Group To Account Mappings
+		if( getGroupToAccountMappings().size()>0 ) {
+			out.write("\t<groupToAccountMappings>\n\n");
+			Iterator it = getGroupToAccountMappings().values().iterator();
+			while( it.hasNext() ) {
+				GroupToAccountMapping groupToAccountMapping = (GroupToAccountMapping)it.next();
+				out.write( groupToAccountMapping.toXML() );
+			}
+			out.write("\t</groupToAccountMappings>\n\n");
+		}                
+
+		// Write Host To Group Mappings
+		if( getHostToGroupMappings().size()>0 ) {
+			out.write("\t<hostToGroupMappings>\n\n");
+			Iterator it = getHostToGroupMappings().iterator();
+			while( it.hasNext() ) {
+				HostToGroupMapping hostToGroupMapping = (HostToGroupMapping)it.next();
+				out.write( hostToGroupMapping.toXML() );
+			}
+			out.write("\t</hostToGroupMappings>\n\n");
+		}                
+
+		out.write("</gums>");   	
+    }
+
+	public boolean getAllowGridmapFiles() {
+		return allowGridmapFiles;
+	}
+
+	public void setAllowGridmapFiles(boolean allowGridmapFiles) {
+		this.allowGridmapFiles = allowGridmapFiles;
+	}
 }

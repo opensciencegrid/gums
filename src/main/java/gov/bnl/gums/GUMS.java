@@ -82,7 +82,7 @@ public class GUMS {
     }
     
     /**
-     * Creates and initilializes a new instance of GUMS.
+     * Creates and initilializes a new instance of GUMS - for testing.
      */
     public GUMS() {
         confStore = new FileConfigurationStore();
@@ -135,7 +135,13 @@ public class GUMS {
      * @return current configuration or null.
      */
     public Configuration getConfiguration() {
-        if (confStore != null) return confStore.retrieveConfiguration();
+    	Configuration conf = null;
+        try {
+			if (confStore != null) 
+				conf = confStore.retrieveConfiguration();
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
         return conf;
     }
     
@@ -155,7 +161,6 @@ public class GUMS {
      */
     public void restoreConfiguration(String dateStr) {
     	try {
-	        this.conf = conf;
 	        if (!confStore.isReadOnly()) {
 	            confStore.restoreConfiguration(dateStr);
 	        }
@@ -175,7 +180,7 @@ public class GUMS {
     	try {
 	        this.conf = conf;
 	        if (!confStore.isReadOnly()) {
-	            confStore.setConfiguration(conf, backup);
+	        	confStore = confStore.setConfiguration(conf, backup);
 	        }
 	        else
 	        	throw new RuntimeException("cannot write configuration because it is read-only");

@@ -4,7 +4,7 @@
 	<groupId>gums</groupId>
 	<artifactId>gums-core</artifactId>
 	<name>gums-core</name>
-	<version>1.2.17beta</version>
+	<version>1.2.17</version>
 	<description>GUMS Core provides the core functionality used by other GUMS components</description>
 
   	<repositories>

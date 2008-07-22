@@ -180,20 +180,18 @@ public class AccountPoolMapper extends AccountMapper {
     }
     
     private static String getRoot(String account) {
-    	String upper = account.toUpperCase();
-    	String lower = account.toLowerCase();
-    	int i = 0, len = lower.length();
-    	while (i<len && lower.charAt(i)!=upper.charAt(i))
-    		i++;
+    	int i = account.length()-1;
+    	while (i>=0 && account.charAt(i)>=48 && account.charAt(i)<=57)
+    		i--;
+    	i++;
     	return new String( account.substring(0,i) );
     }
     
     private static String getNumber(String account) {
-    	String upper = account.toUpperCase();
-    	String lower = account.toLowerCase();
-    	int i = 0, len = lower.length();
-    	while (i<len && lower.charAt(i)!=upper.charAt(i))
-    		i++;
+    	int i = account.length()-1;
+    	while (i>=0 && account.charAt(i)>=48 && account.charAt(i)<=57)
+    		i--;
+    	i++;
     	return new String( account.substring(i) );
     }    
     

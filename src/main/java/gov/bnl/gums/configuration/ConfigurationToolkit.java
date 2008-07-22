@@ -366,19 +366,23 @@ class ConfigurationToolkit {
      * Load gums.config
      * 
      * @param configFile
+     * @param configText
+     * @param schemaPath
      * @return
      * @throws ParserConfigurationException
      * @throws IOException
      * @throws SAXException
+     * 
+     * Either set configPath or configText
      */
-    public static synchronized Configuration loadConfiguration(String configPath, String schemaPath) throws ParserConfigurationException, IOException, SAXException {
-	validate(configPath, schemaPath);
-	Digester digester = retrieveDigester();
-	Configuration configuration = new Configuration();
+    public static synchronized Configuration loadConfiguration(String configPath, String configText, String schemaPath) throws ParserConfigurationException, IOException, SAXException {
+		validate(configPath, schemaPath);
+		Digester digester = retrieveDigester();
+		Configuration configuration = new Configuration();
         digester.push(configuration);
         log.trace("Loading the configuration from file '" + configPath + "' using schema '" + schemaPath);
         digester.parse("file://"+configPath);
-	return configuration;
+		return configuration;
     }
     
 }

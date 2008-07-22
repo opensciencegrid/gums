@@ -14,6 +14,8 @@ import gov.bnl.gums.db.LDAPUserGroupDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
+import gov.bnl.gums.db.ConfigurationDB;
+import gov.bnl.gums.db.LDAPConfigurationDB;
 import gov.bnl.gums.*;
 
 import java.io.FileInputStream;
@@ -510,6 +512,11 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		log.trace("Creating LDAP AccountPoolMapperDB '" + nameAndGroups + "' primary group '" + group + "' secondary groups '" + secondaryGroups + "'");
 		return new LDAPAccountMapperDB(this, pool, group, secondaryGroups);
 	}
+	
+	public ConfigurationDB retrieveConfigurationDB(String name) {
+		log.trace("Creating LDAP ConfigurationDB '" + name + "'");
+		return new LDAPConfigurationDB(this, name);
+	}	
 	
 	public DirContext retrieveGroupContext() {
 		DirContext context;

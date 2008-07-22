@@ -133,6 +133,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 	}
 
 	public String generateGridMapfile(String hostname) {
+		if (!gums.getConfiguration().getAllowGridmapFiles())
+			throw new RuntimeException("Grid Mapfile generation has been disabled (probably to conserve pool accounts)");
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
 				String map = gums().getResourceManager().generateGridMapfile(hostname, false);
@@ -171,6 +173,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 	}
 
 	public String generateVoGridMapfile(String hostname) {
+		if (!gums.getConfiguration().getAllowGridmapFiles())
+			throw new RuntimeException("Grid Mapfile generation has been disabled (probably to conserve pool accounts)");
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
 				String map = gums().getResourceManager().generateGridMapfile(hostname, true);

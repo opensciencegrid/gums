@@ -11,6 +11,7 @@ import gov.bnl.gums.db.AccountPoolMapperDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
+import gov.bnl.gums.db.ConfigurationDB;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -256,6 +257,10 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		return new LocalAccountPoolMapperDB(pool, group, secondaryGroups);
 	}
 
+	public ConfigurationDB retrieveConfigurationDB(String name) {
+		return persFactory.retrieveConfigurationDB(name);
+	}
+	
 	public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
 		return persFactory.retrieveManualAccountMapperDB(name);
 	}
