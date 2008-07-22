@@ -3,7 +3,7 @@
 <div id="sideNav">
 <ul>
   <li><a href="index.jsp">Home</a></li>
-  <li>Configuration</li>
+  <li><a href="globalConfiguration.jsp">Configuration</a></li>
   <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="backupRestoreConfiguration_form.jsp">Back Up/Restore</a></li>
   <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="summary.jsp">Summary</a></li>
   <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="persistenceFactories.jsp">Persistence Factories</a></li>
