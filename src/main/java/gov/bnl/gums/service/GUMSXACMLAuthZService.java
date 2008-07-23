@@ -6,8 +6,8 @@
 
 package gov.bnl.gums.service;
 
-import org.opensciencegrid.authz.xacml.service.BasicMappingAuthZService;
-import org.globus.www.security.XACMLAuthorization.bindings.XACMLAuthorizationPortTypeSOAPBindingSkeleton;
+import org.opensciencegrid.authz.xacml.service.*;
+import org.opensciencegrid.authz.xacml.stubs.*;
 
 /** The AuthZ service that implements the xacml authorization interface.
  *

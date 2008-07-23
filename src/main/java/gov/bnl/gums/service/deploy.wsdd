@@ -47,4 +47,94 @@
         encodingStyle=""
       />
   </service>
+  <service name="GUMSXACMLAuthorizationServicePort" provider="java:RPC" style="document" use="literal">
+      <parameter name="wsdlTargetNamespace" value="urn:stubs.xacml.authz.opensciencegrid.org/service"/>
+      <parameter name="wsdlServiceElement" value="XACMLAuthorizationService"/>
+      <parameter name="wsdlServicePort" value="XACMLAuthorizationPortTypePort"/>
+      <parameter name="className" value="gov.bnl.gums.service.GUMSXACMLAuthZService"/>
+      <parameter name="wsdlPortType" value="XACMLAuthorizationPortType"/>
+      <parameter name="allowedMethods" value="*"/>
+      <parameter name="scope" value="Application"/>
+
+      <typeMapping
+        xmlns:ns="urn:stubs.xacml.authz.opensciencegrid.org"
+        qname="ns:>Response"
+        type="java:org.opensciencegrid.authz.xacml.stubs.Response"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:stubs.xacml.authz.opensciencegrid.org"
+        qname="ns:>returnContext"
+        type="java:org.opensciencegrid.authz.xacml.stubs.ReturnContext"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:stubs.xacml.authz.opensciencegrid.org"
+        qname="ns:>combinePolicies"
+        type="java:org.opensciencegrid.authz.xacml.stubs.CombinePolicies"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:stubs.xacml.authz.opensciencegrid.org"
+        qname="ns:>ObligationHandlers"
+        type="java:org.opensciencegrid.authz.xacml.stubs.ObligationHandlers"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:stubs.xacml.authz.opensciencegrid.org"
+        qname="ns:authzServiceType"
+        type="java:org.opensciencegrid.authz.xacml.stubs.AuthzServiceType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:stubs.xacml.authz.opensciencegrid.org"
+        qname="ns:nameValueType"
+        type="java:org.opensciencegrid.authz.xacml.stubs.NameValueType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:stubs.xacml.authz.opensciencegrid.org"
+        qname="ns:>xacmlAuthzParameters"
+        type="java:org.opensciencegrid.authz.xacml.stubs.XacmlAuthzParameters"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:stubs.xacml.authz.opensciencegrid.org"
+        qname="ns:>inputContextOnly"
+        type="java:org.opensciencegrid.authz.xacml.stubs.InputContextOnly"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:stubs.xacml.authz.opensciencegrid.org"
+        qname="ns:>SupportedObligation"
+        type="java:org.opensciencegrid.authz.xacml.stubs.SupportedObligation"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="urn:stubs.xacml.authz.opensciencegrid.org"
+        qname="ns:>XACMLAuthzDecisionQuery"
+        type="java:org.opensciencegrid.authz.xacml.stubs.XACMLAuthzDecisionQuery"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>  
 </deployment>

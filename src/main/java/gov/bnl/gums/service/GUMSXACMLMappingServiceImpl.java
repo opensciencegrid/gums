@@ -6,33 +6,17 @@
 
 package gov.bnl.gums.service;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
-import org.joda.time.DateTime;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
 
 import gov.bnl.gums.admin.GUMSAPI;
 import gov.bnl.gums.admin.GUMSAPIImpl;
 
-import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Statement;
-import org.opensaml.saml2.core.Subject;
-import org.opensaml.saml2.core.impl.AssertionBuilder;
-import org.opensaml.saml2.core.impl.IssuerBuilder;
 import org.opensaml.saml2.core.impl.SubjectBuilder;
-import org.opensaml.saml2.core.impl.AssertionImpl;
 import org.opensaml.xml.XMLObjectBuilderFactory;
 import org.opensaml.xacml.ctx.RequestType;
-import org.opensaml.xacml.ctx.DecisionType;
 import org.opensaml.xacml.ctx.DecisionType;
 import org.opensaml.xacml.ctx.ResponseType;
 import org.opensaml.xacml.ctx.StatusType;
@@ -41,7 +25,6 @@ import org.opensaml.xacml.ctx.SubjectType;
 import org.opensaml.xacml.ctx.ResultType;
 import org.opensaml.xacml.ctx.ResourceType;
 import org.opensaml.xacml.ctx.AttributeType;
-import org.opensaml.xacml.ctx.AttributeValueType;
 import org.opensaml.xacml.policy.AttributeAssignmentType;
 import org.opensaml.xacml.policy.EffectType;
 import org.opensaml.xacml.policy.ObligationsType;
@@ -50,9 +33,8 @@ import org.opensaml.xacml.profile.saml.XACMLAuthzDecisionQueryType;
 import org.opensaml.xacml.profile.saml.XACMLAuthzDecisionStatementType;
 import org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionStatementTypeImplBuilder;
 import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.io.Unmarshaller;
-import org.opensaml.xml.io.UnmarshallerFactory;
-import org.opensaml.xml.parse.BasicParserPool;
+
+import org.opensciencegrid.authz.xacml.service.XACMLMappingService;
 
 public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
     private static String RESOURCE_ID = "http://authz-interop.org/xacml/2.0/subject/resource-x509-id";
@@ -61,6 +43,8 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
     private static String USERNAME = "http://authz-interop.org/xacml/2.0/obligation/Username";
     private static String ERROR = "http://oasis/names/tc/xacml/1.0/status/error";
     private static String OK = "http://oasis/names/tc/xacml/1.0/status/ok";
+    private Log log = LogFactory.getLog(GUMSXACMLMappingServiceImpl.class);
+    private static GUMSAPI gums = new GUMSAPIImpl();
    
     public XACMLAuthzDecisionStatementType mapCredentials(XACMLAuthzDecisionQueryType xacmlQuery) throws Exception {
 		XMLObjectBuilderFactory builderFactory = org.opensaml.xml.Configuration.getBuilderFactory();

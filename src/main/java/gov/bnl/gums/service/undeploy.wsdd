@@ -12,4 +12,5 @@
   <!-- Services from AuthorizationService WSDL service -->
 
   <service name="GUMSAuthorizationServicePort"/>
+  <service name="GUMSXACMLAuthorizationServicePort"/>
 </undeployment>
