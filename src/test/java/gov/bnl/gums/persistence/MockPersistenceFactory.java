@@ -26,7 +26,7 @@ public class MockPersistenceFactory extends PersistenceFactory {
     
     public void closeSessions(){}
     
-    public ConfigurationDB retrieveConfigurationDB(String name) {
+    public ConfigurationDB retrieveConfigurationDB() {
         return new MockConfigurationDB();
     }
     

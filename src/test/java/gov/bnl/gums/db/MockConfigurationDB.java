@@ -2,6 +2,7 @@ package gov.bnl.gums.db;
 
 import java.util.Collection;
 import java.util.TreeMap;
+import java.util.Date;
 
 public class MockConfigurationDB implements ConfigurationDB {
 	TreeMap configurations = new TreeMap();
@@ -13,6 +14,10 @@ public class MockConfigurationDB implements ConfigurationDB {
 	
 	public Collection getBackupConfigDates() {
 		return configurations.keySet();
+	}
+	
+	public Date getLastModification() {
+		return new Date();
 	}
 	
 	public boolean isActive() {

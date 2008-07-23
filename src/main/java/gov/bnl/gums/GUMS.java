@@ -8,9 +8,13 @@ package gov.bnl.gums;
 
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.configuration.ConfigurationStore;
+import gov.bnl.gums.configuration.DBConfigurationStore;
 import gov.bnl.gums.configuration.FileConfigurationStore;
+import gov.bnl.gums.persistence.PersistenceFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.naming.Context;
@@ -32,7 +36,12 @@ public class GUMS {
     static private Log log = LogFactory.getLog(GUMS.class);
     static private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     static private Timer timer;
-    
+ 
+    private Configuration testConf;
+    private ResourceManager resMan = new ResourceManager(this);
+    protected ConfigurationStore confStore;
+    protected DBConfigurationStore dbConfStore = null;
+ 
     /**
      * Create a thread that updates user group membership every so often
      * 
@@ -70,22 +79,18 @@ public class GUMS {
         }
     }
     
-    private Configuration conf;
-    private ResourceManager resMan = new ResourceManager(this);
-    protected ConfigurationStore confStore;
- 
     /**
      * Creates and initilializes a new instance of GUMS (should only be used for testing).
      */
     public GUMS(Configuration conf) {
-    	this.conf = conf;
+    	this.testConf = conf;
     }
     
     /**
-     * Creates and initilializes a new instance of GUMS - for testing.
+     * Creates and initilializes a new instance of GUMS
      */
     public GUMS() {
-        confStore = new FileConfigurationStore();
+    	confStore = new FileConfigurationStore();
         if (!confStore.isActive()) {
             gumsResourceAdminLog.fatal("Couldn't read GUMS policy file (gums.config)");
         }
@@ -113,7 +118,9 @@ public class GUMS {
      * @param dateStr
      */
     public void deleteBackupConfiguration(String dateStr) {
-    	if (confStore != null) confStore.deleteBackupConfiguration(dateStr);	
+    	confStore.deleteBackupConfiguration(dateStr);	
+    	if (dbConfStore!=null) 
+    		dbConfStore.deleteBackupConfiguration(dateStr);	
     }
     
     /**
@@ -122,8 +129,10 @@ public class GUMS {
      * @return Collection of date strings
      */
     public Collection getBackupConfigDates() {
-    	if (confStore != null) return confStore.getBackupConfigDates();
-        return null;
+    	Collection backupConfigDates = confStore.getBackupConfigDates();
+    	if (dbConfStore != null)
+    		backupConfigDates.add( dbConfStore.getBackupConfigDates() );
+        return backupConfigDates;
     }
 
     /**
@@ -137,8 +146,59 @@ public class GUMS {
     public Configuration getConfiguration() {
     	Configuration conf = null;
         try {
-			if (confStore != null) 
+        	boolean needsReload = confStore.needsReload() || (dbConfStore!=null && dbConfStore.needsReload());
+        	
+        	ConfigurationStore confStoreToUpdate = null;
+			if (dbConfStore!=null) {
+				if (confStore.getLastModification().after(dbConfStore.getLastModification())) {
+					conf = confStore.retrieveConfiguration();
+					confStoreToUpdate = dbConfStore;
+				}
+				else {
+					conf = dbConfStore.retrieveConfiguration();
+					confStoreToUpdate = confStore;
+				}
+			}
+			else
 				conf = confStore.retrieveConfiguration();
+			
+			if (needsReload) {
+				// if a persistence factory is set to store the configuration,
+				// also create a db configuration store
+				if (dbConfStore==null) {
+					Iterator it = conf.getPersistenceFactories().values().iterator();
+					boolean storeConfigFound = false;
+					while (it.hasNext()) {
+						PersistenceFactory persFact = (PersistenceFactory)it.next();
+						if (persFact.getStoreConfig()) {
+							if (storeConfigFound)
+								throw new RuntimeException("Configuration may only contain one persistence factory set to store the configuration");
+							String schemaPath = (confStore instanceof FileConfigurationStore) ? ((FileConfigurationStore)confStore).getSchemaPath() : null;
+							dbConfStore = new DBConfigurationStore(persFact.retrieveConfigurationDB(), schemaPath);
+							dbConfStore.setConfiguration(conf, false);
+							storeConfigFound = true;
+						}
+					}
+				}
+				
+				// if no persistence factories are set to store the configuration,
+				// eliminate db persistence factory
+				if (dbConfStore!=null) {
+					Iterator it = conf.getPersistenceFactories().values().iterator();
+					boolean storeConfigFound = false;
+					while (it.hasNext()) {
+						PersistenceFactory persFact = (PersistenceFactory)it.next();
+						if (persFact.getStoreConfig())
+							storeConfigFound = true;
+					}
+					if (!storeConfigFound)
+						dbConfStore = null;
+				}
+				
+				if (confStoreToUpdate!=null)
+					confStoreToUpdate.setConfiguration(conf, false);
+
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
@@ -162,10 +222,14 @@ public class GUMS {
     public void restoreConfiguration(String dateStr) {
     	try {
 	        if (!confStore.isReadOnly()) {
-	            confStore.restoreConfiguration(dateStr);
+	        	Configuration newConf = confStore.restoreConfiguration(dateStr);
+	        	if (newConf==null && dbConfStore!=null)
+	        		newConf = dbConfStore.restoreConfiguration(dateStr);
+	        	if (newConf==null)
+	        		throw new RuntimeException("Configuration from "+dateStr+" does not exist");
 	        }
 	        else
-	        	throw new RuntimeException("cannot write configuration because it is read-only");
+	        	throw new RuntimeException("cannot write configuration to file because it is read-only");
     	} catch(Exception e) {
     		throw new RuntimeException("cannot write configuration: " + e.getMessage());
     	}   	
@@ -178,12 +242,17 @@ public class GUMS {
      */
     public void setConfiguration(Configuration conf, boolean backup) {
     	try {
-	        this.conf = conf;
-	        if (!confStore.isReadOnly()) {
-	        	confStore = confStore.setConfiguration(conf, backup);
-	        }
+	        if (!confStore.isReadOnly())
+	        	confStore.setConfiguration(conf, backup);
 	        else
-	        	throw new RuntimeException("cannot write configuration because it is read-only");
+	        	throw new RuntimeException("cannot write configuration to file because it is read-only");
+
+	        if (dbConfStore!=null) {
+		        if (!dbConfStore.isReadOnly()) 
+		        	dbConfStore.setConfiguration(conf, backup); 
+		        else
+		        	throw new RuntimeException("cannot write configuration in DB because it is read-only");
+	        }
     	} catch(Exception e) {
     		throw new RuntimeException("cannot write configuration: " + e.getMessage());
     	}

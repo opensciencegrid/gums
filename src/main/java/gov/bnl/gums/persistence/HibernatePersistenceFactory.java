@@ -96,8 +96,8 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
         return new HibernateAccountMapperDB(this, name);
     }
 
-	public ConfigurationDB retrieveConfigurationDB(String name) {
-		return new HibernateConfigurationDB(this, name);
+	public ConfigurationDB retrieveConfigurationDB() {
+		return new HibernateConfigurationDB(this);
 	}	
     
     public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {

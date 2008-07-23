@@ -257,8 +257,8 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		return new LocalAccountPoolMapperDB(pool, group, secondaryGroups);
 	}
 
-	public ConfigurationDB retrieveConfigurationDB(String name) {
-		return persFactory.retrieveConfigurationDB(name);
+	public ConfigurationDB retrieveConfigurationDB() {
+		return persFactory.retrieveConfigurationDB();
 	}
 	
 	public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {

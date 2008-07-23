@@ -120,13 +120,13 @@ public abstract class PersistenceFactory {
 		return "abstract";
 	}
 
-	public String isStoreConfig() {
-		return storeConfig ? "true" : "false";
+	public boolean getStoreConfig() {
+		return storeConfig;
 	}
 
 	public abstract AccountPoolMapperDB retrieveAccountPoolMapperDB(String name);
 	
-	public abstract ConfigurationDB retrieveConfigurationDB(String name);
+	public abstract ConfigurationDB retrieveConfigurationDB();
 	
 	public abstract ManualAccountMapperDB retrieveManualAccountMapperDB(String name);
 	
@@ -171,8 +171,8 @@ public abstract class PersistenceFactory {
 		this.properties = properties;
 	}
 
-	public void setStoreConfig(String storeConfig) {
-		this.storeConfig = "true".equalsIgnoreCase(storeConfig);
+	public void setStoreConfig(boolean storeConfig) {
+		this.storeConfig = storeConfig;
 	}
 
 	/**

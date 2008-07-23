@@ -18,7 +18,7 @@ import gov.bnl.gums.userGroup.UserGroup;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
+import java.util.Date;
 
 /**
  *
@@ -56,6 +56,14 @@ public class MockConfigurationStore implements ConfigurationStore {
     	return null;
     }
     
+    public Date getLastModification() {
+    	return new Date();
+    }
+    
+    public boolean needsReload() {
+    	return true;
+    }
+    
     public void storeConfiguration(Configuration conf) {
         this.conf = conf;
     }
@@ -68,9 +76,8 @@ public class MockConfigurationStore implements ConfigurationStore {
         return null;
     }
     
-    public ConfigurationStore setConfiguration(Configuration conf, boolean backup) {
+    public void setConfiguration(Configuration conf, boolean backup) {
         this.conf = conf;
-        return this;
     }
     
     public void storeConfiguration() {

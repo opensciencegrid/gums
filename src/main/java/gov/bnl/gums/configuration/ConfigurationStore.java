@@ -8,6 +8,7 @@ package gov.bnl.gums.configuration;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 
 /** 
  * Encapsulate the logic of retrieving the configuration from where it is stored.
@@ -32,6 +33,13 @@ public interface ConfigurationStore {
     Collection getBackupConfigDates();
     
     /**
+     * Get last modified
+     * 
+     * @return Date
+     */
+    Date getLastModification();
+    
+    /**
      * Defines whether a configuration can be retrieved from the store.
      * This should only check whether configuration information is accessible,
      * not if it is inconsistent. For example, it should check whether
@@ -47,6 +55,13 @@ public interface ConfigurationStore {
      * @return true if storeConfiguration is allowed.
      */
     boolean isReadOnly();
+    
+    /**
+     * Defines whether the configuration needs to be reloaded.
+     * 
+     * @return true if configuration needs to be reloaded.
+     */    
+    boolean needsReload();
     
     /**
      * Restores configuration in memory. If the configuration cannot be loaded
@@ -73,6 +88,6 @@ public interface ConfigurationStore {
      * @param conf 
      * @param backupCopy 
      */
-    ConfigurationStore setConfiguration(Configuration conf, boolean backupCopy) throws Exception;
+    void setConfiguration(Configuration conf, boolean backupCopy) throws Exception;
     
 }

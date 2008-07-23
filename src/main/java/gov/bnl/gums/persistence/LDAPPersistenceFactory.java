@@ -513,9 +513,9 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		return new LDAPAccountMapperDB(this, pool, group, secondaryGroups);
 	}
 	
-	public ConfigurationDB retrieveConfigurationDB(String name) {
-		log.trace("Creating LDAP ConfigurationDB '" + name + "'");
-		return new LDAPConfigurationDB(this, name);
+	public ConfigurationDB retrieveConfigurationDB() {
+		log.trace("Creating LDAP ConfigurationDB");
+		return new LDAPConfigurationDB(this);
 	}	
 	
 	public DirContext retrieveGroupContext() {

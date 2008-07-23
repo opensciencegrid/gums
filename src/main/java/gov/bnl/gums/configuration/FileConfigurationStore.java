@@ -7,12 +7,6 @@
 package gov.bnl.gums.configuration;
 
 import gov.bnl.gums.GUMS;
-import gov.bnl.gums.account.AccountMapper;
-import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
-import gov.bnl.gums.hostToGroup.HostToGroupMapping;
-import gov.bnl.gums.persistence.PersistenceFactory;
-import gov.bnl.gums.userGroup.UserGroup;
-import gov.bnl.gums.userGroup.VomsServer;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 
 import org.apache.commons.logging.*;
 
@@ -43,7 +36,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 	private Log gumsSiteAdminLog = LogFactory.getLog(GUMS.siteAdminLog);
 	private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
 	private Configuration conf;
-	private Date lastRetrival;
+	private Date lastRetrieval = null;
 	private String configBackupDir = null;
 	private String configPath = null;
 	private String schemaPath = null;
@@ -181,6 +174,16 @@ public class FileConfigurationStore implements ConfigurationStore {
 		return backupConfigDates;
 	}
 
+	public Date getLastModification() {
+		try {
+			File file = new File(configPath);
+			return new Date(file.lastModified());
+		} catch (Exception e) {
+			gumsResourceAdminLog.fatal("The configuration wasn't read properly. GUMS is not operational.", e);
+			return null;
+		}
+	}
+	
 	public String getSchemaPath() {
 		return schemaPath;
 	}
@@ -193,17 +196,25 @@ public class FileConfigurationStore implements ConfigurationStore {
 	public boolean isReadOnly() {
 		return false;
 	}
-
+	
 	public synchronized Configuration restoreConfiguration(String dateStr) {
+		String path = "/gums.config." + dateStr;
+		File file = new File(path);
+		if (!file.exists())
+			return null;
 		moveFile(configPath, configBackupDir + "/gums.config~");
-		copyFile(configBackupDir + "/gums.config." + dateStr, configPath);
+		copyFile(configBackupDir + path, configPath);
 		moveFile(configBackupDir + "/gums.config~", configBackupDir + "/gums.config.prev");
 		return retrieveConfiguration();
 	}
 
+	public synchronized boolean needsReload() {
+		return (lastRetrieval==null || lastRetrieval.before(getLastModification()));
+	}
+	
 	public synchronized Configuration retrieveConfiguration() {
 		try {
-			if ((lastRetrival == null) || (lastRetrival.before(lastModification())))
+			if (needsReload())
 				reloadConfiguration();
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -211,7 +222,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 		return conf;
 	}
 
-	public synchronized ConfigurationStore setConfiguration(Configuration conf, boolean backupCopy) throws Exception {
+	public synchronized void setConfiguration(Configuration conf, boolean backupCopy) throws Exception {
 		log.trace("Configuration set programically");
 		gumsResourceAdminLog.info("Configuration set programically");
 		gumsSiteAdminLog.info("Configuration set programically");
@@ -219,9 +230,6 @@ public class FileConfigurationStore implements ConfigurationStore {
 			throw new RuntimeException("Configuration has not been loaded");
 		log.debug("Attempting to store configuration");
 		String tempGumsConfigPath = configPath+"~";
-		ConfigurationStore confStore = this;
-		
-		// TODO: create new configuration store if in config
 		
 		BufferedWriter out;
 		out = new BufferedWriter(new FileWriter(tempGumsConfigPath));
@@ -238,18 +246,6 @@ public class FileConfigurationStore implements ConfigurationStore {
 
 		// move temp file to gums.config or gums.config.date
 		moveFile(tempGumsConfigPath, (backupCopy?configBackupDir+"/gums.config."+format.format(new Date()):configPath));
-	
-		return confStore;
-	}
-
-	private Date lastModification() {
-		try {
-			File file = new File(configPath);
-			return new Date(file.lastModified());
-		} catch (Exception e) {
-			gumsResourceAdminLog.fatal("The configuration wasn't read properly. GUMS is not operational.", e);
-			return null;
-		}
 	}
 
 	private void reloadConfiguration() {
@@ -266,11 +262,12 @@ public class FileConfigurationStore implements ConfigurationStore {
 			log.trace("Configuration reloaded from '" + configPath + "'");
 			gumsResourceAdminLog.info("Configuration reloaded from '" + configPath + "'");
 			gumsSiteAdminLog.info("Configuration reloaded from '" + configPath + "'");
-			lastRetrival = new Date();
+			lastRetrieval = new Date();
 		} catch (Exception e) {
 			gumsResourceAdminLog.error("The configuration wasn't read correctly: " + e.getMessage());
 			log.error("The configuration wasn't read correctly.", e);
 			throw new RuntimeException("The configuration wasn't read correctly: " + e.getMessage());
 		}
 	}
+
 }
