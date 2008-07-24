@@ -48,7 +48,7 @@ public class DBConfigurationStore implements ConfigurationStore {
     }
     
     public boolean isReadOnly() {
-    	return true;
+    	return false;
     }
     
     public Collection getBackupConfigDates() {

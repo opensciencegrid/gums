@@ -191,8 +191,11 @@ public class GUMS {
 						if (persFact.getStoreConfig())
 							storeConfigFound = true;
 					}
-					if (!storeConfigFound)
+					if (!storeConfigFound) {
+						if (confStoreToUpdate==dbConfStore)
+							confStoreToUpdate = null;
 						dbConfStore = null;
+					}
 				}
 				
 				if (confStoreToUpdate!=null)

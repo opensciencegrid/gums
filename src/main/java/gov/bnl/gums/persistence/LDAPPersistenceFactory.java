@@ -207,6 +207,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	public PersistenceFactory clone(Configuration configuration) {
 		LDAPPersistenceFactory persistenceFactory = new LDAPPersistenceFactory(configuration, new String(getName()));
 		persistenceFactory.setDescription(new String(getDescription()));
+		persistenceFactory.setStoreConfig(getStoreConfig());
 //		persistenceFactory.setCaCertFile(getCaCertFile());
 //		persistenceFactory.setTrustStorePassword(getTrustStorePassword());
 		persistenceFactory.setUidField(new String(getUidField()));
@@ -698,6 +699,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		String retStr = "\t\t<ldapPersistenceFactory\n"+
 		"\t\t\tname='"+getName()+"'\n"+
 		"\t\t\tdescription='"+getDescription()+"'\n"+
+		"\t\t\tstoreConfig='"+(getStoreConfig()?"true":"false")+"'\n"+
 		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
 //		"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
 //		"\t\t\ttrustStorePassword='"+trustStorePassword+"'\n"+

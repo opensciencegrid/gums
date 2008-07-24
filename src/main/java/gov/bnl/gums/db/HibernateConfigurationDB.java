@@ -26,7 +26,7 @@ public class HibernateConfigurationDB implements ConfigurationDB {
 	}
 	
 	public Date getLastModification() {
-		 return null;
+		 return new Date(0);
 	}
 	
 	public boolean isActive() {
