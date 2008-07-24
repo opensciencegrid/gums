@@ -254,6 +254,8 @@ public class ConfigurationWebToolkit implements Remote {
 			persistenceFactory.setName( request.getParameter("name").trim() );
 			if (request.getParameter("description")!=null)
 				persistenceFactory.setDescription( request.getParameter("description").trim() );
+			if (request.getParameter("storeConfig")!=null)
+				persistenceFactory.setStoreConfig( request.getParameter("storeConfig").trim().equals("on") );
 			((HibernatePersistenceFactory)persistenceFactory).setProperties( getHibernateProperties(persistenceFactory, request, false) );
 		} 
 		else if (type.equals(LDAPPersistenceFactory.getTypeStatic())) {
@@ -261,6 +263,8 @@ public class ConfigurationWebToolkit implements Remote {
 			persistenceFactory.setName( request.getParameter("name").trim() );
 			if (request.getParameter("description")!=null)
 				persistenceFactory.setDescription( request.getParameter("description").trim() );
+			if (request.getParameter("storeConfig")!=null)
+				persistenceFactory.setStoreConfig( request.getParameter("storeConfig").trim().equals("on") );
 			((LDAPPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
 			((LDAPPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
 			((LDAPPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
@@ -285,6 +289,8 @@ public class ConfigurationWebToolkit implements Remote {
 			persistenceFactory.setName( request.getParameter("name").trim() );
 			if (request.getParameter("description")!=null)
 				persistenceFactory.setDescription( request.getParameter("description").trim() );
+			if (request.getParameter("storeConfig")!=null)
+				persistenceFactory.setStoreConfig( request.getParameter("storeConfig").trim().equals("on") );
 			((LocalPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
 			((LocalPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
 			((LocalPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );

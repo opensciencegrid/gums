@@ -73,7 +73,7 @@ if (request.getParameter("command")==null ||
 	<table id="form" cellpadding="2" cellspacing="2">
 	   	<tr>
 			<td>
-				<input type="checkbox" name="allowGMP" <%=configuration.getAllowGridmapFiles()?"CHECKED":""%>> Allow grid mapfile generation (uncheck if not needed so that users that have never used your site will not use up pool accounts)
+				<input type="checkbox" name="allowGMP" <%=configuration.getAllowGridmapFiles()?"CHECKED":""%>> Allow grid mapfile generation (uncheck if not needed so that users that don't use your site will not use up pool accounts)
 			</td>
 		</tr>
 		<tr>

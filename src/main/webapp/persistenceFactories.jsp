@@ -252,6 +252,14 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>	
 		<tr>
 			<td nowrap style="text-align: right;">
+	    		Store Configuration:
+		    </td>
+		    <td nowrap>
+				<input type="checkbox" name="storeConfig" <%=persistenceFactory.getStoreConfig()?"CHECKED":""%>>
+		    </td>		    
+		</tr>		
+		<tr>
+			<td nowrap style="text-align: right;">
 	    		Type:
 		    </td>
 		    <td nowrap>
