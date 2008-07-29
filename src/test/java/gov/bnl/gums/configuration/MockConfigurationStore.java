@@ -24,7 +24,7 @@ import java.util.Date;
  *
  * @author carcassi
  */
-public class MockConfigurationStore implements ConfigurationStore {
+public class MockConfigurationStore extends ConfigurationStore {
     Configuration conf;
     
     /** Creates a new instance of MockConfigurationStore */

@@ -8,8 +8,8 @@ public class MockConfigurationDB implements ConfigurationDB {
 	TreeMap configurations = new TreeMap();
 	String currentConf = null;
 	
-	public void deleteBackupConfiguration(String dateStr) {
-		configurations.remove(dateStr);
+	public void deleteBackupConfiguration(Date date) {
+		configurations.remove(date.toString());
 	}
 	
 	public Collection getBackupConfigDates() {
@@ -24,16 +24,16 @@ public class MockConfigurationDB implements ConfigurationDB {
 		return true;
 	}
 	
-	public String restoreConfiguration(String dateStr) {
-		return (String)configurations.get(dateStr);
+	public String restoreConfiguration(Date date) {
+		return (String)configurations.get(date.toString());
 	}
 	
 	public String retrieveCurrentConfiguration() {
 		return currentConf;
 	}
 	
-	public void setConfiguration(String text, String dateStr, boolean backupCopy) {
-		configurations.put(dateStr, text);
+	public void setConfiguration(String text, Date date, boolean backupCopy) {
+		configurations.put(date.toString(), text);
 		if (!backupCopy)
 			currentConf = text;
 	}

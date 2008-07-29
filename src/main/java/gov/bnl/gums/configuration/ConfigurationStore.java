@@ -7,6 +7,8 @@
 package gov.bnl.gums.configuration;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 
@@ -17,27 +19,29 @@ import java.util.Date;
  *
  * @author Gabriele Carcassi, Jay Packard
  */
-public interface ConfigurationStore {
+public abstract class ConfigurationStore {
+	protected DateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmm");
+
     /**
      * Delete backup configuration
      * 
      * @param A date string
      */	
-	void deleteBackupConfiguration(String dateStr);
+	public abstract void deleteBackupConfiguration(String dateStr);
 	
     /**
      * Get a list of config date strings that have been backed up
      * 
      * @return collection of date strings.
      */
-    Collection getBackupConfigDates();
+	public abstract Collection getBackupConfigDates();
     
     /**
      * Get last modified
      * 
      * @return Date
      */
-    Date getLastModification();
+	public abstract Date getLastModification();
     
     /**
      * Defines whether a configuration can be retrieved from the store.
@@ -47,21 +51,21 @@ public interface ConfigurationStore {
      * 
      * @return true if the store is configured correctly.
      */
-    boolean isActive();
+	public abstract boolean isActive();
     
     /**
      * Defines whether the configuration can be changed or not.
      * 
      * @return true if storeConfiguration is allowed.
      */
-    boolean isReadOnly();
+	public abstract boolean isReadOnly();
     
     /**
      * Defines whether the configuration needs to be reloaded.
      * 
      * @return true if configuration needs to be reloaded.
      */    
-    boolean needsReload();
+	public abstract boolean needsReload();
     
     /**
      * Restores configuration in memory. If the configuration cannot be loaded
@@ -70,7 +74,7 @@ public interface ConfigurationStore {
      * @param A date string
      * @return A configuration object.
      */
-    Configuration restoreConfiguration(String dateStr) throws Exception;
+	public abstract Configuration restoreConfiguration(String dateStr) throws Exception;
     
     /**
      * Loads the configuration in memory. If the configuration cannot be loaded
@@ -78,7 +82,7 @@ public interface ConfigurationStore {
      * 
      * @return A configuration object.
      */
-    Configuration retrieveConfiguration() throws Exception;
+	public abstract Configuration retrieveConfiguration() throws Exception;
     
     /**
      * Set and store the configuration.  A configuration may specify to store the configuration
@@ -88,6 +92,6 @@ public interface ConfigurationStore {
      * @param conf 
      * @param backupCopy 
      */
-    void setConfiguration(Configuration conf, boolean backupCopy) throws Exception;
+	public abstract void setConfiguration(Configuration conf, boolean backupCopy) throws Exception;
     
 }

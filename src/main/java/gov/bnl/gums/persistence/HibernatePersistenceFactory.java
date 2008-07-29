@@ -155,7 +155,8 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
             net.sf.hibernate.cfg.Configuration cfg = new net.sf.hibernate.cfg.Configuration()
                 .setProperties(getProperties())
                 .addClass(gov.bnl.gums.db.HibernateMapping.class)
-                .addClass(gov.bnl.gums.db.HibernateUser.class);
+                .addClass(gov.bnl.gums.db.HibernateUser.class)
+                .addClass(gov.bnl.gums.db.HibernateConfig.class);
             return cfg.buildSessionFactory();
         } catch (Exception e) {
             log.error("Couldn't initialize Hibernate", e);

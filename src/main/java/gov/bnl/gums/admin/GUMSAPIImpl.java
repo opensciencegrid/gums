@@ -230,26 +230,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	}
 
 	public String getVersion() {
-		if (version==null) {
-			String pomFile = CertCache.getMetaDir()+"/maven/gums/gums-service/pom.xml";
-			Digester digester = new Digester();
-			digester.addObjectCreate("project/version", Version.class);
-			digester.addCallMethod("project/version","setVersion",0);
-			log.trace("Loading GUMS version from pom file '" + pomFile + "'");
-			Version versionCls = null;
-			try {
-				versionCls = (Version)digester.parse("file://"+pomFile);
-			} catch (Exception e) {
-				gumsResourceAdminLog.error("Cannot get version from "+pomFile);
-				log.error("Cannot get version from "+pomFile, e);
-			}
-			if (versionCls == null)
-				return "?";
-			else
-				log.trace("GUMS version " + versionCls.getVersion() );
-			version = versionCls.getVersion();
-		}
-		return version;
+		return GUMS.getVersion();
 	}
 
 	public void manualGroupAdd2(String manualUserGroupName, String userDN) {

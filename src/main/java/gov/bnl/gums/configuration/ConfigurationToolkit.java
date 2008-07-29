@@ -24,6 +24,7 @@ import gov.bnl.gums.userGroup.VOMSUserGroup;
 import gov.bnl.gums.userGroup.VomsServer;
 
 import java.io.IOException;
+import java.io.StringBufferInputStream;
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -341,7 +342,7 @@ class ConfigurationToolkit {
      * @throws SAXException
      * @throws IOException
      */
-    public static void validate(String configFile, String schemaFile) throws ParserConfigurationException, SAXException, IOException {
+    public static void validate(String configFile, String configText, String schemaFile) throws ParserConfigurationException, SAXException, IOException {
     	System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
     	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         log.trace("DocumentBuilderFactory: "+ factory.getClass().getName());
@@ -355,7 +356,12 @@ class ConfigurationToolkit {
         SimpleErrorHandler errorHandler = new ConfigurationToolkit().new SimpleErrorHandler();
         builder.setErrorHandler( errorHandler );
 
-        builder.parse(configFile); 
+        if (configFile != null)
+        	builder.parse(configFile); 
+        else if (configText != null)
+        	builder.parse(new StringBufferInputStream(configText));
+        else
+        	throw new RuntimeException("No configuration file or text specified");
         
         if (errorHandler.error){
         	throw new ParserConfigurationException();       
@@ -376,12 +382,20 @@ class ConfigurationToolkit {
      * Either set configPath or configText
      */
     public static synchronized Configuration loadConfiguration(String configPath, String configText, String schemaPath) throws ParserConfigurationException, IOException, SAXException {
-		validate(configPath, schemaPath);
+		validate(configPath, configText, schemaPath);
 		Digester digester = retrieveDigester();
 		Configuration configuration = new Configuration();
         digester.push(configuration);
-        log.trace("Loading the configuration from file '" + configPath + "' using schema '" + schemaPath);
-        digester.parse("file://"+configPath);
+        if (configPath!=null) {
+	        log.trace("Loading the configuration from file '" + configPath + "' using schema '" + schemaPath);
+	        digester.parse("file://"+configPath);
+        }
+        else if(configText!=null) {
+	        log.trace("Loading the configuration using schema '" + schemaPath);
+	        digester.parse(new StringBufferInputStream(configText));
+        }
+        else
+        	throw new RuntimeException("No config file or text specified");
 		return configuration;
     }
     

@@ -1,6 +1,8 @@
 package gov.bnl.gums.configuration;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -16,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
 
 import gov.bnl.gums.GUMS;
+import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.ConfigurationDB;
 import gov.bnl.gums.persistence.PersistenceFactory;
 
@@ -24,12 +27,11 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  *
  * @author Jay Packard
  */
-public class DBConfigurationStore implements ConfigurationStore {
+public class DBConfigurationStore extends ConfigurationStore {
 	private Log log = LogFactory.getLog(FileConfigurationStore.class);
 	private Log gumsSiteAdminLog = LogFactory.getLog(GUMS.siteAdminLog);
 	private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
 	private ConfigurationDB configDB;
-	private DateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmm");
 	private String schemaPath = null;
 	private Date lastRetrieval = null;
 	private Date lastModification = null;
@@ -40,7 +42,14 @@ public class DBConfigurationStore implements ConfigurationStore {
 	}
 	
 	public void deleteBackupConfiguration(String dateStr) {
-		configDB.deleteBackupConfiguration(dateStr);
+		Date date;
+		try {
+			date = format.parse(dateStr);
+		} catch (ParseException e) {
+			log.error(e);
+			throw new RuntimeException(e);
+		}
+		configDB.deleteBackupConfiguration(date);
 	}
 	
     public boolean isActive() {
@@ -70,13 +79,20 @@ public class DBConfigurationStore implements ConfigurationStore {
     }
     
     public Configuration restoreConfiguration(String dateStr) throws Exception {
-   		String configText = configDB.restoreConfiguration(dateStr);
+		Date date;
+		try {
+			date = format.parse(dateStr);
+		} catch (ParseException e) {
+			log.error(e);
+			throw new RuntimeException(e);
+		}
+   		String configText = configDB.restoreConfiguration(date);
    		Configuration configuration = ConfigurationToolkit.loadConfiguration(null, configText, schemaPath);
    		return configuration;
     }
     
     public void setConfiguration(Configuration conf, boolean backupCopy) throws Exception {
-    	configDB.setConfiguration(conf.toString(), format.format(new Date()), backupCopy);
+    	configDB.setConfiguration(conf.toXml(), new Date(), backupCopy);
     }
 	    
 }

@@ -31,7 +31,7 @@ import org.apache.commons.logging.*;
  *
  * @author Gabriele Carcassi, Jay Packard
  */
-public class FileConfigurationStore implements ConfigurationStore {
+public class FileConfigurationStore extends ConfigurationStore {
 	private Log log = LogFactory.getLog(FileConfigurationStore.class);
 	private Log gumsSiteAdminLog = LogFactory.getLog(GUMS.siteAdminLog);
 	private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
@@ -41,7 +41,6 @@ public class FileConfigurationStore implements ConfigurationStore {
 	private String configPath = null;
 	private String schemaPath = null;
 	private String transformPath = null;
-	private DateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmm");
 	private String version;
 
 	/**
@@ -233,7 +232,7 @@ public class FileConfigurationStore implements ConfigurationStore {
 		
 		BufferedWriter out;
 		out = new BufferedWriter(new FileWriter(tempGumsConfigPath));
-		conf.write(out, version);
+		conf.write(out);
 		out.close();
 
 		// Make sure configuration is valid

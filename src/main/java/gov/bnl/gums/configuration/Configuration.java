@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.configuration;
 
+import gov.bnl.gums.GUMS;
 import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.HostToGroupMapping;
@@ -14,6 +15,8 @@ import gov.bnl.gums.userGroup.VomsServer;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.*;
 
 import org.apache.commons.logging.*;
@@ -316,6 +319,12 @@ public class Configuration {
         return this.errorOnMissedMapping;
     }
     
+    public String toXml() throws IOException {
+    	StringWriter writer = new StringWriter();
+    	write(writer);
+    	return writer.toString();
+    }
+    
     /**
      * @param name
      * @return
@@ -379,9 +388,10 @@ public class Configuration {
         this.errorOnMissedMapping = errorOnMissedMapping;
     }
     
-    public void write(BufferedWriter out, String version) throws IOException {
+    public void write(Writer out) throws IOException {
 		out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n");
 
+		String version = "";
 		out.write("<gums version='"+version+"' allowGridmapFiles='"+(getAllowGridmapFiles()?"true":"false")+"'>\n\n");
 
 		// Write persistence factories

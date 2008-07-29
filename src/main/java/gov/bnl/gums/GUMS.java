@@ -6,10 +6,12 @@
 
 package gov.bnl.gums;
 
+import gov.bnl.gums.admin.CertCache;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.configuration.ConfigurationStore;
 import gov.bnl.gums.configuration.DBConfigurationStore;
 import gov.bnl.gums.configuration.FileConfigurationStore;
+import gov.bnl.gums.configuration.Version;
 import gov.bnl.gums.persistence.PersistenceFactory;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.*;
 
 /** 
@@ -36,6 +39,7 @@ public class GUMS {
     static private Log log = LogFactory.getLog(GUMS.class);
     static private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
     static private Timer timer;
+    static private String version;
  
     private Configuration testConf;
     private ResourceManager resMan = new ResourceManager(this);
@@ -183,7 +187,7 @@ public class GUMS {
 				
 				// if no persistence factories are set to store the configuration,
 				// eliminate db persistence factory
-				if (dbConfStore!=null) {
+				else if (dbConfStore!=null) {
 					Iterator it = conf.getPersistenceFactories().values().iterator();
 					boolean storeConfigFound = false;
 					while (it.hasNext()) {
@@ -200,7 +204,6 @@ public class GUMS {
 				
 				if (confStoreToUpdate!=null)
 					confStoreToUpdate.setConfiguration(conf, false);
-
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -215,6 +218,29 @@ public class GUMS {
      */
     public ResourceManager getResourceManager() {
         return resMan;
+    }
+    
+    static public String getVersion() {
+    	if (version==null) {
+			String pomFile = CertCache.getMetaDir()+"/maven/gums/gums-service/pom.xml";
+			Digester digester = new Digester();
+			digester.addObjectCreate("project/version", Version.class);
+			digester.addCallMethod("project/version","setVersion",0);
+			log.trace("Loading GUMS version from pom file '" + pomFile + "'");
+			Version versionCls = null;
+			try {
+				versionCls = (Version)digester.parse("file://"+pomFile);
+			} catch (Exception e) {
+				gumsResourceAdminLog.error("Cannot get version from "+pomFile);
+				log.error("Cannot get version from "+pomFile, e);
+			}
+			if (versionCls == null)
+				return "?";
+			else
+				log.trace("GUMS version " + versionCls.getVersion() );
+			version = versionCls.getVersion();
+		}
+		return version;
     }
     
     /**

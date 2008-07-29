@@ -9,7 +9,7 @@ public interface ConfigurationDB {
      * 
      * @param A date string
      */	
-	public void deleteBackupConfiguration(String dateStr);
+	public void deleteBackupConfiguration(Date date);
 	
     /**
      * Get a list of config date strings that have been stored
@@ -42,7 +42,7 @@ public interface ConfigurationDB {
      * @param A date string
      * @return configuration text.
      */	
-	public String restoreConfiguration(String dateStr);
+	public String restoreConfiguration(Date date);
 	
     /**
      * Loads the configuration text. If the configuration cannot be loaded
@@ -57,5 +57,5 @@ public interface ConfigurationDB {
      * 
      * @param conf 
      */	
-	public void setConfiguration(String text, String dateStr, boolean backupCopy);
+	public void setConfiguration(String text, Date date, boolean backupCopy);
 }
