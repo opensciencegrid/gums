@@ -18,6 +18,7 @@ import gov.bnl.gums.hostToGroup.CertificateHostToGroupMapping;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 import gov.bnl.gums.persistence.LocalPersistenceFactory;
+import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.userGroup.LDAPUserGroup;
 import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.VOMSUserGroup;
@@ -396,6 +397,18 @@ class ConfigurationToolkit {
         }
         else
         	throw new RuntimeException("No config file or text specified");
+        
+        // Make sure storeConfig is set in only one persistence factory
+        Iterator it = configuration.getPersistenceFactories().values().iterator();
+        int storeConfigCount = 0;
+        while (it.hasNext()) {
+        	PersistenceFactory persFact = (PersistenceFactory)it.next();
+        	if (persFact.getStoreConfig())
+        		storeConfigCount++;
+        }
+        if (storeConfigCount>1)
+        	throw new RuntimeException("Only one persistence factory may be set to store the configuration");
+        
 		return configuration;
     }
     
