@@ -3,6 +3,7 @@ package gov.bnl.gums.db;
 import java.util.Collection;
 import java.util.TreeMap;
 import java.util.Date;
+import java.text.DateFormat;
 
 public class MockConfigurationDB implements ConfigurationDB {
 	TreeMap configurations = new TreeMap();
@@ -12,7 +13,7 @@ public class MockConfigurationDB implements ConfigurationDB {
 		configurations.remove(date.toString());
 	}
 	
-	public Collection getBackupConfigDates() {
+	public Collection getBackupConfigDates(DateFormat dateFormat) {
 		return configurations.keySet();
 	}
 	

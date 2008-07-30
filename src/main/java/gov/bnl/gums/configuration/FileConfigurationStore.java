@@ -166,7 +166,8 @@ public class FileConfigurationStore extends ConfigurationStore {
 		String[] children = dir.list();
 		if (children!=null) {
 			for (int i=0; i<children.length; i++) {
-				backupConfigDates.add( children[i].substring(children[i].lastIndexOf(".")+1) );
+				String dateStr = children[i].substring(children[i].lastIndexOf(".")+1);
+				backupConfigDates.add( dateStr );
 			}    	
 		}
 		Collections.sort(backupConfigDates);
@@ -201,9 +202,9 @@ public class FileConfigurationStore extends ConfigurationStore {
 		File file = new File(path);
 		if (!file.exists())
 			return null;
-		moveFile(configPath, configBackupDir + "/gums.config~");
+//		moveFile(configPath, configBackupDir + "/gums.config~");
 		copyFile(configBackupDir + path, configPath);
-		moveFile(configBackupDir + "/gums.config~", configBackupDir + "/gums.config.prev");
+//		moveFile(configBackupDir + "/gums.config~", configBackupDir + "/gums.config.prev" );
 		return retrieveConfiguration();
 	}
 
@@ -239,9 +240,10 @@ public class FileConfigurationStore extends ConfigurationStore {
 		this.conf = ConfigurationToolkit.loadConfiguration(tempGumsConfigPath, null, schemaPath);
 		
 		// copy gums.config to gums.config.prev
-		new File(configBackupDir).mkdir();
-		if (!backupCopy && new File(configPath).exists())
-			copyFile(configPath, configBackupDir+"/gums.config.prev");
+		File file = new File(configBackupDir);
+		file.mkdir();
+//		if (!backupCopy && new File(configPath).exists())
+//			copyFile(configPath, configBackupDir+"/gums.config.prev" );
 
 		// move temp file to gums.config or gums.config.date
 		moveFile(tempGumsConfigPath, (backupCopy?configBackupDir+"/gums.config."+format.format(new Date()):configPath));

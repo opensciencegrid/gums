@@ -1,5 +1,6 @@
 package gov.bnl.gums.db;
 
+import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Date;
 
@@ -16,7 +17,7 @@ public interface ConfigurationDB {
      * 
      * @return collection of date strings.
      */	
-	public Collection getBackupConfigDates();
+	public Collection getBackupConfigDates(DateFormat format);
 	
     /**
      * Get last modified

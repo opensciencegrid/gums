@@ -61,7 +61,7 @@ public class DBConfigurationStore extends ConfigurationStore {
     }
     
     public Collection getBackupConfigDates() {
-    	return configDB.getBackupConfigDates();
+    	return configDB.getBackupConfigDates(format);
     }
     
     public Date getLastModification() {

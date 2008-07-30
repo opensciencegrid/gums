@@ -133,10 +133,10 @@ public class GUMS {
      * @return Collection of date strings
      */
     public Collection getBackupConfigDates() {
-    	Collection backupConfigDates = confStore.getBackupConfigDates();
     	if (dbConfStore != null)
-    		backupConfigDates.add( dbConfStore.getBackupConfigDates() );
-        return backupConfigDates;
+    		 return dbConfStore.getBackupConfigDates();
+    	else
+        	return confStore.getBackupConfigDates();
     }
 
     /**
@@ -250,13 +250,10 @@ public class GUMS {
      */
     public void restoreConfiguration(String dateStr) {
     	try {
-	        if (!confStore.isReadOnly()) {
-	        	Configuration newConf = confStore.restoreConfiguration(dateStr);
-	        	if (newConf==null && dbConfStore!=null)
-	        		newConf = dbConfStore.restoreConfiguration(dateStr);
-	        	if (newConf==null)
-	        		throw new RuntimeException("Configuration from "+dateStr+" does not exist");
-	        }
+        	if (dbConfStore!=null && !dbConfStore.isReadOnly())
+        		dbConfStore.restoreConfiguration(dateStr);
+        	else if (!confStore.isReadOnly())
+	        	confStore.restoreConfiguration(dateStr);
 	        else
 	        	throw new RuntimeException("cannot write configuration to file because it is read-only");
     	} catch(Exception e) {
@@ -271,17 +268,33 @@ public class GUMS {
      */
     public void setConfiguration(Configuration conf, boolean backup) {
     	try {
-	        if (!confStore.isReadOnly())
-	        	confStore.setConfiguration(conf, backup);
-	        else
-	        	throw new RuntimeException("cannot write configuration to file because it is read-only");
-
-	        if (dbConfStore!=null) {
-		        if (!dbConfStore.isReadOnly()) 
-		        	dbConfStore.setConfiguration(conf, backup); 
+    		if (!backup) {
+		        if (!confStore.isReadOnly())
+		        	confStore.setConfiguration(conf, backup);
 		        else
-		        	throw new RuntimeException("cannot write configuration in DB because it is read-only");
-	        }
+		        	throw new RuntimeException("cannot write configuration to file because it is read-only");
+	
+		        if (dbConfStore!=null) {
+			        if (!dbConfStore.isReadOnly()) 
+			        	dbConfStore.setConfiguration(conf, backup); 
+			        else
+			        	throw new RuntimeException("cannot write configuration in DB because it is read-only");
+		        }
+    		}
+    		else {
+		        if (dbConfStore!=null) {
+			        if (!dbConfStore.isReadOnly()) 
+			        	dbConfStore.setConfiguration(conf, backup); 
+			        else
+			        	throw new RuntimeException("cannot write configuration in DB because it is read-only");
+		        }  			
+		        else {
+			        if (!confStore.isReadOnly())
+			        	confStore.setConfiguration(conf, backup);
+			        else
+			        	throw new RuntimeException("cannot write configuration to file because it is read-only");
+		        }
+    		}
     	} catch(Exception e) {
     		throw new RuntimeException("cannot write configuration: " + e.getMessage());
     	}

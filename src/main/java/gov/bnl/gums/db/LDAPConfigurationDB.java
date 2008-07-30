@@ -1,5 +1,6 @@
 package gov.bnl.gums.db;
 
+import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Date;
 
@@ -22,7 +23,7 @@ public class LDAPConfigurationDB implements ConfigurationDB {
 		throw new RuntimeException("LDAP Configuration DB not yet supported");
 	}
 	
-	public Collection getBackupConfigDates() {
+	public Collection getBackupConfigDates(DateFormat format) {
 		throw new RuntimeException("LDAP Configuration DB not yet supported");
 	}
 	

@@ -1,8 +1,10 @@
 package gov.bnl.gums.db;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
 
@@ -29,9 +31,20 @@ public class HibernateConfigurationDB implements ConfigurationDB {
 		Transaction tx = null;
 		try {
 			session = persistenceFactory.retrieveSessionFactory().openSession();
-            tx = session.beginTransaction();			
-	        int n = session.delete("FROM HibernateConfig c WHERE c.timestamp = ?", new Object[] {date}, new Type[] {new DateType()});
-		    tx.commit();
+            tx = session.beginTransaction();		
+            Query q = session.createQuery("FROM HibernateConfig c");
+        	Iterator it = q.list().iterator();
+        	boolean deleted = false;
+        	while (it.hasNext()) {
+        		HibernateConfig hibernateConfig = (HibernateConfig)it.next();
+        		if (hibernateConfig.getTimestamp().compareTo(date)==0) {
+        			session.delete(hibernateConfig);
+        			deleted = true;
+        		}
+        	}
+        	if (!deleted)
+        		throw new RuntimeException("Could not delete configuration with date "+date.toLocaleString());
+	        tx.commit();
         // Handles when transaction goes wrong...
         } catch (Exception e) {
             log.error("Couldn't retrieve backup configuration", e);
@@ -56,21 +69,23 @@ public class HibernateConfigurationDB implements ConfigurationDB {
         }		
 	}
 	
-	public Collection getBackupConfigDates() {
+	public Collection getBackupConfigDates(DateFormat format) {
 		Session session = null;
 		Transaction tx = null;
-		ArrayList configDates = null;
+		ArrayList configDates = new ArrayList();
 		try {
 		    // Checks whether the value is present in the database
 			session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();			
 		    Query q;
 	        q = session.createQuery("FROM HibernateConfig c WHERE c.current = FALSE");
-		    if (q.list().size() != 1) {
-		    	log.error("None or more than one configuration is set to current in the database");
-		    	throw new RuntimeException("None or more than one configuration is set to current in the database");
+		    Iterator it = q.list().iterator();
+		    if (q.list().size() > 0) {
+			    while (it.hasNext()) {
+			    	HibernateConfig config = (HibernateConfig)it.next();
+			    	configDates.add(format.format(config.getTimestamp()));
+			    }
 		    }
-		    configDates = new ArrayList(q.list());
 		    tx.commit();
 		    return configDates;
         // Handles when transaction goes wrong...
@@ -149,14 +164,20 @@ public class HibernateConfigurationDB implements ConfigurationDB {
 			session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();			
 		    Query q;
-	        q = session.createQuery("FROM HibernateConfig c WHERE c.timestamp = ?");
-	        q.setDate(0, date);
-		    if (q.list().size() != 1) {
-		    	log.error("None or more than one configuration is stored for one date" + date.toString());
-		    	throw new RuntimeException("None or mMore than one configuration is stored for date" + date.toString());
+	        q = session.createQuery("FROM HibernateConfig c");
+	        Iterator it = q.list().iterator();
+	        HibernateConfig hibernateConfig = null;
+          	while (it.hasNext()) {
+        		hibernateConfig = (HibernateConfig)it.next();
+        		if (hibernateConfig.getTimestamp().compareTo(date)==0)
+        			break;
+        	}
+		    if (hibernateConfig == null) {
+		    	log.error("None or more than one configuration is stored for one date " + date.toLocaleString());
+		    	throw new RuntimeException("None or more than one configuration is stored for date " + date.toLocaleString());
 		    }
 		    tx.commit();
-		    return new String(((HibernateConfig)q.list().get(0)).getXml());
+		    return new String(hibernateConfig.getXml());
         // Handles when transaction goes wrong...
         } catch (Exception e) {
             log.error("Couldn't retrive current configuration", e);
@@ -228,22 +249,28 @@ public class HibernateConfigurationDB implements ConfigurationDB {
         	session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();
 
-            if (backupCopy)
+            if (backupCopy) {
             	// delete any configurations with the same timestamp
-            	session.delete("FROM HibernateConfig c WHERE c.timestamp = ?", new Object[] {date}, new Type[] {new DateType()});
+                Query q = session.createQuery("FROM HibernateConfig c");
+            	Iterator it = q.list().iterator();
+              	while (it.hasNext()) {
+            		HibernateConfig hibernateConfig = (HibernateConfig)it.next();
+            		if (hibernateConfig.getTimestamp().compareTo(date)==0)
+            			session.delete(hibernateConfig);
+            	}
+            }
             else
             	// delete current configuration
-        		session.delete("FROM HibernateConfig c WHERE c.current = TRUE", new Object[] {}, new Type[] {});
+        		session.delete("FROM HibernateConfig c WHERE c.current = TRUE");
             
             if (!backupCopy) {
 	            // deactivate current config if one exists
-	            Query q;
-		        q = session.createQuery("FROM HibernateConfig c WHERE c.current = TRUE");
+	            Query q = session.createQuery("FROM HibernateConfig c WHERE c.current = TRUE");
 			    if (q.list().size() > 1) {
 			    	log.error("More than one configuration is set to current in the database");
 			    	throw new RuntimeException("More than one configuration is set to current in the database");
 			    }
-			    if (q.list().size() != 0)
+			    if (q.list().size() == 1)
 			    	((HibernateConfig)q.list().get(0)).setCurrent(new Boolean(false));
             }
             

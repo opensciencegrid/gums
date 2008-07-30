@@ -20,7 +20,7 @@ import java.util.Date;
  * @author Gabriele Carcassi, Jay Packard
  */
 public abstract class ConfigurationStore {
-	protected DateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmm");
+	static protected DateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmmss");
 
     /**
      * Delete backup configuration
@@ -93,5 +93,9 @@ public abstract class ConfigurationStore {
      * @param backupCopy 
      */
 	public abstract void setConfiguration(Configuration conf, boolean backupCopy) throws Exception;
+
+	static public DateFormat getFormat() {
+		return format;
+	}
     
 }
