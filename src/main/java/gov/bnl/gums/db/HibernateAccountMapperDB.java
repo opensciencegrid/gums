@@ -11,6 +11,7 @@
 package gov.bnl.gums.db;
 
 
+import gov.bnl.gums.GridUser;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
 
 import java.util.Hashtable;
@@ -80,11 +81,11 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
         }
     }
     
-    public String assignAccount(String userDN) {
+    public String assignAccount(GridUser user) {
         Session session = null;
         Transaction tx = null;
         try {
-            log.trace("Assing an account to '" + userDN + "' from pool '" + map + "'");
+            log.trace("Assing an account to '" + user.getCertificateDN() + "' from pool '" + map + "'");
             session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();
             Query q;
@@ -95,12 +96,12 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
                 tx.commit();
                 return null;
             }
-            mapping.setDn(userDN);
+            mapping.setDn(user.getCertificateDN());
             tx.commit();
             return mapping.getAccount();
         // Handles when transaction goes wrong...
         } catch (Exception e) {
-            log.error("Couldn't assign account to '" + userDN + "' from pool '" + map + "'", e);
+            log.error("Couldn't assign account to '" + user.getCertificateDN() + "' from pool '" + map + "'", e);
             if (tx != null) {
                 try {
                     tx.rollback();
@@ -231,9 +232,10 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
         }
     }
 
-    public String retrieveAccount(String userDN) {
+    public String retrieveAccount(GridUser user) {
         Session session = null;
         Transaction tx = null;
+        String userDN = user.getCertificateDN();
         try {
             log.trace("Retrieving account for user '" + userDN + "' from pool '" + map + "'");
             session = persistenceFactory.retrieveSessionFactory().openSession();

@@ -12,7 +12,8 @@ CREATE TABLE `USER` (
  `ID` INTEGER AUTO_INCREMENT PRIMARY KEY,
  `GROUP_NAME` VARCHAR(255) NOT NULL,
  `DN` varchar(255) NOT NULL,
- `FQAN` varchar(255) default NULL
+ `FQAN` varchar(255) default NULL,
+ `EMAIL` varchar(255) default NULL 
 ) TYPE=InnoDB;
 
 CREATE INDEX complete ON USER (GROUP_NAME(10), DN(70), FQAN(30));

@@ -6,6 +6,8 @@
 
 package gov.bnl.gums.db;
 
+import gov.bnl.gums.GridUser;
+
 import java.util.*;
 
 /**
@@ -36,14 +38,14 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
         freeAccounts.add(account);
     }
     
-    public String assignAccount(String userDN) {
+    public String assignAccount(GridUser user) {
         if (freeAccounts.size() == 0) return null;
-        if (userToAccount.get(userDN) != null)
+        if (userToAccount.get(user.getCertificateDN()) != null)
             throw new IllegalArgumentException("The user is already mapped to an account");
         
         String account = (String) freeAccounts.remove(0);
-        userToAccount.put(userDN, account);
-        userToLastDate.put(userDN, new Date());
+        userToAccount.put(user.getCertificateDN(), account);
+        userToLastDate.put(user.getCertificateDN(), new Date());
         
         return account;
     }
@@ -74,7 +76,8 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
     	return wasRemoved;
     }
     
-    public String retrieveAccount(String userDN) {
+    public String retrieveAccount(GridUser user) {
+    	String userDN = user.getCertificateDN();
         userToLastDate.put(userDN, new Date());
         return (String) userToAccount.get(userDN);
     }

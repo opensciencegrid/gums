@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.userGroup.LDAPUserGroup;
 
@@ -99,9 +100,9 @@ public class LdapAccountMapper extends AccountMapper {
 		return "ldap";
 	}
 
-	public String mapUser(String userDN, boolean createIfDoesNotExist) {
+	public String mapUser(GridUser user, boolean createIfDoesNotExist) {
 		Properties jndiProperties = retrieveJndiProperties();
-		String userDNWithSubject = "subject="+userDN;
+		String userDNWithSubject = "subject="+user.getCertificateDN();
 		int nTries = 5;
 		int i = 0;
 		for (; i < nTries; i++) {
@@ -116,9 +117,9 @@ public class LdapAccountMapper extends AccountMapper {
 					Attribute dnAtt = atts.get(dnField);
 					if (dnAtt != null) {
 						String dn = dnAtt.get().toString();
-						if (userDN.equals(dn) || userDNWithSubject.equals(dn)) {
+						if (user.getCertificateDN().equals(dn) || userDNWithSubject.equals(dn)) {
 							String account = (String) atts.get(accountField).get();
-							log.debug("Found account '" + account + "' for DN '" + userDN + "'");
+							log.debug("Found account '" + account + "' for DN '" + user.getCertificateDN() + "'");
 							return account;
 						}
 					}

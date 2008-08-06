@@ -76,7 +76,7 @@ shadowWarning: 7
 loginShell: /bin/bash
 uidNumber: 501
 gidNumber: 1001
-homeDirectory: /home/jdoe
+homeDirectory: /home/pool0 
 cn: Pool 0
 gecos: Pool 0
 description: subject=/DC=org/DC=griddev/OU=People/CN=Pool 0

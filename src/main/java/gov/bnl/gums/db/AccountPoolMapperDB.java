@@ -6,6 +6,8 @@
 
 package gov.bnl.gums.db;
 
+import gov.bnl.gums.GridUser;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,7 @@ public interface AccountPoolMapperDB {
      * @param userDN the user to be mapped
      * @return the account or null if no more accounts are available
      */
-    String assignAccount(String userDN);
+    String assignAccount(GridUser user);
     
     /**
      * 
@@ -56,9 +58,10 @@ public interface AccountPoolMapperDB {
     /** Retrieves the account associated to the Grid identity.
      * 
      * @param userDN the certificate DN
+     * @param email
      * @return the account or null if the user wasn't mapped
      */
-    String retrieveAccount(String userDN);
+    String retrieveAccount(GridUser user);
     
     /** Retrieves a user to account map.
      * 

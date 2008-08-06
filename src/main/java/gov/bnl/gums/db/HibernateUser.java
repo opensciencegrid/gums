@@ -19,6 +19,7 @@ public class HibernateUser {
     private String dn;
     private String fqan;
     private String group;
+    private String email;
     
     /** Creates a new instance of User */
     public HibernateUser() {
@@ -95,5 +96,13 @@ public class HibernateUser {
 
         this.id = id;
     }
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
     
 }

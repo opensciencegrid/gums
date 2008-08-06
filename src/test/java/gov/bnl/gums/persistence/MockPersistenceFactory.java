@@ -16,30 +16,36 @@ import gov.bnl.gums.db.*;
  * @author  carcassi
  */
 public class MockPersistenceFactory extends PersistenceFactory {
+	MockManualUserGroupDB manualUserGroupDB = new MockManualUserGroupDB();
+	MockAccountPoolMapperDB accountPoolMapperDB = new MockAccountPoolMapperDB();
+	MockUserGroupDB userGroupDB = new MockUserGroupDB();
+	MockManualAccountMapperDB manualAccountMapperDB = new MockManualAccountMapperDB();
+	MockConfigurationDB configurationDB = new MockConfigurationDB();
+	
 	public MockPersistenceFactory(Configuration configuration, String name) {
 		super(configuration, name);
 	}
     
     public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
-        return new MockManualAccountMapperDB();
+        return manualAccountMapperDB;
     }
     
     public void closeSessions(){}
     
     public ConfigurationDB retrieveConfigurationDB() {
-        return new MockConfigurationDB();
+        return configurationDB;
     }
     
     public ManualUserGroupDB retrieveManualUserGroupDB(String name) {
-        return new MockManualUserGroupDB();
+        return manualUserGroupDB;
     }
     
     public UserGroupDB retrieveUserGroupDB(String name) {
-        return new MockUserGroupDB();
+        return userGroupDB;
     }
     
     public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
-        return new MockAccountPoolMapperDB();
+        return accountPoolMapperDB;
     }
     
     public void setProperties(Properties properties) {

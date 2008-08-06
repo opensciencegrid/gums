@@ -119,8 +119,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to generate fqan mapfile for host '" + hostname + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to generate fqan mapfile for host '" + hostname + "'");
+			gumsResourceAdminLog.warn(logUserAccess() + "Failed to generate fqan mapfile for host '" + hostname + "' - " + e.getMessage());
+			siteLog.warn(logUserAccess() + "Unauthorized access to generate fqan mapfile for host '" + hostname + "'");
 			throw e;
 		} catch (RuntimeException e) {
 			gumsResourceAdminLog.error(logUserAccess() + "Failed to generate fqanmapfile for host '" + hostname + "' - " + e.getMessage());

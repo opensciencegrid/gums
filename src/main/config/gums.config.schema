@@ -29,6 +29,7 @@
 										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="storeConfig" type="xs:boolean"/>
 										<xs:attribute name="synchGroups" type="xs:string"/>
+										<xs:attribute name="synch" type="xs:string"/>
 										<xs:attribute name="groupField" type="xs:string"/><!--depricated-->
 										<xs:attribute name="groupCnField" type="xs:string"/>
 										<xs:attribute name="groupTree" type="xs:string"/>
@@ -53,6 +54,7 @@
 										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="storeConfig" type="xs:boolean"/>
 										<xs:attribute name="synchGroups" type="xs:string"/>
+										<xs:attribute name="synch" type="xs:string"/>
 										<xs:attribute name="groupField" type="xs:string"/><!--depricated-->
 										<xs:attribute name="groupCnField" type="xs:string"/>
 										<xs:attribute name="groupIdField" type="xs:string"/><!--depricated-->

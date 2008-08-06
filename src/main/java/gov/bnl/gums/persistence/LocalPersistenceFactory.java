@@ -6,8 +6,10 @@
 
 package gov.bnl.gums.persistence;
 
+import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
+import gov.bnl.gums.db.LDAPAccountMapperDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
@@ -52,16 +54,17 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 			db.addAccount(account);
 		}
 
-		public String assignAccount(String userDN) {
-			String account = db.assignAccount(userDN);
+		public String assignAccount(GridUser user) {
+			String account = db.assignAccount(user);
 			if (account == null) return null;
-			log.trace("Assigned '" + account + "' to '" + userDN);
+			log.trace("Assigned '" + account + "' to '" + user.getCertificateDN());
 			try {
 				assignGroups(account);
+				assignEmail(account, user.getEmail());
 				return account;
 			} catch (RuntimeException e) {
 				log.trace("Group assignment failed: unassign user", e);
-				unassignUser(userDN);
+				unassignUser(user.getCertificateDN());
 				log.trace("User unassigned");
 				throw e;
 			}
@@ -75,10 +78,11 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 			return db.removeAccount(account);
 		}
 
-		public String retrieveAccount(String userDN) {
-			String account = db.retrieveAccount(userDN);
-			if (account!=null && synchGroups) {
+		public String retrieveAccount(GridUser user) {
+			String account = db.retrieveAccount(user);
+			if (account!=null && synch) {
 				assignGroups(account);
+				assignEmail(account, user.getEmail());
 			}
 			return account;
 		}
@@ -106,6 +110,11 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 			db.unassignUser(user);
 		}
 
+		private void assignEmail(String account, String email) {
+			ldap.changeEmail(account, email);
+			log.trace("Assigned email '" + email + "' to '" + account);
+		}
+		
 		private void assignGroups(String account) {
 			ldap.changeGroupID(account, group);
 			log.trace("Assigned '" + group + "' to '" + account);
@@ -126,7 +135,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 	private HibernatePersistenceFactory persFactory;
 	private LDAPPersistenceFactory ldap;
 
-	private boolean synchGroups = false;
+	private boolean synch = false;
 
 	/**
 	 * Create a new local persistence factory.  This empty constructor is needed by the XML Digester.
@@ -177,16 +186,16 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		persistenceFactory.setGidNumberField(new String(getGidNumberField()));
 		persistenceFactory.setMemberUidField(new String(getMemberUidField()));
 		persistenceFactory.setProperties((Properties)getProperties().clone());
-		persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
+		persistenceFactory.setSynch(persistenceFactory.isSynch());
 		return persistenceFactory;
 	}
 
 	public String getCaCertFile() {
 		return ldap.getCaCertFile();
 	}
-
-	public String getMemberUidField() {
-		return ldap.getMemberUidField();
+	
+	public String getEmailField() {
+		return ldap.getEmailField();
 	}
 
 	public String getGidNumberField() {
@@ -200,21 +209,21 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 	public String getGroupTree() {
 		return ldap.getGroupTree();
 	}
+
+	public String getGumsObject() {
+		return ldap.getGumsObject();
+	}
 	
 	public String getGumsTree() {
 		return ldap.getGumsTree();
 	}
 	
-	public String getGumsObject() {
-		return ldap.getGumsObject();
-	}
-
-	public String getUidField() {
-		return ldap.getUidField();
-	}
-
 	public Properties getLDAPProperties() {
 		return filterProperties("ldap.");
+	}
+
+	public String getMemberUidField() {
+		return ldap.getMemberUidField();
 	}
 
 	public Properties getMySQLProperties() {
@@ -233,12 +242,22 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		return "local";
 	}
 
+	public String getUidField() {
+		return ldap.getUidField();
+	}
+
 	/**
 	 * Getter for property synchGroups.
 	 * @return Value of property synchGroups.
 	 */
+	public boolean isSynch() {
+		return this.synch;
+	}
+	/**
+	 * @depricated
+	 */
 	public boolean isSynchGroups() {
-		return this.synchGroups;
+		return this.synch;
 	}
 
 	public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
@@ -274,6 +293,11 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		return persFactory.retrieveUserGroupDB(name);
 	}
 
+	// @depricated
+	public void setAccountField(String accountField) {
+		ldap.setAccountField(accountField);
+	}
+
 	public void setCaCertFile(String caCertFile) {
 		ldap.setCaCertFile( caCertFile );
 	}
@@ -281,47 +305,42 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 	public void setConfiguration(Configuration configuration) {
 		super.setConfiguration(configuration);
 	}
-
-	// @depricated
-	public void setAccountField(String accountField) {
-		ldap.setAccountField(accountField);
+	public void setEmailField(String emailField) {
+		ldap.setEmailField(emailField);
 	}
-	public void setUidField(String uidField) {
-		ldap.setUidField(uidField);
+
+	public void setGidNumberField(String gidNumberField) {
+		ldap.setGidNumberField(gidNumberField);
+	}
+	
+	public void setGroupCnField(String groupCnField) {
+		ldap.setGroupCnField(groupCnField);
+	}
+	// @depricated
+	public void setGroupField(String groupField) {
+		ldap.setGroupCnField(groupField);
 	}
 
 	// @depricated
 	public void setGroupIdField(String groupIdField) {
 		ldap.setGroupIdField(groupIdField);
 	}
-	public void setGidNumberField(String gidNumberField) {
-		ldap.setGidNumberField(gidNumberField);
+	public void setGroupTree(String groupTree) {
+		ldap.setGroupTree(groupTree);
 	}
 
+	public void setGumsTree(String gumsTree) {
+		ldap.setGumsTree(gumsTree);
+	}
 	// @depricated 
 	public void setMemberAccountField(String memberAccountField) {
 		ldap.setMemberAccountField(memberAccountField);
 	}
+
 	public void setMemberUidField(String memberUidField) {
 		ldap.setMemberUidField(memberUidField);
 	}
-
-	// @depricated
-	public void setGroupField(String groupField) {
-		ldap.setGroupCnField(groupField);
-	}
-	public void setGroupCnField(String groupCnField) {
-		ldap.setGroupCnField(groupCnField);
-	}
-
-	public void setGroupTree(String groupTree) {
-		ldap.setGroupTree(groupTree);
-	}
 	
-	public void setGumsTree(String gumsTree) {
-		ldap.setGumsTree(gumsTree);
-	}
-
 	public void setName(String name) {
 		super.setName(name);
 	}
@@ -336,12 +355,22 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		ldap.setProperties(getLDAPProperties());
 	}
 
-	public void setSynchGroups(boolean synchGroups) {
-		this.synchGroups = synchGroups;
+	public void setSynch(boolean synch) {
+		this.synch = synch;
 	}
 
+	/**
+	 * @depricated
+	 */
+	public void setSynchGroups(boolean synchGroups) {
+		this.synch = synchGroups;
+	}
 	public void setTrustStorePassword(String trustStorePassword) {
 		ldap.setTrustStorePassword(trustStorePassword);
+	}
+
+	public void setUidField(String uidField) {
+		ldap.setUidField(uidField);
 	}    
 
 	public String toXML() {
@@ -349,7 +378,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		"\t\t\tname='"+getName()+"'\n"+
 		"\t\t\tdescription='"+getDescription()+"'\n"+
 		"\t\t\tstoreConfig='"+(getStoreConfig()?"true":"false")+"'\n"+
-		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
+		"\t\t\tsynch='"+synch+"'\n"+
 //		"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
 //		"\t\t\ttrustStorePassword='"+getTrustStorePassword()+"'\n"+
 		"\t\t\tgidNumberField='"+getGidNumberField()+"'\n"+

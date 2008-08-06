@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 
@@ -68,8 +69,8 @@ public class ManualAccountMapper extends AccountMapper {
 		return "manual";
 	}
     
-    public String mapUser(String userDN, boolean createIfDoesNotExist) {
-        return getDB().retrieveMapping(userDN);
+    public String mapUser(GridUser user, boolean createIfDoesNotExist) {
+        return getDB().retrieveMapping(user.getCertificateDN());
     }
     
     public boolean removeMapping(String userDN) {

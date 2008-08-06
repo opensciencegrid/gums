@@ -28,6 +28,7 @@ public class LDAPAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
 
     public void setUp() throws Exception {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
+        factory.setEmailField("homeDirectory"); // hack since current test ldap schema doesn't have an email field
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
         db = factory.retrieveAccountPoolMapperDB("testPool.griddevGroup.griddevGroup");
         initDB();
@@ -53,20 +54,21 @@ public class LDAPAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
         ((LDAPAccountMapperDB) db).unassignAccount("pool0");
         ((LDAPAccountMapperDB) db).unassignAccount("pool1");
         ((LDAPAccountMapperDB) db).unassignAccount("pool2");
-        assertEquals("pool0", db.assignAccount("test"));
-        assertEquals("pool1", db.assignAccount("test2"));
-        assertEquals("pool2", db.assignAccount("test3"));
+        assertEquals("pool0", db.assignAccount(new GridUser("test")));
+        assertEquals("pool1", db.assignAccount(new GridUser("test2")));
+        assertEquals("pool2", db.assignAccount(new GridUser("test3")));
         ((LDAPAccountMapperDB) db).unassignUser("test");
         ((LDAPAccountMapperDB) db).unassignUser("test2");
         ((LDAPAccountMapperDB) db).unassignUser("test3");
-        assertEquals("pool0", db.assignAccount("test4"));
-        assertEquals("pool1", db.assignAccount("test5"));
-        assertEquals("pool2", db.assignAccount("test6"));
+        assertEquals("pool0", db.assignAccount(new GridUser("test4")));
+        assertEquals("pool1", db.assignAccount(new GridUser("test5")));
+        assertEquals("pool2", db.assignAccount(new GridUser("test6")));
         ((LDAPAccountMapperDB) db).unassignAccount("pool0");
         ((LDAPAccountMapperDB) db).unassignAccount("pool1");
         ((LDAPAccountMapperDB) db).unassignAccount("pool2");
-        assertEquals("pool0", db.assignAccount("test4"));
-        assertEquals("pool1", db.assignAccount("test5"));
-        assertEquals("pool2", db.assignAccount("test6"));
+        assertEquals("pool0", db.assignAccount(new GridUser("test4")));
+        assertEquals("pool1", db.assignAccount(new GridUser("test5")));
+        assertEquals("pool2", db.assignAccount(new GridUser("test6", null, "pool2@griddev.org")));
+        assertEquals("pool2@griddev.org", ((LDAPAccountMapperDB) db).retrieveEmail("pool2"));
     }
 }

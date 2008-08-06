@@ -7,6 +7,7 @@
 package gov.bnl.gums.account;
 
 import gov.bnl.gums.CertToolkit;
+import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 
 import java.util.*;
@@ -52,8 +53,8 @@ public abstract class GecosAccountMapper extends AccountMapper {
 		return "gecos";
 	}
     
-    public String mapUser(String userDN, boolean createIfDoesNotExist) {
-        String[] nameSurname = CertToolkit.parseNameAndSurname(userDN);
+    public String mapUser(GridUser user, boolean createIfDoesNotExist) {
+        String[] nameSurname = CertToolkit.parseNameAndSurname(user.getCertificateDN());
         GecosMap map = gecosMap();
         log.trace("GECOS findAccount. Name: " + nameSurname[0] + " - Surname: " + nameSurname[1] + " - GECOSMap: " + gecosMap());
         return map.findAccount(nameSurname[0], nameSurname[1]);

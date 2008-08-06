@@ -11,6 +11,7 @@
 package gov.bnl.gums.db;
 
 import gov.bnl.gums.GUMS;
+import gov.bnl.gums.GridUser;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 
 import java.util.Hashtable;
@@ -88,10 +89,12 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		}
 	}
 	
-	public String assignAccount(String userDN) {
+	public String assignAccount(GridUser user) {
 		DirContext context = factory.retrieveGumsDirContext();
 		String account = null;
 		Control[] controlsBackup = null;
+		String userDN = user.getCertificateDN();
+		String email = user.getEmail();
 		try {
 			LdapContext ldapContext = (LdapContext) context;
 			controlsBackup = ldapContext.getRequestControls();
@@ -135,8 +138,12 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		if (account != null) {
 			if (group!=null) {
 				assignGroups(account, group, secondaryGroups);
+				log.trace("Assigned gids for user '" + userDN + "' account '" + account + "'");
 			}
-			log.trace("Assigned gids for user '" + userDN + "' account '" + account + "'");
+			if (email!=null) {
+				assignEmail(account, email);
+				log.trace("Assigned email for account '" + account + "' to email '" + email + "'");
+			}
 			factory.addMapEntry(userDN, account, map, mapDN);
 			log.trace("Assigned account for LDAP map '" + map + "' user '"
 					+ userDN + "' account '" + account + "'");
@@ -203,12 +210,14 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		}
 	}
 
-	public String retrieveAccount(String userDN) {
+	public String retrieveAccount(GridUser user) {
+		String userDN = user.getCertificateDN();
 		String account = retrieveMapping(userDN);
 		log.trace("Retrieving account from LDAP map '" + map + "' for user '"
 				+ userDN + "' account '" + account + "'");
 		if (account != null) {
 			reassignGroups(account, group, secondaryGroups);
+			reassignEmail(account, user.getEmail());
 			log.trace("Reassigned gids for user '" + userDN + "' account '"
 					+ account + "'");
 		}
@@ -312,6 +321,10 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		throw new UnsupportedOperationException(
 				"retrieveUsersNotUsedSince is not supported anymore");
 	}
+	
+	public String retrieveEmail(String account) {
+		return factory.retrieveEmail(account);
+	}
 
 	public synchronized void setNeedsCacheRefresh(boolean value) {
 	}
@@ -347,9 +360,8 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	}
     
     /**
-     * Assigns the groups to the account for a particular domain.
+     * Assigns the groups to the account.
      * 
-     * @param domain The domain in which to assign the groups
      * @param account A UNIX account (i.e. 'carcassi')
      * @param primary A UNIX group name (i.e. 'usatlas')
      * @param secondary A list of Strings representing secondary UNIX group names
@@ -371,6 +383,23 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
             throw new RuntimeException("Couldn't assign GIDs: " + e.getMessage() + ". account '" + account + "' - primary group '" + primaryGroup + "' - secondary '" + secondaryGroups + "'", e);
         }
     }
+	
+    /**
+     * Assigns the email to an account.
+     * 
+     * @param account A UNIX account (i.e. 'carcassi')
+     * @param email
+     */
+	private void assignEmail(String account, String email) {
+        try {
+        	factory.changeEmail(account, email);
+            log.trace("Assigned '" + email + "' to '" + account + "'");
+        } catch (Exception e) {
+            log.info("Couldn't assign email. account '" + account + "' - email '" + email + "'", e);
+            adminLog.error("Couldn't assign email: " + e.getMessage() + ". account '" + account + "' - email '" + email + "'");
+            throw new RuntimeException("Couldn't assign email: " + e.getMessage() + ". account '" + account + "' - email '" + email + "'", e);
+        }
+    }
     
     /**
      * Reassigns the groups to the account, refreshing something that should be
@@ -382,11 +411,26 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
      * @param secondary A list of Strings representing secondary UNIX group names
      */
 	private void reassignGroups(String account, String primary, List secondary) {
-        if (factory.isSynchGroups()) {
+        if (factory.isSynch()) {
             assignGroups(account, primary, secondary);
         } else {
             log.trace("Skip reassign groups for account '" + account + "' - primary group '" + primary + "' - secondary '" + secondary + "'");
         }
     }
+	
+    /**
+     * Reassigns the email to the account, refreshing something that should be
+     * already be present in LDAP.
+     * 
+     * @param account A UNIX account (i.e. 'carcassi')
+     * @param email
+     */
+	private void reassignEmail(String account, String email) {
+        if (factory.isSynch()) {
+            assignEmail(account, email);
+        } else {
+            log.trace("Skip reassign email for account '" + account + "' - email '" + email + "'");
+        }
+    }	
 
 }

@@ -18,6 +18,7 @@ public class GridUser {
     private Log log = LogFactory.getLog(GridUser.class);
     private String certificateDN;
     private FQAN voFQAN;
+    private String email;
     
     /**
      * Creates a GRID credentail with no DN and FQAN.
@@ -26,15 +27,31 @@ public class GridUser {
     }
     
     /**
+     * Creates a GRID credential with DN.
+     */
+    public GridUser(String userDN) {
+    	this(userDN, null, null);
+    }
+    
+    /**
+     * Creates a GRID credential with DN and FQAN.
+     */
+    public GridUser(String userDN, String fqan) {
+        this(userDN, fqan, null);
+    }
+    
+    /**
      * Creates a new object representing a Grid credential.
      * 
      * @param userDN the DN of the user certificate (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith")
      * @param fqan The Fully Qualified Attribute name String representation (i.e. "/atlas/production/Role=Leader")
+     * @param email
      */
-    public GridUser(String userDN, String fqan) {
+    public GridUser(String userDN, String fqan, String email) {
         setCertificateDN( userDN );
         if (fqan!=null && fqan.length()>0)
             setVoFQAN(new FQAN(fqan));
+       	this.email = email;
     }
     
     /*public GridUser(String userDN, String fqan, String issuerDN) {
@@ -98,6 +115,15 @@ public class GridUser {
     public String getCertificateDN() {
         return this.certificateDN;
     }
+    
+    /**
+     * Retrieve the email of the user.
+     * 
+     * @return The email
+     */
+    public String getEmail() {
+        return this.email;
+    }
 
     /**
      * Retrieve the VOMS Fully Qualified Attribute name.
@@ -130,6 +156,15 @@ public class GridUser {
      */
     public void setCertificateDN(String certificateDN) {
         this.certificateDN = certificateDN;//removeSpaces(certificateDN);
+    }
+    
+    /**
+     * Changes the email.
+     * 
+     * @param email
+     */
+    public void setEmail(String email) {
+        this.email = email;
     }
     
     /**

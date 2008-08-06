@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 
 import org.apache.commons.logging.Log;
@@ -54,10 +55,10 @@ public class GroupAccountMapper extends AccountMapper {
 		return "group";
 	}
     
-    public String mapUser(String userDN, boolean createIfDoesNotExist) {
+    public String mapUser(GridUser user, boolean createIfDoesNotExist) {
         
         if (log.isDebugEnabled()) {
-            log.debug("User " + userDN + " mapped to account " + accountName);
+            log.debug("User " + user.getCertificateDN() + " mapped to account " + accountName);
         }
         
         return accountName;

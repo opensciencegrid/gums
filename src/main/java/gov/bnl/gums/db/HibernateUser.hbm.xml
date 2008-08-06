@@ -9,6 +9,7 @@
         length="255" not-null="true"/>
     <property name="fqan" column="FQAN" type="string" length="255" />
     <property name="group" column="GROUP_NAME" type="string" length="255" />
+    <property name="email" column="EMAIL" type="string" length="255" />
   </class>
 </hibernate-mapping>
 

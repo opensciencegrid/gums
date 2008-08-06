@@ -27,8 +27,8 @@ public class MockAccountMapper extends AccountMapper {
     	super(configuration, name);
     }
     
-    public String mapUser(String userDN, boolean createIfDoesNotExist) {
-        if (userDN.equals("/DC=org/DC=griddev/OU=People/CN=John Smith"))
+    public String mapUser(GridUser user, boolean createIfDoesNotExist) {
+        if (user.getCertificateDN().equals("/DC=org/DC=griddev/OU=People/CN=John Smith"))
             return "jsmith";
         return null;
     }

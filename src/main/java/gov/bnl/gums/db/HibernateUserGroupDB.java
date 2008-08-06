@@ -279,6 +279,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         HibernateUser hUser = new HibernateUser();
         hUser.setGroup(group);
         hUser.setDn(user.getCertificateDN());
+        hUser.setEmail(user.getEmail());
         if (user.getVoFQAN() != null) {
             hUser.setFqan(user.getVoFQAN().toString());
         }
@@ -288,7 +289,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     private boolean isMemberInGroup(Session session, Transaction tx, GridUser user) throws Exception {
         Query q;
         if (user.getVoFQAN() == null) {
-            q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan IS NULL");
+            q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan is null");
         } else {
             q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan = ?");
             q.setString(2, user.getVoFQAN().toString());

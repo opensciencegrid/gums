@@ -1,23 +1,69 @@
-<gums version='1.2'>
+<?xml version='1.0' encoding='UTF-8'?>
+
+<gums version='' allowGridmapFiles='true'>
+
 	<persistenceFactories>
+
 		<hibernatePersistenceFactory
 			name='mysql'
-			description=''
+			description='asdf'
+			storeConfig='true'
+			hibernate.c3p0.timeout='180'
 			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
-			hibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'
-			hibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_1'
-			hibernate.connection.username='gums'
-			hibernate.connection.password=''
 			hibernate.connection.autoReconnect='true'
-			hibernate.c3p0.min_size='3'
 			hibernate.c3p0.max_size='20'
-			hibernate.c3p0.timeout='180' />
+			hibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'
+			hibernate.c3p0.min_size='3'
+			hibernate.connection.username='gums'
+			hibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_1'
+			hibernate.connection.password=''/>
+
 	</persistenceFactories>
+
 	<userGroups>
+
 		<manualUserGroup
 			name='admins'
+			access='write'
 			description=''
-			persistenceFactory='mysql'
-			access='write'/>
+			persistenceFactory='mysql'/>
+
+		<manualUserGroup
+			name='test'
+			access='read all'
+			description=''
+			persistenceFactory='mysql'/>
+
 	</userGroups>
+
+	<accountMappers>
+
+		<groupAccountMapper
+			name='test'
+			description=''
+			accountName='testAccount'/>
+
+	</accountMappers>
+
+	<groupToAccountMappings>
+
+		<groupToAccountMapping
+			name='test'
+			description=''
+			accountingVoSubgroup='TEST'
+			accountingVo='test'
+			userGroups='test'
+			accountMappers='test'/>
+
+	</groupToAccountMappings>
+
+	<hostToGroupMappings>
+
+		<hostToGroupMapping
+			groupToAccountMappings='test'
+			description=''
+			cn='*.*.*, *.*.*.*'/>
+
+	</hostToGroupMappings>
+
 </gums>

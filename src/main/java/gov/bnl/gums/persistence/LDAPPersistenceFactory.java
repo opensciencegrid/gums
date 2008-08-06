@@ -50,13 +50,14 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 
 	private Log log = LogFactory.getLog(LDAPPersistenceFactory.class);
 	private Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-	private boolean synchGroups;
+	private boolean synch;
 	private List contexts = Collections.synchronizedList(new LinkedList());// *** LDAP connection pool management    
 	private boolean skipReleaseContext = false;
 	private String trustStore = System.getProperty("java.home")+"/lib/security/cacerts"; // doesn't do anything anymore because it required tomcat restart
 	private String trustStorePassword = ""; // doesn't do anything anymore because it required tomcat restart
 	private String caCertFile = ""; // doesn't do anything anymore because it required tomcat restart
 	private String uidField = "uid";
+	private String emailField = "mail";
 	private String memberUidField = "memberUid";
 	private String gidNumberField = "gidNumber";
 	private String groupCnField = "cn";
@@ -184,6 +185,27 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	}
 
 	/** 
+	 * Changes the email for the given account.
+	 * 
+	 * @param account the account to change the primary group (i.e. "carcassi")
+	 * @param email
+	 */
+	public void changeEmail(String account, String email) {
+		DirContext context = retrievePeopleContext();
+		try {
+			ModificationItem[] mods = new ModificationItem[1];
+			mods[0] = new ModificationItem(context.REPLACE_ATTRIBUTE, new BasicAttribute(emailField, email));
+			context.modifyAttributes(uidField+"="+account+","+peopleObject, mods);
+			log.trace("Changed email for user '" + account + "' to email '" + email + "''");
+		} catch (Exception e) {
+			log.warn("Couldn't change email for user '" + account + "' to email '" + email + "''", e);
+			throw new RuntimeException("Couldn't change email for user '" + account + "' to email '" + email + "''", e);
+		} finally {
+			releaseContext(context);
+		}
+	}
+	
+	/** 
 	 * Changes the primary gid for the given account.
 	 * 
 	 * @param account the account to change the primary group (i.e. "carcassi")
@@ -202,7 +224,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 			log.error(e.getMessage());
 			throw new RuntimeException(e.getMessage());
 		}
-	}
+	}	
 
 	public PersistenceFactory clone(Configuration configuration) {
 		LDAPPersistenceFactory persistenceFactory = new LDAPPersistenceFactory(configuration, new String(getName()));
@@ -218,7 +240,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		persistenceFactory.setPeopleTree(new String(getPeopleTree()));
 		persistenceFactory.setGumsTree(new String(getGumsTree()));
 		persistenceFactory.setProperties((Properties)getProperties().clone());
-		persistenceFactory.setSynchGroups(persistenceFactory.isSynchGroups());
+		persistenceFactory.setSynch(persistenceFactory.isSynch());
 		return persistenceFactory;
 	}
 
@@ -359,6 +381,10 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		return caCertFile;
 	}
 
+	public String getEmailField() {
+		return emailField;
+	}
+
 	public String getGidNumberField() {
 		return gidNumberField;
 	}
@@ -366,11 +392,11 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	public String getGroupCnField() {
 		return groupCnField;
 	}
-
+	
 	public String getGroupField() {
 		return groupCnField;
 	}
-	
+
 	/* @depricated */
 	public String getGroupIdField() {
 		return gidNumberField;
@@ -379,7 +405,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	public String getGroupTree() {
 		return groupTree;
 	}
-
+	
 	public String getGumsObject() {
 		return gumsObject;
 	}
@@ -387,7 +413,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	public String getGumsTree() {
 		return gumsTree;
 	}
-	
+
 	/* @depricated */
 	public String getMemberAccountField() {
 		return memberUidField;
@@ -411,16 +437,22 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 
 	public String getUidField() {
 		return uidField;
+	}	
+	/**
+	 * This property forces the update for account pools at every access.
+	 * It's handy for when gid and email gets out of synch.
+	 * 
+	 * @return if true information is updated every time accounts from the pool are returned.
+	 */
+	public boolean isSynch() {
+		return this.synch;
 	}
 
-	/**
-	 * This property forces the gid update for account pools at every access.
-	 * It's handy for when gids gets out of synch.
-	 * 
-	 * @return if true gids are updated every time accounts from the pool are returned.
+	/*
+	 * @depricated
 	 */
 	public boolean isSynchGroups() {
-		return this.synchGroups;
+		return this.synch;
 	}
 
 	/** Returns the LDAP DirContext to the pool, so that it can be reused.
@@ -490,7 +522,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 			releaseContext(context);
 		}
 	}
-
+	
 	public AccountPoolMapperDB retrieveAccountPoolMapperDB(String nameAndGroups) {
 		StringTokenizer tokens = new StringTokenizer(nameAndGroups, ".");
 		if (!tokens.hasMoreTokens()) {
@@ -512,12 +544,35 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 
 		log.trace("Creating LDAP AccountPoolMapperDB '" + nameAndGroups + "' primary group '" + group + "' secondary groups '" + secondaryGroups + "'");
 		return new LDAPAccountMapperDB(this, pool, group, secondaryGroups);
-	}
+	}	
 	
 	public ConfigurationDB retrieveConfigurationDB() {
 		log.trace("Creating LDAP ConfigurationDB");
 		return new LDAPConfigurationDB(this);
-	}	
+	}
+
+	public String retrieveEmail(String uid) {
+		DirContext context = retrievePeopleContext();
+		try {
+			NamingEnumeration result = context.search(peopleObject, "("+uidField+"={0})", new Object[] {uid}, null);
+			String email = null;
+			if (result.hasMore()) {
+				SearchResult item = (SearchResult) result.next();
+				Attributes atts = item.getAttributes();
+				Attribute emailAtt = atts.get(emailField);
+				if (emailAtt != null) {
+					email = (String) emailAtt.get();
+				}
+			}
+			log.trace("Found email '" + email + "' for uid '" + uid + "'");
+			return email;
+		} catch (Exception e) {
+			log.info("Couldn't retrieve email for uid '" + uid + "'", e);
+			throw new RuntimeException("Couldn't retrieve email for account '" + uid + "': " + e.getMessage(), e);
+		} finally {
+			releaseContext(context);
+		}		
+	}
 	
 	public DirContext retrieveGroupContext() {
 		DirContext context;
@@ -570,12 +625,12 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		log.trace("New LDAP connection created " + context);
 		return context;		
 	}
-
+	
 	public UserGroupDB retrieveUserGroupDB(String name) {
 		log.trace("Creating LDAP UserGroupDB '" + name + "'");
 		return new LDAPUserGroupDB(this, name);
 	}
-	
+
 	// @depricated
 	public void setAccountField(String accountField) {
 		this.uidField = accountField;
@@ -587,11 +642,15 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		//if (!trustStorePassword.equals(""))
 		//addCertToTrustStore();
 	}
-
+	
+	public void setEmailField(String emailField) {
+		this.emailField = emailField;
+	}
+	
 	public void setGidNumberField(String gidNumberField) {
 		this.gidNumberField = gidNumberField;
 	}
-	
+
 	public void setGroupCnField(String groupCnField) {
 		this.groupCnField = groupCnField;
 	}
@@ -600,12 +659,12 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	public void setGroupField(String groupField) {
 		this.groupCnField = groupField;
 	}
-
+	
 	// @depricated 
 	public void setGroupIdField(String groupIdField) {
 		this.gidNumberField = groupIdField;
 	}
-	
+
 	public void setGroupTree(String groupTree) {
 		if (groupTree.length()>0) {
 			this.groupTree = groupTree;
@@ -634,7 +693,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	public void setMemberAccountField(String memberAccountField) {
 		this.memberUidField = memberAccountField;
 	}
-	
+
 	public void setMemberUidField(String memberUidField) {
 		this.memberUidField = memberUidField;
 	}
@@ -650,7 +709,6 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 				this.peopleObject = peopleTree;
 		} 
 	}
-
 	/**
 	 * Sets the list of properties to be used to connect to LDAP, that is
 	 * to create the JNDI context.
@@ -676,12 +734,19 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	}
 
 	/**
-	 * This property forces the gid update for account pools at every access.
-	 * It's handy for when gids gets out of synch.
-	 * @param synchGroups if true gids are updated every time accounts from the pool are returned.
+	 * This property forces the update for account pools at every access.
+	 * It's handy for when gid or email gets out of synch.
+	 * @param synchGroups if information is updated every time accounts from the pool are returned.
+	 */
+	public void setSynch(boolean synch) {
+		this.synch = synch;
+	}
+
+	/*
+	 * @depricated
 	 */
 	public void setSynchGroups(boolean synchGroups) {
-		this.synchGroups = synchGroups;
+		this.synch = synchGroups;
 	}
 
 	public void setTrustStorePassword(String trustStorePassword) {
@@ -700,7 +765,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		"\t\t\tname='"+getName()+"'\n"+
 		"\t\t\tdescription='"+getDescription()+"'\n"+
 		"\t\t\tstoreConfig='"+(getStoreConfig()?"true":"false")+"'\n"+
-		"\t\t\tsynchGroups='"+synchGroups+"'\n"+
+		"\t\t\tsynch='"+synch+"'\n"+
 //		"\t\t\tcaCertFile='"+getCaCertFile()+"'\n"+
 //		"\t\t\ttrustStorePassword='"+trustStorePassword+"'\n"+
 		"\t\t\tgidNumberField='"+gidNumberField+"'\n"+
@@ -749,7 +814,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 			adminLog.error("Couldn't put " + caCertFile + " into trust store: " + e.getMessage() );
 		}
 	}
-
+	
 	private String findGID(String groupname) throws NamingException {
 		DirContext context = retrieveGroupContext();
 		try {
@@ -783,7 +848,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 			return false;
 		}
 	}
-	
+
 	private void updateGID(String account, String gid) throws NamingException {
 		DirContext context = retrievePeopleContext();
 		try {
@@ -798,7 +863,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 			releaseContext(context);
 		}
 	}
-	
+
 	protected DirContext createGroupContext() {
 		try {
 			Properties properties = (Properties)getProperties().clone();

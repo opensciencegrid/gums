@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import gov.bnl.gums.GUMS;
+import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 
@@ -146,13 +147,13 @@ public class AccountPoolMapper extends AccountMapper {
 		return "pool";
 	}
     
-    public String mapUser(String userDN, boolean createIfDoesNotExist) {
-        String account = getDB().retrieveAccount(userDN);
+    public String mapUser(GridUser user, boolean createIfDoesNotExist) {
+        String account = getDB().retrieveAccount(user);
         if (account != null) return account;
         if (createIfDoesNotExist) {
-        	String newAccount = getDB().assignAccount(userDN);
+        	String newAccount = getDB().assignAccount(user);
         	if (newAccount==null)
-        		gumsResourceAdminLog.error("Could not assign user '"+userDN+"' to account within pool account mapper '"+getName()+"'.  The most likely cause is that there are no more available pool accounts, in which case you should add more.");
+        		gumsResourceAdminLog.error("Could not assign user '"+user.getCertificateDN()+"' to account within pool account mapper '"+getName()+"'.  The most likely cause is that there are no more available pool accounts, in which case you should add more.");
         	return newAccount;
         }
         else

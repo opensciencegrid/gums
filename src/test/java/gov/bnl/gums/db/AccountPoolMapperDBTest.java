@@ -8,6 +8,8 @@
 package gov.bnl.gums.db;
 
 
+import gov.bnl.gums.GridUser;
+
 import java.util.*;
 import junit.framework.*;
 
@@ -45,7 +47,7 @@ public class AccountPoolMapperDBTest extends TestCase {
     
     public void tearDown() throws Exception {
         for (int i = 0; i < 10; i++) {
-        	if (db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=User "+i)!=null)
+        	if (db.retrieveAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=User "+i))!=null)
         		db.unassignUser("/DC=org/DC=griddev/OU=People/CN=User "+i);
         }
         for (int i = 0; i < 10; i++) {
@@ -54,27 +56,27 @@ public class AccountPoolMapperDBTest extends TestCase {
     }
     
     public void testAssignAccount() {
-        String account = db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith");
-        assertEquals(account, db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        String account = db.assignAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals(account, db.retrieveAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith")));
         assertEquals(account, db.retrieveAccountMap().get("/DC=org/DC=griddev/OU=People/CN=John Smith"));
     }
     
     public void testUnassignAccount() {
-        String account = db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith");
-        assertEquals(account, db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        String account = db.assignAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals(account, db.retrieveAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith")));
         db.unassignUser("/DC=org/DC=griddev/OU=People/CN=John Smith");
-        assertNull(db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertNull(db.retrieveAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith")));
     }
     
     public void testLastUsedOn() throws Exception {
         try {
-            String account = db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith");
-            assertEquals(account, db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+            String account = db.assignAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+            assertEquals(account, db.retrieveAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith")));
             Thread.sleep(lastUsedDelay);
             Date date = new Date();
             Thread.sleep(lastUsedDelay);
             assertEquals(1, db.retrieveUsersNotUsedSince(date).size());
-            db.retrieveAccount("/DC=org/DC=griddev/OU=People/CN=John Smith");
+            db.retrieveAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith"));
             assertEquals(0, db.retrieveUsersNotUsedSince(date).size());
         } catch (UnsupportedOperationException e) {
             // Operation can be not supported
@@ -83,7 +85,7 @@ public class AccountPoolMapperDBTest extends TestCase {
     
     public void testFillPool() throws Exception {
         int n = 0;
-        while (db.assignAccount("/DC=org/DC=griddev/OU=People/CN=User "+n) != null) {
+        while (db.assignAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=User "+n)) != null) {
             n++;
         }
         assertEquals(10, n);
@@ -91,19 +93,19 @@ public class AccountPoolMapperDBTest extends TestCase {
             db.unassignUser("/DC=org/DC=griddev/OU=People/CN=User "+i);
         }
         for (int i = 0; i < n; i++) {
-            db.assignAccount("/DC=org/DC=griddev/OU=People/CN=User "+i);
+            db.assignAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=User "+i));
         }
-        assertNull(db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertNull(db.assignAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith")));
     }
     
     public void testAddAccount() throws Exception {
         int n = 0;
-        while (db.assignAccount("/DC=org/DC=griddev/OU=People/CN=User "+n) != null) {
+        while (db.assignAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=User "+n)) != null) {
             n++;
         }
         assertEquals(10, n);
         db.addAccount("pool10");
-        assertEquals("pool10", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals("pool10", db.assignAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith")));
 
         db.unassignUser("/DC=org/DC=griddev/OU=People/CN=John Smith");
         
@@ -117,10 +119,10 @@ public class AccountPoolMapperDBTest extends TestCase {
         db.removeAccount("pool10");
         
         db.addAccount("pool10");
-        assertEquals("pool10", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=John Smith"));
+        assertEquals("pool10", db.assignAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith")));
 
         db.unassignAccount("pool10");
-        assertEquals("pool10", db.assignAccount("/DC=org/DC=griddev/OU=People/CN=Jane Doe"));
+        assertEquals("pool10", db.assignAccount(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe")));
     }
     
     public static void main(String args[]) {

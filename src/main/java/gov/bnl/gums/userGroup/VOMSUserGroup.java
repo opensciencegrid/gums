@@ -105,10 +105,10 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     public java.util.List getMemberList() {
-	if (getVoDB()!=null)
-        	return getVoDB().retrieveMembers();
-	else
-		return null;
+		if (getVoDB()!=null)
+			return getVoDB().retrieveMembers();
+		else
+			return null;
     }
     
     public String getRemainderUrl() {
@@ -324,15 +324,15 @@ public class VOMSUserGroup extends UserGroup {
     }
 
     public void updateMembers() {
-	if (getVoDB()!=null)
-   		getVoDB().loadUpdatedList(retrieveMembers());
+		if (getVoDB()!=null)
+	   		getVoDB().loadUpdatedList(retrieveMembers());
     }
     
     private UserGroupDB getVoDB() {
-	if (getVoObject()!=null)
-    		return getVoObject().getDB( getName() );
-	else
-		return null;
+		if (getVoObject()!=null)
+	    		return getVoObject().getDB( getName() );
+		else
+			return null;
     }
     
     private VomsServer getVoObject() {
@@ -353,8 +353,8 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     private List retrieveMembers() {
-	if (getVoObject()==null)
-		return null;
+		if (getVoObject()==null)
+			return null;
         Properties p = System.getProperties();
         try {
             setProperties();
@@ -378,8 +378,8 @@ public class VOMSUserGroup extends UserGroup {
             }
             System.setProperties(p);
             List entries = new ArrayList();
-            for (int n=0; n< users.length; n++) {
-            	GridUser gridUser = new GridUser(users[n].getDN(), fqan);
+            for (int n=0; n < users.length; n++) {
+            	GridUser gridUser = new GridUser(users[n].getDN(), fqan, users[n].getMail());
                 entries.add(gridUser);
             }
             return entries;
@@ -392,20 +392,20 @@ public class VOMSUserGroup extends UserGroup {
     
     private void setProperties() {
     	VomsServer voObject = getVoObject();
-	if (voObject!=null) {
+    	if (voObject!=null) {
         	log.debug( "SSL properties set: sslCertfile='" + voObject.getSslCertfile() + "' sslKey='" + voObject.getSslKey() + "' sslKeyPasswd set:" + (!voObject.getSslKeyPasswd().equals("")) + " sslCAFiles='" + voObject.getSslCAFiles() + "'" ); 
-        	if (!voObject.getSslCertfile().equals("")) {
-            		System.setProperty("sslCertfile", voObject.getSslCertfile());
-        	}
-        	if (!voObject.getSslKey().equals("")) {
-            		System.setProperty("sslKey", voObject.getSslKey());
-        	}
-        	if (!voObject.getSslKeyPasswd().equals("")) {
-           		System.setProperty("sslKeyPasswd", voObject.getSslKeyPasswd());
-        	}
-        	if (!voObject.getSslCAFiles().equals("")) {
-            		System.setProperty("sslCAFiles", voObject.getSslCAFiles());
-        	}
-	}
+	    	if (!voObject.getSslCertfile().equals("")) {
+	        		System.setProperty("sslCertfile", voObject.getSslCertfile());
+	    	}
+	    	if (!voObject.getSslKey().equals("")) {
+	        		System.setProperty("sslKey", voObject.getSslKey());
+	    	}
+	    	if (!voObject.getSslKeyPasswd().equals("")) {
+	       		System.setProperty("sslKeyPasswd", voObject.getSslKeyPasswd());
+	    	}
+	    	if (!voObject.getSslCAFiles().equals("")) {
+	        		System.setProperty("sslCAFiles", voObject.getSslCAFiles());
+	    	}
+    	}
     }
 }

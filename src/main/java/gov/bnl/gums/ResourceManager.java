@@ -118,7 +118,7 @@ public class ResourceManager {
 	                    Iterator accountMapperIt = accountMappers.iterator();
 	                    while (accountMapperIt.hasNext()) {
 	                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
-			                String account = accountMapper.mapUser(user.getCertificateDN(), false);
+			                String account = accountMapper.mapUser(user, false);
 			                if ((account != null) && !accountsInMap.contains(account)) {
 			                	osgMapBuffer.append(account);
 			                	osgMapBuffer.append(' ');
@@ -198,7 +198,7 @@ public class ResourceManager {
                     Iterator accountMappersIt = accountMappers.iterator();
                     while (accountMappersIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-                		if (accountName.equals(accountMapper.mapUser(user.getCertificateDN(), false)) && !dns.contains(user.getCertificateDN()))
+                		if (accountName.equals(accountMapper.mapUser(user, false)) && !dns.contains(user.getCertificateDN()))
                         	dns.add(user.getCertificateDN());
                     }            		
             	}
@@ -302,7 +302,7 @@ public class ResourceManager {
 		                    Iterator accountMappersIt = accountMappers.iterator();
 		                    while (accountMappersIt.hasNext()) {
 		                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-			                	String account = accountMapper.mapUser(user.getCertificateDN(), true);
+			                	String account = accountMapper.mapUser(user, true);
 			                	if (account != null) {
 			                        gridMapfileBuffer.append('"');
 			                        gridMapfileBuffer.append( user.getCertificateDN() );
@@ -330,7 +330,7 @@ public class ResourceManager {
 		                    Iterator accountMappersIt = accountMappers.iterator();
 		                    while (accountMappersIt.hasNext()) {
 		                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-			                	String account = accountMapper.mapUser(user.getCertificateDN(), true);
+			                	String account = accountMapper.mapUser(user, true);
 			                    if (account != null) {
 			                        gridMapfileBuffer.append('"');
 			                        gridMapfileBuffer.append( user.getCertificateDN() );
@@ -398,7 +398,7 @@ public class ResourceManager {
                     Iterator accountMappersIt = accountMappers.iterator();
                     while (accountMappersIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-                        String localUser = accountMapper.mapUser(user.getCertificateDN(), true);
+                        String localUser = accountMapper.mapUser(user, true);
                         if (localUser != null) {
                             return localUser;
                         } else {

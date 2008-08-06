@@ -7,6 +7,7 @@
 package gov.bnl.gums.account;
 
 import gov.bnl.gums.configuration.Configuration;
+import gov.bnl.gums.GridUser;
 
 /** 
  * Defines the logic with which a user will be mapped to a local account.
@@ -95,7 +96,13 @@ public abstract class AccountMapper {
      * @param userDN the certificate DN (i.e. '/DC=org/DC=doegrids/OU=People/CN=John Smith').
      * @return a user account (i.e. 'atlas').
      */
-    public abstract String mapUser(String userDN, boolean createNew);
+    public abstract String mapUser(GridUser user, boolean createNew);
+    
+    public String mapUser(String userDN, boolean createNew) {
+    	GridUser user = new GridUser();
+    	user.setCertificateDN(userDN);
+    	return mapUser(user, createNew);
+    }
 
     /**
      * @param configuration
