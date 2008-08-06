@@ -83,10 +83,10 @@ public class VOMSUserGroupTest extends TestCase {
         while (iter.hasNext()) {
             GridUser user = (GridUser) iter.next();
             assertTrue(userGroup.isInGroup(user));
-            //if (user.getCertificateDN().equals("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345"))
-            //	assertEquals("jdoe@griddev.org", user.getEmail());
-            //else if (user.getCertificateDN().equals("/DC=org/DC=griddev/OU=People/CN=John Smith"))
-            //	assertEquals("jsmith@griddev.org", user.getEmail());
+            if (user.getCertificateDN().equals("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345"))
+            	assertEquals("jdoe@griddev.org", user.getEmail());
+            else if (user.getCertificateDN().equals("/DC=org/DC=griddev/OU=People/CN=John Smith"))
+            	assertEquals("jsmith@griddev.org", user.getEmail());
         }
     }
     

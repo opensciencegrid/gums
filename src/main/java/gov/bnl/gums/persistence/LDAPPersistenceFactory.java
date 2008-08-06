@@ -191,17 +191,19 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	 * @param email
 	 */
 	public void changeEmail(String account, String email) {
-		DirContext context = retrievePeopleContext();
-		try {
-			ModificationItem[] mods = new ModificationItem[1];
-			mods[0] = new ModificationItem(context.REPLACE_ATTRIBUTE, new BasicAttribute(emailField, email));
-			context.modifyAttributes(uidField+"="+account+","+peopleObject, mods);
-			log.trace("Changed email for user '" + account + "' to email '" + email + "''");
-		} catch (Exception e) {
-			log.warn("Couldn't change email for user '" + account + "' to email '" + email + "''", e);
-			throw new RuntimeException("Couldn't change email for user '" + account + "' to email '" + email + "''", e);
-		} finally {
-			releaseContext(context);
+		if (emailField!=null && emailField.length()>0) {
+			DirContext context = retrievePeopleContext();
+			try {
+				ModificationItem[] mods = new ModificationItem[1];
+				mods[0] = new ModificationItem(context.REPLACE_ATTRIBUTE, new BasicAttribute(emailField, email));
+				context.modifyAttributes(uidField+"="+account+","+peopleObject, mods);
+				log.trace("Changed email for user '" + account + "' to email '" + email + "''");
+			} catch (Exception e) {
+				log.warn("Couldn't change email for user '" + account + "' to email '" + email + "''", e);
+				throw new RuntimeException("Couldn't change email for user '" + account + "' to email '" + email + "''", e);
+			} finally {
+				releaseContext(context);
+			}
 		}
 	}
 	
