@@ -12,6 +12,9 @@ How to Build
 gums-core, gums-service, gums-client, and gums-site or from BNL's subversion repository if you
 have been given access at {{{https://svn.usatlas.bnl.gov/svn/privilege}https://svn.usatlas.bnl.gov/svn/privilege}}.
 
+ You can also download source read-only from {{{https://www.usatlas.bnl.gov/svn/privilege}https://www.usatlas.bnl.gov/svn/privilege}}. 
+
+
 * Install Software
 
  Install Java, Tomcat, MySQL, Maven 2, and Cargo.  We recommend using {{{http://linux.duke.edu/projects/yum/}YUM}} with the 
