@@ -9,17 +9,12 @@ package gov.bnl.gums.admin;
 import gov.bnl.gums.command.AbstractCommand;
 import gov.bnl.gums.command.Configuration;
 import java.util.Iterator;
-import org.apache.axis.AxisFault;
 import org.apache.axis.client.Stub;
 
-import org.apache.commons.cli.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.net.ConnectException;
 import java.net.URL;
-
-import java.util.logging.Logger;
 
 /**
  * @author carcassi

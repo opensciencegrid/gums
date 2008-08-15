@@ -4,7 +4,7 @@
 	<groupId>gums</groupId>
 	<artifactId>gums-client</artifactId>
 	<name>gums-client</name>
-	<version>1.2.16</version>
+	<version>1.2.17</version>
 	<description>GUMS Client provides the administrative command line tools to administer GUMS.
     It allows querying and changing the state of the GUMS server.</description>
   
@@ -132,7 +132,7 @@
 								</copy>
 															    
 							    <mkdir dir="target/scripts"/>
-				                <copy todir="target/scripts">
+				                <copy todir="target/scripts"> 
 				                	<fileset dir="src/main/scripts/"/>
 				                </copy>
    				                <chmod file="target/scripts/gums" perm="ug+x"/>
@@ -430,18 +430,33 @@
         </dependency>
         <dependency>
             <groupId>xerces</groupId>
-            <artifactId>dom3-xercesImpl</artifactId>
-            <version>2.5.0</version>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.8.0</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>xerces</groupId>
-            <artifactId>dom3-xmlParserAPIs</artifactId>
-            <version>2.5.0</version>
+            <artifactId>xmlParserAPIs</artifactId>
+            <version>2.6.2</version>
+            <scope>runtime</scope>
         </dependency>
+		<dependency>  
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId> 
+			<version>1.5.2</version>
+			<scope>runtime</scope>
+		</dependency>   
+        <dependency>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.5</version>
+            <scope>runtime</scope>
+        </dependency>   
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
-            <version>2.6.0</version>
-        </dependency>	
+            <version>2.7.0</version>
+            <scope>runtime</scope>
+        </dependency>   
  	</dependencies>  
 </project>

@@ -6,7 +6,6 @@
 package gov.bnl.gums.admin;
 
 import gov.bnl.gums.command.GUMSCommandLine;
-import gov.bnl.gums.configuration.Configuration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,10 +21,12 @@ public class AdminCommandLine extends GUMSCommandLine {
             "Generate OSG-user-VO-map for a given service/host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateGridMapfile",
             "Generate grid-mapfile for a given service/host.");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateVoGridMapfile",
+    		"Generate a VO grid-mapfile for a given service/host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateFqanMapfile",
         	"Generate FQAN-mapfile for a given service/host .");
-        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateVoGridMapfile",
-        	"Generate a VO grid-mapfile for a given service/host.");
+        GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateEmailMapfile",
+        	"Generate an Email-mapfile for a given service/host.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.ManualGroupAdd",
             "Includes a DN in a group.");
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.ManualGroupRemove",

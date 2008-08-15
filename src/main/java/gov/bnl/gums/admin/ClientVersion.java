@@ -10,14 +10,11 @@
 
 package gov.bnl.gums.admin;
 
-import java.io.File;
 import java.net.URL;
 
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.digester.Digester;
 
-import gov.bnl.gums.GUMS;
 import gov.bnl.gums.configuration.Version;
 
 /**

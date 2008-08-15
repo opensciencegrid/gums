@@ -7,7 +7,6 @@ package gov.bnl.gums.admin;
 
 import org.apache.commons.cli.*;
 
-
 /**
  * @author carcassi
  */

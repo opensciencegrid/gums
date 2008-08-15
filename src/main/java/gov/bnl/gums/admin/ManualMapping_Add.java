@@ -6,15 +6,7 @@
 package gov.bnl.gums.admin;
 
 
-import org.apache.axis.AxisFault;
-
 import org.apache.commons.cli.*;
-
-import java.net.ConnectException;
-import java.net.InetAddress;
-import java.net.URL;
-import gov.bnl.gums.command.AbstractCommand;
-
 
 /**
  * @author carcassi

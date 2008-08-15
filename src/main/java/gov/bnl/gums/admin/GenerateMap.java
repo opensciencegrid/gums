@@ -10,7 +10,6 @@ import org.apache.commons.cli.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.net.URL;
 
 /**
  * @author Gabriele Carcassi, Jay Packard
