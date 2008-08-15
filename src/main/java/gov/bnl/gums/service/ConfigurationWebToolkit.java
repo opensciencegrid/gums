@@ -265,7 +265,7 @@ public class ConfigurationWebToolkit implements Remote {
 				persistenceFactory.setDescription( request.getParameter("description").trim() );
 			if (request.getParameter("storeConfig")!=null)
 				persistenceFactory.setStoreConfig( request.getParameter("storeConfig").trim().equals("on") );
-			((LDAPPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
+			((LDAPPersistenceFactory)persistenceFactory).setSynch( request.getParameter("synch")!=null ? request.getParameter("synch").trim().equals("true") : false );
 			((LDAPPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
 			((LDAPPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
 			if (request.getParameter("groupTree")!=null)
@@ -282,6 +282,8 @@ public class ConfigurationWebToolkit implements Remote {
 				((LDAPPersistenceFactory)persistenceFactory).setUidField( request.getParameter("uidField") );
 			if (request.getParameter("memberUidField")!=null)
 				((LDAPPersistenceFactory)persistenceFactory).setMemberUidField( request.getParameter("memberUidField") );
+			if (request.getParameter("emailField")!=null)
+				((LDAPPersistenceFactory)persistenceFactory).setEmailField( request.getParameter("emailField") );
 			((LDAPPersistenceFactory)persistenceFactory).setProperties( getLdapProperties(persistenceFactory, request, false) );
 		} 
 		else if (type.equals(LocalPersistenceFactory.getTypeStatic())) {
@@ -291,7 +293,7 @@ public class ConfigurationWebToolkit implements Remote {
 				persistenceFactory.setDescription( request.getParameter("description").trim() );
 			if (request.getParameter("storeConfig")!=null)
 				persistenceFactory.setStoreConfig( request.getParameter("storeConfig").trim().equals("on") );
-			((LocalPersistenceFactory)persistenceFactory).setSynchGroups( request.getParameter("synchGroups")!=null ? request.getParameter("synchGroups").trim().equals("true") : false );
+			((LocalPersistenceFactory)persistenceFactory).setSynch( request.getParameter("synch")!=null ? request.getParameter("synch").trim().equals("true") : false );
 			((LocalPersistenceFactory)persistenceFactory).setCaCertFile( request.getParameter("caCertFile")!=null ? request.getParameter("caCertFile").trim() : "" );
 			((LocalPersistenceFactory)persistenceFactory).setTrustStorePassword( request.getParameter("tsPassword")!=null ? request.getParameter("tsPassword").trim() : "" );
 			if (request.getParameter("groupTree")!=null)
@@ -308,6 +310,8 @@ public class ConfigurationWebToolkit implements Remote {
 				((LocalPersistenceFactory)persistenceFactory).setUidField( request.getParameter("uidField") );
 			if (request.getParameter("memberUidField")!=null)
 				((LocalPersistenceFactory)persistenceFactory).setMemberUidField( request.getParameter("memberUidField") );
+			if (request.getParameter("emailField")!=null)
+				((LDAPPersistenceFactory)persistenceFactory).setEmailField( request.getParameter("emailField") );
 			Properties properties = getHibernateProperties(persistenceFactory, request, true);
 			properties.putAll(getLdapProperties(persistenceFactory, request, true));
 			((LocalPersistenceFactory)persistenceFactory).setProperties( properties );

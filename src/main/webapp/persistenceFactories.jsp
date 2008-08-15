@@ -286,7 +286,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	jdbc:mysql://localhost:3306/GUMS_1_1
+		    	jdbc:mysql://localhost:3306/GUMS_1_3
 		    </td>
 		</tr>
 		<tr>
@@ -359,12 +359,12 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		Update group for every access: 
+	    		Update group and email for every access: 
 		    </td>
 		    <td nowrap>
-				<%=ConfigurationWebToolkit.createSelectBox("synchGroups", 
+				<%=ConfigurationWebToolkit.createSelectBox("synch", 
 					trueFalse, 
-					((LDAPPersistenceFactory)persistenceFactory).isSynchGroups()?"true":"false",
+					((LDAPPersistenceFactory)persistenceFactory).isSynch()?"true":"false",
 					null,
 					false)%>
 		    </td>
@@ -419,7 +419,7 @@ else if ("edit".equals(request.getParameter("command"))
         </tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		LDAP GID NUMBER FIELD:
+	    		LDAP GID Number Field:
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="16" name="gidNumberField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getGidNumberField()%>"/> (group ID number field in 'People' object)
@@ -481,6 +481,22 @@ else if ("edit".equals(request.getParameter("command"))
 		    	memberUid
 		    </td>
 		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		LDAP Email Field:
+		    </td>
+		    <td nowrap>
+		    	<input maxlength="256" size="16" name="emailField" value="<%=((LDAPPersistenceFactory)persistenceFactory).getEmailField()%>"/> (leave blank for none)
+		    </td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	mail
+		    </td>
+		</tr>			
 	    <tr>
     		<td nowrap style="text-align: right;">
 	    		NOTE:
@@ -575,12 +591,12 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		Update group for every access:
+	    		Update group and email for every access:
 		    </td>
 		    <td nowrap>
-			<%=ConfigurationWebToolkit.createSelectBox("synchGroups", 
+			<%=ConfigurationWebToolkit.createSelectBox("synch", 
 				trueFalse, 
-				((LocalPersistenceFactory)persistenceFactory).isSynchGroups()?"true":"false",
+				((LocalPersistenceFactory)persistenceFactory).isSynch()?"true":"false",
 				null,
 				false)%>
 		    </td>
@@ -635,7 +651,7 @@ else if ("edit".equals(request.getParameter("command"))
         </tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		LDAP GID NUMBER FIELD:
+	    		LDAP GID Number Field:
 		    </td>
 		    <td nowrap>
 		    	<input maxlength="256" size="16" name="gidNumberField" value="<%=((LocalPersistenceFactory)persistenceFactory).getGidNumberField()%>"/> (group ID number field in 'People' object)
@@ -697,6 +713,22 @@ else if ("edit".equals(request.getParameter("command"))
 		    	memberUid
 		    </td>
 		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		LDAP Email Field:
+		    </td>
+		    <td nowrap>
+		    	<input maxlength="256" size="16" name="emailField" value="<%=((LocalPersistenceFactory)persistenceFactory).getEmailField()%>"/> (leave blank for none)
+		    </td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	mail
+		    </td>
+		</tr>		
 	    <tr>
 			<td nowrap style="text-align: right;">
 				NOTE:
