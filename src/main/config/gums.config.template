@@ -11,7 +11,7 @@
 			hibernate.c3p0.max_size='20'
 			hibernate.c3p0.timeout='180'
 			hibernate.connection.username='@USER@'
-			hibernate.connection.url='jdbc:mysql://@SERVER@/GUMS_1_1'
+			hibernate.connection.url='jdbc:mysql://@SERVER@/GUMS_1_3'
 			hibernate.connection.password='@PASSWORD@'/>
 	</persistenceFactories>
 	

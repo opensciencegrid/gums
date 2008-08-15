@@ -109,6 +109,25 @@ public class GUMSAPIImpl implements GUMSAPI {
 		}   	
 	}
 
+	public String generateEmailMapfile(String hostname) {
+		try {
+			if (hasReadAllAccess(currentUser(), hostname)) {
+				String map = gums().getResourceManager().generateGridMapfile(hostname, false, true, true);
+				gumsResourceAdminLog.info(logUserAccess() + "Generated email mapfile for host '" + hostname + "': " + map);
+				return map;
+			} else {
+				throw new AuthorizationDeniedException();
+			}
+		} catch (AuthorizationDeniedException e) {
+			gumsResourceAdminLog.info(logUserAccess() + "Failed to generate email mapfile for host '" + hostname + "' - " + e.getMessage());
+			siteLog.info(logUserAccess() + "Unauthorized access to generate email mapfile for host '" + hostname + "'");
+			throw e;
+		} catch (RuntimeException e) {
+			gumsResourceAdminLog.error(logUserAccess() + "Failed to generate email mapfile for host '" + hostname + "' - " + e.getMessage());
+			throw e;
+		}   	
+	}
+	
 	public String generateFqanMapfile(String hostname) {
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
@@ -137,7 +156,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 			throw new RuntimeException("Grid Mapfile generation has been disabled (probably to conserve pool accounts)");
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
-				String map = gums().getResourceManager().generateGridMapfile(hostname, false);
+				String map = gums().getResourceManager().generateGridMapfile(hostname, true, false, false);
 				gumsResourceAdminLog.info(logUserAccess() + "Generated grid mapfile for host '" + hostname + "': " + map);
 				return map;
 			} else {
@@ -177,7 +196,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 			throw new RuntimeException("Grid Mapfile generation has been disabled (probably to conserve pool accounts)");
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
-				String map = gums().getResourceManager().generateGridMapfile(hostname, true);
+				String map = gums().getResourceManager().generateGridMapfile(hostname, true, true, false);
 				gumsResourceAdminLog.info(logUserAccess() + "Generated mapfile for host '" + hostname + "': " + map);
 				return map;
 			} else {

@@ -35,7 +35,7 @@ usage() {
 	echo "with the appropriate database and host information. "
 	echo "Usage: $0 "
 	echo "   --template <template config path (../gums.config.template is default) [optional]> "
-	echo "   --nocreateconfig [Create configuration configured for database] "
+	echo "   --nocreateconfig [configuration configured for database] "
 	echo "   --user <mysql user for GUMS> "
 	echo "   --password  <GUMS mysql password>"
 	echo "   --host <GUMS server host>"

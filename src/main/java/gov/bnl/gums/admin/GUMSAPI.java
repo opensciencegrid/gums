@@ -41,6 +41,14 @@ public interface GUMSAPI extends Remote {
     void deleteBackupConfiguration(String dateStr);
     
     /**
+     * Generate email gridmap file to be able to contact user if needed
+     * 
+     * @param hostname
+     * @return
+     */
+	String generateEmailMapfile(String hostname);
+    
+    /**
      * Generate fqanmap file used to validate mappings
      * 
      * @param hostname

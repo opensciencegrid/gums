@@ -155,9 +155,9 @@ public class ResourceManager {
      * @param includeFQAN
      * @return
      */
-    public String generateGridMapfile(String hostname, boolean includeFQAN) {
+    public String generateGridMapfile(String hostname, boolean createNewMappings, boolean includeFQAN, boolean includeEmail) {
         String mapfile;
-        mapfile = generateGridMapfileImpl(hostname, includeFQAN);
+        mapfile = generateGridMapfileImpl(hostname, createNewMappings, includeFQAN, includeEmail);
         return mapfile;
     }
     
@@ -276,7 +276,7 @@ public class ResourceManager {
         return fqanMapfileBuffer.toString();
     }    
     
-    private String generateGridMapfile(HostToGroupMapping hToGMapping, boolean includeFQAN) {
+    private String generateGridMapfile(HostToGroupMapping hToGMapping, boolean createNewMappings, boolean includeFQAN, boolean includeEmail) {
     	Configuration conf = hToGMapping.getConfiguration();
         Iterator iter = hToGMapping.getGroupToAccountMappings().iterator();
         TreeSet usersInMap = new TreeSet();
@@ -297,6 +297,7 @@ public class ResourceManager {
 		            while (memberIter.hasNext()) {
 		                GridUser user = (GridUser) memberIter.next();
 	                    String fqan = user.getVoFQAN()!=null?user.getVoFQAN().toString():"";
+	                    String email = user.getEmail()!=null?user.getEmail().toString():"";
 		                if ( !usersInMap.contains(user.getCertificateDN() + fqan) ) {
 		                	Collection accountMappers = gMap.getAccountMappers();
 		                    Iterator accountMappersIt = accountMappers.iterator();
@@ -312,6 +313,10 @@ public class ResourceManager {
 			                        gridMapfileBuffer.append('"');         	
 			                        gridMapfileBuffer.append(' ');
 			                        gridMapfileBuffer.append( account );
+			                        if (includeEmail) {
+				                        gridMapfileBuffer.append(' ');
+				                        gridMapfileBuffer.append( email );
+			                        }
 			                        gridMapfileBuffer.append("\n");
 		                        	usersInMap.add( user.getCertificateDN() + fqan );
 		                        	break;
@@ -325,6 +330,7 @@ public class ResourceManager {
 	            else {
 		            while (memberIter.hasNext()) {
 		                GridUser user = (GridUser) memberIter.next();
+		                String email = user.getEmail()!=null?user.getEmail().toString():"";
 		                if (!usersInMap.contains(user.getCertificateDN()) && userGroup.isInGroup(new GridUser(user.getCertificateDN(), null))) {
 		                	Collection accountMappers = gMap.getAccountMappers();
 		                    Iterator accountMappersIt = accountMappers.iterator();
@@ -337,6 +343,10 @@ public class ResourceManager {
 			                        gridMapfileBuffer.append('"' );
 			                        gridMapfileBuffer.append(' ');
 			                        gridMapfileBuffer.append( account );
+			                        if (includeEmail && email!=null) {
+				                        gridMapfileBuffer.append(' ');
+				                        gridMapfileBuffer.append( email );
+			                        }
 			                        gridMapfileBuffer.append("\n");
 		                        	usersInMap.add(user.getCertificateDN());
 		                        	break;
@@ -362,11 +372,11 @@ public class ResourceManager {
         return mapfile;
     }
     
-    private String generateGridMapfileImpl(String hostname, boolean includeFqan) {
+    private String generateGridMapfileImpl(String hostname, boolean createNewMappings, boolean includeFqan, boolean includeEmail) {
         Configuration conf = gums.getConfiguration();
         HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
         if (host2GroupMapper == null) return null;
-        String mapfile = generateGridMapfile(host2GroupMapper, includeFqan);
+        String mapfile = generateGridMapfile(host2GroupMapper, createNewMappings, includeFqan, includeEmail);
         return mapfile;
     }
     

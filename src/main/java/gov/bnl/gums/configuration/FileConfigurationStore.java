@@ -133,7 +133,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 						"\t\t\tdescription=''\n"+
 						"\t\t\thibernate.connection.driver_class='com.mysql.jdbc.Driver'\n"+
 						"\t\t\thibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'\n"+
-						"\t\t\thibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_1'\n"+
+						"\t\t\thibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_3'\n"+
 						"\t\t\thibernate.connection.username='gums'\n"+
 						"\t\t\thibernate.connection.password=''\n"+
 						"\t\t\thibernate.connection.autoReconnect='true'\n"+
