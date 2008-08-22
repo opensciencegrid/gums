@@ -123,8 +123,8 @@
 							    </copy>
 							    <mkdir dir="target/lib/endorsed"/>
 								<copy filtering="on" todir="target/lib/endorsed">
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xerces/dom3-xercesImpl/2.5.0"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xerces/dom3-xmlParserAPIs/2.5.0"/>
+							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xerces/dom3-xercesImpl/2.8.0"/>
+							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xerces/dom3-xmlParserAPIs/2.6.2"/>
 							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xalan/xalan/2.6.0"/>
 							    </copy>
 								<copy filtering="on" todir="target/lib">

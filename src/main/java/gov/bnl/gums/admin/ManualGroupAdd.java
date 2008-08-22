@@ -19,9 +19,10 @@ public class ManualGroupAdd extends RemoteCommand {
      * Creates a new ManualGroupAdd object.
      */
     public ManualGroupAdd() {
-        syntax = "[-g GUMSURL] MANUALUSERGROUP USERDN1 [USERDN2] ...";
+        syntax = "[-g GUMSURL] [-f FQAN] [-e EMAIL] MANUALUSERGROUP USERDN0 USERDN1...";
         description = "Adds a user to a manually managed group. " +
-            "USERGROUP is the name of the manual user group.";
+            "MANUALUSERGROUP is the name of the manual user group. " +
+            "Only one USERDN allowed at a time if email is specified.";
     }
 
     protected org.apache.commons.cli.Options buildOptions() {
@@ -30,6 +31,14 @@ public class ManualGroupAdd extends RemoteCommand {
         Option gumsUrl = new Option("g", "gumsUrl", true,
         "Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
         options.addOption(gumsUrl);
+        
+        Option fqan = new Option("f", "gumsUrl", true,
+        "Fully Qualified Attribute Name");
+        options.addOption(fqan);
+        
+        Option email = new Option("e", "email", true,
+        "email Address");
+        options.addOption(email);
         
         return options;
     }
@@ -42,9 +51,23 @@ public class ManualGroupAdd extends RemoteCommand {
 
         String userGroup = cmd.getArgs()[0];
         String gumsUrl = (cmd.getOptionValue("g", null));
+        String fqan = (cmd.getOptionValue("f", null));
+        String email = (cmd.getOptionValue("e", null));
         
-        for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
-            getGums(gumsUrl).manualGroupAdd2(userGroup, cmd.getArgs()[nArg]);
-        }
+    	if (email==null && fqan==null) {
+	        for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
+        		getGums(gumsUrl).manualGroupAdd2(userGroup, cmd.getArgs()[nArg]);
+	        }
+    	}
+    	else if (email==null) {
+	        for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
+        		getGums(gumsUrl).manualGroupAdd2(userGroup, cmd.getArgs()[nArg]);
+	        }
+    	}
+    	else {
+    		if (cmd.getArgs().length>2)
+    			failForWrongParameters("Only one USERDN allowed at a time if email is specified.");
+    		getGums(gumsUrl).manualGroupAdd3(userGroup, cmd.getArgs()[1], fqan, email);
+    	}
     }
 }
