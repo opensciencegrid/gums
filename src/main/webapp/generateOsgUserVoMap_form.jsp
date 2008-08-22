@@ -40,6 +40,10 @@ Generates OSG-user-VO-map for the given service.
         <td>/DC=org/DC=doegrids/OU=Services/CN=mygk.site.com</td>
       </tr>
       <tr>
+        <td style="text-align: right;">NOTE: </td>
+        <td>This operation will NOT assign pool accounts</td>
+      </tr>      
+      <tr>
         <td colspan="2" rowspan="1">
         <div style="text-align: center;"><button type="submit">generate OSG-user-VO-map</button></div>
         </td>

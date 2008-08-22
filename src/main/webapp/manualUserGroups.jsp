@@ -58,7 +58,7 @@ if (request.getParameter("command")==null ||
 	if ("save".equals(request.getParameter("command"))) {
 		ManualUserGroup manualUserGroup = (ManualUserGroup)userGroups.get(request.getParameter("userGroup"));
 		try{
-			gums.manualGroupAdd2(manualUserGroup.getName(), request.getParameter("dn"));
+			gums.manualGroupAdd3(manualUserGroup.getName(), request.getParameter("dn"), request.getParameter("fqan"), request.getParameter("email"));
 			message = "<div class=\"success\">User has been saved.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error saving user: " + e.getMessage() + "</div>";
@@ -68,7 +68,7 @@ if (request.getParameter("command")==null ||
 	if ("delete".equals(request.getParameter("command"))) {
 		ManualUserGroup manualUserGroup = (ManualUserGroup)userGroups.get(request.getParameter("userGroup"));
 		try{
-			gums.manualGroupRemove2(manualUserGroup.getName(), request.getParameter("dn"));
+			gums.manualGroupRemove3(manualUserGroup.getName(), request.getParameter("dn"), request.getParameter("fqan"));
 			message = "<div class=\"success\">User has been deleted.</div>";
 		}catch(Exception e){
 			message = "<div class=\"failure\">Error deleting user: " + e.getMessage() + "</div>";
@@ -101,6 +101,8 @@ if (request.getParameter("command")==null ||
 			<form action="manualUserGroups.jsp" method="get">
 				<input type="submit" style="width:80px"  name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this user?'))return false;">
 				<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>">
+				<input type="hidden" name="fqan" value="<%=user.getVoFQAN()!=null?user.getVoFQAN():""%>">
+				<input type="hidden" name="email" value="<%=user.getEmail()!=null?user.getEmail():""%>">
 				<input type="hidden" name="userGroup" value="<%=manualUserGroup.getName()%>">
 			</form>
 		</td>
@@ -110,6 +112,8 @@ if (request.getParameter("command")==null ||
 		    		<td>
 			    		DN: <%=user.getCertificateDN()%><br>
 			    		User Group: <a href="userGroups.jsp?name=<%=manualUserGroup.getName()%>&command=edit"><%=manualUserGroup.getName()%></a><br>
+			    		FQAN: <%=user.getVoFQAN()!=null?user.getVoFQAN():""%><br>
+			    		Email: <%=user.getEmail()!=null?user.getEmail():""%><br>
 		    		</td>
 	  			</tr>
 			</table>
@@ -164,6 +168,30 @@ else if ("add".equals(request.getParameter("command"))) {
 			    /DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345
 		    </td>
 		</tr>
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		fqan:
+		    </td>
+		    <td nowrap>
+			    <input maxlength="256" size="64" name="fqan" value=""/>
+		    </td>
+		</tr>			
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+			    /myvo/mygroup/Role=myrole
+		    </td>
+		</tr>		
+		<tr>
+    		<td nowrap style="text-align: right;">
+	    		email:
+		    </td>
+		    <td nowrap>
+			    <input maxlength="256" size="64" name="email" value=""/>
+		    </td>
+		</tr>		
 		<tr>
 			<td nowrap style="text-align: right;">
 				User group:

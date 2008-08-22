@@ -15,6 +15,7 @@ import org.opensciencegrid.authz.stubs.AuthorizationServiceBindingSkeleton;
  */
 public class GUMSAuthZService extends AuthorizationServiceBindingSkeleton {
     static final long serialVersionUID = 1;
+    
     /** Creates an authorization service using GUMS as the implementation. */
     public GUMSAuthZService() {
         super(new BasicMappingAuthZService(new GUMSAuthZServiceImpl()));

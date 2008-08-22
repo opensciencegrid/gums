@@ -31,8 +31,7 @@ Generates the FQAN-mapfile relative to the given service.
       <tr>
         <td style="text-align: right;">DN (Distinguished Name) for service:<br>
         </td>
-        <td><input maxlength="256"
- size="64" name="host"><br>
+        <td><input maxlength="256" size="64" name="host"><br>
         </td>
       </tr>
       <tr>
@@ -41,7 +40,11 @@ Generates the FQAN-mapfile relative to the given service.
       </tr>  
       <tr>
         <td style="text-align: right;">NOTE: </td>
-        <td>Only VOMS user groups and group and pool account mappers will be included</td>
+        <td>Only VOMS user groups and group/pool account mappers will be included</td>
+      </tr>
+      <tr>
+        <td style="text-align: right;">NOTE: </td>
+        <td>This operation will NOT assign pool accounts</td>
       </tr>
       <tr>
         <td colspan="2" rowspan="1">
