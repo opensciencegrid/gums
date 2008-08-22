@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class GecosNisAccountMapper extends GecosAccountMapper {
     static private Log log = LogFactory.getLog(GecosNisAccountMapper.class);
-    static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+    static Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
     
     static public String getTypeStatic() {
 		return "gecosNIS";
@@ -40,7 +40,7 @@ public class GecosNisAccountMapper extends GecosAccountMapper {
     
     public GecosNisAccountMapper() {
     	super();
-        adminLog.warn("The use of gov.bnl.gums.GecosNisAccountMapper is unsupported.");
+    	gumsAdminLog.debug("The use of gov.bnl.gums.GecosNisAccountMapper is unsupported.");
     }
  
     public GecosNisAccountMapper(Configuration configuration) {

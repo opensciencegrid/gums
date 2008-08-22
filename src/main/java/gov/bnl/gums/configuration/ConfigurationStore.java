@@ -27,7 +27,7 @@ public abstract class ConfigurationStore {
      * 
      * @param A date string
      */	
-	public abstract void deleteBackupConfiguration(String dateStr);
+	public abstract boolean deleteBackupConfiguration(String dateStr);
 	
     /**
      * Get a list of config date strings that have been backed up

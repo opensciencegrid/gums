@@ -35,7 +35,7 @@ public class AccountPoolMapper extends AccountMapper {
 		return "pool";
 	}
     
-	private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+	private Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
     private AccountPoolMapperDB db;
     private String persistenceFactory = "";
 	private String accountPool = "";
@@ -152,8 +152,11 @@ public class AccountPoolMapper extends AccountMapper {
         if (account != null) return account;
         if (createIfDoesNotExist) {
         	String newAccount = getDB().assignAccount(user);
-        	if (newAccount==null)
-        		gumsResourceAdminLog.error("Could not assign user '"+user.getCertificateDN()+"' to account within pool account mapper '"+getName()+"'.  The most likely cause is that there are no more available pool accounts, in which case you should add more.");
+        	if (newAccount==null) {
+        		String message = "Could not assign user '"+user.getCertificateDN()+"' to account within pool account mapper '"+getName()+"'.";
+        		gumsAdminLog.warn(message);
+        		GUMS.gumsAdminEmailLog.put("noPoolAccounts", message, true);
+        	}
         	return newAccount;
         }
         else

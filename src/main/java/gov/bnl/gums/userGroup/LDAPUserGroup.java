@@ -45,7 +45,7 @@ public class LDAPUserGroup extends UserGroup {
 	}
 
 	protected Log log = LogFactory.getLog(LDAPUserGroup.class);
-	protected Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+	protected Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
 	protected ConfigurationStore confStore;    
 	protected UserGroupDB db;
 	protected Configuration conf;
@@ -309,13 +309,13 @@ public class LDAPUserGroup extends UserGroup {
 			 ldapName = ldapName.trim();
 			 String certDN = (String) people.get(ldapName);
 			 if (certDN == null) {
-				 resourceAdminLog.warn("Member of a LDAP VO group not mapped to any certificate: '" + ldapName + "'");
+				 gumsAdminLog.warn("Member of a LDAP VO group not mapped to any certificate: '" + ldapName + "'");
 			 } else {
 				 list.add(new GridUser(certDN, null));
 			 }
 		 }
 		 if (list.isEmpty()) {
-			 resourceAdminLog.warn("The following group returned no members: " + this);
+			 gumsAdminLog.warn("The following group returned no members: " + this);
 		 }
 		 return list;
 	 }
@@ -367,7 +367,7 @@ public class LDAPUserGroup extends UserGroup {
 		 Map people = retrievePeopleMap(rootCtx);
 		 List list = new ArrayList(people.values());
 		 if (list.isEmpty()) {
-			 resourceAdminLog.warn("The following group returned no members: " + this);
+			 gumsAdminLog.warn("The following group returned no members: " + this);
 		 }
 		 Iterator iter = list.iterator();
 		 List users = new ArrayList();
@@ -376,7 +376,7 @@ public class LDAPUserGroup extends UserGroup {
 			 users.add(new GridUser(dn, null));
 		 }
 		 if (list.isEmpty()) {
-			 resourceAdminLog.warn("The following group returned no members: " + this);
+			 gumsAdminLog.warn("The following group returned no members: " + this);
 		 }
 		 return users;
 	 }    

@@ -14,12 +14,13 @@
 # Catch all category: won't be logged
 log4j.rootLogger=ERROR
 
-# Log for GUMS administrator.
-# As a default the log is sent just to a file.
-# You can also send the error to e-mail, but you have to setup the mail appender
-# later in the file
-log4j.logger.gums.resourceAdmin=INFO, adminFile
-#log4j.logger.gums.resourceAdmin=INFO, mail, adminFile
+# Logs for GUMS administrator.
+log4j.logger.gums.gumsAdmin=INFO, adminFile
+
+# Logs for GUMS administrative email.
+# This log is meant to be relatively quite.
+# You have to setup the mail appender later in the file and uncomment below
+#log4j.logger.gums.gumsAdminEmailReportsLogName=WARN, mail
 
 # Log for cybersecurity
 # This log is sent to both a file and to syslogd.
@@ -96,7 +97,7 @@ log4j.appender.syslogAuth.syslogHost=localhost
 log4j.appender.syslogAuth.layout=org.apache.log4j.PatternLayout
 log4j.appender.syslogAuth.layout.ConversionPattern=gums: %m%n
 
-# Mail appender
+# Site Admin Mail appender
 # You must provide all the parameters to send e-mail. You will also need to
 # set the GUMS admin log to be forwarded by mail (see above)
 # I don't believe this supports SMTP with ssl and authentication

@@ -29,8 +29,6 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  */
 public class DBConfigurationStore extends ConfigurationStore {
 	private Log log = LogFactory.getLog(FileConfigurationStore.class);
-	private Log gumsSiteAdminLog = LogFactory.getLog(GUMS.siteAdminLog);
-	private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
 	private ConfigurationDB configDB;
 	private String schemaPath = null;
 	private Date lastRetrieval = null;
@@ -41,7 +39,7 @@ public class DBConfigurationStore extends ConfigurationStore {
 		this.schemaPath = schemaPath;
 	}
 	
-	public void deleteBackupConfiguration(String dateStr) {
+	public boolean deleteBackupConfiguration(String dateStr) {
 		Date date;
 		try {
 			date = format.parse(dateStr);
@@ -49,7 +47,7 @@ public class DBConfigurationStore extends ConfigurationStore {
 			log.error(e);
 			throw new RuntimeException(e);
 		}
-		configDB.deleteBackupConfiguration(date);
+		return configDB.deleteBackupConfiguration(date);
 	}
 	
     public boolean isActive() {

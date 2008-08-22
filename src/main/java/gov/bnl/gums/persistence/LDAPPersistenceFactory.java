@@ -49,7 +49,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	}
 
 	private Log log = LogFactory.getLog(LDAPPersistenceFactory.class);
-	private Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+	private Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
 	private boolean synch;
 	private List contexts = Collections.synchronizedList(new LinkedList());// *** LDAP connection pool management    
 	private boolean skipReleaseContext = false;
@@ -801,7 +801,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 			inStream.close();
 		} catch (Exception e) {
 			log.error("Cannot open " + caCertFile, e);
-			adminLog.error("Cannot open " + caCertFile + ": " + e.getMessage());
+			gumsAdminLog.error("Cannot open " + caCertFile + ": " + e.getMessage());
 			return;
 		}
 		try {
@@ -813,7 +813,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 			fos.close();
 		} catch (Exception e) {
 			log.error("Couldn't put " + caCertFile + " into trust store", e);
-			adminLog.error("Couldn't put " + caCertFile + " into trust store: " + e.getMessage() );
+			gumsAdminLog.error("Couldn't put " + caCertFile + " into trust store: " + e.getMessage() );
 		}
 	}
 	
@@ -846,7 +846,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 			return true;
 		} catch (Exception e) {
 			log.trace("Removing stale LDAP connection from pool " + context, e);
-			adminLog.warn("LDAP connection test failed, discarding connection from pool: " + e.getMessage());
+			gumsAdminLog.warn("LDAP connection test failed, discarding connection from pool: " + e.getMessage());
 			return false;
 		}
 	}

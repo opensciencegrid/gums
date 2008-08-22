@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class WildcardHostToGroupMapping extends HostToGroupMapping {
-    static Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+    static Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
     
     private List regexs;
   
@@ -32,7 +32,7 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
      * Creates a new wildcard mapping - empty constructor needed by XML Digester.
      */
     public WildcardHostToGroupMapping() {
-        adminLog.warn("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
+    	gumsAdminLog.debug("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
     }
  
     /** 
@@ -43,7 +43,7 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
      */
     public WildcardHostToGroupMapping(Configuration configuration) {
     	super(configuration);
-        adminLog.warn("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
+    	gumsAdminLog.debug("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
     }
     
     /**
@@ -54,7 +54,7 @@ public class WildcardHostToGroupMapping extends HostToGroupMapping {
      */
     public WildcardHostToGroupMapping(Configuration configuration, String wildcard) {
     	super(configuration, wildcard);
-        adminLog.warn("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
+    	gumsAdminLog.debug("The use of gov.bnl.gums.WildcardHostGroup is deprecated. Please use gov.bnl.gums.CertificateHostGroup: it provides equivalent functionalities.");
     }
     
     public HostToGroupMapping clone(Configuration configuration) {

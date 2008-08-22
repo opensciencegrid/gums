@@ -51,7 +51,7 @@ public class VOMSUserGroup extends UserGroup {
 	}
 
     private Log log = LogFactory.getLog(VOMSUserGroup.class);
-    private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+    private Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
     private String vomsServer = "";
     private String voGroup = "";
     private String role = "";
@@ -384,9 +384,9 @@ public class VOMSUserGroup extends UserGroup {
             }
             return entries;
         } catch (Throwable e) {
-            log.error("Couldn't retrieve VOMS users: ", e);
-            System.out.println(e);
-            throw new RuntimeException("Couldn't retrieve users from VOMS server: " + e.getMessage(), e);
+        	String message = "Couldn't retrieve users from VOMS server: ";
+            log.error(message, e);
+            throw new RuntimeException(message + ": " + e.getMessage());
         }
     }
     

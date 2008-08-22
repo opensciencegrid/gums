@@ -33,7 +33,12 @@ public class GUMSTest extends TestCase {
     
     public void testConfiguration() {
 		GUMS gums = new GUMS();
-		Configuration conf = gums.getConfiguration();
+		Configuration conf = null;
+		try {
+			conf = gums.getConfiguration();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		assertEquals(1, conf.getPersistenceFactories().size());
 		assertEquals("persistenceFactoryA", ((HibernatePersistenceFactory) conf.getPersistenceFactories().get("persistenceFactoryA")).getName());
 		assertEquals(3, conf.getGroupToAccountMappings().size());

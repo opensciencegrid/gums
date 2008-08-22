@@ -9,8 +9,8 @@ public class MockConfigurationDB implements ConfigurationDB {
 	TreeMap configurations = new TreeMap();
 	String currentConf = null;
 	
-	public void deleteBackupConfiguration(Date date) {
-		configurations.remove(date.toString());
+	public boolean deleteBackupConfiguration(Date date) {
+		return (configurations.remove(date.toString()) != null);
 	}
 	
 	public Collection getBackupConfigDates(DateFormat dateFormat) {

@@ -39,10 +39,9 @@ import gov.bnl.gums.persistence.PersistenceFactory;
 public class GUMSAPIImpl implements GUMSAPI {
 	static private GUMS gums;
 	private Log log = LogFactory.getLog(GUMSAPI.class);
-	private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
-	private Log siteLog = LogFactory.getLog(GUMS.siteAdminLog);
+	private Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
+	private Log siteAdminLog = LogFactory.getLog(GUMS.siteAdminLogName);
 	private boolean isInWeb = false;
-	private String version = null;
 
 	{
 		try {
@@ -54,97 +53,111 @@ public class GUMSAPIImpl implements GUMSAPI {
 	}
 
 	public void addAccountRange2(String accountPoolMapperName, String range) {
-		if (hasWriteAccess(currentUser())) {
-			String firstAccount = range.substring(0, range.indexOf('-'));
-			String lastAccountN = range.substring(range.indexOf('-') + 1);
-			String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
-			String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
-			int nFirstAccount = Integer.parseInt(firstAccountN);
-			int nLastAccount = Integer.parseInt(lastAccountN);
-
-			StringBuffer last = new StringBuffer(firstAccount);
-			String nLastAccountString = Integer.toString(nLastAccount);
-			last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
-
-			StringBuffer buf = new StringBuffer(firstAccount);
-			int len = firstAccount.length();
-			Map reverseMap = getAccountPoolMapperDB(accountPoolMapperName).retrieveReverseAccountMap();
-			for (int account = nFirstAccount; account <= nLastAccount; account++) {
-				String nAccount = Integer.toString(account);
-				buf.replace(len - nAccount.length(), len, nAccount);
-				if (reverseMap.get(buf.toString())!=null)
-					throw new RuntimeException("One or more accounts already exist. None were added.");
+		try {
+			if (hasWriteAccess(currentUser())) {
+				String firstAccount = range.substring(0, range.indexOf('-'));
+				String lastAccountN = range.substring(range.indexOf('-') + 1);
+				String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
+				String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
+				int nFirstAccount = Integer.parseInt(firstAccountN);
+				int nLastAccount = Integer.parseInt(lastAccountN);
+	
+				StringBuffer last = new StringBuffer(firstAccount);
+				String nLastAccountString = Integer.toString(nLastAccount);
+				last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
+	
+				StringBuffer buf = new StringBuffer(firstAccount);
+				int len = firstAccount.length();
+				Map reverseMap = getAccountPoolMapperDB(accountPoolMapperName).retrieveReverseAccountMap();
+				for (int account = nFirstAccount; account <= nLastAccount; account++) {
+					String nAccount = Integer.toString(account);
+					buf.replace(len - nAccount.length(), len, nAccount);
+					if (reverseMap.get(buf.toString())!=null) {
+						String message = "One or more accounts already exist for '"+accountPoolMapperName+" "+range+"'. None were added.";
+						siteAdminLog.error(message);
+						throw new RuntimeException(message);
+					}
+				}
+				buf = new StringBuffer(firstAccount);
+				for (int account = nFirstAccount; account <= nLastAccount; account++) {
+					String nAccount = Integer.toString(account);
+					buf.replace(len - nAccount.length(), len, nAccount);
+					getAccountPoolMapperDB(accountPoolMapperName).addAccount(buf.toString());
+				}
 			}
-			buf = new StringBuffer(firstAccount);
-			for (int account = nFirstAccount; account <= nLastAccount; account++) {
-				String nAccount = Integer.toString(account);
-				buf.replace(len - nAccount.length(), len, nAccount);
-				getAccountPoolMapperDB(accountPoolMapperName).addAccount(buf.toString());
+			else {
+				String message = logUserAccess() + "Unauthorized access to addAccountRange2 for '"+accountPoolMapperName+" "+range+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
+				throw new AuthorizationDeniedException();
 			}
-		}
-		else {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to add account range because user doesn't have administrative access");
-			siteLog.info(logUserAccess() + "Failed to add account range because user doesn't have administrative access");
-			throw new AuthorizationDeniedException();
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
 	public void backupConfiguration() {
-		if (hasWriteAccess(currentUser()))
-			gums().setConfiguration(gums().getConfiguration(), true);
-		else {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to backup configuration because user doesn't have administrative access");
-			siteLog.info(logUserAccess() + "Failed to backup configuration because user doesn't have administrative access");
-			throw new AuthorizationDeniedException();
+		try {
+			if (hasWriteAccess(currentUser()))
+				gums().setConfiguration(gums().getConfiguration(), true);
+			else {
+				String message = logUserAccess() + "Unauthorized access to backupConfiguration";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
+				throw new AuthorizationDeniedException();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
 	public void deleteBackupConfiguration(String dateStr) {
-		if (hasWriteAccess(currentUser()))
-			gums().deleteBackupConfiguration(dateStr);
-		else {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to delete configuration because user doesn't have administrative access");
-			siteLog.info(logUserAccess() + "Failed to delete configuration because user doesn't have administrative access");
-			throw new AuthorizationDeniedException();
-		}   	
+		try {
+			if (hasWriteAccess(currentUser()))
+				gums().deleteBackupConfiguration(dateStr);
+			else {
+				String message = logUserAccess() + "Unauthorized access to deleteBackupConfiguration for '"+dateStr+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
+				throw new AuthorizationDeniedException();
+			}  
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}		
 	}
 
 	public String generateEmailMapfile(String hostname) {
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
 				String map = gums().getResourceManager().generateGridMapfile(hostname, false, true, true);
-				gumsResourceAdminLog.info(logUserAccess() + "Generated email mapfile for host '" + hostname + "': " + map);
+				gumsAdminLog.info(logUserAccess() + "Generated email mapfile");
 				return map;
-			} else {
+			} else { 
+				String message = logUserAccess() + "Unauthorized access to generateEmailMapfile for host '"+hostname+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to generate email mapfile for host '" + hostname + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to generate email mapfile for host '" + hostname + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to generate email mapfile for host '" + hostname + "' - " + e.getMessage());
-			throw e;
-		}   	
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 	
 	public String generateFqanMapfile(String hostname) {
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
 				String map = gums().getResourceManager().generateFqanMapfile(hostname);
-				gumsResourceAdminLog.info(logUserAccess() + "Generated fqan mapfile for host '" + hostname + "': " + map);
+				gumsAdminLog.info(logUserAccess() + "Generated fqan mapfile for host '" + hostname + "': " + map);
 				return map;
 			} else {
+				String message = logUserAccess() + "Unauthorized access to generateFqanMapfile for host '"+hostname+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.warn(logUserAccess() + "Failed to generate fqan mapfile for host '" + hostname + "' - " + e.getMessage());
-			siteLog.warn(logUserAccess() + "Unauthorized access to generate fqan mapfile for host '" + hostname + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to generate fqanmapfile for host '" + hostname + "' - " + e.getMessage());
-			throw e;
-		}   
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}        
 
 	public String generateGrid3UserVoMap(String hostname) {
@@ -152,100 +165,113 @@ public class GUMSAPIImpl implements GUMSAPI {
 	}
 
 	public String generateGridMapfile(String hostname) {
-		if (!gums.getConfiguration().getAllowGridmapFiles())
-			throw new RuntimeException("Grid Mapfile generation has been disabled (probably to conserve pool accounts)");
 		try {
+			if (!gums.getConfiguration().getAllowGridmapFiles())
+				throw new RuntimeException("Grid Mapfile generation has been disabled (probably to conserve pool accounts)");
+		
 			if (hasReadAllAccess(currentUser(), hostname)) {
 				String map = gums().getResourceManager().generateGridMapfile(hostname, true, false, false);
-				gumsResourceAdminLog.info(logUserAccess() + "Generated grid mapfile for host '" + hostname + "': " + map);
+				gumsAdminLog.info(logUserAccess() + "Generated grid mapfile for host '" + hostname + "': " + map);
 				return map;
 			} else {
+				String message = logUserAccess() + "Unauthorized access to generateGridMapfile for host '"+hostname+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to generate grid mapfile for host '" + hostname + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to generate grid mapfile for host '" + hostname + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to generate grid mapfile for host '" + hostname + "' - " + e.getMessage());
-			throw e;
-		}   
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	public String generateOsgUserVoMap(String hostname) {
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
 				String map = gums().getResourceManager().generateOsgUserVoMap(hostname);
-				gumsResourceAdminLog.info(logUserAccess() + "Generated grid3 vo-user map for host '" + hostname + "': " + map);
+				gumsAdminLog.info(logUserAccess() + "Generated grid3 vo-user map for host '" + hostname + "': " + map);
 				return map;
 			} else {
+				String message = logUserAccess() + "Unauthorized access to generateOsgUserVoMap for host '"+hostname+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to generate grid3 vo-user map for host '" + hostname + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to generate grid3 vo-user map for host '" + hostname + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to generate grid3 vo-user map for host '" + hostname + "' - " + e.getMessage());
-			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
 	public String generateVoGridMapfile(String hostname) {
-		if (!gums.getConfiguration().getAllowGridmapFiles())
-			throw new RuntimeException("Grid Mapfile generation has been disabled (probably to conserve pool accounts)");
 		try {
+			if (!gums.getConfiguration().getAllowGridmapFiles())
+				throw new RuntimeException("Grid Mapfile generation has been disabled (probably to conserve pool accounts)");
+			
 			if (hasReadAllAccess(currentUser(), hostname)) {
 				String map = gums().getResourceManager().generateGridMapfile(hostname, true, true, false);
-				gumsResourceAdminLog.info(logUserAccess() + "Generated mapfile for host '" + hostname + "': " + map);
+				gumsAdminLog.info(logUserAccess() + "Generated mapfile for host '" + hostname + "': " + map);
 				return map;
 			} else {
+				String message = logUserAccess() + "Unauthorized access to generateVoGridMapfile for host '"+hostname+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to generate mapfile for host '" + hostname + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to generate mapfile for host '" + hostname + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to generate mapfile for host '" + hostname + "' - " + e.getMessage());
-			throw e;
-		}   	
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
-
+		
 	public Collection getBackupConfigDates() {
-		Collection backupConfigDates = null;
-		if (hasReadAllAccess(currentUser(), null))
-			backupConfigDates = gums().getBackupConfigDates();
-		else {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have administrative access");
-			siteLog.info(logUserAccess() + "Failed to get backup config dates because user doesn't have administrative access");
-			throw new AuthorizationDeniedException();
-		}    	
-		return backupConfigDates;
+		try {
+			Collection backupConfigDates = null;
+			if (hasReadAllAccess(currentUser(), null)) {
+				backupConfigDates = gums().getBackupConfigDates();
+			}
+			else {
+				String message = logUserAccess() + "Unauthorized access to getBackupConfigDates";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
+				throw new AuthorizationDeniedException();
+			}    	
+			return backupConfigDates;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	public Configuration getConfiguration() {
-		if (hasReadAllAccess(currentUser(), null) && isInWeb)
-			return gums().getConfiguration();
-		else {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to get configuration because user doesn't have administrative access");
-			siteLog.info(logUserAccess() + "Failed to get configuration because user doesn't have administrative access");
-			throw new AuthorizationDeniedException();
+		try {
+			if (hasReadAllAccess(currentUser(), null) && isInWeb) {
+				return gums().getConfiguration();
+			}
+			else {
+				String message = logUserAccess() + "Unauthorized access to getConfiguration";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
+				throw new AuthorizationDeniedException();		
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
 	public String getPoolAccountAssignments(String accountPoolMapperName) {
-		if (hasReadAllAccess(currentUser(), null)) {
-			if (gums().getConfiguration().getAccountMapper(accountPoolMapperName) instanceof AccountPoolMapper)
-				return ((AccountPoolMapper)gums().getConfiguration().getAccountMapper(accountPoolMapperName)).getAssignments();
-			else
-				return "";
-		}
-		else {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to get pool account assignments because user doesn't have administrative access");
-			siteLog.info(logUserAccess() + "Failed to get pool account assignments because user doesn't have administrative access");
-			throw new AuthorizationDeniedException();
-		}    	
+		try {
+			if (hasReadAllAccess(currentUser(), null)) {
+				if (gums().getConfiguration().getAccountMapper(accountPoolMapperName) instanceof AccountPoolMapper)
+					return ((AccountPoolMapper)gums().getConfiguration().getAccountMapper(accountPoolMapperName)).getAssignments();
+				else
+					return "";
+			}
+			else {
+				String message = logUserAccess() + "Unauthorized access to getPoolAccountAssignments for '"+accountPoolMapperName+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
+				throw new AuthorizationDeniedException();	
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}		
 	}
 
 	public String getVersion() {
@@ -256,226 +282,258 @@ public class GUMSAPIImpl implements GUMSAPI {
 		try {
 			if (hasWriteAccess(currentUser())) {
 				getManualUserGroupDB(manualUserGroupName).addMember(new GridUser(userDN, null));
-				gumsResourceAdminLog.info(logUserAccess() + "Added to group '" + manualUserGroupName + "'  user '" + userDN + "'");
-				siteLog.info(logUserAccess() + "Added to group '" + manualUserGroupName + "'  user '" + userDN + "'");
+				gumsAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "'");
+				siteAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "'");
 			} else {
-				throw new AuthorizationDeniedException();
+				String message = logUserAccess() + "Unauthorized access to manualGroupAdd2 for user group '" + manualUserGroupName + "' user '" + userDN + "'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
+				throw new AuthorizationDeniedException();	
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to add to group '" + manualUserGroupName + "' user '" + userDN + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to add to group '" + manualUserGroupName + "' user '" + userDN + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to add to group '" + manualUserGroupName + "' user '" + userDN + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Failed to add to group '" + manualUserGroupName + "' user '" + userDN + "' - " + e.getMessage());
-			throw e;
-		}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}		
+	}
+	
+	public void manualGroupAdd3(String manualUserGroupName, String userDN, String fqan, String email) {
+		try {
+			if (hasWriteAccess(currentUser())) {
+				getManualUserGroupDB(manualUserGroupName).addMember(new GridUser(userDN, fqan, email));
+				gumsAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "' email '"+email+"'");
+				siteAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "' email '"+email+"'");
+			} else {
+				String message = logUserAccess() + "Unauthorized access to manualGroupAdd3 for user group '" + manualUserGroupName + "' user '" + userDN + "'"+email+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
+				throw new AuthorizationDeniedException();	
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}		
 	}
 
 	public void manualGroupRemove2(String manualUserGroupName, String userDN) {
 		try {
 			if (hasWriteAccess(currentUser())) {
 				getManualUserGroupDB(manualUserGroupName).removeMember(new GridUser(userDN, null));
-				gumsResourceAdminLog.info(logUserAccess() + "Removed from group '" + manualUserGroupName + "'  user '" + userDN + "'");
-				siteLog.info(logUserAccess() + "Removed from group '" + manualUserGroupName + "'  user '" + userDN + "'");
+				gumsAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "'");
+				siteAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "'");
 			} else {
+				String message = logUserAccess() + "Unauthorized access to manualGroupRemove2 for user group '" + manualUserGroupName + "' user '" + userDN + "'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);				
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to remove from group '" + manualUserGroupName + "' user '" + userDN + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to remove from group '" + manualUserGroupName + "' user '" + userDN + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to remove from group '" + manualUserGroupName + "' user '" + userDN + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Failed to remove from group '" + manualUserGroupName + "' user '" + userDN + "' - " + e.getMessage());
-			throw e;
-		}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}			
 	}
 
+	public void manualGroupRemove3(String manualUserGroupName, String userDN, String fqan) {
+		try {
+			if (hasWriteAccess(currentUser())) {
+				getManualUserGroupDB(manualUserGroupName).removeMember(new GridUser(userDN, fqan));
+				gumsAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "' fqan '"+fqan+"'");
+				siteAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "' fqan '"+fqan+"'");
+			} else {
+				String message = logUserAccess() + "Unauthorized access to manualGroupRemove2 for user group '" + manualUserGroupName + "' user '" + userDN + "' fqan '"+fqan+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);				
+				throw new AuthorizationDeniedException();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}			
+	}
+	
 	public void manualMappingAdd2(String manualAccountMapperName, String userDN, String account) {
 		try {
 			if (hasWriteAccess(currentUser())) {
 				getManualAccountMapperDB(manualAccountMapperName).createMapping(userDN, account);
-				gumsResourceAdminLog.info(logUserAccess() + "Added mapping to account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' to account '" + account + "'");
-				siteLog.info(logUserAccess() + "Added mapping to account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' to account '" + account + "'");
+				gumsAdminLog.info(logUserAccess() + "Added mapping to account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' to account '" + account + "'");
+				siteAdminLog.info(logUserAccess() + "Added mapping to account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' to account '" + account + "'");
 			} else {
+				String message = logUserAccess() + "Unauthorized access to manualMappingAdd2 for account mapper '" + manualAccountMapperName + "' user '" + userDN + "' account '"+account+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);				
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to add mapping to account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' to account '" + account + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to add mapping to account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' to account '" + account + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to add mapping to account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' to account '" + account + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Failed to add mapping to persistence account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' to account '" + account + "' - " + e.getMessage());
-			throw e;
-		}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}		
 	}
 
 	public void manualMappingRemove2(String manualAccountMapperName, String userDN) {
 		try {
 			if (hasWriteAccess(currentUser())) {
 				getManualAccountMapperDB(manualAccountMapperName).removeMapping(userDN);
-				gumsResourceAdminLog.info(logUserAccess() + "Removed mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "'");
-				siteLog.info(logUserAccess() + "Removed mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "'");
+				gumsAdminLog.info(logUserAccess() + "Removed mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "'");
+				siteAdminLog.info(logUserAccess() + "Removed mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "'");
 			} else {
+				String message = logUserAccess() + "Unauthorized access to manualMappingRemove2 for user group '" + manualAccountMapperName + "' user '" + userDN + "'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);	
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to remove mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to remove mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to remove mapping from account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Failed to remove mapping from persistence account mapper '" + manualAccountMapperName + "' for user '" + userDN + "' - " + e.getMessage());
-			throw e;
-		}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}		
 	}
 
 	public String mapAccount(String accountName) {
 		try {
 			if (hasReadAllAccess(currentUser(), null)) {
 				String DNs = gums().getResourceManager().mapAccount(accountName);
-				gumsResourceAdminLog.info(logUserAccess() + "Mapped the account '" + accountName + "' to '" + DNs + "'");
+				gumsAdminLog.info(logUserAccess() + "Mapped the account '" + accountName + "' to '" + DNs + "'");
 				return DNs;
 			} else {
+				String message = logUserAccess() + "Unauthorized access to mapAccount for account '" + accountName + "'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);	
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to map the account '" + accountName + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to map the account '" + accountName + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to map the account '" + accountName + "' - "  + e.getMessage());
-			throw e;
-		}   	
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	public String mapUser(String hostname, String userDN, String fqan) {
 		try {
 			if ( (hasReadSelfAccess(currentUser()) && currentUser().compareDn(userDN)==0) || hasReadAllAccess(currentUser(), hostname)) {
 				String account = gums().getResourceManager().map(hostname, new GridUser(userDN, fqan));
-				gumsResourceAdminLog.info(logUserAccess() + "Mapped on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' to '" + account + "'");
+				gumsAdminLog.info(logUserAccess() + "Mapped on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' to '" + account + "'");
 				return account;
 			} else {
+				String message = logUserAccess() + "Unauthorized access to mapUser for '" + hostname + "' the user '" + userDN + "' / '" + fqan + "'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);	
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to map on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to map on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to map on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' - " + e.getMessage());
-			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
 	public void removeAccountRange(String accountPoolMapperName, String range) {
-		if (hasWriteAccess(currentUser())) {
-			String firstAccount = range.substring(0, range.indexOf('-'));
-			String lastAccountN = range.substring(range.indexOf('-') + 1);
-			String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
-			String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
-			int nFirstAccount = Integer.parseInt(firstAccountN);
-			int nLastAccount = Integer.parseInt(lastAccountN);
-
-			StringBuffer last = new StringBuffer(firstAccount);
-			String nLastAccountString = Integer.toString(nLastAccount);
-			last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
-
-			StringBuffer buf = new StringBuffer(firstAccount);
-			int len = firstAccount.length();
-			for (int account = nFirstAccount; account <= nLastAccount; account++) {
-				String nAccount = Integer.toString(account);
-				buf.replace(len - nAccount.length(), len, nAccount);
-				getAccountPoolMapperDB(accountPoolMapperName).removeAccount(buf.toString());
+		try {
+			if (hasWriteAccess(currentUser())) {
+				String firstAccount = range.substring(0, range.indexOf('-'));
+				String lastAccountN = range.substring(range.indexOf('-') + 1);
+				String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
+				String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
+				int nFirstAccount = Integer.parseInt(firstAccountN);
+				int nLastAccount = Integer.parseInt(lastAccountN);
+	
+				StringBuffer last = new StringBuffer(firstAccount);
+				String nLastAccountString = Integer.toString(nLastAccount);
+				last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
+	
+				StringBuffer buf = new StringBuffer(firstAccount);
+				int len = firstAccount.length();
+				for (int account = nFirstAccount; account <= nLastAccount; account++) {
+					String nAccount = Integer.toString(account);
+					buf.replace(len - nAccount.length(), len, nAccount);
+					getAccountPoolMapperDB(accountPoolMapperName).removeAccount(buf.toString());
+				}
 			}
-		}
-		else {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to remove account range because user doesn't have administrative access");
-			siteLog.info(logUserAccess() + "Failed to remove account range because user doesn't have administrative access");
-			throw new AuthorizationDeniedException();
+			else {
+				String message = logUserAccess() + "Unauthorized access to removeAccountRange for '"+accountPoolMapperName+" "+range+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);	
+				throw new AuthorizationDeniedException();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
 	public void restoreConfiguration(String dateStr) throws Exception {
-		if (hasWriteAccess(currentUser()))
-			gums().restoreConfiguration(dateStr);
-		else {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to set configuration because user doesn't have administrative access");
-			siteLog.info(logUserAccess() + "Failed to set configuration because user doesn't have administrative access");
-			throw new AuthorizationDeniedException();
-		}  	
+		try {
+			if (hasWriteAccess(currentUser()))
+				gums().restoreConfiguration(dateStr);
+			else {
+				String message = logUserAccess() + "Unauthorized access to restoreConfiguration for '"+dateStr+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);	
+				throw new AuthorizationDeniedException();
+			}  	
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}		
 	}
 
 	public void setConfiguration(Configuration configuration) throws Exception {
-		if (hasWriteAccess(currentUser()))
-			gums().setConfiguration(configuration, false);
-		else {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to set configuration because user doesn't have administrative access");
-			siteLog.info(logUserAccess() + "Failed to set configuration because user doesn't have administrative access");
-			throw new AuthorizationDeniedException();
-		}
+		try {
+			if (hasWriteAccess(currentUser()))
+				gums().setConfiguration(configuration, false);
+			else {
+				String message = logUserAccess() + "Unauthorized access to setConfiguration";
+				gumsAdminLog.warn(message);
+				gumsAdminLog.debug("Configuration contents: " + configuration.toXml());
+				siteAdminLog.warn(message);	
+				siteAdminLog.debug("Configuration contents: " + configuration.toXml());
+				throw new AuthorizationDeniedException();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}		
 	}
 
 	public void unassignAccountRange(String accountPoolMapperName, String range) {
-		if (hasWriteAccess(currentUser())) {
-			String firstAccount = range.substring(0, range.indexOf('-'));
-			String lastAccountN = range.substring(range.indexOf('-') + 1);
-			String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
-			String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
-			int nFirstAccount = Integer.parseInt(firstAccountN);
-			int nLastAccount = Integer.parseInt(lastAccountN);
-
-			StringBuffer last = new StringBuffer(firstAccount);
-			String nLastAccountString = Integer.toString(nLastAccount);
-			last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
-
-			StringBuffer buf = new StringBuffer(firstAccount);
-			int len = firstAccount.length();
-			for (int account = nFirstAccount; account <= nLastAccount; account++) {
-				String nAccount = Integer.toString(account);
-				buf.replace(len - nAccount.length(), len, nAccount);
-				getAccountPoolMapperDB(accountPoolMapperName).unassignAccount(buf.toString());
+		try {
+			if (hasWriteAccess(currentUser())) {
+				String firstAccount = range.substring(0, range.indexOf('-'));
+				String lastAccountN = range.substring(range.indexOf('-') + 1);
+				String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
+				String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
+				int nFirstAccount = Integer.parseInt(firstAccountN);
+				int nLastAccount = Integer.parseInt(lastAccountN);
+	
+				StringBuffer last = new StringBuffer(firstAccount);
+				String nLastAccountString = Integer.toString(nLastAccount);
+				last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
+	
+				StringBuffer buf = new StringBuffer(firstAccount);
+				int len = firstAccount.length();
+				for (int account = nFirstAccount; account <= nLastAccount; account++) {
+					String nAccount = Integer.toString(account);
+					buf.replace(len - nAccount.length(), len, nAccount);
+					getAccountPoolMapperDB(accountPoolMapperName).unassignAccount(buf.toString());
+				}
+	
+				gumsAdminLog.info(logUserAccess() + "Unassigned accounts from account mapper '" + accountPoolMapperName + "'");
+				siteAdminLog.info(logUserAccess() + "Unassigned accounts from account mapper '" + accountPoolMapperName + "'");
 			}
-
-			gumsResourceAdminLog.info(logUserAccess() + "Unassigned accounts from account mapper '" + accountPoolMapperName + "'");
-			siteLog.info(logUserAccess() + "Unassigned accounts from account mapper '" + accountPoolMapperName + "'");
-		}
-		else {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to unassign accounts because user doesn't have administrative access");
-			siteLog.info(logUserAccess() + "Failed to unassign accounts because user doesn't have administrative access");
-			throw new AuthorizationDeniedException();
-		}
+			else {
+				String message = logUserAccess() + "Unauthorized access to unassignAccountRange for '"+accountPoolMapperName+" "+range+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);	
+				throw new AuthorizationDeniedException();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}		
 	}
 
 	public void updateGroups() {
 		try {
 			if (hasWriteAccess(currentUser())) {
 				gums().getResourceManager().updateGroups();
-				gumsResourceAdminLog.info(logUserAccess() + "Groups updated");
-				siteLog.info(logUserAccess() + "Groups updated");
+				gumsAdminLog.info(logUserAccess() + "Groups updated");
+				siteAdminLog.info(logUserAccess() + "Groups updated");
 			} else {
+				String message = logUserAccess() + "Unauthorized access to updateGroups";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);	
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to update all groups - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to update all groups");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to update all groups - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Failed to update all groups - " + e.getMessage());
-			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
 	public String getCurrentDn() {
-		try {
-			return currentUser().getCertificateDN();
-		}
-		catch(Exception e) {
-			return "UNKNOWN";
-		}
+		return currentUser().getCertificateDN();
 	}
 
 	// Depricated
@@ -499,18 +557,16 @@ public class GUMSAPIImpl implements GUMSAPI {
 				PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceFactory);
 				ManualUserGroupDB db = factory.retrieveManualUserGroupDB(group);
 				db.addMember(new GridUser(userDN, null));
-				gumsResourceAdminLog.info(logUserAccess() + "Added to persistence '" + persistanceFactory + "' group '" + group + "'  user '" + userDN + "'");
-				siteLog.info(logUserAccess() + "Added to persistence '" + persistanceFactory + "' group '" + group + "'  user '" + userDN + "'");
+				gumsAdminLog.info(logUserAccess() + "Added to persistence '" + persistanceFactory + "' group '" + group + "'  user '" + userDN + "'");
+				siteAdminLog.info(logUserAccess() + "Added to persistence '" + persistanceFactory + "' group '" + group + "'  user '" + userDN + "'");
 			} else {
+				String message = logUserAccess() + "Unauthorized access to manualGroupAdd for persistance '" + persistanceFactory + "' user group '" + group + "' user '" + userDN + "'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to add to persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to add to persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "'");
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to add to persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Failed to add to persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
-			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
@@ -533,19 +589,16 @@ public class GUMSAPIImpl implements GUMSAPI {
 				PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceFactory);
 				ManualUserGroupDB db = factory.retrieveManualUserGroupDB(group);
 				db.removeMember(new GridUser(userDN, null));
-				gumsResourceAdminLog.info(logUserAccess() + "Removed from persistence '" + persistanceFactory + "' group '" + group + "'  user '" + userDN + "'");
-				siteLog.info(logUserAccess() + "Removed from persistence '" + persistanceFactory + "' group '" + group + "'  user '" + userDN + "'");
+				gumsAdminLog.info(logUserAccess() + "Removed from persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "'");
+				siteAdminLog.info(logUserAccess() + "Removed from persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "'");
 			} else {
+				String message = logUserAccess() + "Unauthorized access to manualGroupRemove for persistance '" + persistanceFactory + "' user group '" + group + "' user '" + userDN + "'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to remove from persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to remove from persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to remove from persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Failed to remove from persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "' - " + e.getMessage());
-			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
@@ -568,19 +621,16 @@ public class GUMSAPIImpl implements GUMSAPI {
 				PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceFactory);
 				ManualAccountMapperDB db = factory.retrieveManualAccountMapperDB(group);
 				db.createMapping(userDN, account);
-				gumsResourceAdminLog.info(logUserAccess() + "Added mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "'");
-				siteLog.info(logUserAccess() + "Added mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "'");
+				gumsAdminLog.info(logUserAccess() + "Added mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "'");
+				siteAdminLog.info(logUserAccess() + "Added mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "'");
 			} else {
+				String message = "Unauthorized access to manualMappingAdd for persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to add mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to add mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to add mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Failed to add mapping to persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' to account '" + account + "' - " + e.getMessage());
-			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
@@ -603,23 +653,20 @@ public class GUMSAPIImpl implements GUMSAPI {
 				PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceFactory);
 				ManualAccountMapperDB db = factory.retrieveManualAccountMapperDB(group);
 				db.removeMapping(userDN);
-				gumsResourceAdminLog.info(logUserAccess() + "Removed mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "'");
-				siteLog.info(logUserAccess() + "Removed mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "'");
+				gumsAdminLog.info(logUserAccess() + "Removed mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "'");
+				siteAdminLog.info(logUserAccess() + "Removed mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "'");
 			} else {
+				String message = "Unauthorized access to manualMappingRemove for persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to remove mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to remove mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to remove mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Failed to remove mapping from persistence '" + persistanceFactory + "' group '" + group + "' for user '" + userDN + "' - " + e.getMessage());
-			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
-	public void poolAddAccount(String persistanceFactory, String group, String username) {
+	public void poolAddAccount(String persistanceFactory, String group, String accountName) {
 		try {
 			if (hasWriteAccess(currentUser())) {
 				Collection accountMappers = gums().getConfiguration().getAccountMappers().values();
@@ -640,21 +687,18 @@ public class GUMSAPIImpl implements GUMSAPI {
 					throw new RuntimeException("PersistenceFactory '" + persistanceFactory + "' does not exist");
 				}
 				AccountPoolMapperDB db = factory.retrieveAccountPoolMapperDB(group);
-				db.addAccount(username);
-				gumsResourceAdminLog.info(logUserAccess() + "Added account to pool: persistence '" + persistanceFactory + "' group '" + group + "' username '" + username + "'");
-				siteLog.info(logUserAccess() + "Added account to pool: persistence '" + persistanceFactory + "' group '" + group + "' username '" + username + "'");
+				db.addAccount(accountName);
+				gumsAdminLog.info(logUserAccess() + "Added account to pool: persistence '" + persistanceFactory + "' group '" + group + "' account '" + accountName + "'");
+				siteAdminLog.info(logUserAccess() + "Added account to pool: persistence '" + persistanceFactory + "' group '" + group + "' account '" + accountName + "'");
 			} else {
+				String message = "Unauthorized access to poolAddAccount for persistence '" + persistanceFactory + "' group '" + group + "' account '" + accountName + "'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
 				throw new AuthorizationDeniedException();
 			}
-		} catch (AuthorizationDeniedException e) {
-			gumsResourceAdminLog.info(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceFactory + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Unauthorized access to add account to pool: persistence '" + persistanceFactory + "' group '" + group + "' username '" + username + "'");
-			throw e;
-		} catch (RuntimeException e) {
-			gumsResourceAdminLog.error(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceFactory + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
-			siteLog.info(logUserAccess() + "Failed to add account to pool: persistence '" + persistanceFactory + "' group '" + group + "' username '" + username + "' - " + e.getMessage());
-			throw e;
-		}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}		
 	}
 
 	////////////
@@ -669,7 +713,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 		}
 	}
 
-	private String getAccountPoolMapper(String pool) {
+	private String getAccountPoolMapper(String pool) throws Exception {
 		Collection accountMappers = gums().getConfiguration().getAccountMappers().values();
 		Iterator it = accountMappers.iterator();
 		while (it.hasNext()) {
@@ -680,28 +724,29 @@ public class GUMSAPIImpl implements GUMSAPI {
 		return null;
 	}
 
-	private AccountPoolMapperDB getAccountPoolMapperDB(String accountPoolMapperName) {
+	private AccountPoolMapperDB getAccountPoolMapperDB(String accountPoolMapperName) throws Exception {
 		return ((AccountPoolMapper) gums().getConfiguration().getAccountMapper(accountPoolMapperName)).getDB();
 	}
 
-	private ManualAccountMapperDB getManualAccountMapperDB(String manualAccountMapperName) {
+	private ManualAccountMapperDB getManualAccountMapperDB(String manualAccountMapperName) throws Exception {
 		return ((ManualAccountMapper) gums().getConfiguration().getAccountMapper(manualAccountMapperName)).getDB();
 	}
 
-	private ManualUserGroupDB getManualUserGroupDB(String manualUserGroupName) {
+	private ManualUserGroupDB getManualUserGroupDB(String manualUserGroupName) throws Exception {
 		return ((ManualUserGroup) gums().getConfiguration().getUserGroup(manualUserGroupName)).getDB();
 	}    
 
 	private GUMS gums() {
 		if (gums == null) {
-			FileConfigurationStore confStore = new FileConfigurationStore(CertCache.getConfigDir(), CertCache.getResourceDir(), getVersionNoPatch(), true);
+			FileConfigurationStore confStore = new FileConfigurationStore(CertCache.getConfigDir(), CertCache.getResourceDir(), getVersionNoPatch());
 			gums = new GUMS(confStore);
 		}
 		return gums;
 	}
 
-	private boolean hasReadAllAccess(GridUser user, String hostname) {
-		if (user == null) return false;
+	private boolean hasReadAllAccess(GridUser user, String hostname) throws Exception {
+		if (user == null) 
+			return false;
 		if (gums().getConfiguration().getReadAllUserGroups() != null) {
 			Collection readAllUserGroups = gums().getConfiguration().getReadAllUserGroups();
 			Iterator it = readAllUserGroups.iterator();
@@ -720,8 +765,9 @@ public class GUMSAPIImpl implements GUMSAPI {
 		return false;
 	}
 
-	private boolean hasReadSelfAccess(GridUser currentUser) {
-		if (currentUser == null) return false;
+	private boolean hasReadSelfAccess(GridUser currentUser) throws Exception {
+		if (currentUser == null) 
+			return false;
 		if (gums().getConfiguration().getReadSelfUserGroups() == null)
 			return false;
 		Collection readSelfUserGroups = gums().getConfiguration().getReadSelfUserGroups();
@@ -734,8 +780,9 @@ public class GUMSAPIImpl implements GUMSAPI {
 		return false;
 	}
 
-	private boolean hasWriteAccess(GridUser user) {
-		if (user == null) return false;
+	private boolean hasWriteAccess(GridUser user) throws Exception {
+		if (user == null) 
+			return false;
 		if (gums().getConfiguration().getWriteUserGroups() == null)
 			return false;
 		Collection writeUserGroups = gums().getConfiguration().getWriteUserGroups();
@@ -749,14 +796,18 @@ public class GUMSAPIImpl implements GUMSAPI {
 	}
 
 	private HostToGroupMapping hostToGroupMapping(String hostname) {
-		Collection hostToGroupMappers = gums().getConfiguration().getHostToGroupMappings();
-		Iterator it = hostToGroupMappers.iterator();
-		while (it.hasNext()) {
-			HostToGroupMapping hostToGroupMapper = (HostToGroupMapping) it.next();
-			if (hostToGroupMapper.isInGroup(hostname)) {
-				return hostToGroupMapper;
+		try {
+			Collection hostToGroupMappers = gums().getConfiguration().getHostToGroupMappings();
+			Iterator it = hostToGroupMappers.iterator();
+			while (it.hasNext()) {
+				HostToGroupMapping hostToGroupMapper = (HostToGroupMapping) it.next();
+				if (hostToGroupMapper.isInGroup(hostname)) {
+					return hostToGroupMapper;
+				}
 			}
-		}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}		
 		return null;
 	}
 

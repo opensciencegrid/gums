@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class GecosMap {
     private Log log = LogFactory.getLog(NISClient.class);
-    private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+    private Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
     private Map accountToGecos = new Hashtable();
     private Map accountToName = new Hashtable();
     private Map accountToSurname = new Hashtable();
@@ -84,7 +84,7 @@ public class GecosMap {
                             // Two accounts matched. Can't decide, return null.
                             log.trace("NIS account Name/Surname multiple match, multiple account with surname." +
                             " Name: " + name + " - Surname: " + surname + " - account: not defined");
-                            resourceAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
+                            gumsAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
                             return null;
                         }
                     }
@@ -99,7 +99,7 @@ public class GecosMap {
                 // Can't decide which account is the correct one
                 log.trace("NIS account Name/Surname multiple match, no account with surname." +
                 " Name: " + name + " - Surname: " + surname + " - account: not defined");
-                resourceAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
+                gumsAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
                 return null;
             }
             // Common Accounts has no items, disregarding the name
@@ -111,7 +111,7 @@ public class GecosMap {
                 return account;
             } else {
                 log.trace("NIS account Surname multiple match, no match on Name. Name: " + name + " - Surname: " + surname + " - account: undefined");
-                resourceAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + accountsWithSurname);
+                gumsAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + accountsWithSurname);
                 return null;
             }
         }

@@ -10,7 +10,7 @@ public interface ConfigurationDB {
      * 
      * @param A date string
      */	
-	public void deleteBackupConfiguration(Date date);
+	public boolean deleteBackupConfiguration(Date date);
 	
     /**
      * Get a list of config date strings that have been stored

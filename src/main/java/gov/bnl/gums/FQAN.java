@@ -10,6 +10,9 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /** 
  * Represent a VOMS extended proxy credential as defined in
  * http://edg-wp2.web.cern.ch/edg-wp2/security/voms/edg-voms-credential.pdf.

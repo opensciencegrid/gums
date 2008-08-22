@@ -35,7 +35,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMapperDB {
 	private Log log = LogFactory.getLog(LDAPAccountMapperDB.class);
-    private Log adminLog = LogFactory.getLog(GUMS.resourceAdminLog);
 	private LDAPPersistenceFactory factory;
 	private String map;
 	private String mapDN;
@@ -378,9 +377,8 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
                 log.trace("Assigned secondary group '" + group + "' to '" + account + "'");
             }
         } catch (Exception e) {
-            log.info("Couldn't assign GIDs. account '" + account + "' - primary group '" + primaryGroup + "' - secondary '" + secondaryGroups + "'", e);
-            adminLog.error("Couldn't assign GIDs: " + e.getMessage() + ". account '" + account + "' - primary group '" + primaryGroup + "' - secondary '" + secondaryGroups + "'");
-            throw new RuntimeException("Couldn't assign GIDs: " + e.getMessage() + ". account '" + account + "' - primary group '" + primaryGroup + "' - secondary '" + secondaryGroups + "'", e);
+            log.warn("Couldn't assign GIDs. account '" + account + "' - primary group '" + primaryGroup + "' - secondary '" + secondaryGroups + "'", e);
+            throw new RuntimeException("Couldn't assign GIDs: " + e.getMessage() + ". account '" + account + "' - primary group '" + primaryGroup + "' - secondary '" + secondaryGroups + "' - " + e.getMessage());
         }
     }
 	
@@ -395,9 +393,8 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
         	factory.changeEmail(account, email);
             log.trace("Assigned '" + email + "' to '" + account + "'");
         } catch (Exception e) {
-            log.info("Couldn't assign email. account '" + account + "' - email '" + email + "'", e);
-            adminLog.error("Couldn't assign email: " + e.getMessage() + ". account '" + account + "' - email '" + email + "'");
-            throw new RuntimeException("Couldn't assign email: " + e.getMessage() + ". account '" + account + "' - email '" + email + "'", e);
+            log.warn("Couldn't assign email. account '" + account + "' - email '" + email + "'", e);
+            throw new RuntimeException("Couldn't assign email: " + e.getMessage() + ". account '" + account + "' - email '" + email + "' - " + e.getMessage());
         }
     }
     

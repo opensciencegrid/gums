@@ -129,6 +129,17 @@ public interface GUMSAPI extends Remote {
     void manualGroupAdd2(String userGroupName, String userDN);
     
     /**
+     * Add a userDN to a manual user group
+     * 
+     * @param persistanceFactory
+     * @param group name of manual user group
+     * @param userDN
+     * @param fqan
+     * @param email
+     */
+    public void manualGroupAdd3(String manualUserGroupName, String userDN, String fqan, String email);
+    
+    /**
      * Remove a userDN from a manual user group
      * 
      * @param persistanceFactory
@@ -136,6 +147,16 @@ public interface GUMSAPI extends Remote {
      * @param userDN
      */
     void manualGroupRemove2(String manualUserGroupName, String userDN);
+    
+    /**
+     * Remove a userDN from a manual user group
+     * 
+     * @param persistanceFactory
+     * @param group name of manual user group
+     * @param userDN
+     * @param fqan
+     */
+    void manualGroupRemove3(String manualUserGroupName, String userDN, String fqan);
     
     /**
      * Add a userDN to account mapping

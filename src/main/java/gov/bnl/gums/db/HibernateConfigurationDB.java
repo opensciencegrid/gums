@@ -26,7 +26,7 @@ public class HibernateConfigurationDB implements ConfigurationDB {
         log.trace("LDAPConfigurationDB object create: factory " + persistenceFactory);
     }
     
-	public void deleteBackupConfiguration(Date date) {
+	public boolean deleteBackupConfiguration(Date date) {
 		Session session = null;
 		Transaction tx = null;
 		try {
@@ -42,9 +42,8 @@ public class HibernateConfigurationDB implements ConfigurationDB {
         			deleted = true;
         		}
         	}
-        	if (!deleted)
-        		throw new RuntimeException("Could not delete configuration with date "+date.toLocaleString());
 	        tx.commit();
+	        return deleted;
         // Handles when transaction goes wrong...
         } catch (Exception e) {
             log.error("Couldn't retrieve backup configuration", e);

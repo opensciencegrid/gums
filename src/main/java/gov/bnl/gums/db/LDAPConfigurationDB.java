@@ -19,7 +19,7 @@ public class LDAPConfigurationDB implements ConfigurationDB {
         log.trace("LDAPConfigurationDB object create: factory " + factory);
     }
     
-	public void deleteBackupConfiguration(Date date) {
+	public boolean deleteBackupConfiguration(Date date) {
 		throw new RuntimeException("LDAP Configuration DB not yet supported");
 	}
 	

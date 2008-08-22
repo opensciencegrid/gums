@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class NISClient {
     private Log log = LogFactory.getLog(NISClient.class);
-    private Log resourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
+    private Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
     private Map accountToGecos;
     private Map accountToName;
     private Map accountToSurname;
@@ -99,7 +99,7 @@ public class NISClient {
                             // Two accounts matched. Can't decide, return null.
                             log.trace("NIS account Name/Surname multiple match, multiple account with surname." +
                             " Name: " + name + " - Surname: " + surname + " - account: not defined");
-                            resourceAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
+                            gumsAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
                             return null;
                         }
                     }
@@ -114,7 +114,7 @@ public class NISClient {
                 // Can't decide which account is the correct one
                 log.trace("NIS account Name/Surname multiple match, no account with surname." +
                 " Name: " + name + " - Surname: " + surname + " - account: not defined");
-                resourceAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
+                gumsAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
                 return null;
             }
             // Common Accounts has no items, disregarding the name
@@ -126,7 +126,7 @@ public class NISClient {
                 return account;
             } else {
                 log.trace("NIS account Surname multiple match, no match on Name. Name: " + name + " - Surname: " + surname + " - account: undefined");
-                resourceAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + accountsWithSurname);
+                gumsAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + accountsWithSurname);
                 return null;
             }
         }
@@ -195,7 +195,7 @@ public class NISClient {
             surnameToAccount = new MultiHashMap();
             fillMaps(retrieveJndiProperties(), accountToGecos, accountToName, accountToSurname);
             lastUpdate = new Date();
-            resourceAdminLog.info("NIS map refreshed for '" + nisJndiUrl + "'");
+            gumsAdminLog.info("NIS map refreshed for '" + nisJndiUrl + "'");
             log.debug("NIS map refreshed for '" + nisJndiUrl + "'");
             } finally {
                 lock.releaseWriteLock();

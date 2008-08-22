@@ -319,7 +319,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         Iterator iter = hibernateUsers.iterator();
         while (iter.hasNext()) {
             HibernateUser user = (HibernateUser) iter.next();
-            members.add(new GridUser(user.getDn(), user.getFqan()));
+            members.add(new GridUser(user.getDn(), user.getFqan(), user.getEmail()));
         }
         return members;
     }

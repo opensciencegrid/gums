@@ -24,7 +24,7 @@ public interface ManualUserGroupDB {
      * 
      * @param userDN
      */
-    void addMember(GridUser userDN);
+    void addMember(GridUser user);
     
     /**
      * Remove member from group
@@ -32,7 +32,7 @@ public interface ManualUserGroupDB {
      * @param userDN
      * @return true if userDN removed
      */
-    boolean removeMember(GridUser userDN);
+    boolean removeMember(GridUser user);
     
     /**
      * Checks to see if member in group

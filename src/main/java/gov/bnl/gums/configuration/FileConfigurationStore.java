@@ -33,8 +33,6 @@ import org.apache.commons.logging.*;
  */
 public class FileConfigurationStore extends ConfigurationStore {
 	private Log log = LogFactory.getLog(FileConfigurationStore.class);
-	private Log gumsSiteAdminLog = LogFactory.getLog(GUMS.siteAdminLog);
-	private Log gumsResourceAdminLog = LogFactory.getLog(GUMS.resourceAdminLog);
 	private Configuration conf;
 	private Date lastRetrieval = null;
 	private String configBackupDir = null;
@@ -115,49 +113,16 @@ public class FileConfigurationStore extends ConfigurationStore {
 	 * @param create if true, a new barbones configuration file will be created
 	 * at given filename if no file currently exists there
 	 */
-	public FileConfigurationStore(String configDir, String resourceDir, String version, boolean create) {
+	public FileConfigurationStore(String configDir, String resourceDir, String version) {
 		this.version = version;
 		this.configPath = configDir+"/gums.config";
 		this.schemaPath = resourceDir+"/gums.config.schema";
 		this.transformPath = resourceDir+"/gums.config.transform";
 		this.configBackupDir = configDir+"/backup";
-
-		if (create && !(new File(configPath).exists())) {
-			try {
-				BufferedWriter out = new BufferedWriter(new FileWriter(configPath));
-				out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n"+
-						"<gums version='"+version+"'>\n\n"+
-						"\t<persistenceFactories>\n\n"+
-						"\t\t<hibernatePersistenceFactory\n"+
-						"\t\t\tname='mysql'\n"+
-						"\t\t\tdescription=''\n"+
-						"\t\t\thibernate.connection.driver_class='com.mysql.jdbc.Driver'\n"+
-						"\t\t\thibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'\n"+
-						"\t\t\thibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_3'\n"+
-						"\t\t\thibernate.connection.username='gums'\n"+
-						"\t\t\thibernate.connection.password=''\n"+
-						"\t\t\thibernate.connection.autoReconnect='true'\n"+
-						"\t\t\thibernate.c3p0.min_size='3'\n"+
-						"\t\t\thibernate.c3p0.max_size='20'\n"+
-						"\t\t\thibernate.c3p0.timeout='180' />\n\n"+
-						"\t</persistenceFactories>\n\n"+
-						"\t<userGroups>\n\n"+
-						"\t\t<manualUserGroup\n"+
-						"\t\t\tname='admins'\n"+
-						"\t\t\tdescription=''\n"+
-						"\t\t\tpersistenceFactory='mysql'\n"+
-						"\t\t\taccess='write'/>\n\n"+
-						"\t</userGroups>\n\n"+
-				"</gums>");
-				out.close();
-			} catch (IOException e1) {
-				gumsResourceAdminLog.error("Could not create gums.config: " + e1.getMessage());
-			}
-		}
 	}
 
-	public void deleteBackupConfiguration(String dateStr) {
-		new File(configBackupDir+"/gums.config."+dateStr).delete();
+	public boolean deleteBackupConfiguration(String dateStr) {
+		return new File(configBackupDir+"/gums.config."+dateStr).delete();
 	}
 
 	public Collection getBackupConfigDates() {
@@ -179,7 +144,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 			File file = new File(configPath);
 			return new Date(file.lastModified());
 		} catch (Exception e) {
-			gumsResourceAdminLog.fatal("The configuration wasn't read properly. GUMS is not operational.", e);
+			log.error("Could not determine last modification time of configuration.", e);
 			return null;
 		}
 	}
@@ -223,9 +188,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 	}
 
 	public synchronized void setConfiguration(Configuration conf, boolean backupCopy) throws Exception {
-		log.trace("Configuration set programically");
-		gumsResourceAdminLog.info("Configuration set programically");
-		gumsSiteAdminLog.info("Configuration set programically");
+		log.debug("Configuration set programically");
 		if (conf == null)
 			throw new RuntimeException("Configuration has not been loaded");
 		log.debug("Attempting to store configuration");
@@ -260,12 +223,9 @@ public class FileConfigurationStore extends ConfigurationStore {
 
 			log.debug("Attempting to load configuration from gums.config");
 			conf = ConfigurationToolkit.loadConfiguration(configPath, null, schemaPath);
-			log.trace("Configuration reloaded from '" + configPath + "'");
-			gumsResourceAdminLog.info("Configuration reloaded from '" + configPath + "'");
-			gumsSiteAdminLog.info("Configuration reloaded from '" + configPath + "'");
+			log.debug("Configuration reloaded from '" + configPath + "'");
 			lastRetrieval = new Date();
 		} catch (Exception e) {
-			gumsResourceAdminLog.error("The configuration wasn't read correctly: " + e.getMessage());
 			log.error("The configuration wasn't read correctly.", e);
 			throw new RuntimeException("The configuration wasn't read correctly: " + e.getMessage());
 		}
