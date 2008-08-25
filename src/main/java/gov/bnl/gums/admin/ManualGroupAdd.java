@@ -32,7 +32,7 @@ public class ManualGroupAdd extends RemoteCommand {
         "Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
         options.addOption(gumsUrl);
         
-        Option fqan = new Option("f", "gumsUrl", true,
+        Option fqan = new Option("f", "fqan", true,
         "Fully Qualified Attribute Name");
         options.addOption(fqan);
         

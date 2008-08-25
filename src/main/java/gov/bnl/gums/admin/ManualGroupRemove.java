@@ -19,7 +19,7 @@ public class ManualGroupRemove extends RemoteCommand {
      * Creates a new ManualGroupRemove object.
      */
     public ManualGroupRemove() {
-        syntax = "[-g GUMSURL] MANUALUSERGROUP USERDN1 [USERDN2] ...";
+        syntax = "[-g GUMSURL] [-f FQAN] MANUALUSERGROUP USERDN1 [USERDN2] ...";
         description = "Removes a user from a manually managed group. " +
             "USERGROUP is the name of the manual user group.";
     }
@@ -30,6 +30,10 @@ public class ManualGroupRemove extends RemoteCommand {
         Option gumsUrl = new Option("g", "gumsUrl", true,
         "Fully Qualified GUMS URL to override gums.location within the gums-client.properties file");
         options.addOption(gumsUrl);
+        
+        Option fqan = new Option("f", "fqan", true,
+        "Fully Qualified Attribute Name");
+        options.addOption(fqan);
         
         return options;
     }
@@ -43,9 +47,17 @@ public class ManualGroupRemove extends RemoteCommand {
         String userGroup = cmd.getArgs()[0];
 
         String gumsUrl = (cmd.getOptionValue("g", null));
+        String fqan = (cmd.getOptionValue("f", null));
         
-        for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
-            getGums(gumsUrl).manualGroupRemove2(userGroup, cmd.getArgs()[nArg]);
-        }
+    	if (fqan==null) {
+	        for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
+	            getGums(gumsUrl).manualGroupRemove2(userGroup, cmd.getArgs()[nArg]);
+	        }
+    	}
+    	else {
+	        for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
+	            getGums(gumsUrl).manualGroupRemove3(userGroup, cmd.getArgs()[nArg], fqan);
+	        }   		
+    	}
     }
 }
