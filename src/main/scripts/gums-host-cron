@@ -110,6 +110,9 @@ function usage {
 function logit {
   ts=$(date  +'%Y-%m-%dT%H-%M-%S')  #--- timestamp for log file ---
   echo "$ts $1" >>$LOGFILE
+  if [ "$DEBUG" == "1" ];then
+    echo "$ts $1"
+  fi 
 }
 #-----------------
 function logerr {
@@ -202,7 +205,7 @@ function generate_grid_mapfile {
   do
     verify_permissions $file
   done
-  script="$GUMSDIR/gums-host generateGridMapfile"
+  script="$GUMSDIR/gums-host $DEBUG_OPTION generateGridMapfile"
   logit "--------------------------------------"
   logit "Updating $(basename $MAPFILE)"
   logit "RUNNING: $script"
@@ -278,7 +281,7 @@ function generate_user_vo_mapfile {
   fi
 
   #--- generate the user-vo map file ----
-  script="$GUMSDIR/gums-host generateOsgUserVoMap" 
+  script="$GUMSDIR/gums-host $DEBUG_OPTION generateOsgUserVoMap" 
   logit "--------------------------------------"
   logit "Updating $(basename $INVERSEMAP)"
   logit "RUNNING: $script"
@@ -377,10 +380,28 @@ BACKUP_DATE=$(date '+%Y-%m-%dT%H-%M-%S')
 #------------------------------
 #  check command line args 
 #------------------------------
-if [ $# -gt 0 ];then
-  usage
-  exit 1
-fi
+ARGS=""
+DEBUG=0
+DEBUG_OPTION=""
+for arg ; do
+	case $arg in
+		--gumsdebug)
+		DEBUG=1
+		DEBUG_OPTION="--gumsdebug"
+		;;
+
+		*)
+		origlen=${#arg}
+		nospace=${arg//' '/''}
+		newlen=${#nospace}
+		if [ $newlen -lt $origlen ]; then
+			ARGS="$ARGS \"$arg\""
+		else
+			ARGS="$ARGS $arg"
+		fi
+		;;
+	esac
+done
 
 #------------------------------
 #  validate VDT_LOCATION  

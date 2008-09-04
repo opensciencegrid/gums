@@ -86,6 +86,8 @@ public class MapUser extends RemoteCommand {
         String hostname = (cmd.getOptionValue("s", null)); /* get hostname, default value is null */
         
         String gumsUrl = (cmd.getOptionValue("g", null));
+        if (gumsUrl==null)
+        	gumsUrl = Configuration.getInstance().getGUMSAuthZLocation();
 
         if (hostname == null) {
             if (isUsingProxy()) {
@@ -128,7 +130,7 @@ public class MapUser extends RemoteCommand {
         
         long overall = System.currentTimeMillis();
         long start = System.currentTimeMillis();
-        GRIDIdentityMappingServiceClient client = new GRIDIdentityMappingServiceClient(gumsUrl!=null?new URL(gumsUrl):Configuration.getInstance().getGUMSAuthZLocation());
+        GRIDIdentityMappingServiceClient client = new GRIDIdentityMappingServiceClient(new URL(gumsUrl));
         GridId id = new GridId();
         id.setHostDN(hostname);
         id.setUserFQAN(cmd.getOptionValue("f", null));
