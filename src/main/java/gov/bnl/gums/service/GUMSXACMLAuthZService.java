@@ -16,10 +16,6 @@ import org.opensciencegrid.authz.xacml.stubs.*;
 public class GUMSXACMLAuthZService extends XACMLAuthorizationPortTypeSOAPBindingSkeleton {
     static final long serialVersionUID = 1;
     
-    static{ 
-		System.out.println("hi");
-    }
-    
     /** Creates an authorization service using GUMS as the implementation. */
     public GUMSXACMLAuthZService() {
         super(new BasicMappingXACMLAuthZService(new GUMSXACMLMappingServiceImpl()));

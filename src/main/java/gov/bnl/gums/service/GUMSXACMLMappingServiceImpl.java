@@ -25,136 +25,151 @@ import org.opensaml.xacml.ctx.SubjectType;
 import org.opensaml.xacml.ctx.ResultType;
 import org.opensaml.xacml.ctx.ResourceType;
 import org.opensaml.xacml.ctx.AttributeType;
+import org.opensaml.xacml.ctx.AttributeValueType;
+import org.opensaml.xacml.ctx.impl.DecisionTypeImplBuilder;
+import org.opensaml.xacml.ctx.impl.StatusCodeTypeImplBuilder;
+import org.opensaml.xacml.ctx.impl.StatusTypeImplBuilder;
+import org.opensaml.xacml.ctx.impl.ResultTypeImplBuilder;
+import org.opensaml.xacml.ctx.impl.ResponseTypeImplBuilder;
+import org.opensaml.xacml.ctx.impl.AttributeValueTypeImpl;
+import org.opensaml.xacml.ctx.impl.AttributeValueTypeImplBuilder;
+import org.opensaml.xacml.ctx.impl.AttributeTypeImplBuilder;
 import org.opensaml.xacml.policy.AttributeAssignmentType;
 import org.opensaml.xacml.policy.EffectType;
 import org.opensaml.xacml.policy.ObligationsType;
 import org.opensaml.xacml.policy.ObligationType;
+import org.opensaml.xacml.policy.impl.AttributeAssignmentTypeImplBuilder;
+import org.opensaml.xacml.policy.impl.ObligationTypeImplBuilder;
+import org.opensaml.xacml.policy.impl.ObligationsTypeImplBuilder;
 import org.opensaml.xacml.profile.saml.XACMLAuthzDecisionQueryType;
 import org.opensaml.xacml.profile.saml.XACMLAuthzDecisionStatementType;
 import org.opensaml.xacml.profile.saml.impl.XACMLAuthzDecisionStatementTypeImplBuilder;
 import org.opensaml.xml.XMLObject;
 
 import org.opensciencegrid.authz.xacml.service.XACMLMappingService;
+import org.opensciencegrid.authz.xacml.common.XACMLConstants;
+import org.opensciencegrid.authz.xacml.client.XACMLClient;
 
 public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
-    private static String RESOURCE_ID = "http://authz-interop.org/xacml/2.0/subject/resource-x509-id";
-    private static String SUBJECT_ID = "http://authz-interop.org/xacml/2.0/subject/subject-x509-id";
-    private static String VOMS_FQAN = "http://authz-interop.org/xacml/2.0/subject/voms-fqan";
-    private static String USERNAME = "http://authz-interop.org/xacml/2.0/obligation/Username";
-    private static String ERROR = "http://oasis/names/tc/xacml/1.0/status/error";
-    private static String OK = "http://oasis/names/tc/xacml/1.0/status/ok";
-    private Log log = LogFactory.getLog(GUMSXACMLMappingServiceImpl.class);
-    private static GUMSAPI gums = new GUMSAPIImpl();
-   
-    public XACMLAuthzDecisionStatementType mapCredentials(XACMLAuthzDecisionQueryType xacmlQuery) throws Exception {
+	private static String RESOURCE_ID = XACMLConstants.RESOURCE_DNS_HOST_NAME_ID;
+	private static String SUBJECT_ID = XACMLConstants.SUBJECT_X509_ID;
+	private static String VOMS_FQAN = XACMLConstants.SUBJECT_VOMS_FQAN_ID;
+	private static String USERNAME =  XACMLConstants.OBLIGATION_USERNAME;
+	private static String ERROR = "http://oasis/names/tc/xacml/1.0/status/error";
+	private static String OK = "http://oasis/names/tc/xacml/1.0/status/ok";
+	private Log log = LogFactory.getLog(GUMSXACMLMappingServiceImpl.class);
+	private static GUMSAPI gums = new GUMSAPIImpl();
+
+	public XACMLAuthzDecisionStatementType mapCredentials(XACMLAuthzDecisionQueryType xacmlQuery) throws Exception {
 		XMLObjectBuilderFactory builderFactory = org.opensaml.xml.Configuration.getBuilderFactory();
 
-    	// Get information from request
-    	RequestType request = xacmlQuery.getRequest();
-    	String hostDn = getResourceAttributeValue(request, RESOURCE_ID);
-    	String userDn = getSubjectAttributeValue(request, SUBJECT_ID);
-    	String userFqan = getSubjectAttributeValue(request, VOMS_FQAN);
-		
-        // Attribute Assignment, decision, and status code
+		// Get information from request
+		RequestType request = xacmlQuery.getRequest();
+		String hostDn = getResourceAttributeValue(request, RESOURCE_ID);
+		String userDn = getSubjectAttributeValue(request, SUBJECT_ID);
+		String userFqan = getSubjectAttributeValue(request, VOMS_FQAN);
+
+		// Attribute Assignment, decision, and status code
 		AttributeAssignmentType attributeAssignment = null;
-        SubjectBuilder decisionBuilder = (SubjectBuilder)builderFactory.getBuilder(DecisionType.DEFAULT_ELEMENT_NAME);
-		DecisionType decision = (DecisionType)decisionBuilder.buildObject();
-        SubjectBuilder statusCodeBuilder = (SubjectBuilder)builderFactory.getBuilder(StatusCodeType.DEFAULT_ELEMENT_NAME);
-        StatusCodeType statusCode = (StatusCodeType)statusCodeBuilder.buildObject();
-        statusCode.setValue(OK);
+		DecisionTypeImplBuilder decisionBuilder = (DecisionTypeImplBuilder)builderFactory.getBuilder(DecisionType.DEFAULT_ELEMENT_NAME);
+		DecisionType decision = decisionBuilder.buildObject();
+		StatusCodeTypeImplBuilder statusCodeBuilder = (StatusCodeTypeImplBuilder)builderFactory.getBuilder(StatusCodeType.DEFAULT_ELEMENT_NAME);
+		StatusCodeType statusCode = statusCodeBuilder.buildObject();
+		statusCode.setValue(OK);
 		try {
 			String account = gums.mapUser(hostDn, userDn, userFqan);
 			if (account == null) {
-			    decision.setDecision(DecisionType.DECISION.Deny);
-			    log.debug("Denied access on '" + hostDn + "' for '" + userDn + "' with fqan '" + userFqan + "'");
+				decision.setDecision(DecisionType.DECISION.Deny);
+				
+				log.debug("Denied access on '" + hostDn + "' for '" + userDn + "' with fqan '" + userFqan + "'");
 			}
 			else {
-			    SubjectBuilder attributeAssignmentBuilder = (SubjectBuilder)builderFactory.getBuilder(AttributeAssignmentType.DEFAULT_ELEMENT_NAME);
-				attributeAssignment = (AttributeAssignmentType)attributeAssignmentBuilder.buildObject();
+				AttributeAssignmentTypeImplBuilder attributeAssignmentBuilder = (AttributeAssignmentTypeImplBuilder)builderFactory.getBuilder(AttributeAssignmentType.DEFAULT_ELEMENT_NAME);
+				attributeAssignment = attributeAssignmentBuilder.buildObject();
 				attributeAssignment.setAttributeId(USERNAME);
-				attributeAssignment.setDataType("http://www.w3.org/2001/XMLSchema#string");
+				attributeAssignment.setDataType(XACMLConstants.STRING_DATATYPE);
 				attributeAssignment.setValue(account);
-			    decision.setDecision(DecisionType.DECISION.Permit);
+
+				decision.setDecision(DecisionType.DECISION.Permit);
+				
 				log.debug("Credentials mapped on '" + hostDn + "' for '" + userDn + "' with fqan '" + userFqan + "' to '" + account + "'");
 			}
 		} catch (RuntimeException e1) {
-	        statusCode.setValue(ERROR);
-	        log.debug(e1.getMessage());
-		throw e1;
+			statusCode.setValue(ERROR);
+			log.debug(e1.getMessage());
+			throw e1;
 		}
-        
-        // Status
-        SubjectBuilder statusBuilder = (SubjectBuilder)builderFactory.getBuilder(StatusType.DEFAULT_ELEMENT_NAME);
-        StatusType status = (StatusType)statusBuilder.buildObject();
-        status.setStatusCode(statusCode);
-        
-        // Obligation
-        SubjectBuilder obligationBuilder = (SubjectBuilder)builderFactory.getBuilder(ObligationType.DEFAULT_ELEMENT_QNAME);
-		ObligationType obligation = (ObligationType)obligationBuilder.buildObject();
+
+		// Status
+		StatusTypeImplBuilder statusBuilder = (StatusTypeImplBuilder)builderFactory.getBuilder(StatusType.DEFAULT_ELEMENT_NAME);
+		StatusType status = statusBuilder.buildObject();
+		status.setStatusCode(statusCode);
+
+		// Obligation
+		ObligationTypeImplBuilder obligationBuilder = (ObligationTypeImplBuilder)builderFactory.getBuilder(ObligationType.DEFAULT_ELEMENT_QNAME);
+		ObligationType obligation = obligationBuilder.buildObject();
 		obligation.setFulfillOn(EffectType.Permit);
 		obligation.setObligationId(USERNAME);
 		if (attributeAssignment != null)
 			obligation.getAttributeAssignments().add(attributeAssignment);
-        
-        // Obligations
-        SubjectBuilder obligationsBuilder = (SubjectBuilder)builderFactory.getBuilder(ObligationsType.DEFAULT_ELEMENT_QNAME);
-		ObligationsType obligations = (ObligationsType)obligationsBuilder.buildObject();
+
+		// Obligations
+		ObligationsTypeImplBuilder obligationsBuilder = (ObligationsTypeImplBuilder)builderFactory.getBuilder(ObligationsType.DEFAULT_ELEMENT_QNAME);
+		ObligationsType obligations = obligationsBuilder.buildObject();
 		obligations.getObligations().add(obligation);
-        
-        // Result
-        SubjectBuilder resultBuilder = (SubjectBuilder)builderFactory.getBuilder(ResultType.DEFAULT_ELEMENT_NAME);
-		ResultType result = (ResultType)resultBuilder.buildObject();
+
+		// Result
+		ResultTypeImplBuilder resultBuilder = (ResultTypeImplBuilder)builderFactory.getBuilder(ResultType.DEFAULT_ELEMENT_NAME);
+		ResultType result = resultBuilder.buildObject();
 		result.setStatus(status);
 		result.setDecision(decision);
 		result.setObligations(obligations);
-        
-        // Response      
-        SubjectBuilder responseBuilder = (SubjectBuilder)builderFactory.getBuilder(ResponseType.DEFAULT_ELEMENT_NAME);
-		ResponseType response = (ResponseType)responseBuilder.buildObject();
+
+		// Response      
+		ResponseTypeImplBuilder responseBuilder = (ResponseTypeImplBuilder)builderFactory.getBuilder(ResponseType.DEFAULT_ELEMENT_NAME);
+		ResponseType response = responseBuilder.buildObject();
 		response.setResult(result);
-		
+
 		// Statement
-		XACMLAuthzDecisionStatementTypeImplBuilder xacmlauthzBuilder =  
-			(XACMLAuthzDecisionStatementTypeImplBuilder)builderFactory.getBuilder(XACMLAuthzDecisionStatementType.TYPE_NAME_XACML20);
- 	   	XACMLAuthzDecisionStatementType xacmlAuthzStatement = 
- 	   		xacmlauthzBuilder.buildObject( Statement.DEFAULT_ELEMENT_NAME, XACMLAuthzDecisionStatementType.TYPE_NAME_XACML20);	
- 	   	xacmlAuthzStatement.setRequest(request);
+		XACMLAuthzDecisionStatementTypeImplBuilder xacmlauthzBuilder = (XACMLAuthzDecisionStatementTypeImplBuilder)builderFactory.getBuilder(XACMLAuthzDecisionStatementType.TYPE_NAME_XACML20);
+		XACMLAuthzDecisionStatementType xacmlAuthzStatement = xacmlauthzBuilder.buildObject( Statement.DEFAULT_ELEMENT_NAME, XACMLAuthzDecisionStatementType.TYPE_NAME_XACML20);	
+		//xacmlAuthzStatement.setRequest(request);
 		xacmlAuthzStatement.setResponse(response);
- 	   	
-    	return xacmlAuthzStatement;
-    }
-    
-    private String getSubjectAttributeValue(RequestType request, String attributeId) {
-    	List<SubjectType> subjectList = request.getSubjects();
-	    for(SubjectType subject : subjectList) {
-	    	List<AttributeType> attributeList = subject.getAttributes();
-	        for(AttributeType attribute : attributeList) {
-	            String curAttributeId = attribute.getAttributeID();
-	            if (attributeId.equals(curAttributeId)) {
-		            List<XMLObject> attributeValueList = attribute.getAttributeValues();
-		            for(XMLObject attributeValue : attributeValueList) {
-		                return attributeValue.toString();
-		            }
-	            }
-	        }
-	    }  
-	    return null;
+
+		return xacmlAuthzStatement;
 	}
-    
-    private String getResourceAttributeValue(RequestType request, String attributeId) {
-    	List<ResourceType> resourceList = request.getResources();
-	    for(ResourceType resource : resourceList) {
-	    	List<AttributeType> attributeList = resource.getAttributes();
-	        for(AttributeType attribute : attributeList) {
-	            String curAttributeId = attribute.getAttributeID();
-	            if (attributeId.equals(curAttributeId)) {
-		            List<XMLObject> attributeValueList = attribute.getAttributeValues();
-		            for(XMLObject attributeValue : attributeValueList) {
-		                return attributeValue.toString();
-		            }
-	            }
-	        }
-	    }  
-	    return null;
+
+	private String getSubjectAttributeValue(RequestType request, String attributeId) {
+		List<SubjectType> subjectList = request.getSubjects();
+		for(SubjectType subject : subjectList) {
+			List<AttributeType> attributeList = subject.getAttributes();
+			for(AttributeType attribute : attributeList) {
+				String curAttributeId = attribute.getAttributeID();
+				if (attributeId.equals(curAttributeId)) {
+					List<XMLObject> attributeValueList = attribute.getAttributeValues();
+					for(XMLObject attributeValue : attributeValueList) {
+						return ((AttributeValueTypeImpl)attributeValue).getValue();
+					}
+				}
+			}
+		}  
+		return null;
+	}
+
+	private String getResourceAttributeValue(RequestType request, String attributeId) {
+		List<ResourceType> resourceList = request.getResources();
+		for(ResourceType resource : resourceList) {
+			List<AttributeType> attributeList = resource.getAttributes();
+			for(AttributeType attribute : attributeList) {
+				String curAttributeId = attribute.getAttributeID();
+				if (attributeId.equals(curAttributeId)) {
+					List<XMLObject> attributeValueList = attribute.getAttributeValues();
+					for(XMLObject attributeValue : attributeValueList) {
+						return ((AttributeValueTypeImpl)attributeValue).getValue();
+					}
+				}
+			}
+		}  
+		return null;
 	}
 }
