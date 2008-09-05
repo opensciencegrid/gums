@@ -19,7 +19,7 @@ public class MockGUMS extends GUMS {
         confStore = new MockConfigurationStore();
     }
 
-    public CoreLogic getResourceManager() {
+    public CoreLogic getCoreLogic() {
         return new CoreLogic(this);
     }
     

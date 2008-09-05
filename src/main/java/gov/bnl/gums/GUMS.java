@@ -67,7 +67,7 @@ public class GUMS {
                         public void run() {
                             try {
                                 gumsAdminLog.info("Starting automatic updateGroups");
-                                gums.getResourceManager().updateGroups();
+                                gums.getCoreLogic().updateGroups();
                                 gumsAdminLog.info("Automatic updateGroups ended");
                             } catch (Exception e) {
                                 gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage());
@@ -260,7 +260,7 @@ public class GUMS {
      * 
      * @return the resource manager.
      */
-    public CoreLogic getResourceManager() {
+    public CoreLogic getCoreLogic() {
         return resMan;
     }
     

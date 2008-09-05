@@ -29,7 +29,7 @@
 			persistenceFactory='mysql'/>
 
 		<manualUserGroup
-			name='test'
+			name='gums-test'
 			access='read all'
 			description=''
 			persistenceFactory='mysql'/>
@@ -39,7 +39,7 @@
 	<accountMappers>
 
 		<groupAccountMapper
-			name='test'
+			name='gums-test'
 			description=''
 			accountName='testAccount'/>
 
@@ -48,19 +48,19 @@
 	<groupToAccountMappings>
 
 		<groupToAccountMapping
-			name='test'
+			name='gums-test'
 			description=''
 			accountingVoSubgroup='TEST'
 			accountingVo='test'
-			userGroups='test'
-			accountMappers='test'/>
+			userGroups='gums-test'
+			accountMappers='gums-test'/>
 
 	</groupToAccountMappings>
 
 	<hostToGroupMappings>
 
 		<hostToGroupMapping
-			groupToAccountMappings='test'
+			groupToAccountMappings='gums-test'
 			description=''
 			cn='*.*.*, *.*.*.*'/>
 

@@ -71,9 +71,9 @@ public class CertCache implements Filter {
 	/**
 	 * @param cert
 	 */
-        static public String getUserDN() {
-                return CertToolkit.getUserDN(getUserCertificate());
-        }
+    static public String getUserDN() {
+            return CertToolkit.getUserDN(getUserCertificate());
+    }
 
   	/**
   	 * @param cert

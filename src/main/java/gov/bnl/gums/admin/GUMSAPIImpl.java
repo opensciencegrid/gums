@@ -129,7 +129,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public String generateEmailMapfile(String hostname) {
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
-				String map = gums().getResourceManager().generateGridMapfile(hostname, false, true, true);
+				String map = gums().getCoreLogic().generateGridMapfile(hostname, false, true, true);
 				gumsAdminLog.info(logUserAccess() + "Generated email mapfile");
 				return map;
 			} else { 
@@ -146,7 +146,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public String generateFqanMapfile(String hostname) {
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
-				String map = gums().getResourceManager().generateFqanMapfile(hostname);
+				String map = gums().getCoreLogic().generateFqanMapfile(hostname);
 				gumsAdminLog.info(logUserAccess() + "Generated fqan mapfile for host '" + hostname + "': " + map);
 				return map;
 			} else {
@@ -170,7 +170,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new RuntimeException("Grid Mapfile generation has been disabled (probably to conserve pool accounts)");
 		
 			if (hasReadAllAccess(currentUser(), hostname)) {
-				String map = gums().getResourceManager().generateGridMapfile(hostname, true, false, false);
+				String map = gums().getCoreLogic().generateGridMapfile(hostname, true, false, false);
 				gumsAdminLog.info(logUserAccess() + "Generated grid mapfile for host '" + hostname + "': " + map);
 				return map;
 			} else {
@@ -187,7 +187,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public String generateOsgUserVoMap(String hostname) {
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
-				String map = gums().getResourceManager().generateOsgUserVoMap(hostname);
+				String map = gums().getCoreLogic().generateOsgUserVoMap(hostname);
 				gumsAdminLog.info(logUserAccess() + "Generated grid3 vo-user map for host '" + hostname + "': " + map);
 				return map;
 			} else {
@@ -207,7 +207,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new RuntimeException("Grid Mapfile generation has been disabled (probably to conserve pool accounts)");
 			
 			if (hasReadAllAccess(currentUser(), hostname)) {
-				String map = gums().getResourceManager().generateGridMapfile(hostname, true, true, false);
+				String map = gums().getCoreLogic().generateGridMapfile(hostname, true, true, false);
 				gumsAdminLog.info(logUserAccess() + "Generated mapfile for host '" + hostname + "': " + map);
 				return map;
 			} else {
@@ -383,7 +383,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public String mapAccount(String accountName) {
 		try {
 			if (hasReadAllAccess(currentUser(), null)) {
-				String DNs = gums().getResourceManager().mapAccount(accountName);
+				String DNs = gums().getCoreLogic().mapAccount(accountName);
 				gumsAdminLog.info(logUserAccess() + "Mapped the account '" + accountName + "' to '" + DNs + "'");
 				return DNs;
 			} else {
@@ -400,7 +400,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public String mapUser(String hostname, String userDN, String fqan) {
 		try {
 			if ( (hasReadSelfAccess(currentUser()) && currentUser().compareDn(userDN)==0) || hasReadAllAccess(currentUser(), hostname)) {
-				String account = gums().getResourceManager().map(hostname, new GridUser(userDN, fqan));
+				String account = gums().getCoreLogic().map(hostname, new GridUser(userDN, fqan));
 				gumsAdminLog.info(logUserAccess() + "Mapped on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' to '" + account + "'");
 				return account;
 			} else {
@@ -518,7 +518,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public void updateGroups() {
 		try {
 			if (hasWriteAccess(currentUser())) {
-				gums().getResourceManager().updateGroups();
+				gums().getCoreLogic().updateGroups();
 				gumsAdminLog.info(logUserAccess() + "Groups updated");
 				siteAdminLog.info(logUserAccess() + "Groups updated");
 			} else {
