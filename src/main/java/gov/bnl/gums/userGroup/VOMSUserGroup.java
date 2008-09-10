@@ -17,7 +17,7 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory; 
-import org.edg.security.voms.service.admin.*;
+import org.glite.security.voms.*;
 
 /** A group of users residing on a VOMS vo database. This class is able to 
  * import a list of users from a VOMS server. It will store to a local
@@ -145,7 +145,7 @@ public class VOMSUserGroup extends UserGroup {
     public VOMSAdmin getVOMSAdmin() {
         try {
             log.info("VOMS Service Locater: url='" + getUrl() + "'");
-            System.setProperty("axis.socketSecureManager", "org.edg.security.trustmanager.axis.AXISSocketManager");
+//            System.setProperty("axis.socketSecureManager", "org.glite.security.trustmanager.axis.AXISSocketManager");
             VOMSAdminServiceLocator locator = new VOMSAdminServiceLocator();
             URL vomsUrl = new URL( getUrl() );
             log.info("Connecting to VOMS admin at " + vomsUrl);
@@ -363,9 +363,9 @@ public class VOMSUserGroup extends UserGroup {
             "' sslKey='" + System.getProperty("sslKey") +
             "' sslKeyPasswd set:" + (System.getProperty("sslKeyPasswd")!=null) +
             " sslCAFiles='" + System.getProperty("sslCAFiles") + "'" ); 
-            System.setProperty("axis.socketSecureFactory", "org.edg.security.trustmanager.axis.AXISSocketFactory");
+            System.setProperty("axis.socketSecureFactory", "org.glite.security.trustmanager.axis.AXISSocketFactory");
             VOMSAdmin voms = getVOMSAdmin();
-        	org.edg.security.voms.service.User[] users = null;
+        	org.glite.security.voms.User[] users = null;
             if (role.equals("")) {
                 users = voms.listMembers( !getVoGroup().equals("")?getVoGroup():null );
             } else if(!getVoGroup().equals("")) {

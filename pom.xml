@@ -65,6 +65,71 @@
 	      </resource>
 	    </resources>
 		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>1</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<mkdir dir="target/temp"/>
+								<copy filtering="on" todir="target/temp">
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-ant/1.3"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis/1.3"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-saaj/1.3"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-jaxrpc/1.3"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-wsdl4j/1.3"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-discovery/commons-discovery/0.2"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-logging/commons-logging/1.0.3"/>
+								</copy>
+								<ant antfile="wsdl2java.xml" target="createClientStub" inheritRefs="true"/>
+								<delete dir="target/temp"/>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+	            	<dependency>
+	               		<groupId>axis</groupId>
+	               		<artifactId>axis-ant</artifactId>
+	               		<version>1.3</version>
+	            	</dependency>
+	            	<dependency>
+	               		<groupId>axis</groupId>
+	               		<artifactId>axis</artifactId>
+	               		<version>1.3</version>
+	            	</dependency>
+	            	<dependency>
+	               		<groupId>axis</groupId>
+	               		<artifactId>axis-jaxrpc</artifactId>
+	               		<version>1.3</version>
+	            	</dependency>
+	            	<dependency>
+	               		<groupId>axis</groupId>
+	               		<artifactId>axis-saaj</artifactId>
+	               		<version>1.3</version>
+	            	</dependency>
+	            	<dependency>
+	               		<groupId>axis</groupId>
+	               		<artifactId>axis-wsdl4j</artifactId>
+	               		<version>1.3</version>
+	            	</dependency>
+	            	<dependency>
+	               		<groupId>commons-discovery</groupId>
+	               		<artifactId>commons-discovery</artifactId>
+	               		<version>0.4</version>
+	            	</dependency>
+	            	<dependency>
+	               		<groupId>commons-logging</groupId>
+	               		<artifactId>commons-logging</artifactId>
+	               		<version>1.0.4</version>
+	            	</dependency>
+				</dependencies>
+			</plugin>		
    			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -231,23 +296,18 @@
        <dependency>
 		   <groupId>axis</groupId>
 		   <artifactId>axis</artifactId>
-		   <version>1.2-RC2</version>
+		   <version>1.3</version>
 	   </dependency>
 	   <dependency>
 		   <groupId>axis</groupId>
 		   <artifactId>axis-jaxrpc</artifactId>
-		   <version>1.2-RC2</version>
+		   <version>1.3</version>
 	   </dependency>
 	   <dependency>
 		   <groupId>axis</groupId>
 		   <artifactId>axis-saaj</artifactId>
-		   <version>1.2-RC2</version>
+		   <version>1.3</version>
 	   </dependency>		
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis-wsdl4j</artifactId>
-            <version>1.2-RC2</version>
-        </dependency>  		
 	   <dependency>
 		   <groupId>commons-codec</groupId>
 		   <artifactId>commons-codec</artifactId>
@@ -273,11 +333,11 @@
             <artifactId>commons-logging</artifactId>
             <version>1.1.1</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>edg</groupId>
             <artifactId>edg-voms-admin-api</artifactId>
             <version>unknown</version>
-        </dependency> 
+        </dependency--> 
 		<dependency>
 		   <groupId>glite</groupId>
 		   <artifactId>glite-security-trustmanager</artifactId>
@@ -344,12 +404,12 @@
             <version>1.4</version>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>edg</groupId>
             <artifactId>edg-java-security-trustmanager</artifactId>
             <version>unknown</version>
             <scope>runtime</scope>
-        </dependency>                
+        </dependency-->                
         <dependency>
             <groupId>glite</groupId>
             <artifactId>bcprov</artifactId>
@@ -379,7 +439,7 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>3.1.11</version>
             <scope>runtime</scope>
-        </dependency>        
+        </dependency>    
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
