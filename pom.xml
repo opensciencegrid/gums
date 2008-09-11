@@ -9,17 +9,17 @@
 
   	<repositories>
 		<repository>
+	    	<id>usatlas</id>
+			<name>usatlas repository</name>
+	 		<layout>default</layout>
+ 			<url>http://grid.racf.bnl.gov/mvn</url>
+		</repository>
+		<repository>
 	    	<id>central</id>
 			<name>Maven Repository Switchboard</name>
 	 		<layout>default</layout>
  			<url>http://repo1.maven.org/maven2</url>
 		</repository>
-		<repository>
-	    	<id>usatlas</id>
-			<name>usatlas repository</name>
-	 		<layout>default</layout>
- 			<url>http://grid.racf.bnl.gov/mvn</url>
-		</repository>		
 	</repositories>
 	
 	<distributionManagement>
@@ -75,13 +75,13 @@
 							<tasks>
 								<mkdir dir="target/temp"/>
 								<copy filtering="on" todir="target/temp">
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-ant/1.3"/>
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis/1.3"/>
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-saaj/1.3"/>
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-jaxrpc/1.3"/>
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-wsdl4j/1.3"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-ant/1.4"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis/1.4"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-saaj/1.4"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-jaxrpc/1.4"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-wsdl4j/1.5.1"/>
 									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-discovery/commons-discovery/0.2"/>
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-logging/commons-logging/1.0.3"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-logging/commons-logging/1.0.4"/>
 								</copy>
 								<ant antfile="wsdl2java.xml" target="createClientStub" inheritRefs="true"/>
 								<delete dir="target/temp"/>
@@ -96,32 +96,32 @@
 	            	<dependency>
 	               		<groupId>axis</groupId>
 	               		<artifactId>axis-ant</artifactId>
-	               		<version>1.3</version>
+	               		<version>1.4</version>
 	            	</dependency>
 	            	<dependency>
 	               		<groupId>axis</groupId>
 	               		<artifactId>axis</artifactId>
-	               		<version>1.3</version>
+	               		<version>1.4</version>
 	            	</dependency>
 	            	<dependency>
 	               		<groupId>axis</groupId>
 	               		<artifactId>axis-jaxrpc</artifactId>
-	               		<version>1.3</version>
+	               		<version>1.4</version>
 	            	</dependency>
 	            	<dependency>
 	               		<groupId>axis</groupId>
 	               		<artifactId>axis-saaj</artifactId>
-	               		<version>1.3</version>
+	               		<version>1.4</version>
 	            	</dependency>
 	            	<dependency>
 	               		<groupId>axis</groupId>
 	               		<artifactId>axis-wsdl4j</artifactId>
-	               		<version>1.3</version>
+	               		<version>1.5.1</version>
 	            	</dependency>
 	            	<dependency>
 	               		<groupId>commons-discovery</groupId>
 	               		<artifactId>commons-discovery</artifactId>
-	               		<version>0.4</version>
+	               		<version>0.2</version>
 	            	</dependency>
 	            	<dependency>
 	               		<groupId>commons-logging</groupId>
@@ -295,19 +295,29 @@
 		<!--compile scope-->
        <dependency>
 		   <groupId>axis</groupId>
+		   <artifactId>axis-ant</artifactId>
+		   <version>1.4</version>
+	   </dependency>		
+       <dependency>
+		   <groupId>axis</groupId>
 		   <artifactId>axis</artifactId>
-		   <version>1.3</version>
+		   <version>1.4</version>
 	   </dependency>
 	   <dependency>
 		   <groupId>axis</groupId>
 		   <artifactId>axis-jaxrpc</artifactId>
-		   <version>1.3</version>
+		   <version>1.4</version>
 	   </dependency>
 	   <dependency>
 		   <groupId>axis</groupId>
 		   <artifactId>axis-saaj</artifactId>
-		   <version>1.3</version>
+		   <version>1.4</version>
 	   </dependency>		
+       <dependency>
+		   <groupId>axis</groupId>
+		   <artifactId>axis-wsdl4j</artifactId>
+		   <version>1.5.1</version>
+	   </dependency>	   
 	   <dependency>
 		   <groupId>commons-codec</groupId>
 		   <artifactId>commons-codec</artifactId>
@@ -324,6 +334,11 @@
             <version>3.2</version>
         </dependency>
         <dependency>
+            <groupId>commons-discovery</groupId>
+            <artifactId>commons-discovery</artifactId>
+            <version>0.2</version>
+        </dependency>        
+        <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
             <version>1.8</version>
@@ -331,7 +346,7 @@
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.1.1</version>
+            <version>1.0.4</version>
         </dependency>
         <!--dependency>
             <groupId>edg</groupId>
@@ -366,7 +381,7 @@
 		<dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
+            <version>1.2.12</version>
         </dependency>
        
        <!--provided--> 
@@ -391,12 +406,6 @@
             <artifactId>cglib-full</artifactId>
             <version>2.0.2</version>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-discovery</groupId>
-            <artifactId>commons-discovery</artifactId>
-            <version>0.4</version>
-			<scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>dom4j</groupId>
