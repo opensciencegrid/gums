@@ -292,12 +292,7 @@
 	</profiles>
 
 	<dependencies> 
-		<!--compile scope-->
-       <dependency>
-		   <groupId>axis</groupId>
-		   <artifactId>axis-ant</artifactId>
-		   <version>1.4</version>
-	   </dependency>		
+		<!--compile scope-->	
        <dependency>
 		   <groupId>axis</groupId>
 		   <artifactId>axis</artifactId>
