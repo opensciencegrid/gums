@@ -12,6 +12,7 @@ import org.apache.commons.cli.*;
 import org.opensciencegrid.authz.client.GRIDIdentityMappingServiceClient;
 import org.opensciencegrid.authz.common.GridId;
 import org.opensciencegrid.authz.common.LocalId;
+import java.net.URL;
 
 /**
  * @author Gabriele Carcassi, Jay Packard
@@ -83,11 +84,22 @@ public class MapUser extends RemoteCommand {
             failForWrongParameters("Missing parameters...");
         }
 
+        boolean bypass = cmd.hasOption("b");
+        
+        boolean debug = cmd.hasOption("d");
+        
         String hostname = (cmd.getOptionValue("s", null)); /* get hostname, default value is null */
         
-        String gumsUrl = (cmd.getOptionValue("g", null));
-        if (gumsUrl==null)
-        	gumsUrl = Configuration.getInstance().getGUMSAuthZLocation();
+        String gumsUrlStr = (cmd.getOptionValue("g", null));
+        URL gumsUrl = null;
+        if (gumsUrlStr!=null)
+        	gumsUrl = new URL(gumsUrlStr);
+        else {
+        	if (bypass)
+        		gumsUrl = Configuration.getInstance().getGUMSLocation();
+        	else
+        		gumsUrl = Configuration.getInstance().getGUMSAuthZLocation();
+        }
 
         if (hostname == null) {
             if (isUsingProxy()) {
@@ -125,12 +137,9 @@ public class MapUser extends RemoteCommand {
             }
         }
         
-        boolean bypass = cmd.hasOption("b");
-        boolean debug = cmd.hasOption("d");
-        
         long overall = System.currentTimeMillis();
         long start = System.currentTimeMillis();
-        GRIDIdentityMappingServiceClient client = new GRIDIdentityMappingServiceClient(new URL(gumsUrl));
+        GRIDIdentityMappingServiceClient client = new GRIDIdentityMappingServiceClient(gumsUrl);
         GridId id = new GridId();
         id.setHostDN(hostname);
         id.setUserFQAN(cmd.getOptionValue("f", null));
@@ -150,7 +159,7 @@ public class MapUser extends RemoteCommand {
                     if (localId!=null)
                     	account = localId.toString();
                 } else {
-                	account = getGums(gumsUrl).mapUser(hostname, userDN[i], id.getUserFQAN());
+                	account = getGums(gumsUrl.toString()).mapUser(hostname, userDN[i], id.getUserFQAN());
                 }
            		if (debug && (account==null || account.equals(""))) {
            			System.out.print("Could not map user.\n");

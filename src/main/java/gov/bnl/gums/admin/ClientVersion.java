@@ -41,17 +41,23 @@ public class ClientVersion extends RemoteCommand {
     }
 
     protected void execute(org.apache.commons.cli.CommandLine cmd) throws Exception {
-    	URL pomFile = getClass().getClassLoader().getSystemResource("META-INF/maven/gums/gums-core/pom.xml");
-    	Digester digester = new Digester();
-        digester.addObjectCreate("project/version", Version.class);
-        digester.addCallMethod("project/version","setVersion",0);
-    	Version versionCls = null;
-        try {
-        	versionCls = (Version)digester.parse("file://"+pomFile.toString());
+    	String pomFile = getClass().getClassLoader().getSystemResource("META-INF/maven/gums/gums-core/pom.xml").toString();
+		Digester digester = new Digester();
+		digester.addObjectCreate("project/version", Version.class);
+		digester.addCallMethod("project/version","setVersion",0);
+		Version versionCls = null;
+		try {
+			versionCls = (Version)digester.parse(pomFile);
 		} catch (Exception e) {
-			System.out.println("Cannot get version from "+pomFile);
+			System.out.println("Cannot get GUMS version from "+pomFile);
+			return;
 		}
-    	System.out.println("GUMS client version " + versionCls.getVersion());
+		if (versionCls == null) {
+			System.out.println("Cannot get GUMS version from "+pomFile);
+			return;
+		}
+		String version = versionCls.getVersion();
+		System.out.println(version);
     }
     
 }
