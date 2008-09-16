@@ -37,7 +37,7 @@ public class ConfigurationTransform {
 	static private Log log = LogFactory.getLog(FileConfigurationStore.class);
 
 	/**
-	 * Transforms gums.config 1.1 to 1.2
+	 * Transforms gums.config 1.1 to 1.2/3
 	 * 
 	 * @param configFile
 	 * @param transformFile

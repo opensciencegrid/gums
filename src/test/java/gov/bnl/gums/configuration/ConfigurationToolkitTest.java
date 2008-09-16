@@ -55,7 +55,7 @@ public class ConfigurationToolkitTest extends TestCase {
     
     public void testSimpleUserGroup() throws Exception {
         String xml = 
-        "<gums version='1.2'>" +
+        "<gums version='1.3'>" +
 	        "<userGroups>" +
 	        	"<manualUserGroup name='myGroupA' persistenceFactory='mysql' access='read self'/>" +
 	        	"<manualUserGroup name='myGroupB' persistenceFactory='mysql' access='read all'/>" +
@@ -82,7 +82,7 @@ public class ConfigurationToolkitTest extends TestCase {
 
     public void testUserGroupWrongProperty() throws Exception {
         String xml = 
-        "<gums version='1.2'>" +
+        "<gums version='1.3'>" +
 	        "<userGroups>" +
 	        	"<manualUserGroup name='myGroup' persistenceFactory='mysql' wrongProp='blah'/>" +
 	        "</userGroups>" +
@@ -104,7 +104,7 @@ public class ConfigurationToolkitTest extends TestCase {
 
     public void testPersistenceFactory() throws Exception {
         String xml = 
-        "<gums version='1.2'>" +
+        "<gums version='1.3'>" +
 	        "<persistenceFactories>" +
 				getPersistenceFactory("mysql") +
 			"</persistenceFactories>" +
@@ -120,7 +120,7 @@ public class ConfigurationToolkitTest extends TestCase {
     
     public void testUserGroupWithPersistenceFactory() throws Exception {
         String xml = 
-        "<gums version='1.2'>" +
+        "<gums version='1.3'>" +
 	        "<persistenceFactories>" +
     			getPersistenceFactory("mysql") +
 	        "</persistenceFactories>" +
@@ -137,7 +137,7 @@ public class ConfigurationToolkitTest extends TestCase {
     
     public void testVOMSUserGroup() throws Exception {
         String xml = 
-        "<gums version='1.2'>" +
+        "<gums version='1.3'>" +
 	        "<persistenceFactories>" +
         		getPersistenceFactory("mysql") +
 	        "</persistenceFactories>" +
@@ -154,7 +154,7 @@ public class ConfigurationToolkitTest extends TestCase {
     
     public void testGroupToAccountMapping() throws Exception {
         String xml = 
-        "<gums version='1.2'>" +
+        "<gums version='1.3'>" +
 	        "<persistenceFactories>" +
 	        	getPersistenceFactory("mysql") +
 	        "</persistenceFactories>" +
@@ -189,7 +189,7 @@ public class ConfigurationToolkitTest extends TestCase {
     
     public void testHostGroup() throws Exception {
         String xml = 
-        "<gums version='1.2'>" +
+        "<gums version='1.3'>" +
 	        "<persistenceFactories>" +
 	        	getPersistenceFactory("mysql") +
 	        "</persistenceFactories>" +
@@ -231,7 +231,7 @@ public class ConfigurationToolkitTest extends TestCase {
     }
 
     public void testHibernateWithPool() throws Exception {
-        String xml = "<gums version='1.2'>" +
+        String xml = "<gums version='1.3'>" +
         	"<persistenceFactories>" +
         		getPersistenceFactory("mysql") +
         	"</persistenceFactories>" +
@@ -247,7 +247,7 @@ public class ConfigurationToolkitTest extends TestCase {
     }
     
     private String getPersistenceFactory(String name) {
-    	return "<hibernatePersistenceFactory name=\""+name+"\" hibernate.connection.driver_class=\"com.mysql.jdbc.Driver\" hibernate.dialect=\"net.sf.hibernate.dialect.MySQLDialect\" hibernate.connection.url=\"jdbc:mysql://localhost/GUMS_3\" hibernate.connection.username=\"gums\" hibernate.connection.password=\"mysecret\" hibernate.c3p0.min_size=\"3\" hibernate.c3p0.max_size=\"20\" hibernate.c3p0.timeout=\"1800\"/>";
+    	return "<hibernatePersistenceFactory name=\""+name+"\" hibernate.connection.driver_class=\"com.mysql.jdbc.Driver\" hibernate.dialect=\"net.sf.hibernate.dialect.MySQLDialect\" hibernate.connection.url=\"jdbc:mysql://localhost/GUMS_1_3\" hibernate.connection.username=\"gums\" hibernate.connection.password=\"mysecret\" hibernate.c3p0.min_size=\"3\" hibernate.c3p0.max_size=\"20\" hibernate.c3p0.timeout=\"1800\"/>";
     }
     
 }
