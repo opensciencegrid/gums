@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<document>
+  <properties>
+    <title>GUMS Integration</title>
+  </properties>
+  <body>
+    <section name="GUMS Integration">
+<p>First, let's look at the Grid3 system which did not use GUMS. Users run grid-proxy init to get credentials, 
+without contacting the VOMS server. Each gatekeeper at each site has to connect to VOMS independently (e.g., via edg-mkgridmap) in order to create its static grid-mapfile. This is done periodically. 
+There is no support for centralized mapping at a site, account pools, dynamic mappings 
+(that is, assigned on the fly), or role/group-based mappings. The inverse map for accounting (i.e., user-to-VO mapping) is created manually. </p>
+<p><img src="images/grid3-system.gif"/></p>
+<p>The next scenario shows GUMS implemented such that it sits between VOMS Admin and the client(s). The gatekeeper does not implement a callout to GUMS. GUMS polls VOMS Admin periodically to update its local list of users. The site may have only one GUMS server, in which case there would be only one communication point to VOMS, thus enabling centralized mapping. All clients would access the same information locally (a site could 
+deploy multiple GUMS servers, but would lose the centralized mapping capability). GUMS 
+downloads mapping information to each gatekeeper: the GUMS host tool, gums-host,  replaces edg-mkgridmap in this diagram. The grid-mapfiles on all the gatekeeper 
+can be made identical to each other if they all use the same GUMS server, or you 
+can still have different maps for different gatekeepers of group of gatekeepers. 
+The important feature is that you have one point of configuration for your 
+facility. Gums-host also creates the inverse map for accounting consistent with 
+the mapfile.   Mapping to account pools is available. </p>
+<p><img src="images/compat-scenario.gif"/></p>
+<p>The next image shows GUMS implemented in a legacy client scenario. Here we  
+deploy the PRIMA module (see the <a href="http://computing.fnal.gov/docs/products/voprivilege/">VO Privilege Project</a>) 
+on the gatekeepers in order to enable dynamic mapping. There are no more grid-mapfiles. We continue to use the gums-host tool to generate the accounting map (if needed), but this breaks dynamic mapping when account pools are being used. (Whenever GUMS is asked to generate a map, it has to go through the whole policy, and assign an account for all the different possibilities. Therefore, accounts will be assigned to everybody beforehand when generating the map instead of when the individual request comes in.) 
+A better implementation of the accouting system in OSG will address this. Role 
+based authorization is still not available, as the client is generating normal 
+proxies.</p>
+<p><img src="images/legacy-client-scenario.gif"/></p>
+<p>The next image shows GUMS implemented in a full support scenario.  This is similar to the previous scenario except that the user now runs voms-proxy-init which VOMS uses to produce an extended proxy with role/group information. 
+This information is extracted by PRIMA and communicated GUMS, which is now able 
+to produce role/group-based mappings. We continue to use the gums-host tool to generate the accounting map if needed, but this breaks dynamic mapping when account pools are being used, as discussed above. </p>
+<p><img src="images/full-support-scenario.gif"/></p>
+<p>The next image shows  a legacy server scenario. You can use voms-proxy-init, but you can't take advantage of its extended proxy features. You're back to having no support for any of the four items listed at bottom. </p>
+<p><img src="images/legacy-server-scenario.gif"/></p>
+    </section>
+  </body>
+</document>
+
