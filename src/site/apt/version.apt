@@ -1,123 +1,19 @@
  ------
- GUMS Version 1.2
+ GUMS Version 1.3
  ------
 
-New in Version 1.2
+New in Version 1.3
 
- The focus of GUMS version 1.2 has been to provide ease of use and completeness.  
-All functionality that was previously available only through the client command
-line toolkit is now available on the web interface.  In addition, GUMS may now
-be configured on the web interface as opposed to editing xml by hand which is more
-error prone.  There is also additional functionality for managing not only
-the addition of pool account ranges, but also the removal and unassigning of 
-pool account ranges.
+ The focus of GUMS version 1.3 has been to provide an XACML interface to allow for interoperability with other grid
+components, and the ability to store the configuration in a persistence factory so that it can be shared between multiple gums servers.
+Several other features to improve userability have also been added. 
 
 * Database
 
- No changes have been made to the MySQL or LDAP schema since 1.1.
+ A new table for storing the configuration has been added.  Also, an email column has been added to the USER table.
 
 * Configuration   
 
- The format of gums.config has changed somewhat.  It is a flatter structure
-to avoid redundant information.  The key changes are:
-
-	* hostGroup(s) has been renamed to hostToGroupMapping(s).
-	
-	* groupMapping(s) has been renamed to groupToAccountMapping(s).
-	
-	* Instead of an attibute, class=gov.bnl.gums.___, the type of class is part
-	of the name of the tag.
-	
-	* accountMapping has been renamed to ___AccountMapper.
-	
-	* AccountMappers and userGroups are defined outside of the
-	groupToAccountMapping but referred to by name inside.
-	
-	* A new element, VirtualOrganization, is used to define
-	the server and security attributes of a VOMS server, which
-	multiple userGroups may refer to.
-	
-	* userGroup elements contain an optional access attribute
-	that may be "read self" (default), "read all", or "write".  
-	This determines the access of any user belonging to this userGroup.
-
- The version 1.1 gums.config is automatically converted to the new format.  A backup
-before the change is saved as gums.config_1.1.  An example of the new format is as follows:
-
-+------------------------------------------------------------------------+
-
-<?xml version="1.0" encoding="UTF-8"?>
-
-<gums version='1.2'>
-	<persistenceFactories>
-		<hibernatePersistenceFactory
-			name='persistenceFactoryA'
-			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
-			hibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'
-			hibernate.connection.url='jdbc:mysql://localhost:3306/GUMS_1_1'
-			hibernate.connection.username='gums'
-			hibernate.connection.password=''
-			hibernate.connection.autoReconnect='true'
-			hibernate.c3p0.min_size='3'
-			hibernate.c3p0.max_size='20'
-			hibernate.c3p0.timeout='180'/>
-	</persistenceFactories>
-	
-	<vomsServers>
-	    <vomsServer
-			name='vomsServerA'
-			baseUrl='https://griddev01.usatlas.bnl.gov:8443/voms'
-			persistenceFactory='persistenceFactoryA' 
-			sslCertfile='/etc/grid-security/hostcert.pem'
-			sslKey='/etc/grid-security/hostkey.pem'/>
-	</vomsServers>
-
-	<userGroups>
-		<manualUserGroup
-			name='admins'
-			persistenceFactory='persistenceFactoryA'
-			access='write'/>
-		<vomsUserGroup
-			name='userGroupB'
-			vomsServer='vomsServerA'
-			remainderUrl='/griddev/services/VOMSAdmin'
-			acceptProxyWithoutFQAN='true'
-			matchFQAN='exact'
-			voGroup='/griddev/subgriddev'
-			role='griddevRole'/>	
-	</userGroups>
-	
-	<accountMappers>
-		<manualAccountMapper
-			name='accountMapperA'
-			persistenceFactory='persistenceFactoryA'/>
-		<groupAccountMapper
-			name='accountMapperB'
-			accountName='accountB'/>
-		<accountPoolMapper
-			name='accountMapperC'
-			persistenceFactory='persistenceFactoryA'
-			accountPool='accountC'/>
-	</accountMappers>
-	
-	<groupToAccountMappings>
-		<groupToAccountMapping
-			name='groupToAccountMappingA' 
-			userGroups='admins' 
-			accountMappers='accountMapperA'/>
-		<groupToAccountMapping 
-			name='groupToAccountMappingB' 
-			userGroups='userGroupB' 
-			accountMappers='accountMapperB'/>
-	</groupToAccountMappings>
-	  
-	<hostToGroupMappings>
-		<hostToGroupMapping 
-			cn='*.site.com' 
-			groupToAccountMappings='groupToAccountMappingA, groupToAccountMappingB'/>
-	</hostToGroupMappings>
-</gums>
-
-+------------------------------------------------------------------------+
-
- gums.config and log4j properties used to be located in WEB-INF/classes but now are in WEB-INF/config.
+ The MySQL or LDAP schema is the same from 1.2 except two new options have been added to disallow gridmap files
+to avoid using up too many pool accounts, and the ability to configure a persistenceFactory element to store the 
+configuration within it.

@@ -188,12 +188,12 @@ are other types of account mappers besides gecosLdapAccountMapper which are expl
 +---------------------------+
  <hibernatePersistenceFactory
  	name='mysql'
-	hibernate.connection.url='jdbc:mysql://mydb.mysite.org/GUMS_1_1'
+	hibernate.connection.url='jdbc:mysql://mydb.mysite.org/GUMS_1_3'
 	hibernate.connection.driver_class='com.mysql.jdbc.Driver'
 	.../>
 +---------------------------+ 
 
- This says is to use a MySQL database at 'mydb.mysite.org/GUMS_1_1' to cache user information.  
+ This says is to use a MySQL database at 'mydb.mysite.org/GUMS_1_3' to cache user information.  
 Note that besides being referred to by user groups to store users, persistence factories are referred 
 to by some account mapper types to store mappings.
 
@@ -233,13 +233,11 @@ read access by Tomcat (e.g. readable by user 'daemon' in VDT/OSG).
 
 	* <<ldap>> - for storing user information in a special GUMS area within a site's LDAP server as well as for assigning
 	primary and secondary groups to accounts in the main LDAP tree.  To support this LDAP needs access to the GUMS LDAP schema file.  
-	Please see the {{{installation_manual.html}manual installation}} section for instructions on how to configure LDAP.  New to GUMS 1.2, you may
-	choose the names of various LDAP fields if the defaults don't match your site's LDAP fields.
+	Please see the {{{installation_manual.html}manual installation}} section for instructions on how to configure LDAP.
 	
 	* <<local>> - for storing user information in a MySQL database as well as for assigning
 	primary and secondary groups to accounts in the main LDAP tree.  LDAP doesn't need to be set 
-	up with the GUMS schema for this type.  New to GUMS 1.2, you may choose the names of various 
-	LDAP fields if the defaults don't match your site's LDAP fields.
+	up with the GUMS schema for this type.
 
 ** Account Mappers
 

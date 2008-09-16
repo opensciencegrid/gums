@@ -81,8 +81,8 @@ JAVA_OPTS="-server -Xmx400m"
 ** Download the GUMS Service
 
  The service itself is a standard java web application. Grab the latest 
-gums-service war from {{{http://grid.racf.bnl.gov/mvn/gums/gums-service/1.2.0/gums-service-1.2.0.war}
-http://grid.racf.bnl.gov/mvn/gums/gums-service/1.2.0/gums-service-1.2.0.war}} and extract it in the
+gums-service war from {{{http://grid.racf.bnl.gov/mvn/gums/gums-service/}
+http://grid.racf.bnl.gov/mvn/gums/gums-service/}} and extract it in the
 webapps directory of tomcat.
 
 ** Configure Persistence Factory
@@ -99,7 +99,7 @@ webapps directory of tomcat.
 setupDatabase script as:
 	
 +----------------------------------------------+	
-[root@gums gums]# cd gums-service-1.2.0/WEB-INF/scripts
+[root@gums gums]# cd gums-service-1.3.0/WEB-INF/scripts
 [root@gums scripts]# chmod ug+x *
 [root@gums scripts]# ./setupDatabase
 Usage: ./setupDatabase [mysql user for GUMS] [GUMS server host] [GUMS mysql password]
@@ -219,8 +219,8 @@ This package depends on the GUMS service being up and running.>
 ** Download and Run the GUMS Client RPM
 
  The client consists of several executables installed by RPM. Download and run the latest RPM from 
-{{{http://grid.racf.bnl.gov/mvn/gums/gums-client/1.2.0/gums-client-1.2.0.rpm}
-http://grid.racf.bnl.gov/mvn/gums/gums-client/1.2.0/gums-client-1.2.0.rpm}}. Listing the files
+{{{http://grid.racf.bnl.gov/mvn/gums/gums-client/}
+http://grid.racf.bnl.gov/mvn/gums/gums-client/}}. Listing the files
 as:
 
 +--------------------------------------------------+
