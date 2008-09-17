@@ -209,8 +209,19 @@ public class GUMS {
 						}
 						String schemaPath = (confStore instanceof FileConfigurationStore) ? ((FileConfigurationStore)confStore).getSchemaPath() : null;
 						dbConfStore = new DBConfigurationStore(persFact.retrieveConfigurationDB(), schemaPath);
-						dbConfStore.setConfiguration(conf, false);
-						storeConfigFound = true;
+						try {
+							if (confStore.getLastModification().after(dbConfStore.getLastModification()) &&
+								(conf.getUserGroups().values().size()>0 || 
+								conf.getAccountMappers().values().size()>0 ||
+								conf.getGroupToAccountMappings().values().size()>0 || 
+								conf.getHostToGroupMappings().size()>0 || 
+								conf.getVomsServers().values().size()>0))
+								dbConfStore.setConfiguration(conf, false);
+							storeConfigFound = true;
+						}
+						catch(Exception e) {
+							dbConfStore.setConfiguration(conf, false);
+						}
 					}
 				}
 				String message = "Added database configuration store";
