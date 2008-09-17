@@ -522,7 +522,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	jdbc:mysql://localhost:3306/GUMS_1_1
+		    	jdbc:mysql://localhost:3306/GUMS_3
 		    </td>
 		</tr>
 		<tr>

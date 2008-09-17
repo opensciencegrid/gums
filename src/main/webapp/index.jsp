@@ -21,7 +21,7 @@
 This web application contains both the web service components and the web interface.
 On your left you see a series of commands you can execute to configure the mappings, 
 manage users, and test mappings.  GUMS documentation can be found at 
-<a href="https://www.racf.bnl.gov/Facility/GUMS/1.2/index.html">https://www.racf.bnl.gov/Facility/GUMS/index.html</a>.</p>
+<a href="https://www.racf.bnl.gov/Facility/GUMS/1.3/index.html">https://www.racf.bnl.gov/Facility/GUMS/index.html</a>.</p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>

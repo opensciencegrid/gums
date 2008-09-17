@@ -5,7 +5,7 @@
 	<artifactId>gums-service</artifactId>
 	<packaging>war</packaging>
 	<name>gums-service</name>
-	<version>1.2.17</version>
+	<version>1.3.0</version>
 	<description>GUMS Service provides web services used by the client tool and a 
 		web interface for administering GUMS</description>
     
@@ -69,6 +69,7 @@
 								<delete includeemptydirs="true">
 									<fileset dir="src/main/resources" includes="log4j.properties.template"/>
 									<fileset dir="src/main/resources" includes="gums.*"/>
+									<fileset dir="src/main/resources" includes="*README*"/>
 									<fileset dir="src/main/resources/sql" includes="*"/>
 									<fileset dir="src/main/resources/scripts" includes="*"/>
 								</delete>
@@ -239,7 +240,7 @@
             <groupId>opensaml</groupId>
             <artifactId>opensaml-v2</artifactId>
             <version>2.2.0</version>
-        </dependency>        
+        </dependency>   
     	
  	</dependencies>  
   

@@ -86,7 +86,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			else {
 				AttributeAssignmentTypeImplBuilder attributeAssignmentBuilder = (AttributeAssignmentTypeImplBuilder)builderFactory.getBuilder(AttributeAssignmentType.DEFAULT_ELEMENT_NAME);
 				attributeAssignment = attributeAssignmentBuilder.buildObject();
-				attributeAssignment.setAttributeId(USERNAME);
+				attributeAssignment.setAttributeId(XACMLConstants.ATTRIBUTE_USERNAME_ID);
 				attributeAssignment.setDataType(XACMLConstants.STRING_DATATYPE);
 				attributeAssignment.setValue(account);
 
