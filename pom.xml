@@ -329,25 +329,10 @@
             <version>3.2</version>
         </dependency>
         <dependency>
-            <groupId>commons-discovery</groupId>
-            <artifactId>commons-discovery</artifactId>
-            <version>0.2</version>
-        </dependency>        
-        <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
             <version>1.8</version>
         </dependency> 
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-        <!--dependency>
-            <groupId>edg</groupId>
-            <artifactId>edg-voms-admin-api</artifactId>
-            <version>unknown</version>
-        </dependency--> 
 		<dependency>
 		   <groupId>glite</groupId>
 		   <artifactId>glite-security-trustmanager</artifactId>
@@ -378,8 +363,30 @@
             <artifactId>log4j</artifactId>
             <version>1.2.12</version>
         </dependency>
+		<dependency>  
+			<groupId>org.slf4j</groupId>  
+			<artifactId>slf4j-api</artifactId>
+			<version>1.5.0</version>
+		</dependency>	
+		<dependency>  
+			<groupId>org.slf4j</groupId>  
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.5.0</version>
+		</dependency>
        
-       <!--provided--> 
+		<!--provided--> 
+		<dependency>
+			<groupId>axis</groupId>
+			<artifactId>axis-ant</artifactId>
+			<version>1.4</version>
+			<scope>provided</scope>
+		</dependency>	
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.0.4</version>
+			<scope>provided</scope>
+		</dependency>	
 
         <!--test scope-->
         <dependency>
@@ -408,12 +415,6 @@
             <version>1.4</version>
             <scope>runtime</scope>
         </dependency>
-        <!--dependency>
-            <groupId>edg</groupId>
-            <artifactId>edg-java-security-trustmanager</artifactId>
-            <version>unknown</version>
-            <scope>runtime</scope>
-        </dependency-->                
         <dependency>
             <groupId>glite</groupId>
             <artifactId>bcprov</artifactId>

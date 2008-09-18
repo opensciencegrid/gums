@@ -43,6 +43,11 @@
 			description=''
 			accountName='testAccount'/>
 
+		<manualAccountMapper
+			name='manual'
+			description=''
+			persistenceFactory='mysql'/>
+
 	</accountMappers>
 
 	<groupToAccountMappings>
@@ -53,7 +58,7 @@
 			accountingVoSubgroup='TEST'
 			accountingVo='test'
 			userGroups='gums-test'
-			accountMappers='gums-test'/>
+			accountMappers='manual, gums-test'/>
 
 	</groupToAccountMappings>
 
