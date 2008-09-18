@@ -7,8 +7,9 @@
 package gov.bnl.gums.service;
 
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.apache.commons.logging.*;
+import org.apache.axis.utils.XMLUtils;
 
 import gov.bnl.gums.admin.GUMSAPI;
 import gov.bnl.gums.admin.GUMSAPIImpl;
@@ -63,11 +64,26 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 	public XACMLAuthzDecisionStatementType mapCredentials(XACMLAuthzDecisionQueryType xacmlQuery) throws Exception {
 		XMLObjectBuilderFactory builderFactory = org.opensaml.xml.Configuration.getBuilderFactory();
 
+		log.debug("XACMLAuthzDecisionQueryType object received: "+XMLUtils.ElementToString(xacmlQuery.getDOM()));
+
 		// Get information from request
 		RequestType request = xacmlQuery.getRequest();
 		String hostDn = getResourceAttributeValue(request, RESOURCE_ID);
 		String userDn = getSubjectAttributeValue(request, SUBJECT_ID);
 		String userFqan = getSubjectAttributeValue(request, VOMS_FQAN);
+		
+		if (hostDn==null || hostDn.length()==0) {
+			log.debug("missing attribute: "+RESOURCE_ID);
+			throw new Exception("missing attribute: "+RESOURCE_ID);
+		}
+		if (userDn==null || userDn.length()==0) {
+			log.debug("missing attribute: "+SUBJECT_ID);
+			throw new Exception("missing attribute: "+SUBJECT_ID);
+		}
+		if (userFqan==null || userFqan.length()==0) {
+			log.debug("missing attribute: "+VOMS_FQAN);
+			throw new Exception("missing attribute: "+VOMS_FQAN);
+		}
 
 		// Attribute Assignment, decision, and status code
 		AttributeAssignmentType attributeAssignment = null;
@@ -77,6 +93,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 		StatusCodeType statusCode = statusCodeBuilder.buildObject();
 		statusCode.setValue(OK);
 		try {
+			log.debug("Checking access on '" + hostDn + "' for '" + userDn + "' with fqan '" + userFqan + "'");
 			String account = gums.mapUser(hostDn, userDn, userFqan);
 			if (account == null) {
 				decision.setDecision(DecisionType.DECISION.Deny);
@@ -136,6 +153,8 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 		//xacmlAuthzStatement.setRequest(request);
 		xacmlAuthzStatement.setResponse(response);
 
+		log.debug("XACMLAuthzDecisionStatementType object returned: "+XMLUtils.ElementToString(xacmlAuthzStatement.getDOM()));
+		
 		return xacmlAuthzStatement;
 	}
 
