@@ -148,7 +148,7 @@ public class MapUser extends RemoteCommand {
         if ((timing != null) && (!bypass)) {
             System.out.println("Initialization time: " + (end - start) + "ms");
         }
-
+        
         start = System.currentTimeMillis();
         for (int n = 0; n < nTimes; n++) {
             for (int i = 0; i < userDN.length; i++) {
