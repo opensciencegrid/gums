@@ -17,7 +17,7 @@ import java.util.*;
 import javax.naming.*;
 import javax.naming.directory.*;
 
-import org.apache.commons.logging.*;
+import org.apache.log4j.Logger;
 
 /** A group of users defined by an LDAP VO.
  * <p>
@@ -44,8 +44,8 @@ public class LDAPUserGroup extends UserGroup {
 		return "ldap";
 	}
 
-	protected Log log = LogFactory.getLog(LDAPUserGroup.class);
-	protected Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
+	protected Logger log = Logger.getLogger(LDAPUserGroup.class);
+	protected Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
 	protected ConfigurationStore confStore;    
 	protected UserGroupDB db;
 	protected Configuration conf;

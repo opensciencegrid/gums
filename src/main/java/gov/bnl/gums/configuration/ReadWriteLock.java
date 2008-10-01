@@ -6,8 +6,7 @@
 
 package gov.bnl.gums.configuration;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** 
  * Implements a lock to prevent access to GUMS data when updating. This is
@@ -22,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class ReadWriteLock {
-    private Log log = LogFactory.getLog(ReadWriteLock.class);
+    private Logger log = Logger.getLogger(ReadWriteLock.class);
     private int[] lock = new int[2];
     private String name;
     

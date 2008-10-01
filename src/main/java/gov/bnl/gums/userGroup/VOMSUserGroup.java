@@ -15,8 +15,7 @@ import gov.bnl.gums.db.UserGroupDB;
 import java.net.URL;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory; 
+import org.apache.log4j.Logger; 
 import org.glite.security.voms.*;
 
 /** A group of users residing on a VOMS vo database. This class is able to 
@@ -50,8 +49,8 @@ public class VOMSUserGroup extends UserGroup {
 		return retList;
 	}
 
-    private Log log = LogFactory.getLog(VOMSUserGroup.class);
-    private Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
+    private Logger log = Logger.getLogger(VOMSUserGroup.class);
+    private Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
     private String vomsServer = "";
     private String voGroup = "";
     private String role = "";

@@ -29,8 +29,7 @@ import java.util.ResourceBundle;
 
 import net.sf.hibernate.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -41,7 +40,7 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 		return "hibernate";
 	}
 	
-	private Log log = LogFactory.getLog(HibernatePersistenceFactory.class);
+	private Logger log = Logger.getLogger(HibernatePersistenceFactory.class);
     public SessionFactory sessions;
     
 	/**

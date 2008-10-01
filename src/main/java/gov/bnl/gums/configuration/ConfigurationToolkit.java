@@ -37,8 +37,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.digester.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** 
  * Contains the logic on how to parse an XML configuration file to create a
@@ -47,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 class ConfigurationToolkit {
-	static private Log log = LogFactory.getLog(ConfigurationToolkit.class); 
+	static private Logger log = Logger.getLogger(ConfigurationToolkit.class); 
     
     /**
      * Simple error handler that logs errors

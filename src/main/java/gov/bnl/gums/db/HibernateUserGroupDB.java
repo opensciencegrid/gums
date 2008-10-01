@@ -24,14 +24,14 @@ import net.sf.hibernate.*;
 import net.sf.hibernate.type.StringType;
 import net.sf.hibernate.type.Type;
 
-import org.apache.commons.logging.*;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author Gabriele Carcassi, Jay Packard
  */
 public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
-    private Log log = LogFactory.getLog(HibernateUserGroupDB.class);
+    private Logger log = Logger.getLogger(HibernateUserGroupDB.class);
     private HibernatePersistenceFactory persistenceFactory;
     private String group;
     private List addedMembers;
@@ -319,7 +319,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         Iterator iter = hibernateUsers.iterator();
         while (iter.hasNext()) {
             HibernateUser user = (HibernateUser) iter.next();
-            members.add(new GridUser(user.getDn(), user.getFqan(), user.getEmail()));
+            members.add(new GridUser(user.getDn(), user.getFqan(), user.getEmail(), false));
         }
         return members;
     }

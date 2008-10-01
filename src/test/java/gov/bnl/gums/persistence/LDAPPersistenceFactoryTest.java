@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 
 import javax.naming.directory.DirContext;
 
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import gov.bnl.gums.configuration.Configuration;
 
@@ -44,7 +44,7 @@ public class LDAPPersistenceFactoryTest extends TestCase {
 	}
 
 	static public Properties readLdapProperties() {
-		LogFactory.getLog(LDAPPersistenceFactory.class).trace("Retrieving LDAP properties from ldap.properties in the classpath");
+		Logger.getLogger(LDAPPersistenceFactory.class).trace("Retrieving LDAP properties from ldap.properties in the classpath");
 		PropertyResourceBundle prop = (PropertyResourceBundle) ResourceBundle.getBundle("ldap");
 		Properties prop2 = new Properties();
 		Enumeration keys = prop.getKeys();

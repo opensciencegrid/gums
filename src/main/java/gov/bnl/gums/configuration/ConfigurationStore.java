@@ -83,6 +83,16 @@ public abstract class ConfigurationStore {
      * @return A configuration object.
      */
 	public abstract Configuration retrieveConfiguration() throws Exception;
+	
+    /**
+     * Loads the configuration in memory if or from storage based on reload. This is
+     * useful if needsReload was called previously and you don't want to look it
+     * up again for performance's sake.  If the configuration cannot be loaded due to an 
+     * inconsistency in the store, it should throw an exception.
+     * 
+     * @return A configuration object.
+     */
+	public abstract Configuration retrieveConfiguration(boolean reload) throws Exception;
     
     /**
      * Set and store the configuration.  A configuration may specify to store the configuration

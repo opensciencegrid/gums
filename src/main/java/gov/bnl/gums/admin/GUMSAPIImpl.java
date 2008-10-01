@@ -22,8 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.digester.Digester;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import gov.bnl.gums.db.AccountPoolMapperDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
@@ -38,9 +37,9 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  */
 public class GUMSAPIImpl implements GUMSAPI {
 	static private GUMS gums;
-	private Log log = LogFactory.getLog(GUMSAPI.class);
-	private Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
-	private Log siteAdminLog = LogFactory.getLog(GUMS.siteAdminLogName);
+	private Logger log = Logger.getLogger(GUMSAPI.class);
+	private Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
+	private Logger siteAdminLog = Logger.getLogger(GUMS.siteAdminLogName);
 	private boolean isInWeb = false;
 
 	{
@@ -166,7 +165,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 
 	public String generateGridMapfile(String hostname) {
 		try {
-			if (!gums.getConfiguration().getAllowGridmapFiles())
+			if (!gums().getConfiguration().getAllowGridmapFiles())
 				throw new RuntimeException("Grid Mapfile generation has been disabled (probably to conserve pool accounts)");
 		
 			if (hasReadAllAccess(currentUser(), hostname)) {
@@ -203,7 +202,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 
 	public String generateVoGridMapfile(String hostname) {
 		try {
-			if (!gums.getConfiguration().getAllowGridmapFiles())
+			if (!gums().getConfiguration().getAllowGridmapFiles())
 				throw new RuntimeException("Grid Mapfile generation has been disabled (probably to conserve pool accounts)");
 			
 			if (hasReadAllAccess(currentUser(), hostname)) {
@@ -298,7 +297,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public void manualGroupAdd3(String manualUserGroupName, String userDN, String fqan, String email) {
 		try {
 			if (hasWriteAccess(currentUser())) {
-				getManualUserGroupDB(manualUserGroupName).addMember(new GridUser(userDN, fqan, email));
+				getManualUserGroupDB(manualUserGroupName).addMember(new GridUser(userDN, fqan, email, false));
 				gumsAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "' email '"+email+"'");
 				siteAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "' email '"+email+"'");
 			} else {
@@ -332,7 +331,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public void manualGroupRemove3(String manualUserGroupName, String userDN, String fqan) {
 		try {
 			if (hasWriteAccess(currentUser())) {
-				getManualUserGroupDB(manualUserGroupName).removeMember(new GridUser(userDN, fqan));
+				getManualUserGroupDB(manualUserGroupName).removeMember(new GridUser(userDN, fqan, false));
 				gumsAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "' fqan '"+fqan+"'");
 				siteAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "' fqan '"+fqan+"'");
 			} else {

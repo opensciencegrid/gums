@@ -18,8 +18,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** 
  * Matches the DN with the account information retrieved from an LDAP server.
@@ -27,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class GecosLdapAccountMapper extends GecosAccountMapper {
-	static private Log log = LogFactory.getLog(GecosLdapAccountMapper.class);
+	static private Logger log = Logger.getLogger(GecosLdapAccountMapper.class);
 
 	static public String getTypeStatic() {
 		return "gecosLdap";

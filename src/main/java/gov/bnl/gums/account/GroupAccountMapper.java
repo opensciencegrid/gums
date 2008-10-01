@@ -9,8 +9,7 @@ package gov.bnl.gums.account;
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** 
  * An account mapping policy that maps all user to the same account.
@@ -25,7 +24,7 @@ public class GroupAccountMapper extends AccountMapper {
 		return "group";
 	}
     
-    private Log log = LogFactory.getLog(GroupAccountMapper.class);
+    private Logger log = Logger.getLogger(GroupAccountMapper.class);
 	private String accountName = "";
     
     public GroupAccountMapper() {
@@ -65,7 +64,8 @@ public class GroupAccountMapper extends AccountMapper {
     }
 
     public void setAccountName(String accountName) {
-    	log.debug("GroupName changed from  " + this.accountName + " to " + accountName);
+    	if (this.accountName.length()>0)
+    		log.debug("account name changed from  " + this.accountName + " to " + accountName);
 		this.accountName = accountName;
 	}
     

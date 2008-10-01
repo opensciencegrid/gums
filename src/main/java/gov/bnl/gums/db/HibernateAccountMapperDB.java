@@ -25,15 +25,14 @@ import net.sf.hibernate.Transaction;
 import net.sf.hibernate.type.StringType;
 import net.sf.hibernate.type.Type;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author Gabriele Carcassi, Jay Packard
  */
 public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountPoolMapperDB {
-    private Log log = LogFactory.getLog(HibernateAccountMapperDB.class);
+    private Logger log = Logger.getLogger(HibernateAccountMapperDB.class);
     private HibernatePersistenceFactory persistenceFactory;
     private String map;
     private boolean needsCacheRefresh = true;

@@ -36,8 +36,7 @@ import javax.naming.*;
 import javax.naming.directory.*;
 import javax.naming.ldap.InitialLdapContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -48,8 +47,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		return "ldap";
 	}
 
-	private Log log = LogFactory.getLog(LDAPPersistenceFactory.class);
-	private Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
+	private Logger log = Logger.getLogger(LDAPPersistenceFactory.class);
+	private Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
 	private boolean synch;
 	private List contexts = Collections.synchronizedList(new LinkedList());// *** LDAP connection pool management    
 	private boolean skipReleaseContext = false;

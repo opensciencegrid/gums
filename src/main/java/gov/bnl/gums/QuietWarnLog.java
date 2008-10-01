@@ -11,8 +11,7 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** 
  * Represent a Logger than only logs the first time (optional) a certain message
@@ -23,11 +22,11 @@ import org.apache.commons.logging.LogFactory;
  * @author  Gabriele Carcassi, Jay Packard
  */
 public class QuietWarnLog {
-	Log log;
+	Logger log;
 	SortedMap messages = Collections.synchronizedSortedMap(new TreeMap());
 	
 	public QuietWarnLog(String logName) {
-		log = LogFactory.getLog(logName);
+		log = Logger.getLogger(logName);
 	}
 	
 	public void warn() {

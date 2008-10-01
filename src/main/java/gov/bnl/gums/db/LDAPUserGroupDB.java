@@ -19,8 +19,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import javax.naming.*;
 import javax.naming.directory.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 
@@ -29,7 +28,7 @@ import gov.bnl.gums.persistence.LDAPPersistenceFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
-    private Log log = LogFactory.getLog(LDAPUserGroupDB.class);
+    private Logger log = Logger.getLogger(LDAPUserGroupDB.class);
     private LDAPPersistenceFactory factory;
     private String group;
     private String groupDN;

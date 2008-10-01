@@ -31,8 +31,7 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchResult;
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  *

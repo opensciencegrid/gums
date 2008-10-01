@@ -13,6 +13,7 @@ import gov.bnl.gums.configuration.DBConfigurationStore;
 import gov.bnl.gums.configuration.FileConfigurationStore;
 import gov.bnl.gums.configuration.Version;
 import gov.bnl.gums.persistence.PersistenceFactory;
+import gov.bnl.gums.userGroup.ManualUserGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +26,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.digester.Digester;
-import org.apache.commons.logging.*;
+import org.apache.log4j.Logger;
 
 /** 
  * Facade for the whole business logic available in GUMS. Using GUMS means
@@ -37,8 +38,8 @@ import org.apache.commons.logging.*;
 public class GUMS {
     static final public String siteAdminLogName = "gums.siteAdmin";
     static final public String gumsAdminLogName = "gums.gumsAdmin";
-    static private Log log = LogFactory.getLog(GUMS.class); // only use this log for particularly tricky aspects of this class - otherwise log within lower level classes
-    static private Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
+    static private Logger log = Logger.getLogger(GUMS.class); // only use this log for particularly tricky aspects of this class - otherwise log within lower level classes
+    static private Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
     static public QuietWarnLog gumsAdminEmailLog = new QuietWarnLog("gums.gumsAdminEmail");
     static private Timer timer;
     static private String version;
@@ -179,14 +180,14 @@ public class GUMS {
 				String message = "Retrieving configuration from file configuration store";
 				gumsAdminLog.debug(message);
 				log.debug(message);
-				conf = confStore.retrieveConfiguration();
+				conf = confStore.retrieveConfiguration(needsReload);
 				confStoreToUpdate = dbConfStore;
 			}
 			else {
 				String message = "Retrieving configuration from database configuration store";
 				gumsAdminLog.debug("Retrieving configuration from database configuration store");
 				log.debug(message);
-				conf = dbConfStore.retrieveConfiguration();
+				conf = dbConfStore.retrieveConfiguration(needsReload);
 				confStoreToUpdate = confStore;
 			}
 		}
@@ -209,6 +210,10 @@ public class GUMS {
 						}
 						String schemaPath = (confStore instanceof FileConfigurationStore) ? ((FileConfigurationStore)confStore).getSchemaPath() : null;
 						dbConfStore = new DBConfigurationStore(persFact.retrieveConfigurationDB(), schemaPath);
+						String message = "Added database configuration store for persistence factory "+persFact.getName();
+						gumsAdminLog.debug(message);
+						log.debug(message);
+						storeConfigFound = true;
 						try {
 							if (confStore.getLastModification().after(dbConfStore.getLastModification()) &&
 								(conf.getUserGroups().values().size()>0 || 
@@ -217,16 +222,12 @@ public class GUMS {
 								conf.getHostToGroupMappings().size()>0 || 
 								conf.getVomsServers().values().size()>0))
 								dbConfStore.setConfiguration(conf, false);
-							storeConfigFound = true;
 						}
 						catch(Exception e) {
 							dbConfStore.setConfiguration(conf, false);
 						}
 					}
 				}
-				String message = "Added database configuration store";
-				gumsAdminLog.debug(message);
-				log.debug(message);
 			}
 			
 			// if no persistence factories are set to store the configuration,
@@ -243,10 +244,10 @@ public class GUMS {
 					if (confStoreToUpdate==dbConfStore)
 						confStoreToUpdate = null;
 					dbConfStore = null;
+					String message = "Eliminated database configuration store";
+					gumsAdminLog.debug(message);
+					log.debug(message);
 				}
-				String message = "Eleminated database configuration store";
-				gumsAdminLog.debug(message);
-				log.debug(message);
 			}
 			
 			if (confStoreToUpdate!=null) {
@@ -297,6 +298,15 @@ public class GUMS {
 			version = versionCls.getVersion();
 		}
 		return version;
+    }
+    
+    public boolean isUserBanned(GridUser user) throws Exception {
+    	Configuration config = getConfiguration();
+    	if (config.getBannedUserGroup().length()>0) {
+    		ManualUserGroup userGroup = (ManualUserGroup)config.getUserGroup(config.getBannedUserGroup());
+    		return userGroup.isInGroup(user);
+    	}
+    	return false;
     }
     
     /**

@@ -26,15 +26,14 @@ import javax.naming.ldap.Control;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.PagedResultsControl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * 
  * @author Gabriele Carcassi, Jay Packard
  */
 public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMapperDB {
-	private Log log = LogFactory.getLog(LDAPAccountMapperDB.class);
+	private Logger log = Logger.getLogger(LDAPAccountMapperDB.class);
 	private LDAPPersistenceFactory factory;
 	private String map;
 	private String mapDN;

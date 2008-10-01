@@ -20,7 +20,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchResult;
 
-import org.apache.commons.logging.*;
+import org.apache.log4j.Logger;
 
 /** 
  * Maps a user to a local account based on the CN of the certificate and the
@@ -35,7 +35,7 @@ import org.apache.commons.logging.*;
  * @author Jay Packard
  */
 public class LdapAccountMapper extends AccountMapper {
-	static private Log log = LogFactory.getLog(LdapAccountMapper.class);
+	static private Logger log = Logger.getLogger(LdapAccountMapper.class);
 	static public String getTypeStatic() {
 		return "ldap";
 	}

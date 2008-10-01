@@ -3,8 +3,7 @@ package gov.bnl.gums.userGroup;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.UserGroupDB;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** 
  * Represents a VOMS server.  Contains the other parameters for access this server. 
@@ -14,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Jay Packard
  */
 public class VomsServer {
-    private Log log = LogFactory.getLog(VOMSUserGroup.class);
+    private Logger log = Logger.getLogger(VOMSUserGroup.class);
 	private String name = "";
 	private String description = "";
     private String baseUrl = "";

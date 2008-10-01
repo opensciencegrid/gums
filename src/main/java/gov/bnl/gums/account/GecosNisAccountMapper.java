@@ -18,8 +18,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** 
  * Matches the DN with the account information retrieved from a NIS server.
@@ -27,8 +26,8 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class GecosNisAccountMapper extends GecosAccountMapper {
-    static private Log log = LogFactory.getLog(GecosNisAccountMapper.class);
-    static Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
+    static private Logger log = Logger.getLogger(GecosNisAccountMapper.class);
+    static Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
     
     static public String getTypeStatic() {
 		return "gecosNIS";

@@ -15,8 +15,7 @@ import javax.net.ssl.X509KeyManager;
 
 import org.apache.axis.AxisFault;
 import org.apache.commons.cli.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.glite.security.trustmanager.ContextWrapper;
 
 /**
@@ -32,7 +31,7 @@ public abstract class AbstractCommand {
         command.execute(args);
     }
     
-	private Log log = LogFactory.getLog(AbstractCommand.class);
+	private Logger log = Logger.getLogger(AbstractCommand.class);
     private String clientDN;
     private boolean usingProxy;
     protected String commandName;

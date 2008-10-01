@@ -16,7 +16,7 @@ import gov.bnl.gums.*;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
 import net.sf.hibernate.*;
-import org.apache.commons.logging.*;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -54,18 +54,18 @@ public class HibernateUserGroupDBTest extends UserGroupDBTest {
         Runnable task = new Runnable() {
             public void run() {
                 try {
-                List members = new ArrayList();
-                Random rand = new Random();
-                char[] chars = new char[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l'};
-                for (int n = 0; n<100; n++) {
-                    StringBuffer buff = new StringBuffer();
-                    for (int i = 0; i<20; i++) {
-                        buff.append(chars[rand.nextInt(10)]);
-                    }
-                    GridUser user = new GridUser(buff.toString(), null);
-                    members.add(user);
-                }
-                db.loadUpdatedList(members);
+	                List members = new ArrayList();
+	                Random rand = new Random();
+	                char[] chars = new char[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l'};
+	                for (int n = 0; n<100; n++) {
+	                    StringBuffer buff = new StringBuffer();
+	                    for (int i = 0; i<20; i++) {
+	                        buff.append(chars[rand.nextInt(10)]);
+	                    }
+	                    GridUser user = new GridUser(buff.toString(), null);
+	                    members.add(user);
+	                }
+	                db.loadUpdatedList(members);
                 } finally {
                         threadCount++;
                 }

@@ -20,8 +20,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** 
  * Retrieves the map from the NIS server and provide a logic to match name and
@@ -30,8 +29,8 @@ import org.apache.commons.logging.LogFactory;
  * @author  Gabriele Carcassi, Jay Packard
  */
 public class GecosMap {
-    private Log log = LogFactory.getLog(NISClient.class);
-    private Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
+    private Logger log = Logger.getLogger(NISClient.class);
+    private Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
     private Map accountToGecos = new Hashtable();
     private Map accountToName = new Hashtable();
     private Map accountToSurname = new Hashtable();

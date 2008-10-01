@@ -12,8 +12,7 @@ import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * Class for handling the gums-client.properties file
@@ -21,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class Configuration {
-	static private Log log = LogFactory.getLog(Configuration.class);
+	static private Logger log = Logger.getLogger(Configuration.class);
 	static private Configuration conf = new Configuration();
 	
 	/**

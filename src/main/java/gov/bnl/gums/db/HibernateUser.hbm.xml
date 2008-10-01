@@ -5,8 +5,7 @@
     <id name="id" column="ID" type="long" unsaved-value="null">
       <generator class="native"/>
     </id>
-    <property name="dn" column="DN" type="string"
-        length="255" not-null="true"/>
+    <property name="dn" column="DN" type="string" length="255" not-null="true"/>
     <property name="fqan" column="FQAN" type="string" length="255" />
     <property name="group" column="GROUP_NAME" type="string" length="255" />
     <property name="email" column="EMAIL" type="string" length="255" />

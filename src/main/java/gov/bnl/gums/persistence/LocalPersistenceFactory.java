@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * Persistence factory instantiation that combines a hibernate persistence factory
@@ -131,7 +130,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 	static public String getTypeStatic() {
 		return "local";
 	}
-	private Log log = LogFactory.getLog(LocalPersistenceFactory.class);    
+	private Logger log = Logger.getLogger(LocalPersistenceFactory.class);    
 	private HibernatePersistenceFactory persFactory;
 	private LDAPPersistenceFactory ldap;
 

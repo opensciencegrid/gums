@@ -6,20 +6,18 @@
 
 package gov.bnl.gums.configuration;
 
-import gov.bnl.gums.GUMS;
 import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.HostToGroupMapping;
 import gov.bnl.gums.userGroup.UserGroup;
 import gov.bnl.gums.userGroup.VomsServer;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
 
-import org.apache.commons.logging.*;
+import org.apache.log4j.Logger;
 
 import gov.bnl.gums.persistence.PersistenceFactory;
 
@@ -33,15 +31,16 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class Configuration {
-    private Log log = LogFactory.getLog(Configuration.class);
+    private Logger log = Logger.getLogger(Configuration.class);
     private ArrayList hostToGroupMappings = new ArrayList();
     private TreeMap groupToAccountMappings = new TreeMap();
     private TreeMap persistenceFactories = new TreeMap();
     private TreeMap accountMappers = new TreeMap();
     private TreeMap vomsServers = new TreeMap();
     private TreeMap userGroups = new TreeMap();
-    private boolean errorOnMissedMapping;
+    private boolean errorOnMissedMapping = true;
 	private boolean allowGridmapFiles = true;
+	private String bannedUserGroup = "";
     
     /**
      * @param accountMapper
@@ -187,6 +186,10 @@ public class Configuration {
     public GroupToAccountMapping getGroupToAccountMapping(String groupToAccountMapping) {
     	return (GroupToAccountMapping)groupToAccountMappings.get(groupToAccountMapping);
     }    
+    
+    public String getBannedUserGroup() {
+    	return bannedUserGroup;
+    }
     
     /**
      * @return
@@ -392,7 +395,10 @@ public class Configuration {
 		out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n");
 
 		String version = "";
-		out.write("<gums version='"+version+"' allowGridmapFiles='"+(getAllowGridmapFiles()?"true":"false")+"'>\n\n");
+		out.write("<gums version='"+version+"' "
+				+"allowGridmapFiles='"+(getAllowGridmapFiles()?"true":"false")+"' "
+				+"bannedUserGroup='"+getBannedUserGroup()+"'"
+				+">\n\n");
 
 		// Write persistence factories
 		if( getPersistenceFactories().size()>0 ) {
@@ -469,5 +475,9 @@ public class Configuration {
 
 	public void setAllowGridmapFiles(boolean allowGridmapFiles) {
 		this.allowGridmapFiles = allowGridmapFiles;
+	}
+	
+	public void setBannedUserGroup(String bannedUserGroup) {
+		this.bannedUserGroup = bannedUserGroup;
 	}
 }

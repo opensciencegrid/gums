@@ -14,7 +14,7 @@ import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 import gov.bnl.gums.persistence.LDAPPersistenceFactoryTest;
 import net.sf.hibernate.*;
-import org.apache.commons.logging.*;
+import org.apache.log4j.Logger;
 
 /**
  *

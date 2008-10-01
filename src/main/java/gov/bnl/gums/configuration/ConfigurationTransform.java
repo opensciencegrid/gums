@@ -23,8 +23,7 @@ import javax.xml.transform.sax.*;
 import javax.xml.transform.stream.*;
 
 import org.apache.commons.digester.Digester;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.InputSource;
@@ -34,7 +33,7 @@ import org.xml.sax.InputSource;
  * @author Jay Packard
  */
 public class ConfigurationTransform {
-	static private Log log = LogFactory.getLog(FileConfigurationStore.class);
+	static private Logger log = Logger.getLogger(FileConfigurationStore.class);
 
 	/**
 	 * Transforms gums.config 1.1 to 1.2/3

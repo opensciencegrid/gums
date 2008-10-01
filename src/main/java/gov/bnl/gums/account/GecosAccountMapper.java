@@ -12,7 +12,7 @@ import gov.bnl.gums.configuration.Configuration;
 
 import java.util.*;
 
-import org.apache.commons.logging.*;
+import org.apache.log4j.Logger;
 
 /** 
  * Maps a user to a local account based on the CN of the certificate and the
@@ -30,7 +30,7 @@ import org.apache.commons.logging.*;
  * @author Gabriele Carcassi, Jay Packard
  */
 public abstract class GecosAccountMapper extends AccountMapper {
-    static private Log log = LogFactory.getLog(GecosAccountMapper.class);
+    static private Logger log = Logger.getLogger(GecosAccountMapper.class);
     static private Map gecosMaps = new Hashtable();
 
     static public String getTypeStatic() {

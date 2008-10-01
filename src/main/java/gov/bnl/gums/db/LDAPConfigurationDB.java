@@ -4,14 +4,13 @@ import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Date;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 
 public class LDAPConfigurationDB implements ConfigurationDB {
-    private Log log = LogFactory.getLog(LDAPUserGroupDB.class);
+    private Logger log = Logger.getLogger(LDAPUserGroupDB.class);
     private LDAPPersistenceFactory factory;
     
     public LDAPConfigurationDB(LDAPPersistenceFactory factory) {

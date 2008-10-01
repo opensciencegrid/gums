@@ -14,11 +14,10 @@ import net.sf.hibernate.Transaction;
 import net.sf.hibernate.type.DateType;
 import net.sf.hibernate.type.Type;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 public class HibernateConfigurationDB implements ConfigurationDB {
-    private Log log = LogFactory.getLog(LDAPUserGroupDB.class);
+    private Logger log = Logger.getLogger(LDAPUserGroupDB.class);
     private HibernatePersistenceFactory persistenceFactory;
     
     public HibernateConfigurationDB(HibernatePersistenceFactory persistenceFactory) {

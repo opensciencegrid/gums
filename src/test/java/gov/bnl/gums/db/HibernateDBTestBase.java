@@ -32,6 +32,7 @@ public class HibernateDBTestBase extends TestCase {
         Statement stmt = session.connection().createStatement();
         stmt.execute("DELETE FROM USER WHERE GROUP_NAME='test'");
         stmt.execute("DELETE FROM MAPPING WHERE MAP='test'");
+        stmt.execute("DELETE FROM BANNED_USER");
         session.close();
     }
     
@@ -40,6 +41,7 @@ public class HibernateDBTestBase extends TestCase {
         Statement stmt = session.connection().createStatement();
         stmt.execute("DELETE FROM USER WHERE GROUP_NAME='test'");
         stmt.execute("DELETE FROM MAPPING WHERE MAP='test'");
+        stmt.execute("DELETE FROM BANNED_USER");
         session.close();
         sessions.close();
     }

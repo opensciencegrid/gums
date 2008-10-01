@@ -17,8 +17,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.security.cert.X509Certificate;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * Toolkit for doing parsing operations on certificates
@@ -26,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class CertToolkit {
-    static private Log log = LogFactory.getLog(CertToolkit.class);
+    static private Logger log = Logger.getLogger(CertToolkit.class);
 	
     /**
      * @param commaDN

@@ -11,7 +11,7 @@ import gov.bnl.gums.CertToolkit;
 import gov.bnl.gums.configuration.Configuration;
 import junit.framework.*;
 import java.util.*;
-import org.apache.commons.logging.*;
+import org.apache.log4j.Logger;
 
 /**
  *

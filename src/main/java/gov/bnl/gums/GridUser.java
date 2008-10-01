@@ -6,8 +6,7 @@
 
 package gov.bnl.gums;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** 
  * Represent a GRID Identity in GUMS, which is a certificate with its DN and FQAN.
@@ -15,7 +14,7 @@ import org.apache.commons.logging.LogFactory;
  * @author  Gabriele Carcassi, Jay Packard
  */
 public class GridUser {
-    private Log log = LogFactory.getLog(GridUser.class);
+    private Logger log = Logger.getLogger(GridUser.class);
     private String certificateDN;
     private FQAN voFQAN;
     private String email;
@@ -30,36 +29,47 @@ public class GridUser {
      * Creates a GRID credential with DN.
      */
     public GridUser(String userDN) {
-    	this(userDN, null, null);
+    	this(userDN, null, null, false);
     }
     
     /**
      * Creates a GRID credential with DN and FQAN.
      */
     public GridUser(String userDN, String fqan) {
-        this(userDN, fqan, null);
+        this(userDN, fqan, null, true);
+    }
+    
+    /**
+     * Creates a GRID credential with DN and FQAN.
+     */
+    public GridUser(String userDN, String fqan, boolean enforceFqanWellFormedness) {
+        this(userDN, fqan, null, enforceFqanWellFormedness);
+    }
+ 
+    /**
+     * Creates a new object representing a Grid credential.
+     * 
+     * @param userDN the DN of the user certificate (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith")
+     * @param fqan The Fully Qualified Attribute name (i.e. "/atlas/production/Role=Leader")
+     * @param email
+     */
+    public GridUser(String userDN, String fqan, String email) {
+    	this(userDN, fqan, email, true);
     }
     
     /**
      * Creates a new object representing a Grid credential.
      * 
      * @param userDN the DN of the user certificate (i.e. "/DC=org/DC=doegrids/OU=People/CN=John Smith")
-     * @param fqan The Fully Qualified Attribute name String representation (i.e. "/atlas/production/Role=Leader")
+     * @param fqan The Fully Qualified Attribute name (i.e. "/atlas/production/Role=Leader")
      * @param email
      */
-    public GridUser(String userDN, String fqan, String email) {
-        setCertificateDN( userDN );
+    public GridUser(String userDN, String fqan, String email, boolean enforceFqanWellFormedness) {
+        setCertificateDN(userDN);
         if (fqan!=null && fqan.length()>0)
-            setVoFQAN(new FQAN(fqan));
-       	this.email = email;
+        	setVoFQAN(new FQAN(fqan, enforceFqanWellFormedness));
+       	setEmail(email);
     }
-    
-    /*public GridUser(String userDN, String fqan, String issuerDN) {
-        setCertificateDN( userDN );
-	setIssuerDN( issuerDN  );
-        if (fqan!=null && fqan.length()>0)
-            setVoFQAN(new FQAN(fqan));	
-    }*/
 
   /**
      * @param user

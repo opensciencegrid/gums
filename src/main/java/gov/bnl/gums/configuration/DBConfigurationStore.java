@@ -13,8 +13,7 @@ import java.util.Iterator;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import gov.bnl.gums.GUMS;
@@ -28,11 +27,11 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  * @author Jay Packard
  */
 public class DBConfigurationStore extends ConfigurationStore {
-	private Log log = LogFactory.getLog(FileConfigurationStore.class);
+	private Logger log = Logger.getLogger(FileConfigurationStore.class);
 	private ConfigurationDB configDB;
+	private Configuration conf;
 	private String schemaPath = null;
 	private Date lastRetrieval = null;
-	private Date lastModification = null;
 	
 	public DBConfigurationStore(ConfigurationDB configDB, String schemaPath) {
 		this.configDB = configDB;
@@ -63,17 +62,39 @@ public class DBConfigurationStore extends ConfigurationStore {
     }
     
     public Date getLastModification() {
-    	return configDB.getLastModification();
+    	Date date = configDB.getLastModification();
+    	log.debug("Last database configuration modification is  " + date);
+    	return date;
     }
     
     public boolean needsReload() {
-    	return (lastRetrieval == null) || (lastRetrieval.before(lastModification));
+    	return (lastRetrieval == null) || (lastRetrieval.before(getLastModification()));
     }
     
     public Configuration retrieveConfiguration() throws Exception {
-    	String configText = configDB.retrieveCurrentConfiguration();
-    	Configuration configuration = ConfigurationToolkit.loadConfiguration(null, configText, schemaPath);
-   		return configuration;
+    	try {
+			if (needsReload()) {
+		    	String configText = configDB.retrieveCurrentConfiguration();
+		    	conf = ConfigurationToolkit.loadConfiguration(null, configText, schemaPath);
+		    	lastRetrieval = new Date();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		return conf;
+    }
+    
+    public Configuration retrieveConfiguration(boolean reload) throws Exception {
+    	try {
+			if (reload) {
+		    	String configText = configDB.retrieveCurrentConfiguration();
+		    	conf = ConfigurationToolkit.loadConfiguration(null, configText, schemaPath);
+		    	lastRetrieval = new Date();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		return conf;
     }
     
     public Configuration restoreConfiguration(String dateStr) throws Exception {

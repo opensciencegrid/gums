@@ -10,8 +10,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** 
  * Represent a VOMS extended proxy credential as defined in
@@ -24,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
  * The class will always check that every modification matches the regex
  * /[\w-\.]+(/[\w-\.]+)*(/Role=[\w-\.]+)?(/Capability=[\w-\.]+)?
  * which fully defines all the characters allowed. This differs slightly from
- * the one contained in the specification, as it cointained some small errors.
+ * the one contained in the specification, as it contained some small errors.
  * It matches the description of the syntax of the document.
  *
  * @author  Gabriele Carcassi, Jay Packard
@@ -36,6 +35,7 @@ public class FQAN {
     private String group;
     private String role;
     private String capability;
+    private boolean checkFormedness = true;
     
     /**
      * Creates a FQAN based on String representation. If the parsing fails, it will
@@ -43,9 +43,19 @@ public class FQAN {
      * @param fqan A VOMS FQAN (i.e. "/atlas/production/Role=Leader")
      */
     public FQAN(String fqan) {
+       this(fqan, true);
+    }
+    
+    /**
+     * Creates a FQAN based on String representation. If the parsing fails, it will
+     * throw an exception.
+     * @param fqan A VOMS FQAN (i.e. "/atlas/production/Role=Leader")
+     */
+    public FQAN(String fqan, boolean checkFormedness) {
+    	this.checkFormedness = checkFormedness;
         setFqan(fqan);
-        parseFqan(fqan);
-        generateFqan();
+        if (parseFqan(fqan))
+        	generateFqan();
     }
     
     /** Creates a FQAN based on the different pieces of information.
@@ -157,11 +167,15 @@ public class FQAN {
         fqan = bf.toString();
     }
     
-    private void parseFqan(String fqan) {
+    private boolean parseFqan(String fqan) {
         // Matches to the specification.
-        Matcher m = fqanPattern.matcher(fqan);
-        if (!m.matches())
-            throw new IllegalArgumentException("FQAN '" + fqan + "' is malformed (syntax: /VO[/group[/subgroup(s)]][/Role=role][/Capability=cap])");
+    	Matcher m = fqanPattern.matcher(fqan);
+        if (!m.matches()) {
+        	if (checkFormedness)
+        		throw new IllegalArgumentException("FQAN '" + fqan + "' is malformed (syntax: /VO[/group[/subgroup(s)]][/Role=role][/Capability=cap])");
+        	else
+        		return false;
+        }
         
         StringTokenizer stk = new StringTokenizer(fqan, "/");
         vo = stk.nextToken();
@@ -169,7 +183,7 @@ public class FQAN {
             group = null;
             role = null;
             capability = null;
-            return;
+            return true;
         }
         String tempGroup = "";
         String token = stk.nextToken();
@@ -179,7 +193,7 @@ public class FQAN {
             if (!stk.hasMoreTokens()) {
                 role = null;
                 capability = null;
-                return;
+                return true;
             }
             token =  stk.nextToken();
         }
@@ -187,13 +201,15 @@ public class FQAN {
             setRole(token.substring(5));
             if (!stk.hasMoreTokens()) {
                 capability = null;
-                return;
+                return true;
             }
             token = stk.nextToken();
         }
         if (token.startsWith("Capability=")) {
             setCapability(token.substring(11));
         }
+        
+        return true;
     }
     
     private void setCapability(String capability) {

@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
-import org.apache.commons.logging.*;
+import org.apache.log4j.Logger;
 
 /** Implements the logic to retrieve the configuration from the gums.config file
  * taken from the classpath. The file will be reloaded as soon as if it changes,
@@ -32,7 +32,7 @@ import org.apache.commons.logging.*;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class FileConfigurationStore extends ConfigurationStore {
-	private Log log = LogFactory.getLog(FileConfigurationStore.class);
+	private Logger log = Logger.getLogger(FileConfigurationStore.class);
 	private Configuration conf;
 	private Date lastRetrieval = null;
 	private String configBackupDir = null;
@@ -180,6 +180,16 @@ public class FileConfigurationStore extends ConfigurationStore {
 	public synchronized Configuration retrieveConfiguration() {
 		try {
 			if (needsReload())
+				reloadConfiguration();
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		return conf;
+	}
+	
+	public synchronized Configuration retrieveConfiguration(boolean reload) {
+		try {
+			if (reload)
 				reloadConfiguration();
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());

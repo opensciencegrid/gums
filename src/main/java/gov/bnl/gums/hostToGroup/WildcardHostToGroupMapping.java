@@ -11,8 +11,7 @@ import gov.bnl.gums.configuration.Configuration;
 
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** Matches a set of hosts to a list of group mapping by comparing the hostname
  * with a wildcard. Examples of valid wildcards are 'star*.rhic.bnl.gov',
@@ -24,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class WildcardHostToGroupMapping extends HostToGroupMapping {
-    static Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
+    static Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
     
     private List regexs;
   

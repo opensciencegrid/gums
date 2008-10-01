@@ -15,7 +15,7 @@ import gov.bnl.gums.persistence.PersistenceFactory;
 
 import java.util.*;
 
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import junit.framework.*;
 
@@ -39,7 +39,7 @@ public class VOMSUserGroupTest extends TestCase {
     }
     
     protected static Properties readVomsProperties() {
-    	LogFactory.getLog(LDAPPersistenceFactory.class).trace("Retrieving VOMS properties from voms.properties in the classpath");
+    	Logger.getLogger(LDAPPersistenceFactory.class).trace("Retrieving VOMS properties from voms.properties in the classpath");
         PropertyResourceBundle prop = (PropertyResourceBundle) ResourceBundle.getBundle("voms");
         Properties prop2 = new Properties();
         Enumeration keys = prop.getKeys();

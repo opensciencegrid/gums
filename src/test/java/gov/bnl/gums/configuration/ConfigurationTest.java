@@ -78,9 +78,9 @@ public class ConfigurationTest extends TestCase {
         LDAPUserGroup userGroup = new LDAPUserGroup(conf, "userGroup1");
         conf.addUserGroup(userGroup);
         userGroup.setPersistenceFactory(factory.getName());
-	userGroup.setQuery("ou=People,query");
-	userGroup.setServer("server");
-	gMap.addUserGroup(userGroup.getName());
+		userGroup.setQuery("ou=People,query");
+		userGroup.setServer("server");
+		gMap.addUserGroup(userGroup.getName());
         MockAccountMapper accountMapper = new MockAccountMapper(conf, "mockAccountMapper");
         conf.addAccountMapper(accountMapper);
         gMap.addAccountMapper(accountMapper.getName());

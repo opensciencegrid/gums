@@ -12,8 +12,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import gov.bnl.gums.GUMS;
 import gov.bnl.gums.GridUser;
@@ -35,7 +34,7 @@ public class AccountPoolMapper extends AccountMapper {
 		return "pool";
 	}
     
-	private Log gumsAdminLog = LogFactory.getLog(GUMS.gumsAdminLogName);
+	private Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
     private AccountPoolMapperDB db;
     private String persistenceFactory = "";
 	private String accountPool = "";

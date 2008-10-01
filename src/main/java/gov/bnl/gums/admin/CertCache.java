@@ -12,8 +12,7 @@ import java.security.cert.X509Certificate;
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * Implements the javax.servlet.Filter class and stores a user certificate
@@ -21,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class CertCache implements Filter {
-	static private Log log = LogFactory.getLog(CertCache.class);
+	static private Logger log = Logger.getLogger(CertCache.class);
 	static private ServletContext context;
 	static private ThreadLocal certificate = new ThreadLocal();
 
