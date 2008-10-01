@@ -1,0 +1,25 @@
+<assembly>
+	<id>bin</id>
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>target/lib</directory>
+			<outputDirectory>lib</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/config</directory>
+			<outputDirectory>config</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/scripts</directory>
+			<outputDirectory>scripts</outputDirectory>
+			<fileMode>0755</fileMode>
+		</fileSet>
+		<fileSet>
+			<directory>target/log</directory>
+			<outputDirectory>log</outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>
