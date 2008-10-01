@@ -153,11 +153,19 @@ else if ("add".equals(request.getParameter("command"))) {
 	<input type="hidden" name="command" value="">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
+			<td nowrap style="text-align: right;">
+				User group:
+			</td>
+			<td>
+				<%=ConfigurationWebToolkit.createSelectBox("userGroup", manualUserGroups, null, null, manualUserGroups.size()>1)%> (required)
+			</td>
+		</tr>
+		<tr>
     		<td nowrap style="text-align: right;">
 	    		DN:
 		    </td>
 		    <td nowrap>
-			    <input maxlength="256" size="64" name="dn" value=""/>
+			    <input maxlength="256" size="64" name="dn" value=""/>  (required; regular expressions accepted)
 		    </td>
 		</tr>
 		<tr>
@@ -173,7 +181,7 @@ else if ("add".equals(request.getParameter("command"))) {
 	    		fqan:
 		    </td>
 		    <td nowrap>
-			    <input maxlength="256" size="64" name="fqan" value=""/>
+			    <input maxlength="256" size="64" name="fqan" value=""/> (optional; regular expressions accepted)
 		    </td>
 		</tr>			
 		<tr>
@@ -181,7 +189,7 @@ else if ("add".equals(request.getParameter("command"))) {
 	    		i.e.
 		    </td>
 		    <td nowrap>
-			    /myvo/mygroup/Role=myrole
+			    /myvo/mygroup/Role=.*
 		    </td>
 		</tr>		
 		<tr>
@@ -189,17 +197,9 @@ else if ("add".equals(request.getParameter("command"))) {
 	    		email:
 		    </td>
 		    <td nowrap>
-			    <input maxlength="256" size="64" name="email" value=""/>
+			    <input maxlength="256" size="64" name="email" value=""/> (optional)
 		    </td>
 		</tr>		
-		<tr>
-			<td nowrap style="text-align: right;">
-				User group:
-			</td>
-			<td>
-				<%=ConfigurationWebToolkit.createSelectBox("userGroup", manualUserGroups, null, null, manualUserGroups.size()>1)%>
-			</td>
-		</tr>
 		<tr>
 	        <td colspan=2>
 	        	<div style="text-align: center;">

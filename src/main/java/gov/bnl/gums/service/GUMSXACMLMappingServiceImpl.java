@@ -8,8 +8,7 @@ package gov.bnl.gums.service;
 
 import java.util.List;
 
-import org.apache.commons.logging.*;
-import org.apache.axis.utils.XMLUtils;
+import org.apache.log4j.Logger;
 
 import gov.bnl.gums.admin.GUMSAPI;
 import gov.bnl.gums.admin.GUMSAPIImpl;
@@ -26,15 +25,12 @@ import org.opensaml.xacml.ctx.SubjectType;
 import org.opensaml.xacml.ctx.ResultType;
 import org.opensaml.xacml.ctx.ResourceType;
 import org.opensaml.xacml.ctx.AttributeType;
-import org.opensaml.xacml.ctx.AttributeValueType;
 import org.opensaml.xacml.ctx.impl.DecisionTypeImplBuilder;
 import org.opensaml.xacml.ctx.impl.StatusCodeTypeImplBuilder;
 import org.opensaml.xacml.ctx.impl.StatusTypeImplBuilder;
 import org.opensaml.xacml.ctx.impl.ResultTypeImplBuilder;
 import org.opensaml.xacml.ctx.impl.ResponseTypeImplBuilder;
 import org.opensaml.xacml.ctx.impl.AttributeValueTypeImpl;
-import org.opensaml.xacml.ctx.impl.AttributeValueTypeImplBuilder;
-import org.opensaml.xacml.ctx.impl.AttributeTypeImplBuilder;
 import org.opensaml.xacml.policy.AttributeAssignmentType;
 import org.opensaml.xacml.policy.EffectType;
 import org.opensaml.xacml.policy.ObligationsType;
@@ -49,22 +45,20 @@ import org.opensaml.xml.XMLObject;
 
 import org.opensciencegrid.authz.xacml.service.XACMLMappingService;
 import org.opensciencegrid.authz.xacml.common.XACMLConstants;
-import org.opensciencegrid.authz.xacml.client.XACMLClient;
 
 public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
-	private static String RESOURCE_ID = XACMLConstants.RESOURCE_DNS_HOST_NAME_ID;
-	private static String SUBJECT_ID = XACMLConstants.SUBJECT_X509_ID;
-	private static String VOMS_FQAN = XACMLConstants.SUBJECT_VOMS_FQAN_ID;
-	private static String USERNAME =  XACMLConstants.OBLIGATION_USERNAME;
+	private static String RESOURCE_ID = "http://authz-interop.org/xacml/resource/resource-x509-id";//XACMLConstants.RESOURCE_DNS_HOST_NAME_ID;
+	private static String SUBJECT_ID = "http://authz-interop.org/xacml/subject/subject-x509-id";//XACMLConstants.SUBJECT_X509_ID;
+	private static String VOMS_FQAN = "http://authz-interop.org/xacml/subject/voms-fqan";//XACMLConstants.SUBJECT_VOMS_FQAN_ID;
+	private static String USERNAME_OBLIGATION = "http://authz-interop.org/xacml/obligation/username";//XACMLConstants.OBLIGATION_USERNAME;
+	private static String USERNAME_ATTRIBUTE = "http://authz-interop.org/xacml/attribute/username";//XACMLConstants.OBLIGATION_USERNAME;
 	private static String ERROR = "http://oasis/names/tc/xacml/1.0/status/error";
 	private static String OK = "http://oasis/names/tc/xacml/1.0/status/ok";
-	private Log log = LogFactory.getLog(GUMSXACMLMappingServiceImpl.class);
+	private Logger log = Logger.getLogger(GUMSXACMLMappingServiceImpl.class);
 	private static GUMSAPI gums = new GUMSAPIImpl();
 
 	public XACMLAuthzDecisionStatementType mapCredentials(XACMLAuthzDecisionQueryType xacmlQuery) throws Exception {
 		XMLObjectBuilderFactory builderFactory = org.opensaml.xml.Configuration.getBuilderFactory();
-
-		log.debug("XACMLAuthzDecisionQueryType object received: "+XMLUtils.ElementToString(xacmlQuery.getDOM()));
 
 		// Get information from request
 		RequestType request = xacmlQuery.getRequest();
@@ -80,10 +74,10 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			log.debug("missing attribute: "+SUBJECT_ID);
 			throw new Exception("missing attribute: "+SUBJECT_ID);
 		}
-		if (userFqan==null || userFqan.length()==0) {
+		/*if (userFqan==null || userFqan.length()==0) {
 			log.debug("missing attribute: "+VOMS_FQAN);
 			throw new Exception("missing attribute: "+VOMS_FQAN);
-		}
+		}*/
 
 		// Attribute Assignment, decision, and status code
 		AttributeAssignmentType attributeAssignment = null;
@@ -103,7 +97,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			else {
 				AttributeAssignmentTypeImplBuilder attributeAssignmentBuilder = (AttributeAssignmentTypeImplBuilder)builderFactory.getBuilder(AttributeAssignmentType.DEFAULT_ELEMENT_NAME);
 				attributeAssignment = attributeAssignmentBuilder.buildObject();
-				attributeAssignment.setAttributeId(XACMLConstants.ATTRIBUTE_USERNAME_ID);
+				attributeAssignment.setAttributeId(USERNAME_ATTRIBUTE);
 				attributeAssignment.setDataType(XACMLConstants.STRING_DATATYPE);
 				attributeAssignment.setValue(account);
 
@@ -111,51 +105,55 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 				
 				log.debug("Credentials mapped on '" + hostDn + "' for '" + userDn + "' with fqan '" + userFqan + "' to '" + account + "'");
 			}
-		} catch (RuntimeException e1) {
+		} catch (Exception e1) {
 			statusCode.setValue(ERROR);
 			log.debug(e1.getMessage());
 			throw e1;
 		}
 
-		// Status
-		StatusTypeImplBuilder statusBuilder = (StatusTypeImplBuilder)builderFactory.getBuilder(StatusType.DEFAULT_ELEMENT_NAME);
-		StatusType status = statusBuilder.buildObject();
-		status.setStatusCode(statusCode);
+		try {
+			// Status
+			StatusTypeImplBuilder statusBuilder = (StatusTypeImplBuilder)builderFactory.getBuilder(StatusType.DEFAULT_ELEMENT_NAME);
+			StatusType status = statusBuilder.buildObject();
+			status.setStatusCode(statusCode);
+	
+			// Obligation
+			ObligationTypeImplBuilder obligationBuilder = (ObligationTypeImplBuilder)builderFactory.getBuilder(ObligationType.DEFAULT_ELEMENT_QNAME);
+			ObligationType obligation = obligationBuilder.buildObject();
+			obligation.setFulfillOn(EffectType.Permit);
+			obligation.setObligationId(USERNAME_OBLIGATION);
+			if (attributeAssignment != null)
+				obligation.getAttributeAssignments().add(attributeAssignment);
+	
+			// Obligations
+			ObligationsTypeImplBuilder obligationsBuilder = (ObligationsTypeImplBuilder)builderFactory.getBuilder(ObligationsType.DEFAULT_ELEMENT_QNAME);
+			ObligationsType obligations = obligationsBuilder.buildObject();
+			obligations.getObligations().add(obligation);
+	
+			// Result
+			ResultTypeImplBuilder resultBuilder = (ResultTypeImplBuilder)builderFactory.getBuilder(ResultType.DEFAULT_ELEMENT_NAME);
+			ResultType result = resultBuilder.buildObject();
+			result.setStatus(status);
+			result.setDecision(decision);
+			result.setObligations(obligations);
+	
+			// Response      
+			ResponseTypeImplBuilder responseBuilder = (ResponseTypeImplBuilder)builderFactory.getBuilder(ResponseType.DEFAULT_ELEMENT_NAME);
+			ResponseType response = responseBuilder.buildObject();
+			response.setResult(result);
+	
+			// Statement
+			XACMLAuthzDecisionStatementTypeImplBuilder xacmlauthzBuilder = (XACMLAuthzDecisionStatementTypeImplBuilder)builderFactory.getBuilder(XACMLAuthzDecisionStatementType.TYPE_NAME_XACML20);
+			XACMLAuthzDecisionStatementType xacmlAuthzStatement = xacmlauthzBuilder.buildObject( Statement.DEFAULT_ELEMENT_NAME, XACMLAuthzDecisionStatementType.TYPE_NAME_XACML20);	
+			//xacmlAuthzStatement.setRequest(request);
+			xacmlAuthzStatement.setResponse(response);
 
-		// Obligation
-		ObligationTypeImplBuilder obligationBuilder = (ObligationTypeImplBuilder)builderFactory.getBuilder(ObligationType.DEFAULT_ELEMENT_QNAME);
-		ObligationType obligation = obligationBuilder.buildObject();
-		obligation.setFulfillOn(EffectType.Permit);
-		obligation.setObligationId(USERNAME);
-		if (attributeAssignment != null)
-			obligation.getAttributeAssignments().add(attributeAssignment);
-
-		// Obligations
-		ObligationsTypeImplBuilder obligationsBuilder = (ObligationsTypeImplBuilder)builderFactory.getBuilder(ObligationsType.DEFAULT_ELEMENT_QNAME);
-		ObligationsType obligations = obligationsBuilder.buildObject();
-		obligations.getObligations().add(obligation);
-
-		// Result
-		ResultTypeImplBuilder resultBuilder = (ResultTypeImplBuilder)builderFactory.getBuilder(ResultType.DEFAULT_ELEMENT_NAME);
-		ResultType result = resultBuilder.buildObject();
-		result.setStatus(status);
-		result.setDecision(decision);
-		result.setObligations(obligations);
-
-		// Response      
-		ResponseTypeImplBuilder responseBuilder = (ResponseTypeImplBuilder)builderFactory.getBuilder(ResponseType.DEFAULT_ELEMENT_NAME);
-		ResponseType response = responseBuilder.buildObject();
-		response.setResult(result);
-
-		// Statement
-		XACMLAuthzDecisionStatementTypeImplBuilder xacmlauthzBuilder = (XACMLAuthzDecisionStatementTypeImplBuilder)builderFactory.getBuilder(XACMLAuthzDecisionStatementType.TYPE_NAME_XACML20);
-		XACMLAuthzDecisionStatementType xacmlAuthzStatement = xacmlauthzBuilder.buildObject( Statement.DEFAULT_ELEMENT_NAME, XACMLAuthzDecisionStatementType.TYPE_NAME_XACML20);	
-		//xacmlAuthzStatement.setRequest(request);
-		xacmlAuthzStatement.setResponse(response);
-
-		log.debug("XACMLAuthzDecisionStatementType object returned: "+XMLUtils.ElementToString(xacmlAuthzStatement.getDOM()));
-		
-		return xacmlAuthzStatement;
+			return xacmlAuthzStatement;
+		} catch (Exception e1) {
+			statusCode.setValue(ERROR);
+			log.debug(e1.getMessage());
+			throw e1;
+		}
 	}
 
 	private String getSubjectAttributeValue(RequestType request, String attributeId) {

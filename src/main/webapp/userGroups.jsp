@@ -126,6 +126,13 @@ if (request.getParameter("command")==null ||
 							<a href="persistenceFactories.jsp?command=edit&name=<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>">
 								<%=((ManualUserGroup)userGroup).getPersistenceFactory()%>
 							</a><br>
+							<%
+							if (((ManualUserGroup)userGroup).getMembersUri()!=null) {
+								out.write("Members URI: " + ((ManualUserGroup)userGroup).getMembersUri() + "<br>");
+							}
+							if (((ManualUserGroup)userGroup).getNonMembersUri()!=null) {
+								out.write("Non-members URI: " + ((ManualUserGroup)userGroup).getNonMembersUri() + "<br>");
+							}%>
 <%
 		} else if (userGroup instanceof LDAPUserGroup) {
 %>
@@ -305,6 +312,38 @@ else if ("edit".equals(request.getParameter("command"))
 						false)%> (where to search for individual users)
 			</td>
 		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				Members URI:
+			</td>
+			<td> 
+				<input maxlength="256" size="32" name="membersUri" value="<%=((ManualUserGroup)userGroup).getMembersUri()%>"/> (optional)
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	http://www.opensciencegrid.org/banned_users.html
+		    </td>
+		</tr>	
+		<tr>
+			<td nowrap style="text-align: right;">
+				Non-members URI:
+			</td>
+			<td> 
+				<input maxlength="256" size="32" name="nonMembersUri" value="<%=((ManualUserGroup)userGroup).getNonMembersUri()%>"/> (optional)
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	http://www.opensciencegrid.org/nonbanned_users.html
+		    </td>
+		</tr>	
 <%
 	} 
 	else if (userGroup instanceof LDAPUserGroup) {

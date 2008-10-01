@@ -6,8 +6,7 @@
 
 package gov.bnl.gums.service;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import gov.bnl.gums.admin.GUMSAPI;
 import gov.bnl.gums.admin.GUMSAPIImpl;
@@ -21,7 +20,7 @@ import org.opensciencegrid.authz.service.GRIDIdentityMappingService;
  * @author Gabriele Carcassi
  */
 public class GUMSAuthZServiceImpl implements GRIDIdentityMappingService {
-    private Log log = LogFactory.getLog(GUMSAuthZServiceImpl.class);
+    private Logger log = Logger.getLogger(GUMSAuthZServiceImpl.class);
     private static GUMSAPI gums = new GUMSAPIImpl();
     
     public LocalId mapCredentials(GridId gridID) {

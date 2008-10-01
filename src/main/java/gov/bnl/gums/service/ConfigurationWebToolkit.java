@@ -179,6 +179,10 @@ public class ConfigurationWebToolkit implements Remote {
 				userGroup.setAccess( request.getParameter("access").trim() );
 			if (request.getParameter("persistenceFactory")!=null)
 				((ManualUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory").trim() );
+			if (request.getParameter("membersUri")!=null)
+				((ManualUserGroup)userGroup).setMembersUri( request.getParameter("membersUri").trim() );
+			if (request.getParameter("nonMembersUri")!=null)
+				((ManualUserGroup)userGroup).setNonMembersUri( request.getParameter("nonMembersUri").trim() );
 		} else if (type.equals(LDAPUserGroup.getTypeStatic())) {
 			userGroup = new LDAPUserGroup();
 			userGroup.setName( request.getParameter("name").trim() );

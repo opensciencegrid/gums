@@ -5,17 +5,11 @@
 	<artifactId>gums-service</artifactId>
 	<packaging>war</packaging>
 	<name>gums-service</name>
-	<version>1.3.0</version>
+	<version>1.3.0-RC2</version>
 	<description>GUMS Service provides web services used by the client tool and a 
 		web interface for administering GUMS</description>
     
   	<repositories>
-		<repository>
-        	<id>no-commons-logging</id>
-        	<name>No-commons-logging Maven Repository</name>
-        	<layout>default</layout>
-        	<url>http://no-commons-logging.zapto.org/mvn2</url>
-		</repository>
         <repository>
 	    	<id>usatlas</id>
 			<name>usatlas repository</name>
@@ -27,6 +21,16 @@
 			<name>Maven Repository Switchboard</name>
 	 		<layout>default</layout>
  			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+		<repository>
+		   <id>Internet2 repository</id>
+		   <url>http://shibboleth.internet2.edu/downloads/maven2/org</url>
+		</repository>
+		<repository>
+        	<id>no-commons-logging</id>
+        	<name>No-commons-logging Maven Repository</name>
+        	<layout>default</layout>
+        	<url>http://no-commons-logging.zapto.org/mvn2</url>
 		</repository>
     </repositories>
     
@@ -214,21 +218,11 @@
   
  	<dependencies> 
         <!-- compile scope -->
-    	<dependency><!--This is a hack to remove commons-logging which is replaced by slf4j-->
-        	<groupId>commons-logging</groupId>
-        	<artifactId>commons-logging</artifactId>
-        	<version>99.0-does-not-exist</version>
-    	</dependency>
-    	<dependency><!--This is a hack to remove commons-logging which is replaced by slf4j-->
-        	<groupId>commons-logging</groupId>
-        	<artifactId>commons-logging-api</artifactId>
-        	<version>99.0-does-not-exist</version>
-    	</dependency>
         <dependency>
             <groupId>gums</groupId>
             <artifactId>gums-core</artifactId>
             <version>${version}</version>
-        </dependency>	
+        </dependency>
 		<dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -241,7 +235,7 @@
         </dependency>
         <dependency>
             <groupId>opensciencegrid</groupId>
-            <artifactId>privilege-v2</artifactId>
+            <artifactId>privilege-xacml</artifactId>
             <version>2.1.0</version>
         </dependency>
         <dependency>
@@ -253,17 +247,7 @@
             <groupId>opensaml</groupId>
             <artifactId>opensaml-v2</artifactId>
             <version>2.2.0</version>
-        </dependency>   
-        <dependency>  
-			<groupId>org.slf4j</groupId>  
-			<artifactId>slf4j-api</artifactId>
-			<version>1.5.0</version>
-		</dependency>	
-		<dependency>
-			<groupId>org.slf4j</groupId>  
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.5.0</version>
-		</dependency>
+        </dependency>
     	
  	</dependencies>  
   

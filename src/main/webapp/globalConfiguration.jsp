@@ -2,6 +2,7 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="gov.bnl.gums.*"%>
 <%@ page import="gov.bnl.gums.configuration.*" %>
+<%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -55,6 +56,7 @@ if (request.getParameter("command")==null ||
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
 			newConfiguration.setAllowGridmapFiles("on".equals(request.getParameter("allowGMP")));
+			newConfiguration.setBannedUserGroup(request.getParameter("bannedUserGroup"));
 			gums.setConfiguration(newConfiguration);
 			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">Configuration has been saved.</div>";
@@ -72,9 +74,20 @@ if (request.getParameter("command")==null ||
 	<input type="hidden" name="command" value="save">
 	<table id="form" cellpadding="2" cellspacing="2">
 	   	<tr>
-			<td>
+			<td colspan=2 style="text-align: left;">
 				<input type="checkbox" name="allowGMP" <%=configuration.getAllowGridmapFiles()?"CHECKED":""%>> Allow grid mapfile generation (uncheck if not needed so that users that don't use your site will not use up pool accounts)
 			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: left;">
+				Banned User Group: <%
+				out.write( 
+					ConfigurationWebToolkit.createSelectBox("bannedUserGroup", 
+						configuration.getUserGroups().values(), 
+						configuration.getBannedUserGroup(),
+						null,
+						true) );			
+			%> (optional) </td>
 		</tr>
 		<tr>
 			<td>
