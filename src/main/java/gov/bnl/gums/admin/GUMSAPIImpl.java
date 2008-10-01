@@ -12,7 +12,6 @@ import gov.bnl.gums.account.AccountPoolMapper;
 import gov.bnl.gums.account.ManualAccountMapper;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.configuration.FileConfigurationStore;
-import gov.bnl.gums.configuration.Version;
 import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.UserGroup;
 import gov.bnl.gums.hostToGroup.HostToGroupMapping;
@@ -21,7 +20,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.digester.Digester;
 import org.apache.log4j.Logger;
 
 import gov.bnl.gums.db.AccountPoolMapperDB;
