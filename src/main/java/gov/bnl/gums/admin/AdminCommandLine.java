@@ -7,13 +7,14 @@ package gov.bnl.gums.admin;
 
 import gov.bnl.gums.command.GUMSCommandLine;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author Gabriele Carcassi, Jay Packard
  */
 public class AdminCommandLine extends GUMSCommandLine {
-    private static Logger log = Logger.getLogger(AdminCommandLine.class);
+    private static Log log = LogFactory.getLog(AdminCommandLine.class);
 
     static {
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateOsgUserVoMap",

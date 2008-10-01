@@ -11,8 +11,7 @@ import gov.bnl.gums.command.Configuration;
 import java.util.Iterator;
 import org.apache.axis.client.Stub;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import java.net.URL;
 
@@ -20,7 +19,7 @@ import java.net.URL;
  * @author carcassi
  */
 public abstract class RemoteCommand extends AbstractCommand {
-    private Log log = LogFactory.getLog(RemoteCommand.class);
+    private Logger log = Logger.getLogger(RemoteCommand.class);
 
     private GUMSAPI clientStub;
 
