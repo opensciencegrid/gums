@@ -39,8 +39,8 @@ public class Configuration {
     private TreeMap vomsServers = new TreeMap();
     private TreeMap userGroups = new TreeMap();
     private boolean errorOnMissedMapping = true;
-	private boolean allowGridmapFiles = true;
-	private String bannedUserGroup = "";
+    private boolean allowGridmapFiles = true;
+    private String bannedUserGroups = null;
     
     /**
      * @param accountMapper
@@ -187,10 +187,10 @@ public class Configuration {
     	return (GroupToAccountMapping)groupToAccountMappings.get(groupToAccountMapping);
     }    
     
-    public String getBannedUserGroup() {
-    	return bannedUserGroup;
+    public String getBannedUserGroups() {
+    	return bannedUserGroups;
     }
-    
+
     /**
      * @return
      */
@@ -397,7 +397,7 @@ public class Configuration {
 		String version = "";
 		out.write("<gums version='"+version+"' "
 				+"allowGridmapFiles='"+(getAllowGridmapFiles()?"true":"false")+"' "
-				+"bannedUserGroup='"+getBannedUserGroup()+"'"
+				+"bannedUserGroup='"+getBannedUserGroups()+"'"
 				+">\n\n");
 
 		// Write persistence factories
@@ -478,6 +478,6 @@ public class Configuration {
 	}
 	
 	public void setBannedUserGroup(String bannedUserGroup) {
-		this.bannedUserGroup = bannedUserGroup;
+		this.bannedUserGroups = bannedUserGroups;
 	}
 }

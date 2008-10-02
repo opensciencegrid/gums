@@ -72,6 +72,10 @@ public class MockConfigurationStore extends ConfigurationStore {
     public Configuration retrieveConfiguration() {
         return conf;
     }
+    
+    public Configuration retrieveConfiguration(boolean reload) {
+        return conf;
+    }
 
     public Configuration restoreConfiguration(String strDate) {
         return null;

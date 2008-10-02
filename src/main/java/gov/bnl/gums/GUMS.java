@@ -18,6 +18,7 @@ import gov.bnl.gums.userGroup.ManualUserGroup;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Date;
@@ -302,9 +303,12 @@ public class GUMS {
     
     public boolean isUserBanned(GridUser user) throws Exception {
     	Configuration config = getConfiguration();
-    	if (config.getBannedUserGroup().length()>0) {
-    		ManualUserGroup userGroup = (ManualUserGroup)config.getUserGroup(config.getBannedUserGroup());
-    		return userGroup.isInGroup(user);
+    	if (config.getBannedUserGroups()!=null) {
+	    	String[] bannedUserGroups = config.getBannedUserGroups().split(",");
+	    	for (int i=0; i<bannedUserGroups.length; i++) {
+	    		ManualUserGroup userGroup = (ManualUserGroup)config.getUserGroup(bannedUserGroups[i]);
+	    		return userGroup.isInGroup(user);
+	    	}
     	}
     	return false;
     }
