@@ -25,6 +25,7 @@ import org.opensaml.xacml.ctx.SubjectType;
 import org.opensaml.xacml.ctx.ResultType;
 import org.opensaml.xacml.ctx.ResourceType;
 import org.opensaml.xacml.ctx.AttributeType;
+import org.opensaml.xacml.ctx.AttributeValueType;
 import org.opensaml.xacml.ctx.impl.DecisionTypeImplBuilder;
 import org.opensaml.xacml.ctx.impl.StatusCodeTypeImplBuilder;
 import org.opensaml.xacml.ctx.impl.StatusTypeImplBuilder;
@@ -49,7 +50,7 @@ import org.opensciencegrid.authz.xacml.common.XACMLConstants;
 public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 	private static String RESOURCE_ID = "http://authz-interop.org/xacml/resource/resource-x509-id";//XACMLConstants.RESOURCE_DNS_HOST_NAME_ID;
 	private static String SUBJECT_ID = "http://authz-interop.org/xacml/subject/subject-x509-id";//XACMLConstants.SUBJECT_X509_ID;
-	private static String VOMS_FQAN = "http://authz-interop.org/xacml/subject/voms-fqan";//XACMLConstants.SUBJECT_VOMS_FQAN_ID;
+	private static String VOMS_FQAN = "http://authz-interop.org/xacml/subject/voms-primary-fqan";//XACMLConstants.SUBJECT_VOMS_FQAN_ID;
 	private static String USERNAME_OBLIGATION = "http://authz-interop.org/xacml/obligation/username";//XACMLConstants.OBLIGATION_USERNAME;
 	private static String USERNAME_ATTRIBUTE = "http://authz-interop.org/xacml/attribute/username";//XACMLConstants.OBLIGATION_USERNAME;
 	private static String ERROR = "http://oasis/names/tc/xacml/1.0/status/error";
@@ -163,8 +164,8 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			for(AttributeType attribute : attributeList) {
 				String curAttributeId = attribute.getAttributeID();
 				if (attributeId.equals(curAttributeId)) {
-					List<XMLObject> attributeValueList = attribute.getAttributeValues();
-					for(XMLObject attributeValue : attributeValueList) {
+					List<AttributeValueType> attributeValueList = attribute.getAttributeValues();
+					for(AttributeValueType attributeValue : attributeValueList) {
 						return ((AttributeValueTypeImpl)attributeValue).getValue();
 					}
 				}
@@ -180,8 +181,8 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			for(AttributeType attribute : attributeList) {
 				String curAttributeId = attribute.getAttributeID();
 				if (attributeId.equals(curAttributeId)) {
-					List<XMLObject> attributeValueList = attribute.getAttributeValues();
-					for(XMLObject attributeValue : attributeValueList) {
+					List<AttributeValueType> attributeValueList = attribute.getAttributeValues();
+					for(AttributeValueType attributeValue : attributeValueList) {
 						return ((AttributeValueTypeImpl)attributeValue).getValue();
 					}
 				}

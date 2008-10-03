@@ -140,10 +140,9 @@ if (request.getParameter("command")==null ||
 			<td width="1" valign="top">
 				<form action="hostToGroupMappings.jsp#<%=cH2GMapping.getName()%>" method="get">
 					<a name="<%=cH2GMapping.getName()%>">
-						<input type="submit" style="width:84px" name="command" value="edit">
-						<input type="submit" style="width:84px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this host to group mapping?'))return false;">
-						<input type="submit" style="width:40px" name="command" value="up" alt="move up">
-						<input type="submit" style="width:40px" name="command" value="down" alt="move down">
+						<input type="submit" style="width:95px" name="command" value="edit">
+						<input type="submit" style="width:95px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this host to group mapping?'))return false;">
+						<input type="submit" style="width:47px" name="command" value="up" alt="move up"><input type="submit" style="width:47px" name="command" value="down" alt="move down">
 						<input type="hidden" name="name" value="<%=cH2GMapping.getName()%>">
 					</a>
 				</form>

@@ -165,7 +165,7 @@ else if ("add".equals(request.getParameter("command"))) {
 	    		DN:
 		    </td>
 		    <td nowrap>
-			    <input maxlength="256" size="64" name="dn" value=""/>  (required; regular expressions accepted)
+			    <input maxlength="256" size="64" name="dn" value=""/>  (regular expression)
 		    </td>
 		</tr>
 		<tr>
@@ -181,7 +181,7 @@ else if ("add".equals(request.getParameter("command"))) {
 	    		fqan:
 		    </td>
 		    <td nowrap>
-			    <input maxlength="256" size="64" name="fqan" value=""/> (optional; regular expressions accepted)
+			    <input maxlength="256" size="64" name="fqan" value=""/> (optional regular expression)
 		    </td>
 		</tr>			
 		<tr>
