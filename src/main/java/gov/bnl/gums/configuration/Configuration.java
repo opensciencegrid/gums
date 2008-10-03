@@ -32,20 +32,21 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  */
 public class Configuration {
     private Logger log = Logger.getLogger(Configuration.class);
-    private ArrayList hostToGroupMappings = new ArrayList();
-    private TreeMap groupToAccountMappings = new TreeMap();
-    private TreeMap persistenceFactories = new TreeMap();
-    private TreeMap accountMappers = new TreeMap();
-    private TreeMap vomsServers = new TreeMap();
-    private TreeMap userGroups = new TreeMap();
-    private boolean errorOnMissedMapping = true;
+    private List hostToGroupMappings = new ArrayList();
+    private Map groupToAccountMappings = new TreeMap();
+    private Map persistenceFactories = new TreeMap();
+    private Map accountMappers = new TreeMap();
+    private Map vomsServers = new TreeMap();
+    private Map userGroups = new TreeMap();
+    private List bannedUserGroupList = new ArrayList();
+    private String bannedUserGroups = "";
     private boolean allowGridmapFiles = true;
-    private String bannedUserGroups = null;
+	static private String version = "1.3";
     
     /**
      * @param accountMapper
      */
-    public void addAccountMapper(AccountMapper accountMapper) {
+    public synchronized void addAccountMapper(AccountMapper accountMapper) {
         log.trace("Adding AccountManager to the configuration: " + accountMapper.getName());
         if (accountMappers.get(accountMapper.getName())!=null)
         	log.warn("Account mapper " + accountMapper.getName() + " replaced with one with same name");
@@ -57,7 +58,7 @@ public class Configuration {
     /**
      * @param g2AMapping
      */
-    public void addGroupToAccountMapping(GroupToAccountMapping g2AMapping) {
+    public synchronized void addGroupToAccountMapping(GroupToAccountMapping g2AMapping) {
         log.trace("Adding GroupToAccountMapper to the configuration: " + g2AMapping.getName());
         if (getGroupToAccountMapping(g2AMapping.getName())!=null) {
         	log.warn("Group to account mapping " + g2AMapping.getName() + " merged with one with same name");
@@ -76,7 +77,7 @@ public class Configuration {
     /**
      * @param h2GMapping
      */
-    public void addHostToGroupMapping(HostToGroupMapping h2GMapping) {
+    public synchronized void addHostToGroupMapping(HostToGroupMapping h2GMapping) {
         log.trace("Adding HostToGroupMapper to the configuration: " + h2GMapping.getName());
         if ( getHostToGroupMapping(h2GMapping.getName())!=null )
         	log.warn("Host to group mapping " + h2GMapping.getName() + " replaced with one with same name");
@@ -89,7 +90,7 @@ public class Configuration {
      * @param index
      * @param h2GMapping
      */
-    public void addHostToGroupMapping(int index, HostToGroupMapping h2GMapping) {
+    public synchronized void addHostToGroupMapping(int index, HostToGroupMapping h2GMapping) {
         log.trace("Adding HostToGroupMapper to the configuration: " + h2GMapping.getName());
         if ( getHostToGroupMapping(h2GMapping.getName())!=null )
     		log.warn("Host to group mapping " + h2GMapping.getName() + " replaced with one with same name");
@@ -101,7 +102,7 @@ public class Configuration {
     /**
      * @param peristenceFactory
      */
-    public void addPersistenceFactory(PersistenceFactory peristenceFactory) {
+    public synchronized void addPersistenceFactory(PersistenceFactory peristenceFactory) {
         log.trace("Adding PersistenceManager to the configuration: " + peristenceFactory.getName());
         if (persistenceFactories.get(peristenceFactory.getName())!=null)
         	log.warn("PersistenceFactory " + peristenceFactory.getName() + " replaced with one with same name");
@@ -113,8 +114,8 @@ public class Configuration {
     /**
      * @param userGroup
      */
-    public void addUserGroup(UserGroup userGroup) {
-        log.trace("Adding UserGroupManager to the configuration: " + userGroup.getName());
+    public synchronized void addUserGroup(UserGroup userGroup) {
+        log.trace("Adding UserGroup to the configuration: " + userGroup.getName());
         if (userGroups.get(userGroup.getName())!=null)
         	log.warn("User group " + userGroup.getName() + " replaced with one with same name");
         userGroups.put(userGroup.getName(), userGroup);
@@ -125,7 +126,7 @@ public class Configuration {
     /**
      * @param vomsServer
      */
-    public void addVomsServer(VomsServer vomsServer) {
+    public synchronized void addVomsServer(VomsServer vomsServer) {
         log.trace("Adding VOMS server to the configuration: " + vomsServer.getName());
         if (vomsServers.get(vomsServer.getName())!=null)
         	log.warn("VOMS Server " + vomsServer.getName() + " replaced with one with same name");
@@ -136,6 +137,9 @@ public class Configuration {
     
     public Object clone() {
     	Configuration newConf = new Configuration();
+    	
+    	newConf.setAllowGridmapFiles(getAllowGridmapFiles());
+    	newConf.setBannedUserGroups(getBannedUserGroups());
     	
     	Iterator it = persistenceFactories.values().iterator();
     	while (it.hasNext() )
@@ -159,7 +163,7 @@ public class Configuration {
     	
     	it = hostToGroupMappings.iterator();
     	while (it.hasNext() )
-    		newConf.addHostToGroupMapping( ((HostToGroupMapping)it.next()).clone(newConf) );  	
+    		newConf.addHostToGroupMapping( ((HostToGroupMapping)it.next()).clone(newConf) ); 
     	
     	return newConf;
     }
@@ -179,24 +183,32 @@ public class Configuration {
         return Collections.unmodifiableMap(accountMappers);
     }
  
-    /**
-     * @param groupToAccountMapping
-     * @return
-     */
-    public GroupToAccountMapping getGroupToAccountMapping(String groupToAccountMapping) {
-    	return (GroupToAccountMapping)groupToAccountMappings.get(groupToAccountMapping);
-    }    
+    public boolean getAllowGridmapFiles() {
+		return allowGridmapFiles;
+	}    
+    
+    public List getBannedUserGroupList() {
+    	return Collections.unmodifiableList(bannedUserGroupList);
+    }
     
     public String getBannedUserGroups() {
     	return bannedUserGroups;
     }
 
     /**
+     * @param groupToAccountMapping
+     * @return
+     */
+    public GroupToAccountMapping getGroupToAccountMapping(String groupToAccountMapping) {
+    	return (GroupToAccountMapping)groupToAccountMappings.get(groupToAccountMapping);
+    }      
+    
+    /**
      * @return
      */
     public Map getGroupToAccountMappings() {
         return Collections.unmodifiableMap(groupToAccountMappings);
-    }      
+    }
     
     /**
      * @param name
@@ -217,7 +229,7 @@ public class Configuration {
      */
     public List getHostToGroupMappings() {
         return Collections.unmodifiableList(hostToGroupMappings);
-    }
+    }    
     
     /**
      * @return
@@ -249,8 +261,8 @@ public class Configuration {
     		}
     	}
         return readers;
-    }    
-    
+    }   
+
     /**
      * Returns a list of all the self readers defined in the configuration file.
      * 
@@ -266,8 +278,8 @@ public class Configuration {
     		}
     	}
         return readers;
-    }   
-
+    }
+    
     /**
      * @param userGroup
      * @return
@@ -275,14 +287,14 @@ public class Configuration {
     public UserGroup getUserGroup(String userGroup) {
         return (UserGroup)userGroups.get(userGroup);
     }
-    
+
     /**
      * @return
      */
     public Map getUserGroups() {
         return Collections.unmodifiableMap(userGroups);
     }
-
+ 
     /**
      * @param vomsServer
      * @return
@@ -290,7 +302,7 @@ public class Configuration {
     public VomsServer getVomsServer(String vomsServer) {
         return (VomsServer)vomsServers.get(vomsServer);
     }
- 
+
     /**
      * @return
      */
@@ -314,25 +326,12 @@ public class Configuration {
     	}
         return writers;
     }
-
-    /**
-     * @return
-     */
-    public boolean isErrorOnMissedMapping() {
-        return this.errorOnMissedMapping;
-    }
-    
-    public String toXml() throws IOException {
-    	StringWriter writer = new StringWriter();
-    	write(writer);
-    	return writer.toString();
-    }
     
     /**
      * @param name
      * @return
      */
-    public AccountMapper removeAccountMapper(String name) {
+    public synchronized AccountMapper removeAccountMapper(String name) {
     	return (AccountMapper)accountMappers.remove(name);
     }
     
@@ -340,7 +339,7 @@ public class Configuration {
      * @param name
      * @return
      */
-    public GroupToAccountMapping removeGroupToAccountMapping(String name) {
+    public synchronized GroupToAccountMapping removeGroupToAccountMapping(String name) {
     	return (GroupToAccountMapping)groupToAccountMappings.remove(name);
     }   
 
@@ -348,7 +347,7 @@ public class Configuration {
      * @param name
      * @return
      */
-    public HostToGroupMapping removeHostToGroupMapping(String name) {
+    public synchronized HostToGroupMapping removeHostToGroupMapping(String name) {
         Iterator it = hostToGroupMappings.iterator();
         while(it.hasNext()) {
         	HostToGroupMapping hostToGroupMapping = (HostToGroupMapping)it.next();
@@ -364,7 +363,7 @@ public class Configuration {
      * @param name
      * @return
      */
-    public PersistenceFactory removePersistenceFactory(String name) {
+    public synchronized PersistenceFactory removePersistenceFactory(String name) {
     	return (PersistenceFactory)persistenceFactories.remove(name);
     }   
     
@@ -372,7 +371,7 @@ public class Configuration {
      * @param name
      * @return
      */
-    public UserGroup removeUserGroup(String name) {
+    public synchronized UserGroup removeUserGroup(String name) {
     	return (UserGroup)userGroups.remove(name);
     }
 
@@ -380,24 +379,38 @@ public class Configuration {
      * @param name
      * @return
      */
-    public VomsServer removeVomsServer(String name) {
+    public synchronized VomsServer removeVomsServer(String name) {
     	return (VomsServer)vomsServers.remove(name);
     }
     
-    /**
-     * @param
+    public synchronized void setAllowGridmapFiles(boolean allowGridmapFiles) {
+		this.allowGridmapFiles = allowGridmapFiles;
+	}
+
+	public synchronized void setBannedUserGroups(String bannedUserGroups) {
+		this.bannedUserGroups = bannedUserGroups;
+		if (bannedUserGroups!=null && bannedUserGroups.length()>0)
+			this.bannedUserGroupList = Collections.synchronizedList(Arrays.asList(bannedUserGroups.split(",")));
+		else
+			this.bannedUserGroupList = Collections.synchronizedList(new ArrayList());
+	}
+	
+	/**
+     * @return
      */
-    public void setErrorOnMissedMapping(boolean errorOnMissedMapping) {
-        this.errorOnMissedMapping = errorOnMissedMapping;
+   
+    public String toXml() throws IOException {
+    	StringWriter writer = new StringWriter();
+    	write(writer);
+    	return writer.toString();
     }
-    
-    public void write(Writer out) throws IOException {
+	
+	public synchronized void write(Writer out) throws IOException {
 		out.write("<?xml version='1.0' encoding='UTF-8'?>\n\n");
 
-		String version = "";
 		out.write("<gums version='"+version+"' "
 				+"allowGridmapFiles='"+(getAllowGridmapFiles()?"true":"false")+"' "
-				+"bannedUserGroup='"+getBannedUserGroups()+"'"
+				+"bannedUserGroups='"+getBannedUserGroups()+"'"
 				+">\n\n");
 
 		// Write persistence factories
@@ -469,15 +482,4 @@ public class Configuration {
 		out.write("</gums>");   	
     }
 
-	public boolean getAllowGridmapFiles() {
-		return allowGridmapFiles;
-	}
-
-	public void setAllowGridmapFiles(boolean allowGridmapFiles) {
-		this.allowGridmapFiles = allowGridmapFiles;
-	}
-	
-	public void setBannedUserGroup(String bannedUserGroup) {
-		this.bannedUserGroups = bannedUserGroups;
-	}
 }

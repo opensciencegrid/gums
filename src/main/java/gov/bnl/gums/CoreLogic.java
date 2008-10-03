@@ -404,7 +404,7 @@ public class CoreLogic {
         Configuration conf = gums.getConfiguration();
         HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
         if (host2GroupMapper == null) {
-        	String message = "Cannot generate grid mapfile for host '" + hostname + "' - it is not defined in any host to group mapping.";
+        	String message = "Cannot map user for host '" + hostname + "' - it is not defined in any host to group mapping.";
             gumsAdminLog.warn(message);
         	throw new RuntimeException(message);
         }
@@ -424,9 +424,7 @@ public class CoreLogic {
                         if (localUser != null) {
                             return localUser;
                         } else {
-                            if (conf.isErrorOnMissedMapping()) {
-                            	gumsAdminLog.error("User " + user + " wasn't mapped even though is present in group " + g2AMapping.getUserGroups());
-                            }
+                           	gumsAdminLog.error("User " + user + " wasn't mapped even though is present in group " + g2AMapping.getUserGroups());
                         }
                     }
                 }

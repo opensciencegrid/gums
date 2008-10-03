@@ -43,14 +43,14 @@ public class ConfigurationToolkitTest extends TestCase {
     
     public void testGumsAttributes() throws Exception {
         String xml =             
-        "<gums errorOnMissedMapping='true'>" +
+        "<gums allowGridmapFiles='true'>" +
 		"</gums>";
         Digester digester = toolkit.retrieveDigester();
         Configuration conf = new Configuration();
         digester.push(conf);
         Configuration acc = (Configuration) digester.parse(new StringReader(xml));
         assertSame(conf, acc);
-        assertTrue(acc.isErrorOnMissedMapping());
+        assertTrue(acc.getAllowGridmapFiles());
     }
     
     public void testSimpleUserGroup() throws Exception {
