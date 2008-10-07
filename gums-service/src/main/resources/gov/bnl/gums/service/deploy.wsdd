@@ -1,0 +1,50 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from AuthorizationService WSDL service -->
+
+  <service name="GUMSAuthorizationServicePort" provider="java:RPC" style="wrapped" use="literal">
+      <wsdlFile>/org/opensciencegrid/authz/stubs/AuthZ.wsdl</wsdlFile>
+      <parameter name="wsdlTargetNamespace" value="http://www.gridforum.org/namespaces/2004/03/ogsa-authz/saml"/>
+      <parameter name="wsdlServiceElement" value="AuthorizationService"/>
+      <parameter name="wsdlServicePort" value="AuthorizationServicePort"/>
+      <parameter name="className" value="gov.bnl.gums.service.GUMSAuthZService"/>
+      <parameter name="wsdlPortType" value="SAMLRequestPortType"/>
+      <parameter name="allowedMethods" value="*"/>
+      <parameter name="scope" value="Session"/>
+
+      <typeMapping
+        xmlns:ns="http://www.gridforum.org/namespaces/2004/03/ogsa-authz/saml"
+        qname="ns:SAMLResponseType"
+        type="java:org.opensciencegrid.authz.stubs.SAMLResponseType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://www.gridforum.org/namespaces/2004/03/ogsa-authz/saml"
+        qname="ns:SAMLRequestType"
+        type="java:org.opensciencegrid.authz.stubs.SAMLRequestType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://www.gridforum.org/namespaces/2004/03/ogsa-authz/saml"
+        qname="ns:>SAMLRequestResponse"
+        type="java:org.opensciencegrid.authz.stubs._SAMLRequestResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>
