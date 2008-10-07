@@ -325,7 +325,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	http://www.opensciencegrid.org/banned_users.html
+		    	file://etc/grid-security/banned_users (only file URIs currently supported)
 		    </td>
 		</tr>	
 		<tr>
@@ -341,7 +341,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	http://www.opensciencegrid.org/nonbanned_users.html
+		    	file://etc/grid-security/unbanned_users (only file URIs currently supported)
 		    </td>
 		</tr>	
 <%

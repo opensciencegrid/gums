@@ -48,11 +48,6 @@ import org.opensciencegrid.authz.xacml.service.XACMLMappingService;
 import org.opensciencegrid.authz.xacml.common.XACMLConstants;
 
 public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
-	private static String RESOURCE_ID = "http://authz-interop.org/xacml/resource/resource-x509-id";//XACMLConstants.RESOURCE_DNS_HOST_NAME_ID;
-	private static String SUBJECT_ID = "http://authz-interop.org/xacml/subject/subject-x509-id";//XACMLConstants.SUBJECT_X509_ID;
-	private static String VOMS_FQAN = "http://authz-interop.org/xacml/subject/voms-primary-fqan";//XACMLConstants.SUBJECT_VOMS_FQAN_ID;
-	private static String USERNAME_OBLIGATION = "http://authz-interop.org/xacml/obligation/username";//XACMLConstants.OBLIGATION_USERNAME;
-	private static String USERNAME_ATTRIBUTE = "http://authz-interop.org/xacml/attribute/username";//XACMLConstants.OBLIGATION_USERNAME;
 	private static String ERROR = "http://oasis/names/tc/xacml/1.0/status/error";
 	private static String OK = "http://oasis/names/tc/xacml/1.0/status/ok";
 	private Logger log = Logger.getLogger(GUMSXACMLMappingServiceImpl.class);
@@ -63,17 +58,17 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 
 		// Get information from request
 		RequestType request = xacmlQuery.getRequest();
-		String hostDn = getResourceAttributeValue(request, RESOURCE_ID);
-		String userDn = getSubjectAttributeValue(request, SUBJECT_ID);
-		String userFqan = getSubjectAttributeValue(request, VOMS_FQAN);
+		String hostDn = getResourceAttributeValue(request, XACMLConstants.RESOURCE_X509_ID);
+		String userDn = getSubjectAttributeValue(request, XACMLConstants.SUBJECT_X509_ID);
+		String userFqan = getSubjectAttributeValue(request, XACMLConstants.SUBJECT_VOMS_PRIMARY_FQAN_ID);
 		
 		if (hostDn==null || hostDn.length()==0) {
-			log.debug("missing attribute: "+RESOURCE_ID);
-			throw new Exception("missing attribute: "+RESOURCE_ID);
+			log.debug("missing attribute: "+XACMLConstants.RESOURCE_X509_ID);
+			throw new Exception("missing attribute: "+XACMLConstants.RESOURCE_X509_ID);
 		}
 		if (userDn==null || userDn.length()==0) {
-			log.debug("missing attribute: "+SUBJECT_ID);
-			throw new Exception("missing attribute: "+SUBJECT_ID);
+			log.debug("missing attribute: "+XACMLConstants.SUBJECT_X509_ID);
+			throw new Exception("missing attribute: "+XACMLConstants.SUBJECT_X509_ID);
 		}
 		/*if (userFqan==null || userFqan.length()==0) {
 			log.debug("missing attribute: "+VOMS_FQAN);
@@ -98,7 +93,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			else {
 				AttributeAssignmentTypeImplBuilder attributeAssignmentBuilder = (AttributeAssignmentTypeImplBuilder)builderFactory.getBuilder(AttributeAssignmentType.DEFAULT_ELEMENT_NAME);
 				attributeAssignment = attributeAssignmentBuilder.buildObject();
-				attributeAssignment.setAttributeId(USERNAME_ATTRIBUTE);
+				attributeAssignment.setAttributeId(XACMLConstants.ATTRIBUTE_USERNAME_ID);
 				attributeAssignment.setDataType(XACMLConstants.STRING_DATATYPE);
 				attributeAssignment.setValue(account);
 
@@ -122,7 +117,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			ObligationTypeImplBuilder obligationBuilder = (ObligationTypeImplBuilder)builderFactory.getBuilder(ObligationType.DEFAULT_ELEMENT_QNAME);
 			ObligationType obligation = obligationBuilder.buildObject();
 			obligation.setFulfillOn(EffectType.Permit);
-			obligation.setObligationId(USERNAME_OBLIGATION);
+			obligation.setObligationId(XACMLConstants.OBLIGATION_USERNAME);
 			if (attributeAssignment != null)
 				obligation.getAttributeAssignments().add(attributeAssignment);
 	
@@ -146,7 +141,10 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			// Statement
 			XACMLAuthzDecisionStatementTypeImplBuilder xacmlauthzBuilder = (XACMLAuthzDecisionStatementTypeImplBuilder)builderFactory.getBuilder(XACMLAuthzDecisionStatementType.TYPE_NAME_XACML20);
 			XACMLAuthzDecisionStatementType xacmlAuthzStatement = xacmlauthzBuilder.buildObject( Statement.DEFAULT_ELEMENT_NAME, XACMLAuthzDecisionStatementType.TYPE_NAME_XACML20);	
-			//xacmlAuthzStatement.setRequest(request);
+			if (xacmlQuery.getReturnContextXSBooleanValue() != null) {
+				request.detach();
+				xacmlAuthzStatement.setRequest(request);
+			}
 			xacmlAuthzStatement.setResponse(response);
 
 			return xacmlAuthzStatement;
