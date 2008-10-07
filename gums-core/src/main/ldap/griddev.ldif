@@ -1,0 +1,263 @@
+dn: dc=griddev,dc=org
+dc: griddev
+description: Root dc 
+objectClass: dcObject
+objectClass: organization
+o: Example, Inc.
+
+dn: ou=People,dc=griddev,dc=org
+ou: People
+description: All people in organization
+objectClass: organizationalUnit
+
+dn: ou=Group,dc=griddev,dc=org
+ou: Group
+description: All groups in organization
+objectClass: organizationalUnit
+
+dn: cn=griddevGroup,ou=Group,dc=griddev,dc=org
+objectClass: posixGroup
+cn: griddevGroup
+gidNumber: 1001
+memberUid: jsmith
+memberUid: jdoe
+
+dn: cn=griddevGroup2,ou=Group,dc=griddev,dc=org
+objectClass: posixGroup
+cn: griddevGroup2
+gidNumber: 1002
+
+dn: uid=jsmith,ou=People,dc=griddev,dc=org
+uid: jsmith
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 500
+gidNumber: 1001
+homeDirectory: /home/jsmith
+cn: John Smith
+gecos: John Smith
+description: subject=/DC=org/DC=griddev/OU=People/CN=John Smith
+
+dn: uid=jdoe,ou=People,dc=griddev,dc=org
+uid: jdoe
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 1001
+homeDirectory: /home/jdoe
+cn: Jane Doe 12345
+gecos: Jane Doe
+description: subject=/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345
+
+dn: uid=pool0,ou=People,dc=griddev,dc=org
+uid: pool0
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 1001
+homeDirectory: /home/pool0 
+cn: Pool 0
+gecos: Pool 0
+description: subject=/DC=org/DC=griddev/OU=People/CN=Pool 0
+
+dn: uid=pool1,ou=People,dc=griddev,dc=org
+uid: pool1
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 1001
+homeDirectory: /home/pool0
+cn: Pool 1
+gecos: Pool 1
+description: subject=/DC=org/DC=griddev/OU=People/CN=Pool 1
+
+dn: uid=pool2,ou=People,dc=griddev,dc=org
+uid: pool2
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 1001
+homeDirectory: /home/pool 2
+cn: Pool 2
+gecos: Pool 2
+description: subject=/DC=org/DC=griddev/OU=People/CN=Pool 2
+
+dn: uid=pool3,ou=People,dc=griddev,dc=org
+uid: pool3
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 1001
+homeDirectory: /home/pool3
+cn: Pool 3
+gecos: Pool 3
+description: subject=/DC=org/DC=griddev/OU=People/CN=Pool 3
+
+dn: uid=pool4,ou=People,dc=griddev,dc=org
+uid: pool4
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 1001
+homeDirectory: /home/pool4
+cn: Pool 4
+gecos: Pool 4
+description: subject=/DC=org/DC=griddev/OU=People/CN=Pool 4
+
+dn: uid=pool5,ou=People,dc=griddev,dc=org
+uid: pool5
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 1001
+homeDirectory: /home/pool5
+cn: Pool 5
+gecos: Pool 5
+description: subject=/DC=org/DC=griddev/OU=People/CN=Pool 5
+
+dn: uid=pool6,ou=People,dc=griddev,dc=org
+uid: pool6
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 1001
+homeDirectory: /home/pool6
+cn: Pool 6
+gecos: Pool 6
+description: subject=/DC=org/DC=griddev/OU=People/CN=Pool 6
+
+dn: uid=pool7,ou=People,dc=griddev,dc=org
+uid: pool7
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 1001
+homeDirectory: /home/pool7
+cn: Pool 7
+gecos: Pool 7 
+description: subject=/DC=org/DC=griddev/OU=People/CN=Pool 7
+
+dn: uid=pool8,ou=People,dc=griddev,dc=org
+uid: pool8
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 1001
+homeDirectory: /home/pool8
+cn: Pool 8
+gecos: Pool 8
+description: subject=/DC=org/DC=griddev/OU=People/CN=Pool 8
+
+dn: uid=pool9,ou=People,dc=griddev,dc=org
+uid: pool9
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 1001
+homeDirectory: /home/pool9
+cn: Pool 9
+gecos: Pool 9
+description: subject=/DC=org/DC=griddev/OU=People/CN=Pool 9
+
+dn: uid=pool10,ou=People,dc=griddev,dc=org
+uid: pool10
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: secret
+shadowLastChange: 13572
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 1001
+homeDirectory: /home/pool10
+cn: Pool 10
+gecos: Pool 10
+description: subject=/DC=org/DC=griddev/OU=People/CN=Pool 10
+
