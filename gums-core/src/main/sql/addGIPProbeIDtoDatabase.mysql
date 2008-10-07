@@ -1,3 +1,0 @@
-USE GUMS_1_3;
-
-INSERT INTO USER SET DN="/GIP-GUMS-Probe-Identity", GROUP_NAME="gums-test";
