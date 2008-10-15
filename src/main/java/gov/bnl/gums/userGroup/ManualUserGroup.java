@@ -9,13 +9,21 @@ package gov.bnl.gums.userGroup;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.net.Socket;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.net.ssl.HttpsURLConnection;
+
+import javax.net.ssl.SSLSocketFactory;
+
+import org.glite.security.trustmanager.ContextWrapper;
 
 import org.apache.log4j.Logger;
 
@@ -135,6 +143,8 @@ public class ManualUserGroup extends UserGroup {
 	    	while (it.hasNext()) {
 	    		Pattern p = (Pattern)it.next();
 	    		Matcher m = p.matcher(concatDNFqan(user));
+	    		if (log.isTraceEnabled())
+	    			log.trace("trying to match user "+concatDNFqan(user)+" against "+m.toString());
 	    		if (m.matches()) {
 	    			returnVal = true;
 	    			break;
@@ -210,10 +220,18 @@ public class ManualUserGroup extends UserGroup {
     	rWLock.getReadLock();
     	try {
 	    	if (membersUri.length()>0) {
-	    		BufferedReader in;
+	    		BufferedReader in = null;
 	    		if (membersUri.startsWith("http")) {
-		    		URL url = new URL(membersUri);
+	    			URL url = new URL(membersUri);
 		    		in = new BufferedReader(new InputStreamReader(url.openStream()));
+/*	    			URL url = new URL(nonMembersUri);
+	    			Properties properties =  new Properties();
+	    			//properties.setProperty(key, value);
+	    			SSLSocketFactory socketFactory = new ContextWrapper(properties).getSocketFactory();
+	    			HttpsURLConnection urlConnection = (HttpsURLConnection)url.openConnection();
+	    			urlConnection.setSSLSocketFactory(socketFactory);
+	    			Socket socket = socketFactory.createSocket(url.getHost(), url.getPort());
+		    		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));*/
 	    		}
 	    		else if (membersUri.startsWith("file://")) {
 		    		in = new BufferedReader(new FileReader(membersUri.substring(7)));	    			

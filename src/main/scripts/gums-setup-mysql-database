@@ -166,10 +166,10 @@ then
 	echo Enter the root mysql password
 fi
 
+SERVER_WO_PORT=`echo $SERVER | awk -F: '{ print $1 }'`
 cat ../sql/setupDatabase.mysql       \
-    ../sql/addGIPProbeIDtoDatabase.mysql       \
   | /bin/sed -e s/@USER@/$USER/g         \
-             -e s/@SERVER@/$SERVER/g     \
+             -e s/@SERVER@/$SERVER_WO_PORT/g     \
              -e s/@PASSWORD@/$PASSWORD/g \
   | mysql $MYSQLPARAM
 

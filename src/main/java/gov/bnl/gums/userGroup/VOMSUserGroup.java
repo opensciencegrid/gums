@@ -232,10 +232,10 @@ public class VOMSUserGroup extends UserGroup {
         
         // FQAN matches, let's look up if the DN is in the db
         // If not, he's kicked out
-	if (getVoDB()!=null)
-        	return getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan));
-	else
-		return true;
+		if (getVoDB()!=null)
+			return getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan));
+		else
+			return true;
     }
 
     /**
@@ -383,9 +383,10 @@ public class VOMSUserGroup extends UserGroup {
             }
             return entries;
         } catch (Throwable e) {
-        	String message = "Couldn't retrieve users from VOMS server: ";
+        	String message = "Couldn't retrieve users: ";
             log.error(message, e);
-            throw new RuntimeException(message + ": " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(message + e.getMessage());
         }
     }
     

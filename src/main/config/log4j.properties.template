@@ -52,7 +52,7 @@ log4j.logger.org.edg.security=INFO, edgFile
 # GUMS admin log file. Keeps 10 MB worth of logs, rotated every MB
 log4j.appender.adminFile=org.apache.log4j.RollingFileAppender
 log4j.appender.adminFile.File=${catalina.base}/logs/gums-service-admin.log
-log4j.appender.adminFile.MaxFileSize=1000KB
+log4j.appender.adminFile.MaxFileSize=10000KB
 log4j.appender.adminFile.MaxBackupIndex=10
 log4j.appender.adminFile.layout=org.apache.log4j.PatternLayout
 log4j.appender.adminFile.layout.ConversionPattern=%d{DATE} [%-5p]: %m%n
@@ -60,7 +60,7 @@ log4j.appender.adminFile.layout.ConversionPattern=%d{DATE} [%-5p]: %m%n
 # Cybersecurity log file. Keeps 5 MB worth of logs, rotated every MB
 log4j.appender.cyberFile=org.apache.log4j.RollingFileAppender
 log4j.appender.cyberFile.File=${catalina.base}/logs/gums-service-cybersecurity.log
-log4j.appender.cyberFile.MaxFileSize=1000KB
+log4j.appender.cyberFile.MaxFileSize=10000KB
 log4j.appender.cyberFile.MaxBackupIndex=5
 log4j.appender.cyberFile.layout=org.apache.log4j.PatternLayout
 log4j.appender.cyberFile.layout.ConversionPattern=%d{DATE}: %m%n
@@ -68,7 +68,7 @@ log4j.appender.cyberFile.layout.ConversionPattern=%d{DATE}: %m%n
 # GUMS developer log file. Keeps 5 MB worth of logs, rotated every MB
 log4j.appender.devFile=org.apache.log4j.RollingFileAppender
 log4j.appender.devFile.File=${catalina.base}/logs/gums-service-developer.log
-log4j.appender.devFile.MaxFileSize=1000KB
+log4j.appender.devFile.MaxFileSize=10000KB
 log4j.appender.devFile.MaxBackupIndex=5
 log4j.appender.devFile.layout=org.apache.log4j.PatternLayout
 log4j.appender.devFile.layout.ConversionPattern=%d{DATE} %t %c{2} [%p]: %m%n
@@ -76,7 +76,7 @@ log4j.appender.devFile.layout.ConversionPattern=%d{DATE} %t %c{2} [%p]: %m%n
 # EDG Trustmanager log file. Keeps 0.5 MB worth of logs, rotated every 100 KB
 log4j.appender.edgFile=org.apache.log4j.RollingFileAppender
 log4j.appender.edgFile.File=${catalina.base}/logs/gums-service-edg-security.log
-log4j.appender.edgFile.MaxFileSize=100KB
+log4j.appender.edgFile.MaxFileSize=1000KB
 log4j.appender.edgFile.MaxBackupIndex=5
 log4j.appender.edgFile.layout=org.apache.log4j.PatternLayout
 log4j.appender.edgFile.layout.ConversionPattern=%d{DATE} %t %c{2} [%p]: %m%n
@@ -84,7 +84,7 @@ log4j.appender.edgFile.layout.ConversionPattern=%d{DATE} %t %c{2} [%p]: %m%n
 # Privilege Project log file. Keeps 5 MB worh of logs, rotated every MB
 log4j.appender.privFile=org.apache.log4j.RollingFileAppender
 log4j.appender.privFile.File=${catalina.base}/logs/gums-service-privilege.log
-log4j.appender.privFile.MaxFileSize=1000KB
+log4j.appender.privFile.MaxFileSize=10000KB
 log4j.appender.privFile.MaxBackupIndex=5
 log4j.appender.privFile.layout=org.apache.log4j.PatternLayout
 log4j.appender.privFile.layout.ConversionPattern=%d{DATE} %t %c{2} [%p]: %m%n

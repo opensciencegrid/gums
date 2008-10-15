@@ -63,7 +63,8 @@ public class DBConfigurationStore extends ConfigurationStore {
     
     public Date getLastModification() {
     	Date date = configDB.getLastModification();
-    	log.debug("Last database configuration modification is  " + date);
+    	if (log.isTraceEnabled())
+    		log.trace("Last database configuration modification is " + date);
     	return date;
     }
     

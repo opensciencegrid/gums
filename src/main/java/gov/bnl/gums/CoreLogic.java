@@ -330,8 +330,10 @@ public class CoreLogic {
 	            else {
 		            while (memberIter.hasNext()) {
 		                GridUser user = (GridUser) memberIter.next();
+		                if (gums.isUserBanned(user))
+	                    	continue;
 		                String email = user.getEmail()!=null?user.getEmail().toString():"";
-		                if (!usersInMap.contains(user.getCertificateDN()) && userGroup.isInGroup(new GridUser(user.getCertificateDN(), null))) {
+		                if (!usersInMap.contains(user.getCertificateDN()) && userGroup.isInGroup(user)) {
 		                	Collection accountMappers = gMap.getAccountMappers();
 		                    Iterator accountMappersIt = accountMappers.iterator();
 		                    while (accountMappersIt.hasNext()) {
@@ -445,22 +447,22 @@ public class CoreLogic {
     
     private void updateGroupsImpl() throws Exception {
         Collection groups = gums.getConfiguration().getUserGroups().values();
-        gumsAdminLog.info("Updating user group information for all " + groups.size() + " groups");
+        gumsAdminLog.info("Updating user group users for all " + groups.size() + " groups");
         StringBuffer failedGroups = null;
         Iterator iter = groups.iterator();
         while (iter.hasNext()) {
             UserGroup group = (UserGroup) iter.next();
             try {
                 group.updateMembers();
-                gumsAdminLog.info(group.toString() + " updated");
+                gumsAdminLog.info("Users updated for user group " + group.getName());
             } catch (Exception e) {
-            	if (failedGroups.length()==0)
+            	if (failedGroups == null)
             		failedGroups = new StringBuffer("Some user groups weren't updated correctly:\n");
             	failedGroups.append( group.getName() + " - " + e.getMessage() + "\n" );
             }
         }
         if (failedGroups == null) {
-        	gumsAdminLog.info("Updating user group information for all " + groups.size() + " groups");
+        	gumsAdminLog.info("Finished updating users for all user groups");
         }
         else {
         	String message = failedGroups.toString();
