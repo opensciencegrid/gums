@@ -46,6 +46,7 @@ import org.opensaml.xml.XMLObject;
 
 import org.opensciencegrid.authz.xacml.service.XACMLMappingService;
 import org.opensciencegrid.authz.xacml.common.XACMLConstants;
+import org.opensaml.xacml.ctx.AttributeValueType;
 
 public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 	private static String ERROR = "http://oasis/names/tc/xacml/1.0/status/error";
@@ -141,7 +142,8 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			// Statement
 			XACMLAuthzDecisionStatementTypeImplBuilder xacmlauthzBuilder = (XACMLAuthzDecisionStatementTypeImplBuilder)builderFactory.getBuilder(XACMLAuthzDecisionStatementType.TYPE_NAME_XACML20);
 			XACMLAuthzDecisionStatementType xacmlAuthzStatement = xacmlauthzBuilder.buildObject( Statement.DEFAULT_ELEMENT_NAME, XACMLAuthzDecisionStatementType.TYPE_NAME_XACML20);	
-			if (xacmlQuery.getReturnContextXSBooleanValue() != null) {
+			if (xacmlQuery.getReturnContextXSBooleanValue() != null && xacmlQuery.getReturnContextXSBooleanValue().getValue()) 
+			{
 				request.detach();
 				xacmlAuthzStatement.setRequest(request);
 			}

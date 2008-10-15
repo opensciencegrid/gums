@@ -23,7 +23,7 @@
 		gums.updateGroups();
 		out.println("VO Members Database has been successfully updated!");
 	} catch(Exception e) {
-		out.println("<div class=\"failure\">Error updating groups: " + e.getMessage() + "</div>");
+		out.println("<div class=\"failure\"><pre>" + e.getMessage() + "</pre></div>");
 	}
 %>
 </p>
