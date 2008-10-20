@@ -50,6 +50,10 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
         return account;
     }
     
+    public String getMap() {
+    	return "";
+    }
+    
     public boolean needsCacheRefresh() {
     	return true;
     }
@@ -124,7 +128,7 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
         return Collections.unmodifiableList(oldUsers);
     }
  
-    public void setNeedsCacheRefresh(boolean value) {
+    public void setCacheRefreshed() {
     }
     
     public void unassignAccount(String account) {

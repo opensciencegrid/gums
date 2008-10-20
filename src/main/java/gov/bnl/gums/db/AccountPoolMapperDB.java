@@ -21,6 +21,10 @@ import java.util.Map;
  *
  * @author Gabriele Carcassi, Jay Packard
  */
+/**
+ * @author jpackard
+ *
+ */
 public interface AccountPoolMapperDB {
     
     /** 
@@ -42,6 +46,13 @@ public interface AccountPoolMapperDB {
     String assignAccount(GridUser user);
     
     /**
+     * @return the map this mapper is responsible for
+     */
+    String getMap();
+    
+    /**
+     * This is a function meant to be used by a wrapper class that is caching some result from the database.
+     * When any writing operation occurs, this should return true until set to false by the wrapper class.
      * 
      * @return whether changes require a cache refresh
      */
@@ -86,11 +97,9 @@ public interface AccountPoolMapperDB {
     List retrieveUsersNotUsedSince(Date date);
     
     /**
-     * Set when cache has been refreshed
-     * 
-     * @param value
+     * Call when a wrapper class using the DB object has updated its cache.
      */
-    void setNeedsCacheRefresh(boolean value);
+    void setCacheRefreshed();
     
     /** 
      * Unassigns whatever user is assigned to this account from the account mapping

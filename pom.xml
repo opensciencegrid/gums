@@ -4,7 +4,7 @@
 	<groupId>gums</groupId>
 	<artifactId>gums-core</artifactId>
 	<name>gums-core</name>
-	<version>1.3.0</version>
+	<version>1.3.1</version>
 	<description>GUMS Core provides the core functionality used by other GUMS components</description>
 
   	<repositories>
@@ -283,12 +283,12 @@
 		<dependency>
 		   <groupId>glite</groupId>
 		   <artifactId>glite-security-trustmanager</artifactId>
-		   <version>1.6.3dev</version>
+		   <version>1.8.16</version>
 	   </dependency>
    	   <dependency>
 		   <groupId>glite</groupId>
 		   <artifactId>glite-security-util-java</artifactId>
-		   <version>1.0.0dev</version>
+		   <version>1.3.8</version>
 	   </dependency>    
         <dependency>
             <groupId>gums</groupId>

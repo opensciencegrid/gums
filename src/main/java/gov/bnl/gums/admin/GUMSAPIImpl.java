@@ -278,7 +278,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public void manualGroupAdd2(String manualUserGroupName, String userDN) {
 		try {
 			if (hasWriteAccess(currentUser())) {
-				getManualUserGroupDB(manualUserGroupName).addMember(new GridUser(userDN, null));
+				((ManualUserGroup)gums().getConfiguration().getUserGroup(manualUserGroupName)).addMember(new GridUser(userDN, null));
 				gumsAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "'");
 				siteAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "'");
 			} else {
@@ -295,7 +295,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public void manualGroupAdd3(String manualUserGroupName, String userDN, String fqan, String email) {
 		try {
 			if (hasWriteAccess(currentUser())) {
-				getManualUserGroupDB(manualUserGroupName).addMember(new GridUser(userDN, fqan, email, false));
+				((ManualUserGroup)gums().getConfiguration().getUserGroup(manualUserGroupName)).addMember(new GridUser(userDN, fqan, email, false));
 				gumsAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "' email '"+email+"'");
 				siteAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "' email '"+email+"'");
 			} else {
@@ -312,7 +312,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public void manualGroupRemove2(String manualUserGroupName, String userDN) {
 		try {
 			if (hasWriteAccess(currentUser())) {
-				getManualUserGroupDB(manualUserGroupName).removeMember(new GridUser(userDN, null));
+				((ManualUserGroup)gums().getConfiguration().getUserGroup(manualUserGroupName)).removeMember(new GridUser(userDN, null));
 				gumsAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "'");
 				siteAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "'");
 			} else {
@@ -329,7 +329,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public void manualGroupRemove3(String manualUserGroupName, String userDN, String fqan) {
 		try {
 			if (hasWriteAccess(currentUser())) {
-				getManualUserGroupDB(manualUserGroupName).removeMember(new GridUser(userDN, fqan, false));
+				((ManualUserGroup)gums().getConfiguration().getUserGroup(manualUserGroupName)).removeMember(new GridUser(userDN, fqan, false));
 				gumsAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "' fqan '"+fqan+"'");
 				siteAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "' fqan '"+fqan+"'");
 			} else {
@@ -551,9 +551,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 				if (!found)
 					throw new RuntimeException("No manual user group named " + group);
 
-				PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceFactory);
-				ManualUserGroupDB db = factory.retrieveManualUserGroupDB(group);
-				db.addMember(new GridUser(userDN, null));
+				((ManualUserGroup)gums().getConfiguration().getUserGroup(group)).addMember(new GridUser(userDN, null));
 				gumsAdminLog.info(logUserAccess() + "Added to persistence '" + persistanceFactory + "' group '" + group + "'  user '" + userDN + "'");
 				siteAdminLog.info(logUserAccess() + "Added to persistence '" + persistanceFactory + "' group '" + group + "'  user '" + userDN + "'");
 			} else {
@@ -583,9 +581,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 				if (!found)
 					throw new RuntimeException("No manual user group named " + group);
 
-				PersistenceFactory factory = (PersistenceFactory) gums().getConfiguration().getPersistenceFactories().get(persistanceFactory);
-				ManualUserGroupDB db = factory.retrieveManualUserGroupDB(group);
-				db.removeMember(new GridUser(userDN, null));
+				((ManualUserGroup)gums().getConfiguration().getUserGroup(group)).removeMember(new GridUser(userDN, null));
 				gumsAdminLog.info(logUserAccess() + "Removed from persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "'");
 				siteAdminLog.info(logUserAccess() + "Removed from persistence '" + persistanceFactory + "' group '" + group + "' user '" + userDN + "'");
 			} else {
@@ -728,10 +724,6 @@ public class GUMSAPIImpl implements GUMSAPI {
 	private ManualAccountMapperDB getManualAccountMapperDB(String manualAccountMapperName) throws Exception {
 		return ((ManualAccountMapper) gums().getConfiguration().getAccountMapper(manualAccountMapperName)).getDB();
 	}
-
-	private ManualUserGroupDB getManualUserGroupDB(String manualUserGroupName) throws Exception {
-		return ((ManualUserGroup) gums().getConfiguration().getUserGroup(manualUserGroupName)).getDB();
-	}    
 
 	private GUMS gums() {
 		if (gums == null) {

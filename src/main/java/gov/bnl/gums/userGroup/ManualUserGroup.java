@@ -101,7 +101,7 @@ public class ManualUserGroup extends UserGroup {
     	return userGroup;
     }
     
-    public ManualUserGroupDB getDB() {
+    private ManualUserGroupDB getDB() {
     	if (db==null)
     		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualUserGroupDB( getName() );
     	return db;
@@ -134,12 +134,16 @@ public class ManualUserGroup extends UserGroup {
     
     public boolean isInGroup(GridUser user) {
     	boolean returnVal = false;
-    	if (needsRefresh)
-    		refreshPatternList();
 		
-    	rWLock.getReadLock();
     	try {
-	    	Iterator it = patternList.iterator();
+    		rWLock.getReadLock();
+        	if (needsRefresh) {
+        		rWLock.releaseLock();
+        		refreshPatternList();
+            	rWLock.getReadLock();
+        	}
+        	
+    		Iterator it = patternList.iterator();
 	    	while (it.hasNext()) {
 	    		Pattern p = (Pattern)it.next();
 	    		Matcher m = p.matcher(concatDNFqan(user));
@@ -323,6 +327,7 @@ public class ManualUserGroup extends UserGroup {
     private void refreshPatternList() {
     	rWLock.getWriteLock();
     	try {
+    		log.debug("refreshed pattern list for usergroup "+getName());
 	 		patternList.clear();
 	 		List members = getDB().retrieveMembers();
 	 		Iterator it = members.iterator();
@@ -331,8 +336,8 @@ public class ManualUserGroup extends UserGroup {
 	 			GridUser itUser = (GridUser)it.next();
 	 			Pattern p = Pattern.compile(concatDNFqan(itUser));
 				patternList.add(p);
-				needsRefresh = false;
 	 		}
+			needsRefresh = false;
 		}
 		catch(Exception e) {
 			log.error(e);

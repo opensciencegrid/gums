@@ -14,6 +14,8 @@ import gov.bnl.gums.GUMS;
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +41,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	private String mapDN;
 	private String group;
 	private List secondaryGroups;
+	private static Map needsCacheRefresh = Collections.synchronizedMap(new HashMap());
 
 	/**
 	 * Creates a new LDAP map, named "map=map" in the defaultGumsOU.
@@ -79,6 +82,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	public void addAccount(String account) {
 		try {
 			factory.createAccountInMap(account, map, mapDN);
+			setNeedsCacheRefresh(true);
 		} catch (Exception e) {
 			if (e.getCause() instanceof NameAlreadyBoundException) {
 				throw new IllegalArgumentException("Account '" + account
@@ -149,6 +153,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 			log.trace("No account to assign for LDAP map '" + map + "' user '"
 					+ userDN + "' account '" + account + "'");
 		}
+		setNeedsCacheRefresh(true);
 		
 		return account;
 	}
@@ -156,13 +161,14 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 	public void createGroupIfNotExists() {
 		if (!doesMapExist()) {
 			factory.createMap(map, mapDN);
-			log.trace("LDAP group '" + map
-					+ "' didn't exist, and it was created");
+			log.trace("LDAP group '" + map + "' didn't exist, and it was created");
+			setNeedsCacheRefresh(true);
 		}
 	}
 	
 	public void createMapping(String userDN, String account) {
 		factory.addMapEntry(userDN, account, map, mapDN);
+		setNeedsCacheRefresh(true);
 	}
 
 	public boolean doesMapExist() {
@@ -184,13 +190,22 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		}
 	}
 
+    public String getMap() {
+    	return map;
+    }
+	
 	public boolean needsCacheRefresh() {
-		return true;
+		if (needsCacheRefresh.get(map) != null)
+			return ((Boolean)needsCacheRefresh.get(map)).booleanValue();
+		else
+			return true;
 	}
 
 	public boolean removeAccount(String account) {
 		try {
-			return factory.destroyAccountInMap(account, map, mapDN);
+			boolean retVal = factory.destroyAccountInMap(account, map, mapDN);
+			setNeedsCacheRefresh(true);
+			return retVal;
 		} catch (RuntimeException e) {
 			if (e.getCause() instanceof NameAlreadyBoundException)
 				throw new IllegalArgumentException("Cannot remove '" + account + "' from LDAP pool '" + map + "'");
@@ -200,7 +215,9 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 
 	public boolean removeMapping(String userDN) {
 		try {
-			return factory.removeMapEntry(userDN, map, mapDN);
+			boolean retVal = factory.removeMapEntry(userDN, map, mapDN);
+			setNeedsCacheRefresh(true);
+			return retVal;
 		} catch (RuntimeException e) {
 			if (e.getCause() instanceof NoSuchAttributeException)
 				return false;
@@ -324,7 +341,8 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		return factory.retrieveEmail(account);
 	}
 
-	public synchronized void setNeedsCacheRefresh(boolean value) {
+	public synchronized void setCacheRefreshed() {
+		needsCacheRefresh.put(map, new Boolean(false));
 	}
 
 	public void unassignAccount(String account) {
@@ -342,6 +360,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 					factory.removeMapEntry(user, map, mapDN);
 				}
 			}
+			setNeedsCacheRefresh(true);
 			log.trace("Unassigned account '" + account + "' at LDAP map '" + map + "'");
 		} catch (Exception e) {
 			log.error("Unassigned account '" + account + "' at LDAP map '" + map + "'", e);
@@ -355,6 +374,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 
 	public void unassignUser(String userDN) {
 		factory.removeMapEntry(userDN, map, mapDN);
+		setNeedsCacheRefresh(true);
 	}
     
     /**
@@ -428,5 +448,9 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
             log.trace("Skip reassign email for account '" + account + "' - email '" + email + "'");
         }
     }	
+	
+    private void setNeedsCacheRefresh(boolean value) {
+    	needsCacheRefresh.put(map, new Boolean(value));
+    }
 
 }

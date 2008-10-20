@@ -8,6 +8,7 @@ package gov.bnl.gums.account;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -35,11 +36,11 @@ public class AccountPoolMapper extends AccountMapper {
 	}
     
 	private Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
+	private Logger log = Logger.getLogger(AccountPoolMapper.class);
     private AccountPoolMapperDB db;
     private String persistenceFactory = "";
 	private String accountPool = "";
-	private String assignmentString = "";
-	private String assignments = "";
+	private static Map assignments = Collections.synchronizedMap(new HashMap());
     
     public AccountPoolMapper() {
     	super();
@@ -84,6 +85,8 @@ public class AccountPoolMapper extends AccountMapper {
      */
     public String getAssignments() {
 		if (getDB().needsCacheRefresh()) {
+			log.trace("Refreshing assignments string for account pool mapper "+getName());
+			
 	    	String retStr = new String();
 
 	    	Map accountReverseMap = getDB().retrieveReverseAccountMap();
@@ -130,12 +133,13 @@ public class AccountPoolMapper extends AccountMapper {
 	    		if (it.hasNext())
 	    			retStr += ", ";
 	    	}
-	    	getDB().setNeedsCacheRefresh(false);
-	    	assignments = retStr;
+	    	getDB().setCacheRefreshed();
+	    	assignments.put(getDB().getMap(), retStr);
 	    	return retStr;
     	}
-		else 
-			return assignments;
+		else {
+			return (String)assignments.get(getDB().getMap());
+		}
     }
  
     public String getPersistenceFactory() {

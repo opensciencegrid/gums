@@ -14,6 +14,8 @@ package gov.bnl.gums.db;
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -35,7 +37,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
     private Logger log = Logger.getLogger(HibernateAccountMapperDB.class);
     private HibernatePersistenceFactory persistenceFactory;
     private String map;
-    private boolean needsCacheRefresh = true;
+    private static Map needsCacheRefresh = Collections.synchronizedMap(new HashMap());
     
     /** Creates a new instance of HibernateMapping */
     public HibernateAccountMapperDB(HibernatePersistenceFactory persistenceFactory, String map) {
@@ -56,6 +58,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             }
             createMapping(session, tx, null, account);
             tx.commit();
+            setNeedsCacheRefresh(true);
         // Handles when transaction goes wrong...
         } catch (Exception e) {
             log.error("Couldn't add account to pool '" + map + "'", e);
@@ -97,6 +100,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             }
             mapping.setDn(user.getCertificateDN());
             tx.commit();
+            setNeedsCacheRefresh(true);
             return mapping.getAccount();
         // Handles when transaction goes wrong...
         } catch (Exception e) {
@@ -135,6 +139,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             }
             createMapping(session, tx, userDN, account);
             tx.commit();
+            setNeedsCacheRefresh(true);
         // Handles when transaction goes wrong...
         } catch (Exception e) {
             log.error("Couldn't create mapping to '" + map + "'", e);
@@ -159,8 +164,15 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
         }
     }
     
+    public String getMap() {
+    	return map;
+    }
+    
     public boolean needsCacheRefresh() {
-    	return needsCacheRefresh;
+		if (needsCacheRefresh.get(map) != null)
+			return ((Boolean)needsCacheRefresh.get(map)).booleanValue();
+		else
+			return true;
     }
 
     public boolean removeAccount(String account) {
@@ -172,6 +184,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             tx = session.beginTransaction();
             boolean result = removeAccount(session, tx, account);
             tx.commit();
+            setNeedsCacheRefresh(true);
             return result;
         // Handles when transaction goes wrong...
         } catch (Exception e) {
@@ -206,6 +219,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             tx = session.beginTransaction();
             boolean result = removeMapping(session, tx, userDN);
             tx.commit();
+            setNeedsCacheRefresh(true);
             return result;
         // Handles when transaction goes wrong...
         } catch (Exception e) {
@@ -245,7 +259,8 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             q.setString(1, userDN);
             HibernateMapping mapping = (HibernateMapping) q.uniqueResult();
             tx.commit();
-            if (mapping == null) return null;
+            if (mapping == null) 
+            	return null;
             return mapping.getAccount();
         // Handles when transaction goes wrong...
         } catch (Exception e) {
@@ -323,7 +338,8 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             tx = session.beginTransaction();
             HibernateMapping map = retrieveMapping(session, tx, userDN);
             tx.commit();
-            if (map == null) return null;
+            if (map == null) 
+            	return null;
             return map.getAccount();
         // Handles when transaction goes wrong...
         } catch (Exception e) {
@@ -431,8 +447,8 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
         throw new UnsupportedOperationException("retrieveUsersNotUsedSince is not supported anymore");
     }
 
-    public synchronized void setNeedsCacheRefresh(boolean value) {
-    	needsCacheRefresh = value;
+    public void setCacheRefreshed() {
+    	setNeedsCacheRefresh(false);
     }
     
     public void unassignAccount(String account) {
@@ -453,6 +469,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
                 mapping.setDn(null);
             }
             tx.commit();
+            setNeedsCacheRefresh(true);
         // Handles when transaction goes wrong...
         } catch (Exception e) {
             log.error("Couldn't unassign account '" + account + "' from pool '" + map + "'", e);
@@ -491,6 +508,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             HibernateMapping mapping = (HibernateMapping) q.uniqueResult();
             mapping.setDn(null);
             tx.commit();
+            setNeedsCacheRefresh(true);
         // Handles when transaction goes wrong...
         } catch (Exception e) {
             log.error("Couldn't unassign account for user '" + userDN + "' from pool '" + map + "'", e);
@@ -521,18 +539,15 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
 	    hMapping.setDn(userDN);
 	    hMapping.setAccount(account);
 	    session.save(hMapping);
-        setNeedsCacheRefresh(true);
     }
 
     private boolean removeAccount(Session session, Transaction tx, String account) throws Exception {
         int n = session.delete("FROM HibernateMapping m WHERE m.map = ? AND m.account = ?", new Object[] {map, account}, new Type[] {new StringType(), new StringType()});
-        setNeedsCacheRefresh(true);
         return n > 0;
     }
 
     private boolean removeMapping(Session session, Transaction tx, String userDN) throws Exception {
         int n = session.delete("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ?", new Object[] {map, userDN}, new Type[] {new StringType(), new StringType()});
-        setNeedsCacheRefresh(true);
         return n > 0;
     }    
     
@@ -566,6 +581,10 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
         q.setString(0, map);
         List hibernateMappings = q.list();
         return hibernateMappings;
+    }
+    
+    private void setNeedsCacheRefresh(boolean value) {
+    	needsCacheRefresh.put(map, new Boolean(value));
     }
     
 }

@@ -333,7 +333,7 @@ public class CoreLogic {
 		                if (gums.isUserBanned(user))
 	                    	continue;
 		                String email = user.getEmail()!=null?user.getEmail().toString():"";
-		                if (!usersInMap.contains(user.getCertificateDN()) && userGroup.isInGroup(user)) {
+		                if (!usersInMap.contains(user.getCertificateDN()) && userGroup.isInGroup(new GridUser(user.getCertificateDN(), null))) {
 		                	Collection accountMappers = gMap.getAccountMappers();
 		                    Iterator accountMappersIt = accountMappers.iterator();
 		                    while (accountMappersIt.hasNext()) {
