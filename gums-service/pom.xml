@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>gums</groupId>
+	<artifactId>gums-service</artifactId>
+	<packaging>war</packaging>
+	<name>gums-service</name>
+	<version>1.3.1</version>
+	<description>GUMS Service provides web services used by the client tool and a 
+		web interface for administering GUMS</description>
+    
+  	<repositories>
+        <repository>
+	    	<id>usatlas</id>
+			<name>usatlas repository</name>
+	 		<layout>default</layout>
+ 			<url>http://grid.racf.bnl.gov/mvn/</url>
+		</repository>    
+		<repository>
+	    	<id>central</id>
+			<name>Maven Repository Switchboard</name>
+	 		<layout>default</layout>
+ 			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+		<repository>
+		   <id>Internet2 repository</id>
+		   <url>http://shibboleth.internet2.edu/downloads/maven2/org</url>
+		</repository>
+		<repository>
+        	<id>no-commons-logging</id>
+        	<name>No-commons-logging Maven Repository</name>
+        	<layout>default</layout>
+        	<url>http://no-commons-logging.zapto.org/mvn2</url>
+		</repository>
+    </repositories>
+    
+    <pluginRepositories>
+		<pluginRepository>
+          <id>codehaus snapshot repository</id>
+			<url>http://snapshots.repository.codehaus.org/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+    </pluginRepositories>
+
+	<distributionManagement>
+		<repository>
+			<id>usatlas</id>
+			<name>usatlas repository</name>
+			<url>scp://grid.racf.bnl.gov/var/www/html/mvn</url>
+		</repository>
+	</distributionManagement>
+	
+	<scm>
+	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</connection>
+	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</developerConnection>
+    	<url>https://svn.usatlas.bnl.gov/svn/privilege/gums-client</url>
+	</scm>
+
+  	<build>	
+		<plugins>
+	 		<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>1</id>
+						<phase>generate-resources</phase>
+						<configuration>
+							<tasks>
+								<delete includeemptydirs="true">
+									<fileset dir="src/main/resources" includes="log4j.properties.template"/>
+									<fileset dir="src/main/resources" includes="gums.*"/>
+									<fileset dir="src/main/resources" includes="*README*"/>
+									<fileset dir="src/main/resources/sql" includes="*"/>
+									<fileset dir="src/main/resources/scripts" includes="*"/>
+								</delete>
+							
+				                <unzip dest="src/main/resources">
+				                    <fileset dir="${settings.localRepository}/gums/gums-core">
+        								<include name="**/gums-core-*.jar"/>
+								    </fileset>
+									<patternset>
+										<include name="gums.config.template"/>
+										<include name="gums.config.devel"/>
+										<include name="gums.config.osg_template"/>
+										<include name="gums.config.schema"/>
+										<include name="gums.config.transform"/>
+										<include name="log4j.properties.template"/>
+										<include name="sql/**"/>
+										<include name="scripts/**"/>
+									</patternset>
+				                </unzip>
+				                
+				                <copy file="src/main/resources/gums.config.devel" tofile="src/main/config/gums.config" overwrite="yes"/>
+				                <copy file="src/main/resources/log4j.properties.template" tofile="src/main/classes/log4j.properties" overwrite="yes"/>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>2</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+   				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/gums-add-mysql-admin" perm="ug+x"/>
+				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/gums-create-config" perm="ug+x"/>
+				                <chmod file="target/gums-service-${version}/WEB-INF/scripts/gums-setup-mysql-database" perm="ug+x"/>
+								<chmod file="target/gums-service-${version}/WEB-INF/scripts/addMySQLAdmin" perm="ug+x"/>
+								<chmod file="target/gums-service-${version}/WEB-INF/scripts/setupMySQLDatabase" perm="ug+x"/>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin> 	
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<compilerVersion>1.6</compilerVersion>
+					<source>1.5</source>
+					<target>1.5</target>
+					<debug>false</debug>
+					<showDeprecation>true</showDeprecation>
+					<showWarnings>true</showWarnings>
+					<optimize>false</optimize>
+					<verbose>false</verbose>
+					<excludes>                            
+						<exclude>**/.svn</exclude>
+					</excludes>
+				</configuration>
+			</plugin>				
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-surefire-plugin</artifactId>
+		        <configuration>
+			      <excludes>
+		            <exclude>**/.svn</exclude>
+		          </excludes>
+		        </configuration>
+        	</plugin>
+        	<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-war-plugin</artifactId>
+		        <configuration>
+			       <webResources>
+			         <resource>
+			           <directory>../gums-service/src/main/config</directory>
+			           <targetPath>WEB-INF/config</targetPath>
+			           <filtering>false</filtering>
+			         </resource>
+			         <resource>
+			           <directory>../gums-service/src/main/classes</directory>
+			           <targetPath>WEB-INF/classes</targetPath>
+			           <filtering>true</filtering>
+			           <includes>
+			              <include>log4j.properties</include>
+			           </includes>
+			         </resource>
+			         <resource>
+			           <directory>../gums-service/src/main/resources</directory>
+			           <targetPath>WEB-INF</targetPath>
+			           <filtering>false</filtering>
+			         </resource>
+			       </webResources>
+			    </configuration>
+        	</plugin>
+            <plugin>
+               <groupId>org.codehaus.cargo</groupId>
+               <artifactId>cargo-maven2-plugin</artifactId>
+               <version>0.3-SNAPSHOT</version>
+               <configuration>
+                   <container>
+                        <containerId>tomcat5x</containerId>
+                        <type>remote</type>
+                   </container>
+                   <configuration>
+                        <type>runtime</type>
+                        <properties>
+                            <cargo.tomcat.manager.url>http://localhost:8080/manager</cargo.tomcat.manager.url>
+                            <cargo.remote.username>admin</cargo.remote.username>
+                            <cargo.remote.password></cargo.remote.password>
+                        </properties>
+                    </configuration>
+                    <deployer>
+                            <deployables>
+                                    <deployable>
+                                            <properties>
+                                                    <context>gums</context>
+                                            </properties>
+                                    </deployable>
+                        </deployables>
+                    </deployer>
+                </configuration>
+           </plugin>
+       </plugins>
+       <resources>
+	      <resource>
+	        <directory>src/main/java</directory>
+	        <includes>
+	          <include>**/*.wsdd</include>
+	          <include>**/log4j.properties</include>
+	        </includes>
+	      </resource>
+	      <resource>
+	        <directory>src/main/resources</directory>
+	        <includes>
+	          <include>**/log4j.properties</include>
+	        </includes>
+	      </resource>
+	    </resources> 
+	</build>
+  
+ 	<dependencies> 
+        <!-- compile scope -->
+        <dependency>
+            <groupId>gums</groupId>
+            <artifactId>gums-core</artifactId>
+            <version>${version}</version>
+        </dependency>
+		<dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.12</version>
+        </dependency>
+        <dependency>
+            <groupId>opensciencegrid</groupId>
+            <artifactId>privilege</artifactId>
+            <version>1.0.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>opensciencegrid</groupId>
+            <artifactId>privilege-xacml</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>opensaml</groupId>
+            <artifactId>opensaml-v1</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>opensaml</groupId>
+            <artifactId>opensaml</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+    	
+ 	</dependencies>  
+  
+</project>
