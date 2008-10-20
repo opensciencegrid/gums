@@ -325,7 +325,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	file://etc/grid-security/banned_users (only file URIs currently supported)
+		    	file:///etc/grid-security/banned_users (only file URIs currently supported)
 		    </td>
 		</tr>	
 		<tr>
@@ -341,7 +341,7 @@ else if ("edit".equals(request.getParameter("command"))
 	    		i.e.
 		    </td>
 		    <td nowrap>
-		    	file://etc/grid-security/unbanned_users (only file URIs currently supported)
+		    	file:///etc/grid-security/unbanned_users (only file URIs currently supported)
 		    </td>
 		</tr>	
 <%
