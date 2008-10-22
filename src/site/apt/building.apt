@@ -8,18 +8,17 @@ How to Build
 
 * Download
 
- Download the source from the {{{download.html}download}} page for projects: 
-gums-core, gums-service, gums-client, and gums-site or from BNL's subversion repository if you
-have been given access at {{{https://svn.usatlas.bnl.gov/svn/privilege}https://svn.usatlas.bnl.gov/svn/privilege}}.
-
- You can also download source read-only from {{{https://www.usatlas.bnl.gov/svn/privilege}https://www.usatlas.bnl.gov/svn/privilege}}. 
+ The source will soon be downloadable from our Subversion repository at 
+{{{https://svn.usatlas.bnl.gov/svn/privilege}https://svn.usatlas.bnl.gov/svn/privilege}}.  This has not been possible as of yet
+because of the difficulty in configuring Subversion with write SSL access for specific individuals and at the same time, read SSL
+access for everyone.  You may request a tarball of the source in the meantime by contacting us at {{{mailto:gums-dev-l@lists.bnl.gov}gums-dev-l@lists.bnl.gov}}.
 
 
 * Install Software
 
  Install Java, Tomcat, MySQL, Maven 2, and Cargo.  We recommend using {{{http://linux.duke.edu/projects/yum/}YUM}} with the 
 {{{http://www.jpackage.org/}JPackage repository}} for installing these.
-Instructions can be found at {{{http://www.usatlas.bnl.gov/twiki/bin/view/Projects/GridDevHowTo}http://www.usatlas.bnl.gov/twiki/bin/view/Projects/GridDevHowTo}}.  
+Instructions can be found at {{{http://www.racf.bnl.gov/experiments/usatlas/griddev/griddevhowto}http://www.racf.bnl.gov/experiments/usatlas/griddev/griddevhowto}}.  
 Another good package to install is {{{http://www.eclipse.org/}Eclipse}}, 
 for which you can install the {{{http://maven.apache.org/plugins/maven-eclipse-plugin/}Maven Eclipse Plugin}}.
  
@@ -32,13 +31,15 @@ creating the database, and adding yourself as an administrator.
 
  Unit tests provide an easy way to make a change and quickly ensure you haven't broken anything.  gums-core has three levels of unit tests:
  
-	* <<standard>> - only tests that do not require other services (best practice for JUnit).
+ 	* <<no-test>> - only tests that do not require other services (best practice for JUnit).
+ 	
+	* <<standard-test>> - only tests that do not require other services (best practice for JUnit).
 	
-	* <<local>> - standard tests plus those that require Tomcat and MySQL to be installed 
+	* <<local-test>> - standard tests plus those that require Tomcat and MySQL to be installed 
 				and configured. Requires db.properties and hibernate.properties be correctly
 				configured within the src/test/config directory.
 	
-	* <<external>> - standard and local tests plus those that rely on an external voms and ldap server.  Requires 
+	* <<external-test>> - standard and local tests plus those that rely on an external voms and ldap server.  Requires 
 				voms.properties and ldap.properties be correctly
 				configured within the src/test/config directory.  The voms server should be named griddev and 
 				contain group /griddev/subgriddev and role griddevRole, for which should exist users
@@ -62,7 +63,7 @@ creating the database, and adding yourself as an administrator.
 </settings>
 +-----------------------------------------------+
 
- or with 'local-test' replaced by 'external-test'.
+ or with 'local-test' replaced by 'external-test' or 'no-test'.
  
 * Build
 

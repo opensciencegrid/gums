@@ -18,17 +18,22 @@ GUMS server, in which case there would be only one communication point to VOMS,
 thus enabling centralized mapping. All clients would access the same information locally (a site could 
 deploy multiple GUMS servers, but would lose the centralized mapping capability). GUMS 
 downloads mapping information to each gatekeeper: the GUMS host tool, gums-host,  
-replaces edg-mkgridmap in this diagram. The grid-mapfiles on all the gatekeeper 
+replaces edg-mkgridmap in this diagram. The grid-mapfiles on all the gatekeepers 
 can be made identical to each other if they all use the same GUMS server, or you 
-can still have different maps for different gatekeepers of group of gatekeepers. 
+can still have different maps for different gatekeepers or group of gatekeepers. 
 The important feature is that you have one point of configuration for your 
 facility. Gums-host also creates the inverse map for accounting consistent with 
 the mapfile.   Mapping to account pools is available.  Click {{{images/compat-scenario.gif}here}} to see an illustration.
 
  The next scenario is GUMS implemented in a legacy client scenario. Here we  
-deploy the PRIMA module (see the <a href="http://computing.fnal.gov/docs/products/voprivilege/">VO Privilege Project</a>) 
-on the gatekeepers in order to enable dynamic mapping. There are no more grid-mapfiles. We continue to use the gums-host tool to generate the accounting map (if needed), but this breaks dynamic mapping when account pools are being used. (Whenever GUMS is asked to generate a map, it has to go through the whole policy, and assign an account for all the different possibilities. Therefore, accounts will be assigned to everybody beforehand when generating the map instead of when the individual request comes in.) 
-A better implementation of the accouting system in OSG will address this. Role 
+deploy the PRIMA module (see the {{{http://computing.fnal.gov/docs/products/voprivilege/}VO Privilege Project}}) 
+on the gatekeepers in order to enable dynamic mapping. There are no more grid-mapfiles. 
+We continue to use the gums-host tool to generate the accounting map (if needed), 
+but this breaks dynamic mapping when account pools are being used (Whenever GUMS is asked to 
+generate a map, it has to go through the whole policy, and assign an account for all the 
+different possibilities. Therefore, accounts will be assigned to everybody beforehand when 
+generating the map instead of when the individual request comes in.) 
+A better implementation of the accounting system in OSG will address this. Role 
 based authorization is still not available, as the client is generating normal 
 proxies.  Click {{{images/legacy-client-scenario.gif}here}} for an illustration.
 

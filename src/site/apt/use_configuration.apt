@@ -40,10 +40,13 @@ persistence factories, which are used for storing individual user information.
 	
  On the left side of the web interface you see the following options under 'Configuration':
  
+ 	* <<Configuration>> - stores global options: 1) whether to allow gridmap file generation, 2) an optional list
+ 	of user groups containing users to be banned, that is to be denied a mapping.
+ 
 	* <<Back Up/Restore>> - back up the current gums.config to WEB-INF/config/backup/gums.config.date or
 	restore or delete configuration from WEB-INF/config/backup.
 	
-	* <<Diagnostic Summary>> - shows a concise view of all the mappings to easily follow the flow of
+	* <<Summary>> - shows a concise view of all the mappings to easily follow the flow of
 	host -> group -> user group -> account mapper -> account.
 	
 	* <<Persistence Factories>> - shows a list of persistence factories with key attributes.  Clicking 'add' allows
@@ -55,12 +58,16 @@ persistence factories, which are used for storing individual user information.
 	* <<Account Mapper>> - shows a list of account mappers with key attributes. Also allows adding, editing, and deleting.
 
 	* <<User Group>> - shows a list of user groups with key attributes. Also allows adding, editing, and deleting.
-
+	
 	* <<Group To Account>> - shows a list of 'group to account mappers' with key attributes. Also allows adding, editing, and deleting.
 
 	* <<Host to Group>> - shows a list of 'host to group mappers' with key attributes.  Also allows adding, editing, and deleting.
 	One may also change the order (and thus the order of matching) by clicking the up arrow for moving up and 
 	the down arrow for moving down.
+	
+	* <<Shortcut>> - adds multiple related elements (all those that are required for a mapping) in one step.  GUMS is very 
+	flexible but at the cost that configuration can sometimes be tedious for simple cases.  This shortcut feature
+	ameliorates this.
 	
  On the more detailed page from clicking add or edit, you see various fields to fill in.  Most of these are straight
 forward.  The text to the left of the fields reads as a sentence to help clarify the purpose of each field.  Most
@@ -238,6 +245,15 @@ read access by Tomcat (e.g. readable by user 'daemon' in VDT/OSG).
 	* <<local>> - for storing user information in a MySQL database as well as for assigning
 	primary and secondary groups to accounts in the main LDAP tree.  LDAP doesn't need to be set 
 	up with the GUMS schema for this type.
+	
+*** Centrally stored configuration	
+	
+ Currently, except for the ldap persistence factory, you can select the "Store Configuration" box to have the configuration stored
+in that persistence factory.  This allows multiple GUMS servers to share the same configuration for clustering
+purposes. A copy of the configuration is still kept current in .../WEB-INF/config/gums.config.  To change the configuration stored
+in the persistence factory, simply change .../WEB-INF/config/gums.config (either directly by hand or indirectly through the web interface)
+and the databases configuration will automatically be updated.  This, in turn will update the configuration on all other GUMS 
+servers also configured to use the same underlying storage used by the persistence factory.
 
 ** Account Mappers
 
@@ -256,14 +272,17 @@ read access by Tomcat (e.g. readable by user 'daemon' in VDT/OSG).
 	name found in the gecos attribute of LDAP.  The 'gecos' attribute is the default but can be set to another.  Likewise, 
 	the attribute that contains the account can also be set ('uid' is the default).  This type is independent of
 	the LDAP persistence factory and doesn't require LDAP be configured to use the GUMS LDAP schema.  Note that this 
-	type only reads from LDAP.
+	type only reads from LDAP (vs writing).
 
 	* <<ldap>> - for mapping a user to an account in LDAP if the user's name from her certificate DN matches a 
 	name found in the 'description' attribute of LDAP.  The 'description' attribute is the default but can be set to another.  Likewise, 
 	the attribute that contains the account can also be set ('uid' is the default).  This type is independent of
 	the LDAP persistence factory and doesn't require LDAP be configured to use the GUMS LDAP schema.  Note that this 
-	type only reads from LDAP.
-
+	type only reads from LDAP (vs writing).
+	
+	* <<gecosNIS>> - for mapping a user to an account using NIS if the user's name from her certificate DN matches a 
+	name found in the gecos attribute of NIS.  The 'gecos' attribute is the default but can be set to another.  Likewise, 
+	the attribute that contains the account can also be set ('uid' is the default).
  
  Keep in mind that GUMS does not create accounts, it only returns the account name.  Therefore, a prerequisite to using
 GUMS is to create all the accounts that GUMS can map to at your local site.

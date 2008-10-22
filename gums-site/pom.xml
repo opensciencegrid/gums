@@ -35,6 +35,9 @@
       <unsubscribe>
         http://lists.bnl.gov/mailman/listinfo/gums-users-l
       </unsubscribe>
+      <post>
+        gums-users-l@lists.bnl.gov
+      </post>
       <archive>
         http://lists.bnl.gov/pipermail/gums-users-l/
       </archive>
@@ -47,6 +50,9 @@
       <unsubscribe>
         http://lists.bnl.gov/mailman/listinfo/gums-dev-l
       </unsubscribe>
+      <post>
+        gums-dev-l@lists.bnl.gov
+      </post>
       <archive>
         http://lists.bnl.gov/pipermail/gums-dev-l/
       </archive>

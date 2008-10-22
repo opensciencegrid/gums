@@ -8,33 +8,59 @@ Logging
 
 * Introduction
  
- All information in GUMS is logged through the apache commons logging package. The implementation used in GUMS is apache log4j. To change the logging implementation you have to refer to the commons.logging implementation. Be aware that some library that GUMS uses may not be as well behaved in regard to logging.
+ All information in GUMS is logged through the apache log4j logging package. The configuration is controlled by the log4j.properties file. This is a normal log4j configuration file: refer to the log4j manual for more information.  GUMS using the follow conventions for log names within the log4j.properties file:
 
- The configuration is controlled by the log4j.properies file. This is a normal log4j configuration file: refer to the log4j manual for more information.
-
- GUMS using the follow conventions for log names:
-
-	* The developer's log uses one log for each different class, with the name being the class name. Given GUMS package structure, "gov.bnl.gums" contains the whole development log for GUMS. This allows the develop to filter the log of the code he is working on.
+	* The administrator log uses the log named "gums.gumsAdmin".
 	
-	* The admin log uses the log named "gums.resourceAdmin"
+	* The administrator's email log uses the log "gums.gumsAdminEmailReportsLogName".
 	
-	* The site security log is at "gums.siteAdmin"
+	* The site security log is at "gums.siteAdmin".
+
+	* The developer's log uses one log for each different class, with the name being the class name. Given the GUMS package structure, "gov.bnl.gums" contains the whole development log for GUMS. This allows the develop to filter the log of the code he is working on.
+
+ Each of these is explained below.  Note that a certain logging level contains all errors above it.  For example, the WARN level will also log ERROR and FATAL.
 
 * Administrator's log
 
- This log is meant for whoever is maintaining GUMS installation at a particular site. The log is designed to be used in different ways: on standard error, in a log file and in e-mails. E-mails will get from WARN up, the standard error will receive from INFO up and the log can go down to TRACE. The breakdown on the logging level is:
+ This log is meant for whoever is maintaining GUMS installation at a particular site.
 
 	* FATAL - GUMS is unable to operate: no functionalities are available, and the error condition cannot be recovered at runtime.
 	
-	* ERROR - A particular operation failed or was incomplete. For example, the CMS VOMS server couldn't be contacted, so it's members weren't refreshed (even though the ATLAS group was); the NIS server didn't respond, so it is impossible to generate the grid-mapfile for atlasgrid25, though the grid-mapfile for atlasgrid26 could be generated since it doesn't require the NIS information. Errors can be solved at runtime (i.e. modify the configuration file, restart the database, etc...)
+	* ERROR - A condition that hints to a major GUMS misconfiguration or incorrect usage.
 	
-	* WARN - A condition that hints to a misconfiguration or incorrect usage. For example, a VO server returned no users.
+	* WARN - A condition that suggests a problem with a dependent service or its configuration as well as user-specific mapping failures.  Also logs unauthorized accesses.
 	
 	* INFO - A normal operation has succeeded.
 	
-	* DEBUG - Not used
+	* DEBUG - A normal operation that has particular verbose output such as a gridmap file
 	
 	* TRACE - Not used
+	
+* Administrator's email log
+
+ This log is also meant for emailing whoever is maintaining GUMS installation at a particular site.  This is new in GUMS 1.3 and is meant to be relatively quiet and concise.  When a log occurs, an email is sent according to the email configuration.  It logs warnings every 2 days or as configured in web.xml for the emailWarningHours variable.  It logs errors and fatal messages immediately.  It is disabled by default.  To enable, uncomment the line, "log4j.logger.gums.gumsAdminEmailReportsLogName=WARN, mail", and uncomment and configure the "Site Admin Mail appender" section at the bottom.
+
+	* FATAL - GUMS is unable to operate: no functionalities are available, and the error condition cannot be recovered at runtime.
+	
+	* ERROR - A condition that hints to a major GUMS misconfiguration or incorrect usage and are logged immediately.  For example, the configuration cannot be read.
+	
+	* WARN - A condition that suggests a problem with a dependent service or its configuration as well as user-specific mapping failures.  For example, a VOMS server cannot be contacted or there are no more available pool accounts.  
+	
+	* INFO - Not used
+	
+	* DEBUG - Not used
+	
+	* TRACE - Not used	
+
+* Site security log
+
+ The site security log will log all accesses to syslog (see syslog documentation).  It is meant to be used by a site's security team:
+
+    * WARN - Will log all unauthorized accesses
+
+    * INFO - Will log all the "write" accesses
+    
+    * DEBUG - Will log all the "read" accesses
 
 * Developer's log
 
@@ -51,56 +77,3 @@ Logging
 	* DEBUG - The attempt or successful completion of a smaller event. For example, a query was executed, a user was mapped. Typically one shouldn't have more than one DEBUG statement in a method.
 	
 	* TRACE - Shows the internal execution of the code. As a contrast, building a query would be at this level. Inside method logging should be done at this level
-
-* Site security log
-
- The site security log will log all accesses.
-
-    * INFO - Will log all the "write" accesses
-    
-    * DEBUG - Will log all the "read" accesses
- 
- 
-* Setting up Email Notification for GUMS Errors
-
- GUMS has the capability to notify an administrator via email of any errors that may occur. 
-The .../WEB-INF/classes/log4j.properties contains these entries but are commented out.  Look for these lines:
-
-+----------------------------------------------+
-<pre class="programlisting">
-  #log4j.appender.mail=org.apache.log4j.net.SMTPAppender
-  #log4j.appender.mail.from=gums@site.com
-  #log4j.appender.mail.subject=gums e-mail alert
-  #log4j.appender.mail.SMTPHost=smtp.site.com
-  #log4j.appender.mail.to=admin@site.com
-  #log4j.appender.mail.layout=org.apache.log4j.PatternLayout
-  #log4j.appender.mail.layout.ConversionPattern=%%d{DATE} [%%-5p]: %%m%%n
-</pre>
-+----------------------------------------------+
-
- Uncomment them and set the "from", "SMTPHost", and "to" lines to the right values for your site.  "From" should be the username under which GUMS runs.
-Here is a sample:
-
-+----------------------------------------------+
-<pre class="programlisting">
-  log4j.appender.mail=org.apache.log4j.net.SMTPAppender
-  log4j.appender.mail.from=daemon@cd-94372.dhcp.fnal.gov
-  log4j.appender.mail.subject=gums e-mail alert
-  log4j.appender.mail.SMTPHost=smtp.fnal.gov
-  log4j.appender.mail.to=aheavey@fnal.gov
-  log4j.appender.mail.layout=org.apache.log4j.PatternLayout
-  log4j.appender.mail.layout.ConversionPattern=%%d{DATE} [%%-5p]: %%m%%n
-</pre>
-+----------------------------------------------+
-
- Towards the top of the same file (line 22) under the heading "Log for GUMS administrator", you'll see:
-
-+----------------------------------------------+
-<pre class="programlisting">
-  log4j.logger.gums.resourceAdmin=DEBUG, adminFile
-  #log4j.logger.gums.resourceAdmin=DEBUG, mail, adminFile
-</pre>
-+----------------------------------------------+
-
- Comment out the first line and uncomment the second so that the resource info that you need to get comes to you via 
-email in addition to going to a file.  If tomcat is already running, you will need to restart it to effect the change.

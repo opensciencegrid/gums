@@ -22,5 +22,5 @@ integrate with the site's local information services (such as HR databases or LD
 Current development, led by Jay Packard and John Hover, is centered on providing ease of use and completeness for 
 both administrators and developers.  Part of the development is dedicated to the 
 {{{http://computing.fnal.gov/docs/products/voprivilege/}VO Privilege Project}}, a collaboration between 
-USATLAS and USCMS which is working to provide access to GUMS through the gatekeeper callout and role-based 
-authentication through a VOMS extended proxy.
+USATLAS and USCMS, which has just completed work to provide access to GUMS from clients that implement the OpenSAML-XACML grid 
+interoperability profile (for example, GT2/Prima, GT4, and gplazma).

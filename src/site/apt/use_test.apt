@@ -11,22 +11,30 @@ Test Mappings
 	
 	* <<Map Account to Grid Identity(s)>> - determines which grid identity or identities are mapped to a local account.
 	
-	* <<Generate Grid Mapfile>> - generates a Grid-Mapfile (list of DN to account mappings) on a specifiec service.  This file
+	* <<Generate Grid Mapfile>> - generates a Grid-Mapfile (list of DN to account mappings) on a specific service.  This file
 	is used by services that do not support making GUMS service calls (i.e. dCache).  Click "include extended attributes" to include
-	the FQAN in the list as "DN, FQAN, account". 
+	the FQAN in the list as "DN, FQAN, account".
+	
+	* <<Generate Grid Email Mapfile>> - generates a Grid-Email-Mapfile (list of DN, FQAN, account, and email when available) on a specific service.
+
+	* <<Generate FQAN Mapfile>> - generates a FQAN-Mapfile (list of FQAN and account or range of accounts) on a specific service.  This is
+	used by the GUMS RSV probe to determine OSG mapping policy compliance.  Only VOMS user groups and group/pool account mappers will be included.
 	
 	* <<Generate OSG-User-VO-Map>> - generates an OSG-user-VO-map (list of accounts for a VO) for the given service, which is used
-	for vo accounting purposes.  To be included in this list, you must fill in the 'Accounting VO' field in a "group to account mapping".
+	for VO accounting purposes.  To be included in this list, you must fill in the 'Accounting VO' field in a "group to account mapping".
 
  This functionality is also available for the client tools "gums", "gums-host", and "gums-service".  Usage is:
  
 +-------------------------------------------+ 
 [root@gums /]# su - username
-[username@gums /]# ./gums-service
-usage: gums command [command-options]
+[username@gums /]# ./gums-service 
+usage: gums command [command-options] 
 Commands:
-  generateOsgUserVoMap - Generate OSG-user-VO-map.txt for a given service/host.
+  clientVersion - Retrieve GUMS client version.
+  generateEmailMapfile - Generate an Email-mapfile for a given service/host.
+  generateFqanMapfile - Generate FQAN-mapfile for a given service/host .
   generateGridMapfile - Generate grid-mapfile for a given service/host.
+  generateOsgUserVoMap - Generate OSG-user-VO-map for a given service/host.
   generateVoGridMapfile - Generate a VO grid-mapfile for a given service/host.
   manualGroupAdd - Includes a DN in a group.
   manualGroupRemove - Removes a DN from a group.
@@ -38,8 +46,8 @@ Commands:
   poolGetAssignments - Get printout of current pool account assignments.
   poolRemoveRange - Removes accounts from an account pool.
   poolUnassignRange - Unassigns accounts from an account pool.
+  serverVersion - Retrieve GUMS server version.
   updateGroups - Contact VO servers and retrieve user lists.
-  version - Retrieve GUMS client version.
 For help on any command:
   gums command --help
 [root@gums /]#  ./gums-service mapUser --help
