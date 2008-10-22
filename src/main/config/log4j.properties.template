@@ -18,7 +18,7 @@ log4j.rootLogger=ERROR
 log4j.logger.gums.gumsAdmin=INFO, adminFile
 
 # Logs for GUMS administrative email.
-# This log is meant to be relatively quite.
+# This log is meant to be relatively quiet and concise.
 # You have to setup the mail appender later in the file and uncomment below
 #log4j.logger.gums.gumsAdminEmailReportsLogName=WARN, mail
 

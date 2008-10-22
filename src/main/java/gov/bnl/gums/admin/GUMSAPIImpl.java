@@ -71,7 +71,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 					buf.replace(len - nAccount.length(), len, nAccount);
 					if (reverseMap.get(buf.toString())!=null) {
 						String message = "One or more accounts already exist for '"+accountPoolMapperName+" "+range+"'. None were added.";
-						siteAdminLog.error(message);
+						gumsAdminLog.warn(message);
 						throw new RuntimeException(message);
 					}
 				}

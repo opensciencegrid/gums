@@ -158,7 +158,7 @@ public class AccountPoolMapper extends AccountMapper {
         	if (newAccount==null) {
         		String message = "Could not assign user '"+user.getCertificateDN()+"' to account within pool account mapper '"+getName()+"'.";
         		gumsAdminLog.warn(message);
-        		GUMS.gumsAdminEmailLog.put("noPoolAccounts", message, true);
+        		GUMS.gumsAdminEmailLog.put("noPoolAccounts", message, false);
         	}
         	return newAccount;
         }

@@ -21,15 +21,15 @@ import org.apache.log4j.Logger;
  *
  * @author  Gabriele Carcassi, Jay Packard
  */
-public class QuietWarnLog {
+public class QuietLog {
 	Logger log;
 	SortedMap messages = Collections.synchronizedSortedMap(new TreeMap());
 	
-	public QuietWarnLog(String logName) {
+	public QuietLog(String logName) {
 		log = Logger.getLogger(logName);
 	}
 	
-	public void warn() {
+	public void logMessages() {
 		log.warn(createMessage());
 		messages.clear();
 	}
@@ -38,9 +38,9 @@ public class QuietWarnLog {
 	 * If this is the first type of this error, log it immediately,
 	 * otherwise just add it to messages to be logged later
 	 */
-	public void put(String key, String message, boolean logImmediatelyIfFirstOfType) {
-		if (!messages.containsKey(key) && logImmediatelyIfFirstOfType)
-			log.warn(message);
+	public void put(String key, String message, boolean logImmediately) {
+		if (!messages.containsKey(key) && logImmediately)
+			log.error(message);
 		messages.put(key, message);
 	}
 	
@@ -54,7 +54,7 @@ public class QuietWarnLog {
 			StringBuffer buffer = new StringBuffer();
 			while (it.hasNext()) {
 				buffer.append((String)it.next());
-				buffer.append("\n\n");
+				buffer.append("\n");
 			}
 			return buffer.toString();
 		}

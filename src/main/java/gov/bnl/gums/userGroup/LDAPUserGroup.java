@@ -339,7 +339,9 @@ public class LDAPUserGroup extends UserGroup {
 				 Attributes atts = jndiCtx.getAttributes(groupTree);
 				 Attribute members = atts.get(memberUidField);
 				 if (members == null) {
-					 throw new RuntimeException("Couldn't retrieve the list of members from the LDAP group: missing attribute member");
+					 String message = "Couldn't retrieve the list of members from the LDAP group: missing attribute member";
+					 GUMS.gumsAdminEmailLog.put("ldapUpdateProblem", message, false);
+					 throw new RuntimeException(message);
 				 }
 				 DirContext rootCtx = (DirContext) jndiCtx.lookup(peopleContext);
 				 return retrieveGroupMembers(rootCtx, members);            

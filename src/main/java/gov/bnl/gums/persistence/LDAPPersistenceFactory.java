@@ -791,7 +791,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		return retStr;
 	}
 
-	private void addCertToTrustStore() {
+/*	private void addCertToTrustStore() {
 		X509Certificate cert = null;
 		try {
 			InputStream inStream = new FileInputStream(caCertFile);
@@ -814,7 +814,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 			log.error("Couldn't put " + caCertFile + " into trust store", e);
 			gumsAdminLog.error("Couldn't put " + caCertFile + " into trust store: " + e.getMessage() );
 		}
-	}
+	}*/
 	
 	private String findGID(String groupname) throws NamingException {
 		DirContext context = retrieveGroupContext();

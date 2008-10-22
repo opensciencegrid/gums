@@ -426,7 +426,7 @@ public class CoreLogic {
                         if (localUser != null) {
                             return localUser;
                         } else {
-                           	gumsAdminLog.error("User " + user + " wasn't mapped even though is present in group " + g2AMapping.getUserGroups());
+                           	gumsAdminLog.warn("User " + user + " wasn't mapped even though is present in group " + g2AMapping.getUserGroups());
                         }
                     }
                 }

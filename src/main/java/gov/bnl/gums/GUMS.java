@@ -42,7 +42,7 @@ public class GUMS {
     static final public String gumsAdminLogName = "gums.gumsAdmin";
     static private Logger log = Logger.getLogger(GUMS.class); // only use this log for particularly tricky aspects of this class - otherwise log within lower level classes
     static private Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
-    static public QuietWarnLog gumsAdminEmailLog = new QuietWarnLog("gums.gumsAdminEmail");
+    static public QuietLog gumsAdminEmailLog = new QuietLog("gums.gumsAdminEmail");
     static private Timer timer;
     static private String version;
     
@@ -81,8 +81,9 @@ public class GUMS {
                     
                     TimerTask emailWarningTask = new TimerTask() {
                         public void run() {
-                     	   if (gumsAdminEmailLog.hasMessages())
- 	                    	   gumsAdminEmailLog.warn();
+                     	   if (gumsAdminEmailLog.hasMessages()) {
+ 	                    	   gumsAdminEmailLog.logMessages();
+                     	   }
                         }
                     };      
                     
@@ -116,6 +117,7 @@ public class GUMS {
         if (!confStore.isActive()) {
         	String message = "Couldn't read GUMS configuration file (gums.config)";
             gumsAdminLog.error(message);
+            gumsAdminEmailLog.put("Configuration", message, true);
             throw new RuntimeException(message);
         }
         
@@ -132,6 +134,7 @@ public class GUMS {
         if (!confStore.isActive()) {
         	String message = "Couldn't read GUMS configuration file";
             gumsAdminLog.error(message);
+			gumsAdminEmailLog.put("Configuration", message, true);
             throw new RuntimeException(message);
         }
         
@@ -288,11 +291,11 @@ public class GUMS {
 			try {
 				versionCls = (Version)digester.parse("file://"+pomFile);
 			} catch (Exception e) {
-				gumsAdminLog.error("Cannot get GUMS version from "+pomFile);
+				gumsAdminLog.warn("Cannot get GUMS version from "+pomFile);
 				return "?";
 			}
 			if (versionCls == null) {
-				gumsAdminLog.error("Cannot get GUMS version from "+pomFile);
+				gumsAdminLog.warn("Cannot get GUMS version from "+pomFile);
 				return "?";
 			}
 			else
