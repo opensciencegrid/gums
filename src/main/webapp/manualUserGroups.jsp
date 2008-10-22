@@ -178,7 +178,7 @@ else if ("add".equals(request.getParameter("command"))) {
 		</tr>
 		<tr>
     		<td nowrap style="text-align: right;">
-	    		fqan:
+	    		FQAN:
 		    </td>
 		    <td nowrap>
 			    <input maxlength="256" size="64" name="fqan" value=""/> (optional regular expression)
