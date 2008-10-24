@@ -144,6 +144,7 @@ if (request.getParameter("command")==null ||
 						<input type="submit" style="width:95px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this host to group mapping?'))return false;">
 						<input type="submit" style="width:47px" name="command" value="up" alt="move up"><input type="submit" style="width:47px" name="command" value="down" alt="move down">
 						<input type="hidden" name="name" value="<%=cH2GMapping.getName()%>">
+						<input type="hidden" name="dt" value="<%=new java.util.Date().getTime()%>">
 					</a>
 				</form>
 			</td>
