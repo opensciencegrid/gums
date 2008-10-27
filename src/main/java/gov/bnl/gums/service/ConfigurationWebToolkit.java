@@ -315,7 +315,7 @@ public class ConfigurationWebToolkit implements Remote {
 			if (request.getParameter("memberUidField")!=null)
 				((LocalPersistenceFactory)persistenceFactory).setMemberUidField( request.getParameter("memberUidField") );
 			if (request.getParameter("emailField")!=null)
-				((LDAPPersistenceFactory)persistenceFactory).setEmailField( request.getParameter("emailField") );
+				((LocalPersistenceFactory)persistenceFactory).setEmailField( request.getParameter("emailField") );
 			Properties properties = getHibernateProperties(persistenceFactory, request, true);
 			properties.putAll(getLdapProperties(persistenceFactory, request, true));
 			((LocalPersistenceFactory)persistenceFactory).setProperties( properties );
