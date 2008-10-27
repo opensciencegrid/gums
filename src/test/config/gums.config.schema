@@ -41,6 +41,7 @@
 										<xs:attribute name="gidNumberField" type="xs:string"/>
 										<xs:attribute name="accountField" type="xs:string"/><!--depricated-->
 										<xs:attribute name="uidField" type="xs:string"/>
+										<xs:attribute name="emailField" type="xs:string"/>
 										<xs:attribute name="java.naming.provider.url" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.factory.initial" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.security.authentication" type="xs:string" use="required"/>
@@ -66,6 +67,7 @@
 										<xs:attribute name="uidField" type="xs:string"/>										
 										<xs:attribute name="memberAccountField" type="xs:string"/><!--depricated-->
 										<xs:attribute name="memberUidField" type="xs:string"/>
+										<xs:attribute name="emailField" type="xs:string"/>
 										<xs:attribute name="ldap.java.naming.provider.url" type="xs:string"/><!--depricated-->
 										<xs:attribute name="ldap.java.naming.factory.initial" type="xs:string" use="required"/>
 										<xs:attribute name="ldap.java.naming.security.authentication" type="xs:string" use="required"/>

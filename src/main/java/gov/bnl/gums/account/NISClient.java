@@ -98,7 +98,7 @@ public class NISClient {
                             // Two accounts matched. Can't decide, return null.
                             log.trace("NIS account Name/Surname multiple match, multiple account with surname." +
                             " Name: " + name + " - Surname: " + surname + " - account: not defined");
-                            gumsAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
+                            gumsAdminLog.debug("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
                             return null;
                         }
                     }
@@ -113,7 +113,7 @@ public class NISClient {
                 // Can't decide which account is the correct one
                 log.trace("NIS account Name/Surname multiple match, no account with surname." +
                 " Name: " + name + " - Surname: " + surname + " - account: not defined");
-                gumsAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
+                gumsAdminLog.debug("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + commonAccounts);
                 return null;
             }
             // Common Accounts has no items, disregarding the name
@@ -125,7 +125,7 @@ public class NISClient {
                 return account;
             } else {
                 log.trace("NIS account Surname multiple match, no match on Name. Name: " + name + " - Surname: " + surname + " - account: undefined");
-                gumsAdminLog.warn("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + accountsWithSurname);
+                gumsAdminLog.debug("NIS mapping: couldn't find single match for surname='" + surname + "' name='" + name + "'. Undecided between " + accountsWithSurname);
                 return null;
             }
         }

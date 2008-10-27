@@ -127,7 +127,10 @@ public class GUMSAPIImpl implements GUMSAPI {
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
 				String map = gums().getCoreLogic().generateGridMapfile(hostname, false, true, true);
-				gumsAdminLog.info(logUserAccess() + "Generated email mapfile");
+				if (gumsAdminLog.isDebugEnabled())
+					gumsAdminLog.debug(logUserAccess() + "Generated email mapfile for host '" + hostname + "': " + map);
+				else
+					gumsAdminLog.info(logUserAccess() + "Generated email mapfile for host '" + hostname + "'");
 				return map;
 			} else { 
 				String message = logUserAccess() + "Unauthorized access to generateEmailMapfile for host '"+hostname+"'";
@@ -144,7 +147,10 @@ public class GUMSAPIImpl implements GUMSAPI {
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
 				String map = gums().getCoreLogic().generateFqanMapfile(hostname);
-				gumsAdminLog.info(logUserAccess() + "Generated fqan mapfile for host '" + hostname + "': " + map);
+				if (gumsAdminLog.isDebugEnabled())
+					gumsAdminLog.debug(logUserAccess() + "Generated fqan mapfile for host '" + hostname + "': " + map);
+				else
+					gumsAdminLog.info(logUserAccess() + "Generated fqan mapfile for host '" + hostname + "'");
 				return map;
 			} else {
 				String message = logUserAccess() + "Unauthorized access to generateFqanMapfile for host '"+hostname+"'";
@@ -168,7 +174,10 @@ public class GUMSAPIImpl implements GUMSAPI {
 		
 			if (hasReadAllAccess(currentUser(), hostname)) {
 				String map = gums().getCoreLogic().generateGridMapfile(hostname, true, false, false);
-				gumsAdminLog.info(logUserAccess() + "Generated grid mapfile for host '" + hostname + "': " + map);
+				if (gumsAdminLog.isDebugEnabled())
+					gumsAdminLog.debug(logUserAccess() + "Generated grid mapfile for host '" + hostname + "': " + map);
+				else
+					gumsAdminLog.info(logUserAccess() + "Generated grid mapfile for host '" + hostname + "'");
 				return map;
 			} else {
 				String message = logUserAccess() + "Unauthorized access to generateGridMapfile for host '"+hostname+"'";
@@ -185,7 +194,10 @@ public class GUMSAPIImpl implements GUMSAPI {
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
 				String map = gums().getCoreLogic().generateOsgUserVoMap(hostname);
-				gumsAdminLog.info(logUserAccess() + "Generated grid3 vo-user map for host '" + hostname + "': " + map);
+				if (gumsAdminLog.isDebugEnabled())
+					gumsAdminLog.debug(logUserAccess() + "Generated osg vo-user map for host '" + hostname + "': " + map);
+				else
+					gumsAdminLog.info(logUserAccess() + "Generated osg vo-user map for host '" + hostname + "'");
 				return map;
 			} else {
 				String message = logUserAccess() + "Unauthorized access to generateOsgUserVoMap for host '"+hostname+"'";
@@ -205,7 +217,10 @@ public class GUMSAPIImpl implements GUMSAPI {
 			
 			if (hasReadAllAccess(currentUser(), hostname)) {
 				String map = gums().getCoreLogic().generateGridMapfile(hostname, true, true, false);
-				gumsAdminLog.info(logUserAccess() + "Generated mapfile for host '" + hostname + "': " + map);
+				if (gumsAdminLog.isDebugEnabled())
+					gumsAdminLog.debug(logUserAccess() + "Generated vo grid mapfile for host '" + hostname + "':" + map);
+				else
+					gumsAdminLog.info(logUserAccess() + "Generated vo grid mapfile for host '" + hostname + "'");
 				return map;
 			} else {
 				String message = logUserAccess() + "Unauthorized access to generateVoGridMapfile for host '"+hostname+"'";

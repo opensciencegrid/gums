@@ -7,7 +7,6 @@
 package gov.bnl.gums.userGroup;
 
 import gov.bnl.gums.FQAN;
-import gov.bnl.gums.GUMS;
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.UserGroupDB;
@@ -50,7 +49,6 @@ public class VOMSUserGroup extends UserGroup {
 	}
 
     private Logger log = Logger.getLogger(VOMSUserGroup.class);
-    private Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
     private String vomsServer = "";
     private String voGroup = "";
     private String role = "";
@@ -143,7 +141,7 @@ public class VOMSUserGroup extends UserGroup {
     
     public VOMSAdmin getVOMSAdmin() {
         try {
-            log.info("VOMS Service Locater: url='" + getUrl() + "'");
+            log.trace("VOMS Service Locater: url='" + getUrl() + "'");
 //            System.setProperty("axis.socketSecureManager", "org.glite.security.trustmanager.axis.AXISSocketManager");
             VOMSAdminServiceLocator locator = new VOMSAdminServiceLocator();
             URL vomsUrl = new URL( getUrl() );
@@ -371,9 +369,9 @@ public class VOMSUserGroup extends UserGroup {
                 users = voms.listUsersWithRole( getVoGroup(), "Role=" + getRole());
             }        	
             if (users.length > 0) {
-                log.trace("Retrieved " + users.length + " users. First is: '" + users[0].getDN());
+                log.info("Retrieved " + users.length + " users. First is: '" + users[0].getDN() + "'");
             } else {
-                log.trace("Retrieved no users.");
+                log.info("Retrieved no users.");
             }
             System.setProperties(p);
             List entries = new ArrayList();

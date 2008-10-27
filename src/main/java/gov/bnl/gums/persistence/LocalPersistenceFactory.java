@@ -191,6 +191,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		persistenceFactory.setMemberUidField(new String(getMemberUidField()));
 		persistenceFactory.setProperties((Properties)getProperties().clone());
 		persistenceFactory.setSynch(persistenceFactory.isSynch());
+		persistenceFactory.setEmailField(persistenceFactory.getEmailField());
 		return persistenceFactory;
 	}
 
@@ -389,6 +390,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		"\t\t\tgroupCnField='"+getGroupCnField()+"'\n"+
 		"\t\t\tuidField='"+getUidField()+"'\n"+
 		"\t\t\tmemberUidField='"+getMemberUidField()+"'\n"+
+		"\t\t\temailField='"+getEmailField()+"'\n"+
 		"\t\t\tgroupTree='"+getGroupTree()+"'\n"+
 		"\t\t\tgumsTree='"+getGroupTree()+"'\n"+
 		"\t\t\tpeopleTree='"+getPeopleTree()+"'\n";

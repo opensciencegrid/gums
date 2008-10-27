@@ -9,21 +9,12 @@ package gov.bnl.gums.userGroup;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.net.Socket;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.net.ssl.HttpsURLConnection;
-
-import javax.net.ssl.SSLSocketFactory;
-
-import org.glite.security.trustmanager.ContextWrapper;
 
 import org.apache.log4j.Logger;
 

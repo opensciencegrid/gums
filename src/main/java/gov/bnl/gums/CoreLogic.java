@@ -115,8 +115,6 @@ public class CoreLogic {
         }
         
         String finalOsgMap = osgMapBuffer.toString();
-        gumsAdminLog.info("Generated OSG User VO Map for host '"+hostname+"'");
-        gumsAdminLog.debug(finalOsgMap);
         return finalOsgMap;
     }
     
@@ -130,8 +128,6 @@ public class CoreLogic {
     public String generateFqanMapfile(String hostname) throws Exception {
         String mapfile;
         mapfile = generateFqanMapfileImpl(hostname);
-        gumsAdminLog.info("Generated FQAN mapfile for host '"+hostname+"'");
-        gumsAdminLog.debug(mapfile);        
         return mapfile;
     }    
     
@@ -145,8 +141,6 @@ public class CoreLogic {
     public String generateGridMapfile(String hostname, boolean createNewMappings, boolean includeFQAN, boolean includeEmail) throws Exception {
         String mapfile;
         mapfile = generateGridMapfileImpl(hostname, createNewMappings, includeFQAN, includeEmail);
-        gumsAdminLog.info("Generated grid mapfile for host '"+hostname+"'");
-        gumsAdminLog.debug(mapfile);
         return mapfile;
     }
     
@@ -161,7 +155,6 @@ public class CoreLogic {
         if (gums.isUserBanned(user))
         	return null;
         String account = mapImpl(hostname, user);
-		gumsAdminLog.info("Mapped on host '" + hostname + "' the user '" + user.getCertificateDN() + "' / '" + user.getVoFQAN() + "' to '" + account + "'");
         return account;
     }
     
@@ -321,7 +314,7 @@ public class CoreLogic {
 		                        	usersInMap.add( user.getCertificateDN() + fqan );
 		                        	break;
 			                    } else {
-			                    	gumsAdminLog.warn("User " + user + " from group " + gMap.getUserGroups() + " can't be mapped.");
+			                    	gumsAdminLog.debug("User " + user + " from group " + gMap.getUserGroups() + " can't be mapped.");
 			                    }
 		                    }
 		            	}
@@ -353,7 +346,7 @@ public class CoreLogic {
 		                        	usersInMap.add(user.getCertificateDN());
 		                        	break;
 			                    } else {
-			                    	gumsAdminLog.warn("User " + user + " from group " + gMap.getUserGroups() + " can't be mapped.");
+			                    	gumsAdminLog.debug("User " + user + " from group " + gMap.getUserGroups() + " can't be mapped.");
 			                    }
 		                    }
 		            	}

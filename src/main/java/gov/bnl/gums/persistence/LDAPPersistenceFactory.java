@@ -198,8 +198,8 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 				context.modifyAttributes(uidField+"="+account+","+peopleObject, mods);
 				log.trace("Changed email for user '" + account + "' to email '" + email + "''");
 			} catch (Exception e) {
-				log.warn("Couldn't change email for user '" + account + "' to email '" + email + "''", e);
-				throw new RuntimeException("Couldn't change email for user '" + account + "' to email '" + email + "''", e);
+				log.warn("Couldn't change email for user '" + account + "' to email '" + email + "'", e);
+				throw new RuntimeException("Couldn't change email for user '" + account + "' to email '" + email + "'", e);
 			} finally {
 				releaseContext(context);
 			}
@@ -237,6 +237,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		persistenceFactory.setGroupCnField(new String(getGroupCnField()));
 		persistenceFactory.setGidNumberField(new String(getGidNumberField()));
 		persistenceFactory.setMemberUidField(new String(getMemberUidField()));
+		persistenceFactory.setEmailField(new String(getEmailField()));
 		persistenceFactory.setGroupTree(new String(getGroupTree()));
 		persistenceFactory.setPeopleTree(new String(getPeopleTree()));
 		persistenceFactory.setGumsTree(new String(getGumsTree()));
@@ -773,6 +774,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		"\t\t\tuidField='"+uidField+"'\n"+
 		"\t\t\tgroupCnField='"+groupCnField+"'\n"+
 		"\t\t\tmemberUidField='"+memberUidField+"'\n"+
+		"\t\t\temailField='"+emailField+"'\n"+
 		"\t\t\tgroupTree='"+groupTree+"'\n"+
 		"\t\t\tpeopleTree='"+peopleTree+"'\n"+
 		"\t\t\tgumsTree='"+gumsTree+"'\n";
