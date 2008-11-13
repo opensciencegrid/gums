@@ -10,6 +10,7 @@
     	<column name="TIMESTAMP" sql-type="DateTime"/>
     </property>
     <property name="current" column="CURRENT" type="boolean" not-null="true"/>
+    <property name="name" column="NAME" type="string" length="255" />
   </class>
 </hibernate-mapping>
 

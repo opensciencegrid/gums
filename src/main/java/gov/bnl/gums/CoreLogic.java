@@ -416,11 +416,8 @@ public class CoreLogic {
                     while (accountMappersIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
                         String localUser = accountMapper.mapUser(user, true);
-                        if (localUser != null) {
+                        if (localUser != null)
                             return localUser;
-                        } else {
-                           	gumsAdminLog.warn("User " + user + " wasn't mapped even though is present in group " + g2AMapping.getUserGroups());
-                        }
                     }
                 }
             }

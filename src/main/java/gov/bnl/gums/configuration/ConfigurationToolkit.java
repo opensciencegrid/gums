@@ -392,7 +392,8 @@ class ConfigurationToolkit {
         }
         else if(configText!=null) {
 	        log.trace("Loading the configuration using schema '" + schemaPath);
-	        digester.parse(new StringBufferInputStream(configText));
+	        log.error(configText);
+		digester.parse(new StringBufferInputStream(configText));
         }
         else
         	throw new RuntimeException("No config file or text specified");

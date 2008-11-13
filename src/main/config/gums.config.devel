@@ -6,7 +6,7 @@
 
 		<hibernatePersistenceFactory
 			name='mysql'
-			description='asdf'
+			description=''
 			storeConfig='true'
 			hibernate.c3p0.timeout='180'
 			hibernate.connection.driver_class='com.mysql.jdbc.Driver'

@@ -15,6 +15,8 @@ import java.net.URL;
 import java.util.*;
 
 import org.apache.log4j.Logger; 
+import org.apache.log4j.Level;
+
 import org.glite.security.voms.*;
 
 /** A group of users residing on a VOMS vo database. This class is able to 
@@ -36,6 +38,13 @@ public class VOMSUserGroup extends UserGroup {
 	static private final boolean defaultAcceptProxyWithoutFQAN = true;
 	static private final String defaultMatchFQAN = "ignore";
 	static private String[] matchFQANTypes = {"exact","vorole","role","vogroup","vo","ignore"};
+	
+	/*static {
+       Logger.getLogger(org.glite.security.trustmanager.CRLFileTrustManager.class.getName()).setLevel(Level.ERROR);
+       Logger.getLogger("org.glite.security.trustmanager.axis.AXISSocketFactory").setLevel(Level.OFF);
+       Logger.getLogger("org.glite.security.util.DirectoryList").setLevel(Level.OFF);
+       VOMSValidator.setTrustStore(new BasicVOMSTrustStore("/etc/grid-security/certificates", 12*3600*1000));
+	}*/
 	
     static public String getTypeStatic() {
 		return "voms";
@@ -117,10 +126,10 @@ public class VOMSUserGroup extends UserGroup {
 	}
     
     public String getUrl() {
-	if (getVoObject()!=null)
-    		return getVoObject().getBaseUrl() + remainderUrl;
-	else
-		return "";
+		if (getVoObject()!=null)
+			return getVoObject().getBaseUrl() + remainderUrl;
+		else
+			return "";
     }
     
     /**
@@ -327,7 +336,7 @@ public class VOMSUserGroup extends UserGroup {
     
     private UserGroupDB getVoDB() {
 		if (getVoObject()!=null)
-	    		return getVoObject().getDB( getName() );
+			return getVoObject().getDB( getName() );
 		else
 			return null;
     }
@@ -355,6 +364,10 @@ public class VOMSUserGroup extends UserGroup {
         Properties p = System.getProperties();
         try {
             setProperties();
+    		/*if (getVoObject().getSslCAFiles()!=null && getVoObject().getSslCAFiles().length()>0)
+       			VOMSValidator.setTrustStore(new BasicVOMSTrustStore(getVoObject().getSslCAFiles(), 12*3600*1000));
+    		else
+    			VOMSValidator.setTrustStore(new BasicVOMSTrustStore(BasicVOMSTrustStore.DEFAULT_TRUST_STORE_LISTING, 12*3600*1000));*/
             log.debug("SSL properties read: " + 
             "sslCertfile='" + System.getProperty("sslCertfile") +
             "' sslKey='" + System.getProperty("sslKey") +
@@ -393,16 +406,16 @@ public class VOMSUserGroup extends UserGroup {
     	if (voObject!=null) {
         	log.debug( "SSL properties set: sslCertfile='" + voObject.getSslCertfile() + "' sslKey='" + voObject.getSslKey() + "' sslKeyPasswd set:" + (!voObject.getSslKeyPasswd().equals("")) + " sslCAFiles='" + voObject.getSslCAFiles() + "'" ); 
 	    	if (!voObject.getSslCertfile().equals("")) {
-	        		System.setProperty("sslCertfile", voObject.getSslCertfile());
+	    		System.setProperty("sslCertfile", voObject.getSslCertfile());
 	    	}
 	    	if (!voObject.getSslKey().equals("")) {
-	        		System.setProperty("sslKey", voObject.getSslKey());
+	    		System.setProperty("sslKey", voObject.getSslKey());
 	    	}
 	    	if (!voObject.getSslKeyPasswd().equals("")) {
 	       		System.setProperty("sslKeyPasswd", voObject.getSslKeyPasswd());
 	    	}
 	    	if (!voObject.getSslCAFiles().equals("")) {
-	        		System.setProperty("sslCAFiles", voObject.getSslCAFiles());
+	    		System.setProperty("sslCAFiles", voObject.getSslCAFiles());
 	    	}
     	}
     }

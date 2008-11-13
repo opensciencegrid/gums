@@ -21,6 +21,7 @@ public class HibernateConfig {
     private String xml;
     private Date timestamp;
     private Boolean current;
+    private String name;
     
 	public Long getId() {
 		return id;
@@ -45,6 +46,12 @@ public class HibernateConfig {
 	}
 	public void setCurrent(Boolean current) {
 		this.current = current;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 }
     

@@ -16,7 +16,12 @@ import javax.net.ssl.X509KeyManager;
 import org.apache.axis.AxisFault;
 import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Level;
+
 import org.glite.security.trustmanager.ContextWrapper;
+import org.glite.security.voms.VOMSValidator;
+import org.glite.security.voms.BasicVOMSTrustStore;
+import org.glite.security.util.DirectoryList;
 
 /**
  * Class to provide general command line utilities such as
@@ -27,6 +32,14 @@ import org.glite.security.trustmanager.ContextWrapper;
 public abstract class AbstractCommand {
 	static protected AbstractCommand command;
 
+	/*static {
+		String vomsdir;
+		Logger.getLogger(org.glite.security.trustmanager.CRLFileTrustManager.class.getName()).setLevel(Level.ERROR);
+		Logger.getLogger("org.glite.security.trustmanager.axis.AXISSocketFactory").setLevel(Level.OFF);
+		Logger.getLogger("org.glite.security.util.DirectoryList").setLevel(Level.OFF);
+		VOMSValidator.setTrustStore(new BasicVOMSTrustStore(System.getProperty("sslCAFiles"), 12*3600*1000));
+	}*/
+	
     static public void main(String[] args) {
         command.execute(args);
     }

@@ -4,7 +4,7 @@
 	<groupId>gums</groupId>
 	<artifactId>gums-core</artifactId>
 	<name>gums-core</name>
-	<version>1.3.3</version>
+	<version>1.3.4</version>
 	<description>GUMS Core provides the core functionality used by other GUMS components</description>
 
   	<repositories>
@@ -96,6 +96,43 @@
 						</goals>
 					</execution>
 				</executions>
+				<dependencies> 
+			       <dependency>
+					   <groupId>axis</groupId>
+					   <artifactId>axis</artifactId>
+					   <version>1.4</version>
+				   </dependency>
+				   <dependency>
+						<groupId>axis</groupId>
+						<artifactId>axis-jaxrpc</artifactId>
+						<version>1.4</version>
+				   </dependency>
+				   <dependency>
+						<groupId>axis</groupId>
+						<artifactId>axis-saaj</artifactId>
+						<version>1.4</version>
+				   </dependency>		
+			       <dependency>
+						<groupId>axis</groupId>
+						<artifactId>axis-wsdl4j</artifactId>
+						<version>1.5.1</version>
+				   </dependency>	
+						<dependency>
+						<groupId>axis</groupId>
+						<artifactId>axis-ant</artifactId>
+						<version>1.4</version>
+					</dependency>		
+					<dependency>
+						<groupId>commons-discovery</groupId>
+						<artifactId>commons-discovery</artifactId>
+						<version>0.2</version>
+				   </dependency>	
+						<dependency>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+						<version>1.0.4</version>
+					</dependency>		 
+			   </dependencies>   
 			</plugin>		
    			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -283,12 +320,12 @@
 		<dependency>
 		   <groupId>glite</groupId>
 		   <artifactId>glite-security-trustmanager</artifactId>
-		   <version>1.8.16</version>
+		   <version>1.6.3dev</version>
 	   </dependency>
    	   <dependency>
 		   <groupId>glite</groupId>
 		   <artifactId>glite-security-util-java</artifactId>
-		   <version>1.3.8</version>
+		   <version>1.0.0dev</version>
 	   </dependency>    
         <dependency>
             <groupId>gums</groupId>
@@ -312,12 +349,11 @@
         </dependency>
        
 		<!--provided--> 
-		<dependency>
+        <dependency>
 			<groupId>axis</groupId>
 			<artifactId>axis-ant</artifactId>
 			<version>1.4</version>
-			<scope>provided</scope>
-		</dependency>	
+		</dependency>			
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>

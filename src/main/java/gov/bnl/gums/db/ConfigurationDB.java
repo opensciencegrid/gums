@@ -8,16 +8,16 @@ public interface ConfigurationDB {
     /**
      * Delete backup configuration
      * 
-     * @param A date string
+     * @param A name string
      */	
-	public boolean deleteBackupConfiguration(Date date);
+	public boolean deleteBackupConfiguration(String name);
 	
     /**
      * Get a list of config date strings that have been stored
      * 
      * @return collection of date strings.
      */	
-	public Collection getBackupConfigDates(DateFormat format);
+	public Collection getBackupNames(DateFormat format);
 	
     /**
      * Get last modified
@@ -40,10 +40,10 @@ public interface ConfigurationDB {
      * Restores configuration in memory. If the configuration cannot be loaded
      * due to an inconsistency in the store, it should throw an exception.
      * 
-     * @param A date string
+     * @param A name string
      * @return configuration text.
      */	
-	public String restoreConfiguration(Date date);
+	public String restoreConfiguration(String name);
 	
     /**
      * Loads the configuration text. If the configuration cannot be loaded
@@ -56,7 +56,10 @@ public interface ConfigurationDB {
     /**
      * Set and store the configuration.
      * 
-     * @param conf 
+     * @param text as configuration text
+     * @param date as Date
+     * @param backupCopy as boolean
+     * @param name as name
      */	
-	public void setConfiguration(String text, Date date, boolean backupCopy);
+	public void setConfiguration(String text, Date date, boolean backupCopy, String name);
 }

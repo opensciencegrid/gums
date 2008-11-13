@@ -53,7 +53,7 @@ public class MockConfigurationStore extends ConfigurationStore {
     	return false;
     }
     
-    public Collection getBackupConfigDates() {
+    public Collection getBackupNames() {
     	return null;
     }
     
@@ -81,7 +81,7 @@ public class MockConfigurationStore extends ConfigurationStore {
         return null;
     }
     
-    public void setConfiguration(Configuration conf, boolean backup) {
+    public void setConfiguration(Configuration conf, boolean backup, String name) {
         this.conf = conf;
     }
     

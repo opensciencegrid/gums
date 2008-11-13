@@ -93,10 +93,10 @@ public class GUMSAPIImpl implements GUMSAPI {
 		}
 	}
 
-	public void backupConfiguration() {
+	public void backupConfiguration(String name) {
 		try {
 			if (hasWriteAccess(currentUser()))
-				gums().setConfiguration(gums().getConfiguration(), true);
+				gums().setConfiguration(gums().getConfiguration(), true, name);
 			else {
 				String message = logUserAccess() + "Unauthorized access to backupConfiguration";
 				gumsAdminLog.warn(message);
@@ -108,12 +108,12 @@ public class GUMSAPIImpl implements GUMSAPI {
 		}
 	}
 
-	public void deleteBackupConfiguration(String dateStr) {
+	public void deleteBackupConfiguration(String name) {
 		try {
 			if (hasWriteAccess(currentUser()))
-				gums().deleteBackupConfiguration(dateStr);
+				gums().deleteBackupConfiguration(name);
 			else {
-				String message = logUserAccess() + "Unauthorized access to deleteBackupConfiguration for '"+dateStr+"'";
+				String message = logUserAccess() + "Unauthorized access to deleteBackupConfiguration for '"+name+"'";
 				gumsAdminLog.warn(message);
 				siteAdminLog.warn(message);
 				throw new AuthorizationDeniedException();
@@ -233,11 +233,11 @@ public class GUMSAPIImpl implements GUMSAPI {
 		}
 	}
 		
-	public Collection getBackupConfigDates() {
+	public Collection getBackupNames() {
 		try {
 			Collection backupConfigDates = null;
 			if (hasReadAllAccess(currentUser(), null)) {
-				backupConfigDates = gums().getBackupConfigDates();
+				backupConfigDates = gums().getBackupNames();
 			}
 			else {
 				String message = logUserAccess() + "Unauthorized access to getBackupConfigDates";
@@ -459,12 +459,12 @@ public class GUMSAPIImpl implements GUMSAPI {
 		}
 	}
 
-	public void restoreConfiguration(String dateStr) throws Exception {
+	public void restoreConfiguration(String name) throws Exception {
 		try {
 			if (hasWriteAccess(currentUser()))
-				gums().restoreConfiguration(dateStr);
+				gums().restoreConfiguration(name);
 			else {
-				String message = logUserAccess() + "Unauthorized access to restoreConfiguration for '"+dateStr+"'";
+				String message = logUserAccess() + "Unauthorized access to restoreConfiguration for '"+name+"'";
 				gumsAdminLog.warn(message);
 				siteAdminLog.warn(message);	
 				throw new AuthorizationDeniedException();
@@ -477,7 +477,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public void setConfiguration(Configuration configuration) throws Exception {
 		try {
 			if (hasWriteAccess(currentUser()))
-				gums().setConfiguration(configuration, false);
+				gums().setConfiguration(configuration, false, null);
 			else {
 				String message = logUserAccess() + "Unauthorized access to setConfiguration";
 				gumsAdminLog.warn(message);

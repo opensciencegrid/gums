@@ -27,14 +27,14 @@ public abstract class ConfigurationStore {
      * 
      * @param A date string
      */	
-	public abstract boolean deleteBackupConfiguration(String dateStr);
+	public abstract boolean deleteBackupConfiguration(String name);
 	
     /**
      * Get a list of config date strings that have been backed up
      * 
      * @return collection of date strings.
      */
-	public abstract Collection getBackupConfigDates();
+	public abstract Collection getBackupNames();
     
     /**
      * Get last modified
@@ -102,7 +102,7 @@ public abstract class ConfigurationStore {
      * @param conf 
      * @param backupCopy 
      */
-	public abstract void setConfiguration(Configuration conf, boolean backupCopy) throws Exception;
+	public abstract void setConfiguration(Configuration conf, boolean backupCopy, String name) throws Exception;
 
 	static public DateFormat getFormat() {
 		return format;

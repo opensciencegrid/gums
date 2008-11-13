@@ -38,7 +38,7 @@ public class ConfigurationTransformTest extends TestCase {
     	FileConfigurationStore.moveFile(url.getPath(), url.getPath()+".temp");
     	FileConfigurationStore.copyFile(url.getPath()+".1.1", url.getPath());
     	Configuration configuration = transform.doTransform(url.getPath(), url.getPath()+".transform");
-    	confStore.setConfiguration(configuration, false);
+    	confStore.setConfiguration(configuration, false, null);
 		configuration = confStore.retrieveConfiguration();
 		FileConfigurationStore.moveFile(url.getPath()+".temp", url.getPath());
     }

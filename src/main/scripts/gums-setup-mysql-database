@@ -155,8 +155,7 @@ fi
 
 #-------------------------------------------
 #
-# Setup the MySQL Database AND 
-# Add GIP Probe identity to the MySQL Database
+# Setup the MySQL Database
 #
 #-------------------------------------------
 echo

@@ -29,16 +29,18 @@ public interface GUMSAPI extends Remote {
     void addAccountRange2(String accountPoolMapperName, String range);
     
     /**
-     * Backup current configuration
+     * Backup current configuration with a name
+     * 
+     * @param name as String
      */
-    void backupConfiguration();
+    void backupConfiguration(String name);
     
     /**
      * Delete a backup configuration by date
      * 
      * @param dateStr
      */
-    void deleteBackupConfiguration(String dateStr);
+    void deleteBackupConfiguration(String name);
     
     /**
      * Generate email gridmap file to be able to contact user if needed
@@ -95,7 +97,7 @@ public interface GUMSAPI extends Remote {
      * 
      * @return
      */
-    Collection getBackupConfigDates();
+    Collection getBackupNames();
     
     /**
      * Get current configuration

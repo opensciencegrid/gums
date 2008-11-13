@@ -121,11 +121,11 @@ public class FileConfigurationStore extends ConfigurationStore {
 		this.configBackupDir = configDir+"/backup";
 	}
 
-	public boolean deleteBackupConfiguration(String dateStr) {
-		return new File(configBackupDir+"/gums.config."+dateStr).delete();
+	public boolean deleteBackupConfiguration(String name) {
+		return new File(configBackupDir+"/gums.config."+name).delete();
 	}
 
-	public Collection getBackupConfigDates() {
+	public Collection getBackupNames() {
 		ArrayList backupConfigDates = new ArrayList();
 		File dir = new File(configBackupDir);
 		String[] children = dir.list();
@@ -162,11 +162,11 @@ public class FileConfigurationStore extends ConfigurationStore {
 		return false;
 	}
 	
-	public synchronized Configuration restoreConfiguration(String dateStr) {
-		String path = "/gums.config." + dateStr;
-		File file = new File(path);
+	public synchronized Configuration restoreConfiguration(String name) {
+		String path = "/gums.config." + name;
+		File file = new File(configBackupDir+path);
 		if (!file.exists())
-			return null;
+			throw new RuntimeException("Backup configuration " + configBackupDir + path + " does not exist");
 //		moveFile(configPath, configBackupDir + "/gums.config~");
 		copyFile(configBackupDir + path, configPath);
 //		moveFile(configBackupDir + "/gums.config~", configBackupDir + "/gums.config.prev" );
@@ -197,7 +197,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 		return conf;
 	}
 
-	public synchronized void setConfiguration(Configuration conf, boolean backupCopy) throws Exception {
+	public synchronized void setConfiguration(Configuration conf, boolean backupCopy, String name) throws Exception {
 		log.debug("Configuration set programically");
 		if (conf == null)
 			throw new RuntimeException("Configuration has not been loaded");
@@ -219,7 +219,10 @@ public class FileConfigurationStore extends ConfigurationStore {
 //			copyFile(configPath, configBackupDir+"/gums.config.prev" );
 
 		// move temp file to gums.config or gums.config.date
-		moveFile(tempGumsConfigPath, (backupCopy?configBackupDir+"/gums.config."+format.format(new Date()):configPath));
+		if (name != null)
+			moveFile(tempGumsConfigPath, (backupCopy?configBackupDir+"/gums.config."+name:configPath));
+		else
+			moveFile(tempGumsConfigPath, (backupCopy?configBackupDir+"/gums.config.":configPath));
 	}
 
 	private void reloadConfiguration() {
@@ -228,7 +231,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 			if (ConfigurationToolkit.getVersion(configPath).equals("1.1")) {
 				copyFile(configPath,configPath+".1.1");
 				Configuration configuration = ConfigurationTransform.doTransform(configPath, transformPath);
-				setConfiguration(configuration, false);
+				setConfiguration(configuration, false, null);
 			}
 
 			log.debug("Attempting to load configuration from gums.config");

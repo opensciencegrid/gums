@@ -159,11 +159,11 @@ public class GUMS {
      * 
      * @return Collection of date strings
      */
-    public Collection getBackupConfigDates() throws Exception {
+    public Collection getBackupNames() throws Exception {
     	if (dbConfStore != null)
-    		 return dbConfStore.getBackupConfigDates();
+    		 return dbConfStore.getBackupNames();
     	else
-        	return confStore.getBackupConfigDates();
+        	return confStore.getBackupNames();
     }
 
     /**
@@ -226,10 +226,10 @@ public class GUMS {
 								conf.getGroupToAccountMappings().values().size()>0 || 
 								conf.getHostToGroupMappings().size()>0 || 
 								conf.getVomsServers().values().size()>0))
-								dbConfStore.setConfiguration(conf, false);
+								dbConfStore.setConfiguration(conf, false, null);
 						}
 						catch(Exception e) {
-							dbConfStore.setConfiguration(conf, false);
+							dbConfStore.setConfiguration(conf, false, null);
 						}
 					}
 				}
@@ -256,7 +256,7 @@ public class GUMS {
 			}
 			
 			if (confStoreToUpdate!=null) {
-				confStoreToUpdate.setConfiguration(conf, false);
+				confStoreToUpdate.setConfiguration(conf, false, null);
 				if (confStoreToUpdate instanceof DBConfigurationStore) {
 					String message = "Updated Configuration in database";
 					gumsAdminLog.debug(message);
@@ -321,15 +321,21 @@ public class GUMS {
      * 
      * @param dateStr
      */
-    public void restoreConfiguration(String dateStr) throws Exception {
+    public void restoreConfiguration(String name) throws Exception {
     	if (dbConfStore!=null && !dbConfStore.isReadOnly())
-    		dbConfStore.restoreConfiguration(dateStr);
-    	else if (!confStore.isReadOnly())
-        	confStore.restoreConfiguration(dateStr);
-        else {
+	{
+    		Configuration conf = dbConfStore.restoreConfiguration(name);
+		setConfiguration(conf, false, null);
+    		gumsAdminLog.info("Restored configuration from db: " + name);
+	}
+	else if (!confStore.isReadOnly())
+	{
+        	confStore.restoreConfiguration(name);
+        	gumsAdminLog.info("Restored configuration from file: " + name);
+	}
+	else {
         	throw new RuntimeException("Could not restore configuration because there are no writable configuration stores");
         }
-    	gumsAdminLog.info("Restored configuration " + dateStr);
     }
     
     /**
@@ -337,14 +343,14 @@ public class GUMS {
      * 
      * @param conf the new configuration
      */
-    public void setConfiguration(Configuration conf, boolean backup) throws Exception {
+    public void setConfiguration(Configuration conf, boolean backup, String name) throws Exception {
     	// If backup configuration and there is a database configuration store, only backup in database
     	// If backup configuration and there is not database configuration store, backup on file
     	// If not backup configuration store on file and in database if there is a database configuration store
 		if (backup) {
 	        if (dbConfStore!=null) {
 		        if (!dbConfStore.isReadOnly()) {
-		        	dbConfStore.setConfiguration(conf, backup); 
+		        	dbConfStore.setConfiguration(conf, backup, name); 
 		        	gumsAdminLog.info("Backed up configuration in database");
 		        }
 		        else {
@@ -353,7 +359,7 @@ public class GUMS {
 	        }  			
 	        else {
 		        if (!confStore.isReadOnly()) {
-		        	confStore.setConfiguration(conf, backup);
+		        	confStore.setConfiguration(conf, backup, name);
 		        	gumsAdminLog.info("Backed up configuration on file");
 		        }
 		        else {
@@ -363,7 +369,7 @@ public class GUMS {
 		}
 		else {
 	        if (!confStore.isReadOnly()) {
-	        	confStore.setConfiguration(conf, backup);
+	        	confStore.setConfiguration(conf, backup, name);
 	        	gumsAdminLog.info("Set configuration on file");
 	        }
 	        else {
@@ -372,7 +378,7 @@ public class GUMS {
 
 	        if (dbConfStore!=null) {
 		        if (!dbConfStore.isReadOnly()) {
-		        	dbConfStore.setConfiguration(conf, backup);
+		        	dbConfStore.setConfiguration(conf, backup, name);
 		        	gumsAdminLog.info("Set configuration in database");
 	        	}
 		        else {

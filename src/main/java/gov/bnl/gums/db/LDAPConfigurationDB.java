@@ -18,11 +18,11 @@ public class LDAPConfigurationDB implements ConfigurationDB {
         log.trace("LDAPConfigurationDB object create: factory " + factory);
     }
     
-	public boolean deleteBackupConfiguration(Date date) {
+	public boolean deleteBackupConfiguration(String name) {
 		throw new RuntimeException("LDAP Configuration DB not yet supported");
 	}
 	
-	public Collection getBackupConfigDates(DateFormat format) {
+	public Collection getBackupNames(DateFormat format) {
 		throw new RuntimeException("LDAP Configuration DB not yet supported");
 	}
 	
@@ -34,7 +34,7 @@ public class LDAPConfigurationDB implements ConfigurationDB {
 		return false;
 	}
 
-	public String restoreConfiguration(Date date) {
+	public String restoreConfiguration(String name) {
 		throw new RuntimeException("LDAP Configuration DB not yet supported");
 	}
 	
@@ -42,7 +42,7 @@ public class LDAPConfigurationDB implements ConfigurationDB {
 		throw new RuntimeException("LDAP Configuration DB not yet supported");
 	}
 	
-	public void setConfiguration(String text, Date date, boolean backupCopy) {
+	public void setConfiguration(String text, Date date, boolean backupCopy, String name) {
 		throw new RuntimeException("LDAP Configuration DB not yet supported");
 	} 
 }

@@ -38,15 +38,8 @@ public class DBConfigurationStore extends ConfigurationStore {
 		this.schemaPath = schemaPath;
 	}
 	
-	public boolean deleteBackupConfiguration(String dateStr) {
-		Date date;
-		try {
-			date = format.parse(dateStr);
-		} catch (ParseException e) {
-			log.error(e);
-			throw new RuntimeException(e);
-		}
-		return configDB.deleteBackupConfiguration(date);
+	public boolean deleteBackupConfiguration(String name) {
+		return configDB.deleteBackupConfiguration(name);
 	}
 	
     public boolean isActive() {
@@ -57,8 +50,8 @@ public class DBConfigurationStore extends ConfigurationStore {
     	return false;
     }
     
-    public Collection getBackupConfigDates() {
-    	return configDB.getBackupConfigDates(format);
+    public Collection getBackupNames() {
+    	return configDB.getBackupNames(format);
     }
     
     public Date getLastModification() {
@@ -98,21 +91,14 @@ public class DBConfigurationStore extends ConfigurationStore {
 		return conf;
     }
     
-    public Configuration restoreConfiguration(String dateStr) throws Exception {
-		Date date;
-		try {
-			date = format.parse(dateStr);
-		} catch (ParseException e) {
-			log.error(e);
-			throw new RuntimeException(e);
-		}
-   		String configText = configDB.restoreConfiguration(date);
-   		Configuration configuration = ConfigurationToolkit.loadConfiguration(null, configText, schemaPath);
-   		return configuration;
+    public Configuration restoreConfiguration(String name) throws Exception {
+    	String configText = configDB.restoreConfiguration(name);
+   	Configuration configuration = ConfigurationToolkit.loadConfiguration(null, configText, schemaPath);
+	return configuration;
     }
     
-    public void setConfiguration(Configuration conf, boolean backupCopy) throws Exception {
-    	configDB.setConfiguration(conf.toXml(), new Date(), backupCopy);
+    public void setConfiguration(Configuration conf, boolean backupCopy, String name) throws Exception {
+    	configDB.setConfiguration(conf.toXml(), new Date(), backupCopy, name);
     }
 	    
 }
