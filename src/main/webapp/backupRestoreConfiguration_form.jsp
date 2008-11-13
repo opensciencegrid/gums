@@ -24,9 +24,9 @@
 <%-- <jsp:getProperty name="beanInstanceName"  property="propertyName" /> --%>
 
 <%
-Collection backupConfigDates = null;
+Collection backupNames = null;
 try {
-	backupConfigDates = gums.getBackupConfigDates();
+	backupNames = gums.getBackupNames();
 }catch(Exception e){
 %>
 
@@ -49,12 +49,17 @@ Backs up or restores configuration.
   <table id="form" border="0" cellpadding="2" cellspacing="2">
     <tbody>
       <tr>
+        <td style="text-align: center;">
+        	Name: <input maxlength="128" size="32" name="newName">
+        </td>
+      </tr>  
+      <tr>
         <td>
 			<div style="text-align: center;"><button type="submit" onclick="document.forms[0].elements['command'].value='backup'">backup</button></div>
         </td>
       </tr>
 <%
-	if (backupConfigDates.size()>0) {
+	if (backupNames.size()>0) {
 %>
       <tr>
         <td>
@@ -63,7 +68,7 @@ Backs up or restores configuration.
       </tr>
       <tr>       
         <td>
-	        <div style="text-align: center;"><%=ConfigurationWebToolkit.createSelectBox("dateStr", backupConfigDates, null, null, false)%></div>
+	        <div style="text-align: center;"><%=ConfigurationWebToolkit.createSelectBox("name", backupNames, null, null, false)%></div>
         </td>
       </tr>
       <tr>       
