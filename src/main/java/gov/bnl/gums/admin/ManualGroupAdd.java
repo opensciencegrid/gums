@@ -56,12 +56,12 @@ public class ManualGroupAdd extends RemoteCommand {
         
     	if (email==null && fqan==null) {
 	        for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
-        		getGums(gumsUrl).manualGroupAdd2(userGroup, cmd.getArgs()[nArg]);
+			getGums(gumsUrl).manualGroupAdd2(userGroup, cmd.getArgs()[nArg]);
 	        }
     	}
     	else if (email==null) {
 	        for (int nArg = 1; nArg < cmd.getArgs().length; nArg++) {
-        		getGums(gumsUrl).manualGroupAdd2(userGroup, cmd.getArgs()[nArg]);
+        		getGums(gumsUrl).manualGroupAdd3(userGroup, cmd.getArgs()[nArg], fqan, email);
 	        }
     	}
     	else {
