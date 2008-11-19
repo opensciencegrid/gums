@@ -330,7 +330,7 @@ public class ConfigurationWebToolkit implements Remote {
 		properties.put((includeMySql?"mysql.":"") + "hibernate.connection.username", (request.getParameter("mySqlUsername")!=null ? request.getParameter("mySqlUsername").trim() : ""));
 		properties.put((includeMySql?"mysql.":"") + "hibernate.connection.password", (request.getParameter("mySqlPassword")!=null ? request.getParameter("mySqlPassword").trim() : ""));
 		properties.put((includeMySql?"mysql.":"") + "hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-		properties.put((includeMySql?"mysql.":"") + "hibernate.dialect", "net.sf.hibernate.dialect.MySQLDialect");
+		properties.put((includeMySql?"mysql.":"") + "hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 		properties.put((includeMySql?"mysql.":"") + "hibernate.c3p0.min_size", "3");
 		properties.put((includeMySql?"mysql.":"") + "hibernate.c3p0.max_size", "20");
 		properties.put((includeMySql?"mysql.":"") + "hibernate.c3p0.timeout", "180");
