@@ -15,7 +15,7 @@ import junit.framework.*;
 import gov.bnl.gums.*;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
-import net.sf.hibernate.*;
+import org.hibernate.*;
 import org.apache.log4j.Logger;
 
 /**

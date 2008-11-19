@@ -27,7 +27,7 @@ import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import net.sf.hibernate.*;
+import org.hibernate.*;
 
 import org.apache.log4j.Logger;
 
@@ -151,7 +151,7 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
             log.trace("Creating Hibernate Session Factory with the following properties: " + getProperties());
             // Properties for the hibernate session are taken from the properties specified either in the
             // gums.config file, or set programmatically to the class (when unit testing)
-            net.sf.hibernate.cfg.Configuration cfg = new net.sf.hibernate.cfg.Configuration()
+            org.hibernate.cfg.Configuration cfg = new org.hibernate.cfg.Configuration()
                 .setProperties(getProperties())
                 .addClass(gov.bnl.gums.db.HibernateMapping.class)
                 .addClass(gov.bnl.gums.db.HibernateUser.class)

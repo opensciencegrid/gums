@@ -25,7 +25,7 @@
 		        	name='{@name}'
 		        	description=''
 					hibernate.connection.driver_class='com.mysql.jdbc.Driver'
-					hibernate.dialect='net.sf.hibernate.dialect.MySQLDialect'
+					hibernate.dialect='org.hibernate.dialect.MySQLDialect'
 					hibernate.connection.url='{@jdbcUrl}'
 					hibernate.connection.username='{@user}'
 					hibernate.connection.password='{@password}'

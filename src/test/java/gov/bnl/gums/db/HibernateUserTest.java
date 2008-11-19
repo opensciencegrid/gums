@@ -8,7 +8,7 @@
 package gov.bnl.gums.db;
 
 
-import net.sf.hibernate.*;
+import org.hibernate.*;
 
 /**
  *
@@ -35,12 +35,7 @@ public class HibernateUserTest extends HibernateDBTestBase {
         sess.delete(user2);
         trans.commit();
         trans = sess.beginTransaction();
-        try {
-        	sess.load(HibernateUser.class, id);
-            fail("The object wasn't deleted");
-        } catch (ObjectNotFoundException e) {
-            // all well
-        }
+        assertEquals(sess.get(HibernateUser.class, id), null);
         trans.commit();
         sess.close();
     }

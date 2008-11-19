@@ -9,8 +9,8 @@ package gov.bnl.gums.db;
 
 import java.sql.*;
 import junit.framework.TestCase;
-import net.sf.hibernate.*;
-import net.sf.hibernate.cfg.*;
+import org.hibernate.*;
+import org.hibernate.cfg.*;
 
 /**
  *

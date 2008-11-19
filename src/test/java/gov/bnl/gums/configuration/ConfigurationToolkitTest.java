@@ -247,7 +247,7 @@ public class ConfigurationToolkitTest extends TestCase {
     }
     
     private String getPersistenceFactory(String name) {
-    	return "<hibernatePersistenceFactory name=\""+name+"\" hibernate.connection.driver_class=\"com.mysql.jdbc.Driver\" hibernate.dialect=\"net.sf.hibernate.dialect.MySQLDialect\" hibernate.connection.url=\"jdbc:mysql://localhost/GUMS_1_3\" hibernate.connection.username=\"gums\" hibernate.connection.password=\"mysecret\" hibernate.c3p0.min_size=\"3\" hibernate.c3p0.max_size=\"20\" hibernate.c3p0.timeout=\"1800\"/>";
+    	return "<hibernatePersistenceFactory name=\""+name+"\" hibernate.connection.driver_class=\"com.mysql.jdbc.Driver\" hibernate.dialect=\"org.hibernate.dialect.MySQLDialect\" hibernate.connection.url=\"jdbc:mysql://localhost/GUMS_1_3\" hibernate.connection.username=\"gums\" hibernate.connection.password=\"mysecret\" hibernate.c3p0.min_size=\"3\" hibernate.c3p0.max_size=\"20\" hibernate.c3p0.timeout=\"1800\"/>";
     }
     
 }

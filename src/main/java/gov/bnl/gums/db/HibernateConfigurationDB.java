@@ -8,9 +8,9 @@ import java.util.Iterator;
 
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
 
-import net.sf.hibernate.Query;
-import net.sf.hibernate.Session;
-import net.sf.hibernate.Transaction;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import org.apache.log4j.Logger;
 
@@ -248,7 +248,7 @@ public class HibernateConfigurationDB implements ConfigurationDB {
 		if (name!=null) {
                         // delete any configurations with the same timestamp
                         Query q = session.createQuery("FROM HibernateConfig c WHERE c.name = ?");
-            		q.setString(0, name);
+                        q.setString(0, name);
 			Iterator it = q.list().iterator();
                         while (it.hasNext()) {
                                 HibernateConfig hibernateConfig = (HibernateConfig)it.next();
@@ -268,8 +268,11 @@ public class HibernateConfigurationDB implements ConfigurationDB {
 		}
             }
             else
+            {
             	// delete current configuration
-        		session.delete("FROM HibernateConfig c WHERE c.current = TRUE");
+            	Query q = session.createQuery("DELETE FROM HibernateConfig WHERE current = TRUE");
+            	q.executeUpdate();
+            }
             
             // add new configuration
             HibernateConfig config = new HibernateConfig();

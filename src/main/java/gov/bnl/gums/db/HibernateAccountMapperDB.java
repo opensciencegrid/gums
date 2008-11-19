@@ -21,11 +21,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.hibernate.Query;
-import net.sf.hibernate.Session;
-import net.sf.hibernate.Transaction;
-import net.sf.hibernate.type.StringType;
-import net.sf.hibernate.type.Type;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.type.StringType;
+import org.hibernate.type.Type;
 
 import org.apache.log4j.Logger;
 
@@ -91,7 +91,8 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();
             Query q;
-            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn is null ORDER BY m.account LIMIT 1");
+            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn is null ORDER BY m.account");
+            q.setMaxResults(1);
             q.setString(0, map);
             HibernateMapping mapping = (HibernateMapping) q.uniqueResult();
             if (mapping == null) {
@@ -254,7 +255,8 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();
             Query q;
-            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ? ORDER BY m.account LIMIT 1");
+            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ? ORDER BY m.account");
+            q.setMaxResults(1);
             q.setString(0, map);
             q.setString(1, userDN);
             HibernateMapping mapping = (HibernateMapping) q.uniqueResult();
@@ -502,7 +504,8 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();
             Query q;
-            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ? ORDER BY m.account LIMIT 1");
+            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ? ORDER BY m.account");
+            q.setMaxResults(1);
             q.setString(0, map);
             q.setString(1, userDN);
             HibernateMapping mapping = (HibernateMapping) q.uniqueResult();
@@ -542,13 +545,19 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
     }
 
     private boolean removeAccount(Session session, Transaction tx, String account) throws Exception {
-        int n = session.delete("FROM HibernateMapping m WHERE m.map = ? AND m.account = ?", new Object[] {map, account}, new Type[] {new StringType(), new StringType()});
-        return n > 0;
+    	Query q;
+        q = session.createQuery("DELETE FROM HibernateMapping WHERE map = ? AND account = ?");
+        q.setString(0, map);
+        q.setString(1, account);
+        return q.executeUpdate() > 0;
     }
 
     private boolean removeMapping(Session session, Transaction tx, String userDN) throws Exception {
-        int n = session.delete("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ?", new Object[] {map, userDN}, new Type[] {new StringType(), new StringType()});
-        return n > 0;
+    	Query q;
+        q = session.createQuery("DELETE FROM HibernateMapping WHERE map = ? AND dn = ?");
+        q.setString(0, map);
+        q.setString(1, userDN);
+        return q.executeUpdate() > 0;
     }    
     
     private HibernateMapping retrieveMapping(Session session, Transaction tx, String userDN) throws Exception{

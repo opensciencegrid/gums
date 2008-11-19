@@ -416,7 +416,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 				gumsAdminLog.info(logUserAccess() + "Mapped on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' to '" + account + "'");
 				return account;
 			} else {
-				String message = logUserAccess() + "Unauthorized access to mapUser for '" + hostname + "' the user '" + userDN + "' / '" + fqan + "'";
+				String message = logUserAccess() + "Unauthorized access to mapUser for '" + hostname + "' from user '" + userDN + "' / '" + fqan + "'";
 				gumsAdminLog.warn(message);
 				siteAdminLog.warn(message);	
 				throw new AuthorizationDeniedException();

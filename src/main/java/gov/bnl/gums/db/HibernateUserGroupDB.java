@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sf.hibernate.*;
-import net.sf.hibernate.type.StringType;
-import net.sf.hibernate.type.Type;
+import org.hibernate.*;
+import org.hibernate.type.StringType;
+import org.hibernate.type.Type;
 
 import org.apache.log4j.Logger;
 
@@ -301,13 +301,16 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
     }
 
     private boolean removeMember(Session session, Transaction tx, GridUser user) throws Exception {
-        if (user.getVoFQAN() == null) {
-            int n = session.delete("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan is null", new Object[] {group, user.getCertificateDN()}, new Type[] {new StringType(), new StringType()});
-            return n > 0;
+    	Query q;
+    	if (user.getVoFQAN() == null) {
+            q = session.createQuery("DELETE FROM HibernateUser WHERE group = ? AND dn = ? AND fqan is null");
         } else {
-            int n = session.delete("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan = ?", new Object[] {group, user.getCertificateDN(), user.getVoFQAN().toString()}, new Type[] {new StringType(), new StringType(), new StringType()});
-            return n > 0;
+            q = session.createQuery("DELETE FROM HibernateUser WHERE group = ? AND dn = ? AND fqan = ?");
+            q.setString(2, user.getVoFQAN().toString());
         }
+        q.setString(0, group);
+        q.setString(1, user.getCertificateDN());
+        return q.executeUpdate() > 0;
     }
 
     private java.util.List retrieveMembers(Session session, Transaction tx) throws Exception {

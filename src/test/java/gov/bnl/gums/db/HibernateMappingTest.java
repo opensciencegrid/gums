@@ -7,7 +7,7 @@
 
 package gov.bnl.gums.db;
 
-import net.sf.hibernate.*;
+import org.hibernate.*;
 
 /**
  *
@@ -35,12 +35,7 @@ public class HibernateMappingTest extends HibernateDBTestBase {
         sess.delete(mapping2);
         trans.commit();
         trans = sess.beginTransaction();
-        try {
-        	HibernateMapping mapping3 = (HibernateMapping) sess.load(HibernateMapping.class, id);
-            fail("The object wasn't deleted");
-        } catch (ObjectNotFoundException e) {
-            // all well
-        }
+    	assertEquals(sess.get(HibernateMapping.class, id), null);
         trans.commit();
         sess.close();
     }

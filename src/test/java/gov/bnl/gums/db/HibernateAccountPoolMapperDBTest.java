@@ -11,7 +11,7 @@ import java.sql.*;
 import junit.framework.*;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
-import net.sf.hibernate.*;
+import org.hibernate.*;
 
 /**
  *
