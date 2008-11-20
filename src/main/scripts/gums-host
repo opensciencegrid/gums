@@ -1,16 +1,7 @@
 #!/bin/bash
 # gums-host wrapper
 #
-# Minor edit to test subversion hooks --jrh
-# Second edit to test hooks --jrh
-# Third edit to test hooks --jrh
-# Fourth edit to test hooks --jrh
-# Fifth edit to test hooks --jrh
-# Sixth edit to test hooks --jrh
-# Seventh edit to test hooks --jrh
-# Eighth edit to test hooks --jrh
-# Ninth edit to test hooks --jrh
-# Tenth edit to test hooks --jrh
+
 BINDIR=$(dirname $0)
 DEBUG=0
 #
