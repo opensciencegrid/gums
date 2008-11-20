@@ -1,6 +1,8 @@
 #!/bin/bash
 # gums-host wrapper
 #
+# Minor edit to test subversion hooks --jrh
+#
 BINDIR=$(dirname $0)
 DEBUG=0
 #
