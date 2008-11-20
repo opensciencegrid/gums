@@ -2,7 +2,7 @@
 # gums-host wrapper
 #
 # Minor edit to test subversion hooks --jrh
-#
+# Second edit to test hooks --jrh
 BINDIR=$(dirname $0)
 DEBUG=0
 #
