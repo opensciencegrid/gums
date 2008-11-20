@@ -9,7 +9,8 @@
 # Sixth edit to test hooks --jrh
 # Seventh edit to test hooks --jrh
 # Eighth edit to test hooks --jrh
-# Ningth edit to test hooks --jrh
+# Ninth edit to test hooks --jrh
+# Tenth edit to test hooks --jrh
 BINDIR=$(dirname $0)
 DEBUG=0
 #
