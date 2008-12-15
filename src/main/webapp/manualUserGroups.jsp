@@ -173,7 +173,8 @@ else if ("add".equals(request.getParameter("command"))) {
 	    		i.e.
 		    </td>
 		    <td nowrap>
-			    /DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345
+			    /DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345<br>
+			    /DC=org/DC=doegrids/OU=People/CN=.* (match against all doegrids users)
 		    </td>
 		</tr>
 		<tr>
@@ -189,7 +190,11 @@ else if ("add".equals(request.getParameter("command"))) {
 	    		i.e.
 		    </td>
 		    <td nowrap>
-			    /myvo/mygroup/Role=.*
+		        /myvo/mysubvo/Role=myrole<br>
+			    {blank} (match against grid proxies only)<br>
+			    .* (match against grid and extended proxies)<br>
+				/myvo/.* (match against 'myvo' VO)<br>
+				/myvo/myvogroup/.* (match against 'myvo' VO and 'myvogroup' group)
 		    </td>
 		</tr>		
 		<tr>
