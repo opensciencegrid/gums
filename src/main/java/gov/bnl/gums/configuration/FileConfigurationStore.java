@@ -16,8 +16,6 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,9 +35,6 @@ public class FileConfigurationStore extends ConfigurationStore {
 	private Date lastRetrieval = null;
 	private String configBackupDir = null;
 	private String configPath = null;
-	private String schemaPath = null;
-	private String transformPath = null;
-	private String version;
 
 	/**
 	 * Copy source to target
@@ -98,8 +93,6 @@ public class FileConfigurationStore extends ConfigurationStore {
 		if (resource!=null) {
 			String configDir = resource.getPath().replace("/gums.config", "");
 			this.configPath = configDir+"/gums.config";
-			this.schemaPath = configDir+"/gums.config.schema";
-			this.transformPath = configDir+"/gums.config.transform";   
 			this.configBackupDir = configDir+"/backup";
 		}
 	}
@@ -113,11 +106,8 @@ public class FileConfigurationStore extends ConfigurationStore {
 	 * @param create if true, a new barbones configuration file will be created
 	 * at given filename if no file currently exists there
 	 */
-	public FileConfigurationStore(String configDir, String resourceDir, String version) {
-		this.version = version;
+	public FileConfigurationStore(String configDir) {
 		this.configPath = configDir+"/gums.config";
-		this.schemaPath = resourceDir+"/gums.config.schema";
-		this.transformPath = resourceDir+"/gums.config.transform";
 		this.configBackupDir = configDir+"/backup";
 	}
 
@@ -147,10 +137,6 @@ public class FileConfigurationStore extends ConfigurationStore {
 			log.error("Could not determine last modification time of configuration.", e);
 			return null;
 		}
-	}
-	
-	public String getSchemaPath() {
-		return schemaPath;
 	}
 
 	public boolean isActive() {
@@ -210,7 +196,19 @@ public class FileConfigurationStore extends ConfigurationStore {
 		out.close();
 
 		// Make sure configuration is valid
-		this.conf = ConfigurationToolkit.loadConfiguration(tempGumsConfigPath, null, schemaPath);
+		FileInputStream fileInputStream = new FileInputStream(configPath);
+		try {
+			StringBuffer configBuffer = new StringBuffer();
+			int ch;
+			while ((ch = fileInputStream.read()) != -1)
+				configBuffer.append((char)ch);
+			this.conf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new Exception(e.getMessage());
+		} finally {
+			fileInputStream.close();
+		}
 		
 		// copy gums.config to gums.config.prev
 		File file = new File(configBackupDir);
@@ -228,14 +226,21 @@ public class FileConfigurationStore extends ConfigurationStore {
 	private void reloadConfiguration() {
 		conf = null;
 		try {
-			if (ConfigurationToolkit.getVersion(configPath).equals("1.1")) {
-				copyFile(configPath,configPath+".1.1");
-				Configuration configuration = ConfigurationTransform.doTransform(configPath, transformPath);
-				setConfiguration(configuration, false, null);
-			}
-
 			log.debug("Attempting to load configuration from gums.config");
-			conf = ConfigurationToolkit.loadConfiguration(configPath, null, schemaPath);
+			FileInputStream fileInputStream = new FileInputStream(configPath);
+			try {
+				StringBuffer configBuffer = new StringBuffer();
+				int ch;
+				while ((ch = fileInputStream.read()) != -1)
+					configBuffer.append((char)ch);
+				this.conf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
+			} catch (Exception e) {
+				throw new RuntimeException(e.getMessage());
+			} finally {
+				fileInputStream.close();
+			}
+		
+			fileInputStream.close();
 			log.debug("Configuration reloaded from '" + configPath + "'");
 			lastRetrieval = new Date();
 		} catch (Exception e) {

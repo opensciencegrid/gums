@@ -198,6 +198,16 @@ public interface GUMSAPI extends Remote {
     String mapUser(String hostname, String userDN, String fqan);
     
     /**
+     * Merge configuration into current configuration
+     * 
+     * @param uri
+     * @param persistenceFactory
+     * @param hostToGroupMapping
+     * @return
+     */
+    void mergeConfiguration(Configuration conf, String newConfUri, String persistenceFactory, String hostToGroupMapping);
+    
+    /**
      * 
      * Remove a range of pool accounts
      * 

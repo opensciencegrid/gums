@@ -15,6 +15,7 @@ import gov.bnl.gums.hostToGroup.*;
 import gov.bnl.gums.persistence.*;
 import gov.bnl.gums.userGroup.*;
 
+import java.io.FileInputStream;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.HashMap;
@@ -244,6 +245,28 @@ public class ConfigurationToolkitTest extends TestCase {
         assertNotNull(conf.getPersistenceFactories().get("mysql"));
         HibernatePersistenceFactory factory = (HibernatePersistenceFactory) conf.getPersistenceFactories().get("mysql");
         assertEquals("3", factory.getProperties().getProperty("hibernate.c3p0.min_size"));
+    }
+    
+    public void testTransform() throws Exception {
+    	FileConfigurationStore confStore = new FileConfigurationStore();
+    	URL url = getClass().getClassLoader().getResource("gums.config");
+    	FileConfigurationStore.moveFile(url.getPath(), url.getPath()+".temp");
+    	FileConfigurationStore.copyFile(url.getPath()+".1.1", url.getPath());
+    	FileInputStream fileInputStream = new FileInputStream(url.getPath());
+		StringBuffer configBuffer = new StringBuffer();
+		try {
+			int ch;
+			while ((ch = fileInputStream.read()) != -1)
+				configBuffer.append((char)ch);
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			fileInputStream.close();
+		}
+    	Configuration configuration = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), false);
+    	confStore.setConfiguration(configuration, false, null);
+		configuration = confStore.retrieveConfiguration();
+		FileConfigurationStore.moveFile(url.getPath()+".temp", url.getPath()); // This is used in later unit tests
     }
     
     private String getPersistenceFactory(String name) {

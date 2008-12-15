@@ -16,13 +16,11 @@ import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.UserGroup;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Date;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -46,7 +44,6 @@ public class GUMS {
     static private Timer timer;
     static private String version;
     
-    private Configuration testConf;
     private CoreLogic resMan = new CoreLogic(this);
     protected ConfigurationStore confStore;
     protected DBConfigurationStore dbConfStore = null;
@@ -100,13 +97,6 @@ public class GUMS {
                 log.warn("Couldn't read JNDI property: " + e.getMessage(), e);
             }
         }
-    }
-    
-    /**
-     * Creates and initilializes a new instance of GUMS (should only be used for testing).
-     */
-    public GUMS(Configuration conf) {
-    	this.testConf = conf;
     }
     
     /**
@@ -213,8 +203,7 @@ public class GUMS {
 							log.error(message);
 							throw new RuntimeException(message);
 						}
-						String schemaPath = (confStore instanceof FileConfigurationStore) ? ((FileConfigurationStore)confStore).getSchemaPath() : null;
-						dbConfStore = new DBConfigurationStore(persFact.retrieveConfigurationDB(), schemaPath);
+						dbConfStore = new DBConfigurationStore(persFact.retrieveConfigurationDB());
 						String message = "Added database configuration store for persistence factory "+persFact.getName();
 						gumsAdminLog.debug(message);
 						log.debug(message);
@@ -314,6 +303,11 @@ public class GUMS {
     		return userGroup.isInGroup(user);
     	}
     	return false;
+    }
+    
+    public void mergeConfiguration(Configuration configuration, String persistenceFactory, String hostToGroupMapping) throws Exception
+    {
+  		getConfiguration().mergeConfiguration(configuration, persistenceFactory, hostToGroupMapping);
     }
     
     /**

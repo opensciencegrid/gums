@@ -5,7 +5,7 @@
 	<persistenceFactories>
 
 		<hibernatePersistenceFactory
-			name='mysql'
+			name='persistenceFactory'
 			description=''
 			storeConfig='true'
 			hibernate.c3p0.timeout='180'
@@ -26,13 +26,13 @@
 			name='admins'
 			access='write'
 			description=''
-			persistenceFactory='mysql'/>
+			persistenceFactory='persistenceFactory'/>
 
 		<manualUserGroup
 			name='gums-test'
 			access='read all'
 			description=''
-			persistenceFactory='mysql'/>
+			persistenceFactory='persistenceFactory'/>
 
 	</userGroups>
 
@@ -46,7 +46,7 @@
 		<manualAccountMapper
 			name='manual'
 			description=''
-			persistenceFactory='mysql'/>
+			persistenceFactory='persistenceFactory'/>
 
 	</accountMappers>
 

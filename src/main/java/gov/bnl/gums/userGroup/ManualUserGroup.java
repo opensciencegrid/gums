@@ -10,9 +10,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,6 +55,19 @@ public class ManualUserGroup extends UserGroup {
      */
     public ManualUserGroup() {
     	super();
+    	
+    	Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+		Properties properties = System.getProperties();
+		String handlers = System.getProperty("java.protocol.handler.pkgs");
+		if (handlers == null) {
+		    // nothing specified yet (expected case)
+		    properties.put("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
+		}
+		else {
+		    // something already there, put ourselves out front
+		    properties.put("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol|".concat(handlers));		    
+		}
+
     }
     
     /**
@@ -218,15 +234,8 @@ public class ManualUserGroup extends UserGroup {
 	    		BufferedReader in = null;
 	    		if (membersUri.startsWith("http")) {
 	    			URL url = new URL(membersUri);
-		    		in = new BufferedReader(new InputStreamReader(url.openStream()));
-/*	    			URL url = new URL(nonMembersUri);
-	    			Properties properties =  new Properties();
-	    			//properties.setProperty(key, value);
-	    			SSLSocketFactory socketFactory = new ContextWrapper(properties).getSocketFactory();
-	    			HttpsURLConnection urlConnection = (HttpsURLConnection)url.openConnection();
-	    			urlConnection.setSSLSocketFactory(socketFactory);
-	    			Socket socket = socketFactory.createSocket(url.getHost(), url.getPort());
-		    		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));*/
+	    			URLConnection connection = url.openConnection();
+		    		in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 	    		}
 	    		else if (membersUri.startsWith("file://")) {
 		    		in = new BufferedReader(new FileReader(membersUri.substring(7)));	    			
@@ -269,8 +278,9 @@ public class ManualUserGroup extends UserGroup {
 	    	if (nonMembersUri.length()>0) {
 	    		BufferedReader in;
 	    		if (nonMembersUri.startsWith("http")) {
-		    		URL url = new URL(nonMembersUri);
-		    		in = new BufferedReader(new InputStreamReader(url.openStream()));
+	    			URL url = new URL(nonMembersUri);
+	    			URLConnection connection = url.openConnection();
+		    		in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 	    		}
 	    		else if (nonMembersUri.startsWith("file://")) {
 		    		in = new BufferedReader(new FileReader(nonMembersUri.substring(7)));	    			

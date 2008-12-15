@@ -6,6 +6,8 @@
 
 package gov.bnl.gums.configuration;
 
+import gov.bnl.gums.GridUser;
+import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.account.AccountPoolMapper;
 import gov.bnl.gums.account.GecosAccountMapper;
 import gov.bnl.gums.account.GecosLdapAccountMapper;
@@ -13,28 +15,45 @@ import gov.bnl.gums.account.LdapAccountMapper;
 import gov.bnl.gums.account.GecosNisAccountMapper;
 import gov.bnl.gums.account.GroupAccountMapper;
 import gov.bnl.gums.account.ManualAccountMapper;
+import gov.bnl.gums.admin.CertCache;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.CertificateHostToGroupMapping;
+import gov.bnl.gums.hostToGroup.HostToGroupMapping;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 import gov.bnl.gums.persistence.LocalPersistenceFactory;
 import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.userGroup.LDAPUserGroup;
 import gov.bnl.gums.userGroup.ManualUserGroup;
+import gov.bnl.gums.userGroup.UserGroup;
 import gov.bnl.gums.userGroup.VOMSUserGroup;
 import gov.bnl.gums.userGroup.VomsServer;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringBufferInputStream;
+import java.net.URL;
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.digester.*;
 import org.apache.log4j.Logger;
@@ -45,9 +64,25 @@ import org.apache.log4j.Logger;
  *
  * @author Gabriele Carcassi, Jay Packard
  */
-class ConfigurationToolkit {
+public class ConfigurationToolkit {
 	static private Logger log = Logger.getLogger(ConfigurationToolkit.class); 
+	static String schemaPath;
+	static String transformPath;
     
+	static
+	{
+		String configDir;
+		try {
+			configDir = CertCache.getResourceDir();
+		}
+		catch (Exception e) {
+			URL resource = new ConfigurationToolkit().getClass().getClassLoader().getResource("gums.config");
+			configDir = resource.getPath().replace("/gums.config", "");
+		}
+		schemaPath = configDir+"/gums.config.schema";
+		transformPath = configDir+"/gums.config.transform";
+	}
+	
     /**
      * Simple error handler that logs errors
      * 
@@ -224,13 +259,13 @@ class ConfigurationToolkit {
      * @throws IOException
      * @throws SAXException
      */
-    public static String getVersion(String filename) throws IOException, SAXException {
+    public static String getVersion(String configText) throws IOException, SAXException {
         Digester digester = new Digester();
         digester.setValidating(false);
         digester.addObjectCreate("gums", Version.class);
         digester.addSetProperties("gums");
-        log.trace("Loading the version from configuration file '" + filename + "'");
-        digester.parse("file://"+filename);
+    	log.trace("Loading the version from configuration");
+    	digester.parse(new ByteArrayInputStream(configText.getBytes()));
         String version = ((Version)digester.getRoot()).getVersion();
         log.trace("Loaded gums.config is version " + version );
         if (version == null)
@@ -342,7 +377,7 @@ class ConfigurationToolkit {
      * @throws SAXException
      * @throws IOException
      */
-    public static void validate(String configFile, String configText, String schemaFile) throws ParserConfigurationException, SAXException, IOException {
+    public static void validate(String configText) throws ParserConfigurationException, SAXException, IOException {
     	System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
     	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         log.trace("DocumentBuilderFactory: "+ factory.getClass().getName());
@@ -350,25 +385,20 @@ class ConfigurationToolkit {
         factory.setNamespaceAware(true);
         factory.setValidating(true);
         factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
-        factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaSource", "file:"+schemaFile);
+        factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaSource", "file:"+schemaPath);
         
         DocumentBuilder builder = factory.newDocumentBuilder();
         SimpleErrorHandler errorHandler = new ConfigurationToolkit().new SimpleErrorHandler();
         builder.setErrorHandler( errorHandler );
 
-        if (configFile != null)
-        	builder.parse(configFile); 
-        else if (configText != null)
-        	builder.parse(new StringBufferInputStream(configText));
-        else
-        	throw new RuntimeException("No configuration file or text specified");
+       	builder.parse(new ByteArrayInputStream(configText.getBytes()));
         
-        if (errorHandler.error){
-        	throw new ParserConfigurationException();       
+        if (errorHandler.error) {
+        	throw new ParserConfigurationException();
         }
     }
 
-    /**
+    /** new StringBufferInputStream(configText)
      * Load gums.config
      * 
      * @param configFile
@@ -381,23 +411,23 @@ class ConfigurationToolkit {
      * 
      * Either set configPath or configText
      */
-    public static synchronized Configuration loadConfiguration(String configPath, String configText, String schemaPath) throws ParserConfigurationException, IOException, SAXException {
-		validate(configPath, configText, schemaPath);
-		Digester digester = retrieveDigester();
-		Configuration configuration = new Configuration();
-        digester.push(configuration);
-        if (configPath!=null) {
-	        log.trace("Loading the configuration from file '" + configPath + "' using schema '" + schemaPath);
-	        digester.parse("file://"+configPath);
+    public static synchronized Configuration parseConfiguration(String configText, boolean insertGipProbeOnTransform) throws ParserConfigurationException, IOException, SAXException {
+    	Configuration configuration;
+    	if (ConfigurationToolkit.getVersion(configText).equals("1.1")) {
+    		log.trace("Loading the configuration required configuration using schema '" + transformPath);
+			configuration = doTransform(configText);
+			if (insertGipProbeOnTransform)
+				insertGipProbe(configuration);
+    	}
+    	else {
+            log.trace("Loading the configuration using schema '" + schemaPath);
+    		configuration = new Configuration();
+    		validate(configText);
+    		Digester digester = retrieveDigester();
+            digester.push(configuration);
+            digester.parse(new ByteArrayInputStream(configText.getBytes()));
         }
-        else if(configText!=null) {
-	        log.trace("Loading the configuration using schema '" + schemaPath);
-	        log.error(configText);
-		digester.parse(new StringBufferInputStream(configText));
-        }
-        else
-        	throw new RuntimeException("No config file or text specified");
-        
+
         // Make sure storeConfig is set in only one persistence factory
         Iterator it = configuration.getPersistenceFactories().values().iterator();
         int storeConfigCount = 0;
@@ -410,6 +440,198 @@ class ConfigurationToolkit {
         	throw new RuntimeException("Only one persistence factory may be set to store the configuration");
         
 		return configuration;
+    }
+
+    static public Configuration doTransform(String configText) {
+		log.trace("Transforming configuration file using transform '" + transformPath);
+
+		try {
+			File configFileTemp = File.createTempFile("gums", "config");
+			
+			XMLReader reader = XMLReaderFactory.createXMLReader();
+			Source source = new SAXSource(reader, new InputSource(new ByteArrayInputStream(configText.getBytes())));
+
+			StreamResult result = new StreamResult(configFileTemp);
+			Source style = new StreamSource(transformPath);
+
+			TransformerFactory transFactory = TransformerFactory.newInstance();
+			Transformer trans = transFactory.newTransformer(style);
+
+			trans.transform(source, result);
+
+			// Reload it to get rid of duplicates that the transform couldn't handle
+			// as well as to clean up the formatting
+			Digester digester = ConfigurationToolkit.retrieveDigester();
+			Configuration configuration = new Configuration();
+			digester.push(configuration);
+			digester.parse("file://"+configFileTemp.getAbsolutePath());
+
+			configFileTemp.delete();
+
+			// Clean up VOMS server names
+			Iterator it = new ArrayList(configuration.getVomsServers().keySet()).iterator();
+			while (it.hasNext()) {
+				String name = (String)it.next();
+				String origName = new String(name);
+				if (name.startsWith("http")) {
+					name = name.replaceAll("^http.*://","");
+					name = name.replaceAll(".*/voms/","");
+					name = name.replaceAll(".*/edg-voms-admin/","");
+					name = name.replaceAll("[:|/].*","");
+					name = name.toLowerCase();
+					if (configuration.getVomsServer(name)!=null) {
+						int count = 1;
+						while (configuration.getVomsServer(name + Integer.toString(count)) != null) 
+							count++;
+						name += Integer.toString(count);
+					}
+					VomsServer vo = configuration.getVomsServer(origName);
+					if (vo!=null) {
+						vo.setName(name);
+						configuration.removeVomsServer(origName);
+						configuration.addVomsServer(vo);
+						Iterator it2 = configuration.getUserGroups().values().iterator();
+						while (it2.hasNext()) {
+							UserGroup userGroup = (UserGroup)it2.next();
+							if (userGroup instanceof VOMSUserGroup && ((VOMSUserGroup)userGroup).getVomsServer().equals(origName))
+								((VOMSUserGroup)userGroup).setVomsServer(name);
+						}
+					}
+				}
+			}
+
+			// Clean up account mapper names
+			it = new ArrayList(configuration.getAccountMappers().keySet()).iterator();
+			while (it.hasNext()) {
+				String name = (String)it.next();
+				String origName = new String(name);
+				if (name.indexOf("://")!=-1) {
+					name = name.replaceAll(".*://","");
+					name = name.replaceAll(".*/dc=","");
+					name = name.replaceAll("dc=","");
+					name = name.toLowerCase();
+					if (configuration.getAccountMapper(name)!=null) {
+						int count = 1;
+						while (configuration.getAccountMapper(name + Integer.toString(count)) != null) 
+							count++;
+						name += Integer.toString(count);
+					}
+					AccountMapper accountMapper = configuration.getAccountMapper(origName);
+					if (accountMapper!=null) {
+						accountMapper.setName(name);
+						configuration.removeAccountMapper(origName);
+						configuration.addAccountMapper(accountMapper);
+						Iterator it2 = configuration.getGroupToAccountMappings().values().iterator();
+						while (it2.hasNext()) {
+							GroupToAccountMapping groupToAccountMapping = (GroupToAccountMapping)it2.next();
+							Iterator it3 = groupToAccountMapping.getAccountMappers().iterator();
+							int index = 0;
+							while (it3.hasNext()) {
+								String str = (String)it3.next();
+								if (str.equals(origName)) {
+									groupToAccountMapping.getAccountMappers().remove(index);
+									groupToAccountMapping.getAccountMappers().add(index, name);
+									it3 = groupToAccountMapping.getAccountMappers().iterator();
+									index = 0;
+								}
+								else
+									index++;
+							}
+						}
+					}
+				}
+			}
+
+			return configuration;
+		} catch (Exception e) {
+			String message = "Could not convert older version of gums.config";
+			log.error("Could not convert older version of gums.config", e);
+			throw new RuntimeException(message);	    	 
+		} 
+	}
+    
+    static public void insertGipProbe(Configuration configuration) {
+    	try {
+			// Insert GIP probe
+			PersistenceFactory persistenceFactory = configuration.getPersistenceFactory("mysql");
+			if (persistenceFactory==null && configuration.getPersistenceFactories().size()>0)
+				persistenceFactory = (PersistenceFactory)configuration.getPersistenceFactories().values().iterator().next();
+			if (persistenceFactory != null) {
+	
+				// Add UserGroup
+				UserGroup userGroup = configuration.getUserGroup("gums-test");
+				if (userGroup==null || !(userGroup instanceof ManualUserGroup)) {
+					int index = 1;
+					while (configuration.getUserGroup("gums-test"+(index==1?"":Integer.toString(index)))!=null)
+						index++;
+					userGroup = new ManualUserGroup(configuration, "gums-test"+(index==1?"":Integer.toString(index)));
+					userGroup.setDescription("Testing GUMS-status with GIP Probe");
+					((ManualUserGroup)userGroup).setPersistenceFactory(persistenceFactory.getName());
+					configuration.addUserGroup(userGroup);
+				}
+	
+				// Add member to usergroup's database
+				GridUser user = new GridUser();
+				user.setCertificateDN("/GIP-GUMS-Probe-Identity");
+				if(((ManualUserGroup)userGroup).getMemberList().indexOf(user)==-1) {
+					((ManualUserGroup)userGroup).addMember(user);
+				}
+	
+				// Add AccountMapper
+				AccountMapper accountMapper = configuration.getAccountMapper("gums-test");
+				if (accountMapper==null || !(accountMapper instanceof GroupAccountMapper) || !((GroupAccountMapper)accountMapper).getAccountName().equals("GumsTestUserMappingSuccessful")) {
+					int index = 1;
+					while (configuration.getAccountMapper("gums-test"+(index==1?"":Integer.toString(index)))!=null)
+						index++;
+					accountMapper = new GroupAccountMapper(configuration, "gums-test"+(index==1?"":Integer.toString(index)));
+					accountMapper.setDescription("Testing GUMS-status with GIP Probe");
+					((GroupAccountMapper)accountMapper).setAccountName("GumsTestUserMappingSuccessful");
+					configuration.addAccountMapper(accountMapper);
+				}
+	
+				// Add GroupToAccountMapping
+				GroupToAccountMapping g2aMapping = configuration.getGroupToAccountMapping("gums-test");
+				if (g2aMapping==null) {
+					int index = 1;
+					while (configuration.getGroupToAccountMapping("gums-test"+(index==1?"":Integer.toString(index)))!=null)
+						index++;
+					g2aMapping = new GroupToAccountMapping(configuration, "gums-test"+(index==1?"":Integer.toString(index)));
+					g2aMapping.setDescription("Testing GUMS-status with GIP Probe");
+					configuration.addGroupToAccountMapping(g2aMapping);
+				}
+				if (g2aMapping.getAccountMappers().indexOf(accountMapper.getName())==-1)
+					g2aMapping.addAccountMapper(accountMapper.getName());
+				if (g2aMapping.getUserGroups().indexOf(userGroup.getName())==-1)
+					g2aMapping.addUserGroup(userGroup.getName());     
+	
+				// add or alter HostToGroupMapping
+				String domainName = java.net.InetAddress.getLocalHost().getCanonicalHostName();
+				if (domainName!=null && domainName.indexOf(".")!=-1)
+					domainName = domainName.substring(domainName.indexOf("."),domainName.length());
+				String cn = "*/?*" + (domainName!=null?domainName:".localdomain");
+				List h2gMappings = configuration.getHostToGroupMappings();
+				boolean foundCn = false;
+				for (int i=0; i<h2gMappings.size(); i++) {
+					// add groupToAccountMapping to each hostToGroupMapping
+					HostToGroupMapping h2gMapping = (HostToGroupMapping)h2gMappings.get(i);
+					h2gMapping.addGroupToAccountMapping(g2aMapping.getName()); 
+					if (h2gMapping.getName().indexOf(cn)!=-1)
+						foundCn = true;
+				}
+				if (!foundCn) {
+					// create a new hostToGroupMapping
+					HostToGroupMapping h2gMapping = new CertificateHostToGroupMapping(configuration);
+					h2gMapping.setDescription("Testing GUMS-status with GIP Probe");
+					((CertificateHostToGroupMapping)h2gMapping).setCn(cn);
+					configuration.addHostToGroupMapping(h2gMapping);
+					h2gMapping.addGroupToAccountMapping(g2aMapping.getName()); 
+				}
+			}
+		} catch (Exception e) {
+			String message = "Could not insert GIP probe";
+			log.error(message, e);
+			throw new RuntimeException(message);	 
+		} 
     }
     
 }

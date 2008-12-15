@@ -16,7 +16,7 @@ import java.util.*;
  * @author  carcassi
  */
 public class MockHostToGroupMapping extends HostToGroupMapping {
-    
+    String name;
     /**
      * Holds value of property groupMappers.
      */
@@ -25,11 +25,6 @@ public class MockHostToGroupMapping extends HostToGroupMapping {
     /** Creates a new instance of MockHostnameMapping */
     public MockHostToGroupMapping(Configuration configuration) {
     	super(configuration);
-    }
-    
-    /** Creates a new instance of MockHostnameMapping */
-    public MockHostToGroupMapping(Configuration configuration, String name) {
-    	super(configuration, name);
     }
     
     public void addGroupMapper(MockHostToGroupMapping groupMapper) {

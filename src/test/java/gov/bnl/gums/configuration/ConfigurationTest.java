@@ -60,7 +60,7 @@ public class ConfigurationTest extends TestCase {
         conf.addAccountMapper(accountMapper);
         gMap.addAccountMapper(accountMapper.getName());
 
-        MockHostToGroupMapping hMap = new MockHostToGroupMapping(conf, "mockHostToGroupMapping");
+        MockHostToGroupMapping hMap = new MockHostToGroupMapping(conf);
         conf.addHostToGroupMapping(hMap);
         hMap.addGroupToAccountMapping(gMap.getName());
         
@@ -99,4 +99,57 @@ public class ConfigurationTest extends TestCase {
         assertEquals(1, gMap.getUserGroups().size());
     }
     
+    public void testMergeConfiguration() {
+    	Configuration conf = new Configuration();
+        GroupToAccountMapping gMap = new GroupToAccountMapping(conf, "mockGroup");
+        conf.addGroupToAccountMapping(gMap);
+        gMap.setAccountingVoSubgroup("mock");
+        gMap.setAccountingVo("mock");
+        MockUserGroup userGroup = new MockUserGroup(conf, "mockUserGroup", true);
+        userGroup.addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null));
+        conf.addUserGroup(userGroup);
+        gMap.addUserGroup(userGroup.getName());
+        AccountMapper accountMapper = new MockAccountMapper(conf, "mockAccountMapper");
+        conf.addAccountMapper(accountMapper);
+        gMap.addAccountMapper(accountMapper.getName());
+        MockHostToGroupMapping hMap = new MockHostToGroupMapping(conf);
+        conf.addHostToGroupMapping(hMap);
+        hMap.addGroupToAccountMapping(gMap.getName());
+        conf.addPersistenceFactory( new MockPersistenceFactory(conf, "mockPers") );
+        
+    	Configuration newConf = new Configuration();
+        gMap = new GroupToAccountMapping(newConf, "mockGroup");
+        newConf.addGroupToAccountMapping(gMap);
+        gMap.setAccountingVoSubgroup("mock2");
+        gMap.setAccountingVo("mock2");
+        GroupToAccountMapping gMap2 = new GroupToAccountMapping(newConf, "mockGroup2");
+        conf.addGroupToAccountMapping(gMap2);
+        hMap.addGroupToAccountMapping(gMap2.getName());
+        userGroup = new MockUserGroup(newConf, "mockUserGroup", true);
+        userGroup.addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null));
+        MockUserGroup userGroup2 = new MockUserGroup(newConf, "mockUserGroup2", true);
+        userGroup2.addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe", null));
+        newConf.addUserGroup(userGroup);
+        newConf.addUserGroup(userGroup2);
+        gMap.addUserGroup(userGroup.getName());
+        gMap.addUserGroup(userGroup2.getName());
+        accountMapper = new MockAccountMapper(newConf, "mockAccountMapper2");
+        newConf.addAccountMapper(accountMapper);
+        gMap.addAccountMapper(accountMapper.getName());
+        hMap = new MockHostToGroupMapping(newConf);
+        newConf.addHostToGroupMapping(hMap);
+        hMap.addGroupToAccountMapping(gMap.getName());
+        newConf.addPersistenceFactory( new MockPersistenceFactory(newConf, "mockPers") );
+        
+        conf.mergeConfiguration(newConf, "mockPers", "known.site.com");
+
+        assertEquals(conf.getGroupToAccountMapping("mockGroup").getAccountingVo(), "mock2");
+        assertEquals(conf.getGroupToAccountMapping("mockGroup").getAccountingVoSubgroup(), "mock2");
+        assertEquals(conf.getGroupToAccountMapping("mockGroup").getUserGroups().size(), 2);
+        assertNotNull(conf.getGroupToAccountMapping("mockGroup2"));
+        assertNotNull(conf.getUserGroup("mockUserGroup"));
+        assertNotNull(conf.getUserGroup("mockUserGroup2"));
+        assertNotNull(conf.getAccountMapper("mockAccountMapper"));
+        assertNotNull(conf.getAccountMapper("mockAccountMapper2"));
+    }    
 }

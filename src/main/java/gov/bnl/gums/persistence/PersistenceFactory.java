@@ -24,7 +24,7 @@ import java.util.Properties;
  * LDAP, or even a combination of these.
  * <p>
  * It also allow to use different mapping technologies, allowing to use either
- * entity beans, simple JDBC, Hibernate or any other favourite technology.
+ * entity beans, simple JDBC, Hibernate or any other favorite technology.
  *
  * @author Gabriele Carcassi, Jay Packard
  */

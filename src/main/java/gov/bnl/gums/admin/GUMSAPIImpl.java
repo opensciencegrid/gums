@@ -11,11 +11,22 @@ import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.account.AccountPoolMapper;
 import gov.bnl.gums.account.ManualAccountMapper;
 import gov.bnl.gums.configuration.Configuration;
+import gov.bnl.gums.configuration.ConfigurationToolkit;
 import gov.bnl.gums.configuration.FileConfigurationStore;
 import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.UserGroup;
 import gov.bnl.gums.hostToGroup.HostToGroupMapping;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringBufferInputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -373,6 +384,50 @@ public class GUMSAPIImpl implements GUMSAPI {
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}		
+	}
+	
+	public void mergeConfiguration(Configuration conf, String newConfUri, String persistenceFactory, String hostToGroupMapping)
+	{
+		InputStream inputStream = null;
+		try {
+			if (hasWriteAccess(currentUser())) {
+				if (newConfUri.startsWith("http")) {
+					URL url = new URL(newConfUri);
+					URLConnection connection = url.openConnection();
+					inputStream = connection.getInputStream();
+				}
+				else if (newConfUri.startsWith("file://")) {
+					inputStream = new FileInputStream(newConfUri.substring(7));	
+				}
+				else {
+					String message = "Unsupported non-members URI: " + newConfUri;
+					log.error(message);
+					throw new RuntimeException(message);
+				}
+				StringBuffer configBuffer = new StringBuffer();
+				int ch;
+				while ((ch = inputStream.read()) != -1)
+					configBuffer.append((char)ch);
+	    		Configuration newConf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), false);
+	    		conf.mergeConfiguration(newConf, persistenceFactory, hostToGroupMapping);
+	    	}
+			else {
+				String message = logUserAccess() + "Unauthorized access to mergeConfiguration";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
+				throw new AuthorizationDeniedException();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					log.error(e.getMessage());
+				}
+			}
+		}
 	}
 
 	public void manualMappingRemove2(String manualAccountMapperName, String userDN) {
@@ -742,7 +797,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 
 	private GUMS gums() {
 		if (gums == null) {
-			FileConfigurationStore confStore = new FileConfigurationStore(CertCache.getConfigDir(), CertCache.getResourceDir(), getVersionNoPatch());
+			FileConfigurationStore confStore = new FileConfigurationStore(CertCache.getConfigDir());
 			gums = new GUMS(confStore);
 		}
 		return gums;
@@ -751,8 +806,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 	private boolean hasReadAllAccess(GridUser user, String hostname) throws Exception {
 		if (user == null) 
 			return false;
-		if (gums().getConfiguration().getReadAllUserGroups() != null) {
-			Collection readAllUserGroups = gums().getConfiguration().getReadAllUserGroups();
+		Collection readAllUserGroups;
+		if ((readAllUserGroups = gums().getConfiguration().getReadAllUserGroups()) != null) {
 			Iterator it = readAllUserGroups.iterator();
 			while (it.hasNext()) {
 				UserGroup userGroup = (UserGroup)it.next();

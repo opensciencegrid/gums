@@ -1,6 +1,7 @@
 package gov.bnl.gums.configuration;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
@@ -30,12 +31,10 @@ public class DBConfigurationStore extends ConfigurationStore {
 	private Logger log = Logger.getLogger(FileConfigurationStore.class);
 	private ConfigurationDB configDB;
 	private Configuration conf;
-	private String schemaPath = null;
 	private Date lastRetrieval = null;
 	
-	public DBConfigurationStore(ConfigurationDB configDB, String schemaPath) {
+	public DBConfigurationStore(ConfigurationDB configDB) {
 		this.configDB = configDB;
-		this.schemaPath = schemaPath;
 	}
 	
 	public boolean deleteBackupConfiguration(String name) {
@@ -66,35 +65,51 @@ public class DBConfigurationStore extends ConfigurationStore {
     }
     
     public Configuration retrieveConfiguration() throws Exception {
+    	ByteArrayInputStream stream = null;
     	try {
 			if (needsReload()) {
 		    	String configText = configDB.retrieveCurrentConfiguration();
-		    	conf = ConfigurationToolkit.loadConfiguration(null, configText, schemaPath);
+		    	conf = ConfigurationToolkit.parseConfiguration(configText, false);
 		    	lastRetrieval = new Date();
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
+		} finally {
+			if (stream != null)
+				stream.close();
 		}
 		return conf;
     }
     
     public Configuration retrieveConfiguration(boolean reload) throws Exception {
+    	ByteArrayInputStream stream = null;
     	try {
 			if (reload) {
 		    	String configText = configDB.retrieveCurrentConfiguration();
-		    	conf = ConfigurationToolkit.loadConfiguration(null, configText, schemaPath);
+		    	conf = ConfigurationToolkit.parseConfiguration(configText, false);
 		    	lastRetrieval = new Date();
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
+		} finally {
+			if (stream != null)
+				stream.close();
 		}
 		return conf;
     }
     
     public Configuration restoreConfiguration(String name) throws Exception {
-    	String configText = configDB.restoreConfiguration(name);
-   	Configuration configuration = ConfigurationToolkit.loadConfiguration(null, configText, schemaPath);
-	return configuration;
+    	ByteArrayInputStream stream = null;
+    	try {
+	    	String configText = configDB.restoreConfiguration(name);
+	    	Configuration configuration = ConfigurationToolkit.parseConfiguration(configText, false);
+	    	return configuration;
+    	} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			if (stream != null)
+				stream.close();
+		}
     }
     
     public void setConfiguration(Configuration conf, boolean backupCopy, String name) throws Exception {

@@ -15,9 +15,13 @@ import gov.bnl.gums.userGroup.VomsServer;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.util.*;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.log4j.Logger;
+import org.xml.sax.SAXException;
 
 import gov.bnl.gums.persistence.PersistenceFactory;
 
@@ -480,6 +484,79 @@ public class Configuration {
 		}                
 
 		out.write("</gums>");   	
+    }
+	 
+    public void mergeConfiguration(Configuration configuraton, String persistenceFactory, String hostToGroupMapping) {
+    	Iterator it;
+    	
+    	HostToGroupMapping h2GMapping = getHostToGroupMapping(hostToGroupMapping);
+    	if (h2GMapping==null)
+    		throw new RuntimeException("Host to Group Mapping '" + hostToGroupMapping + "' does not exist");
+    	List groupToAccountMappingNames = h2GMapping.getGroupToAccountMappings();
+
+    	PersistenceFactory persFact = getPersistenceFactory(persistenceFactory);
+    	if (persFact==null)
+    		throw new RuntimeException("Persistence Factory '" + persistenceFactory + "' does not exist");
+    	
+    	// Merge VOMS servers
+		it = configuraton.getVomsServers().values().iterator();
+		while( it.hasNext() ) {
+			VomsServer newVomsServer = (VomsServer)it.next();
+			try {
+				Method m = newVomsServer.getClass().getDeclaredMethod("setPersistenceFactory", new Class[]{ Class.forName("java.lang.String") });
+				m.invoke(newVomsServer, new Object[]{persistenceFactory});
+			} catch (Exception e) {}
+			vomsServers.put(newVomsServer.getName(), newVomsServer);
+		}
+    	
+		// Merge VOMS servers
+    	it = configuraton.getUserGroups().values().iterator();
+		while( it.hasNext() ) {
+			UserGroup newUserGroup = (UserGroup)it.next();
+			userGroups.put(newUserGroup.getName(), newUserGroup);
+			try {
+				Method m = newUserGroup.getClass().getDeclaredMethod("setPersistenceFactory", new Class[]{ Class.forName("java.lang.String") });
+				m.invoke(newUserGroup, new Object[]{persistenceFactory});
+			} catch (Exception e) {}
+		}
+		
+		// Merge Account Mappers
+		it = configuraton.getAccountMappers().values().iterator();
+		while( it.hasNext() ) {
+			AccountMapper newAccountMapper = (AccountMapper)it.next();
+			try {
+				Method m = newAccountMapper.getClass().getDeclaredMethod("setPersistenceFactory", new Class[]{ Class.forName("java.lang.String") });
+				m.invoke(newAccountMapper, new Object[]{persistenceFactory});
+			} catch (Exception e) {}
+			accountMappers.put(newAccountMapper.getName(), newAccountMapper);
+		}
+		
+		// Merge Group to Account Mappings
+		it = configuraton.getGroupToAccountMappings().values().iterator();
+		while( it.hasNext() ) {
+			GroupToAccountMapping newGroupToAccountMapping = (GroupToAccountMapping)it.next();
+			try {
+				Method m = newGroupToAccountMapping.getClass().getDeclaredMethod("setPersistenceFactory", new Class[]{ Class.forName("java.lang.String") });
+				m.invoke(newGroupToAccountMapping, new Object[]{persistenceFactory});
+			} catch (Exception e) {}
+			groupToAccountMappings.put(newGroupToAccountMapping.getName(), newGroupToAccountMapping);
+				
+			// Add to hostToGroupMapping if it doesn't exist already
+			boolean nameFound = false;
+			Iterator g2aIt = groupToAccountMappingNames.iterator();
+			while (g2aIt.hasNext())
+			{
+				String name = (String)g2aIt.next();
+				if (name.equals(newGroupToAccountMapping.getName()))
+				{
+					nameFound = true;
+					break;
+				}
+			}
+			if (!nameFound)
+				h2GMapping.addGroupToAccountMapping(newGroupToAccountMapping.getName());
+		}
+		
     }
 
 }
