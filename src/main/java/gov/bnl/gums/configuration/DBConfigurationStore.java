@@ -37,8 +37,9 @@ public class DBConfigurationStore extends ConfigurationStore {
 		this.configDB = configDB;
 	}
 	
-	public boolean deleteBackupConfiguration(String name) {
-		return configDB.deleteBackupConfiguration(name);
+	public void deleteBackupConfiguration(String name) {
+		if (!configDB.deleteBackupConfiguration(name))
+			throw new RuntimeException("Could not delete backup configuration '"+name+"' from database");
 	}
 	
     public boolean isActive() {

@@ -151,8 +151,8 @@ public class CoreLogic {
      * @param user
      * @return
      */
-    public String map(String hostname, GridUser user) throws Exception {
-        if (gums.isUserBanned(user))
+    public String map(String hostname, GridUser user, boolean checkBannedList) throws Exception {
+        if (checkBannedList && gums.isUserBanned(user))
         	return null;
         String account = mapImpl(hostname, user);
         return account;
@@ -444,8 +444,9 @@ public class CoreLogic {
             UserGroup group = (UserGroup) iter.next();
             try {
                 group.updateMembers();
-                gumsAdminLog.info("Users updated for user group " + group.getName());
+                gumsAdminLog.info("User group update for " + group.getName() + " (" + group.getMemberList().size() + " users).");
             } catch (Exception e) {
+                gumsAdminLog.warn("User group update for " + group.getName() + " failed: " + e.getMessage());
             	if (failedGroups == null)
             		failedGroups = new StringBuffer("Some user groups weren't updated correctly:\n");
             	failedGroups.append( group.getName() + " - " + e.getMessage() + "\n" );
@@ -455,9 +456,8 @@ public class CoreLogic {
         	gumsAdminLog.info("Finished updating users for all user groups");
         }
         else {
-        	String message = failedGroups.toString();
-        	gumsAdminLog.warn(message);
-            throw new RuntimeException(message);
+        	gumsAdminLog.warn("Some user groups weren't updated correctly");
+            throw new RuntimeException(failedGroups.toString());
         }
     }
 }

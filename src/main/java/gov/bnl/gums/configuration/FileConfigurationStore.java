@@ -111,8 +111,9 @@ public class FileConfigurationStore extends ConfigurationStore {
 		this.configBackupDir = configDir+"/backup";
 	}
 
-	public boolean deleteBackupConfiguration(String name) {
-		return new File(configBackupDir+"/gums.config."+name).delete();
+	public void deleteBackupConfiguration(String name) {
+		if (!new File(configBackupDir+"/gums.config."+name).delete())
+			throw new RuntimeException("Could not delete backup configuration '"+name+"' from file");
 	}
 
 	public Collection getBackupNames() {
@@ -121,7 +122,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 		String[] children = dir.list();
 		if (children!=null) {
 			for (int i=0; i<children.length; i++) {
-				String dateStr = children[i].substring(children[i].lastIndexOf(".")+1);
+				String dateStr = children[i].substring("gums.config.".length());
 				backupConfigDates.add( dateStr );
 			}    	
 		}

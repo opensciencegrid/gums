@@ -49,8 +49,7 @@ public class MockConfigurationStore extends ConfigurationStore {
 		}
     }
     
-    public boolean deleteBackupConfiguration(String dateStr) {
-    	return false;
+    public void deleteBackupConfiguration(String dateStr) {
     }
     
     public Collection getBackupNames() {

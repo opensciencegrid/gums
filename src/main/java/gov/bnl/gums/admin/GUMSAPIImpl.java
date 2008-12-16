@@ -467,8 +467,18 @@ public class GUMSAPIImpl implements GUMSAPI {
 	public String mapUser(String hostname, String userDN, String fqan) {
 		try {
 			if ( (hasReadSelfAccess(currentUser()) && currentUser().compareDn(userDN)==0) || hasReadAllAccess(currentUser(), hostname)) {
-				String account = gums().getCoreLogic().map(hostname, new GridUser(userDN, fqan));
-				gumsAdminLog.info(logUserAccess() + "Mapped on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' to '" + account + "'");
+				GridUser user = new GridUser(userDN, fqan);
+				String account = null;
+				boolean isUserBanned = gums().isUserBanned(user);
+				if (!isUserBanned)
+					account = gums().getCoreLogic().map(hostname, user, false);
+				if (account==null && isUserBanned) {
+					String message = logUserAccess() + "Mapped on host '" + hostname + "' the banned user '" + userDN + "' / '" + fqan + "' to '" + account + "'";
+					gumsAdminLog.warn(message);
+					siteAdminLog.warn(message);	
+				}
+				else
+					gumsAdminLog.info(logUserAccess() + "Mapped on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' to '" + account + "'");
 				return account;
 			} else {
 				String message = logUserAccess() + "Unauthorized access to mapUser for '" + hostname + "' from user '" + userDN + "' / '" + fqan + "'";
@@ -536,11 +546,11 @@ public class GUMSAPIImpl implements GUMSAPI {
 			else {
 				String message = logUserAccess() + "Unauthorized access to setConfiguration";
 				gumsAdminLog.warn(message);
-				gumsAdminLog.debug("Configuration contents: " + configuration.toXml());
 				siteAdminLog.warn(message);	
-				siteAdminLog.debug("Configuration contents: " + configuration.toXml());
 				throw new AuthorizationDeniedException();
 			}
+			gumsAdminLog.debug("Configuration was set: " + configuration.toXml());
+			siteAdminLog.debug("Configuration was set: " + configuration.toXml());
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}		

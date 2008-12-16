@@ -137,11 +137,14 @@ public class GUMS {
      * @param dateStr
      */
     public void deleteBackupConfiguration(String dateStr) {
-    	if (confStore.deleteBackupConfiguration(dateStr) );
-    		gumsAdminLog.info("Deleted backup configuration "+dateStr+" (from file)");
-    	if (dbConfStore!=null) 
-    		if (dbConfStore.deleteBackupConfiguration(dateStr))
-    			gumsAdminLog.info("Deleted backup configuration "+dateStr+" (from database)");
+    	if (dbConfStore!=null)  {
+    		dbConfStore.deleteBackupConfiguration(dateStr);
+   			gumsAdminLog.info("Deleted backup configuration "+dateStr+" from database");
+    	}
+    	else {
+        	confStore.deleteBackupConfiguration(dateStr);
+       		gumsAdminLog.info("Deleted backup configuration "+dateStr+" from file");
+    	}
     }
     
     /**
@@ -345,7 +348,7 @@ public class GUMS {
 	        if (dbConfStore!=null) {
 		        if (!dbConfStore.isReadOnly()) {
 		        	dbConfStore.setConfiguration(conf, backup, name); 
-		        	gumsAdminLog.info("Backed up configuration in database");
+		        	gumsAdminLog.info("Backed up configuration in database: "+name);
 		        }
 		        else {
 		        	throw new RuntimeException("cannot write configuration to database because it is read-only");
@@ -354,7 +357,7 @@ public class GUMS {
 	        else {
 		        if (!confStore.isReadOnly()) {
 		        	confStore.setConfiguration(conf, backup, name);
-		        	gumsAdminLog.info("Backed up configuration on file");
+		        	gumsAdminLog.info("Backed up configuration on file: "+name);
 		        }
 		        else {
 		        	throw new RuntimeException("cannot write configuration to file because it is read-only");
