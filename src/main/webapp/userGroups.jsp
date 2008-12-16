@@ -73,13 +73,17 @@ if (request.getParameter("command")==null ||
 		try{
 			String references = ConfigurationWebToolkit.getGroupToAccountMappingReferences(newConfiguration, request.getParameter("name"), "gov.bnl.gums.userGroup.UserGroup");
 			if( references==null ) {
-				if (newConfiguration.removeUserGroup( request.getParameter("name") )!=null) {
-					gums.setConfiguration(newConfiguration);
-					configuration = gums.getConfiguration();
-					message = "<div class=\"success\">User group has been deleted.</div>";
+				if (!configuration.getBannedUserGroupList().contains(request.getParameter("name"))) {
+					if (newConfiguration.removeUserGroup( request.getParameter("name") )!=null) {
+						gums.setConfiguration(newConfiguration);
+						configuration = gums.getConfiguration();
+						message = "<div class=\"success\">User group has been deleted.</div>";
+					}
+					else
+						message = "<div class=\"failure\">Error deleting user group</div>";
 				}
 				else
-					message = "<div class=\"failure\">Error deleting user group</div>";
+					message = "<div class=\"failure\">You cannot delete this item until removing it from the banned user list</div>";
 			}
 			else
 				message = "<div class=\"failure\">You cannot delete this item until removing references to it within group to account mapping(s): " + references + "</div>";
