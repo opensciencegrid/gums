@@ -322,10 +322,10 @@ public class GUMSAPIImpl implements GUMSAPI {
 		try {
 			if (hasWriteAccess(currentUser())) {
 				((ManualUserGroup)gums().getConfiguration().getUserGroup(manualUserGroupName)).addMember(new GridUser(userDN, fqan, email, false));
-				gumsAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "' email '"+email+"'");
-				siteAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "' email '"+email+"'");
+				gumsAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "' fqan '" + fqan + "' email '" + email + "'");
+				siteAdminLog.info(logUserAccess() + "Added to user group '" + manualUserGroupName + "' user '" + userDN + "' fqan '" + fqan + "' email '" + email + "'");
 			} else {
-				String message = logUserAccess() + "Unauthorized access to manualGroupAdd3 for user group '" + manualUserGroupName + "' user '" + userDN + "'"+email+"'";
+				String message = logUserAccess() + "Unauthorized access to manualGroupAdd3 for user group '" + manualUserGroupName + "' user '" + userDN + "' fqan '" + fqan + "' email '" + email + "'";
 				gumsAdminLog.warn(message);
 				siteAdminLog.warn(message);
 				throw new AuthorizationDeniedException();	
@@ -356,8 +356,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 		try {
 			if (hasWriteAccess(currentUser())) {
 				((ManualUserGroup)gums().getConfiguration().getUserGroup(manualUserGroupName)).removeMember(new GridUser(userDN, fqan, false));
-				gumsAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "' fqan '"+fqan+"'");
-				siteAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "' fqan '"+fqan+"'");
+				gumsAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "' fqan '" + fqan + "'");
+				siteAdminLog.info(logUserAccess() + "Removed from user group '" + manualUserGroupName + "'  user '" + userDN + "' fqan '" + fqan + "'");
 			} else {
 				String message = logUserAccess() + "Unauthorized access to manualGroupRemove2 for user group '" + manualUserGroupName + "' user '" + userDN + "' fqan '"+fqan+"'";
 				gumsAdminLog.warn(message);

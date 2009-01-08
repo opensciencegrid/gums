@@ -212,4 +212,5 @@ cat $TEMPLATE \
              -e s/@SERVER@/$SERVER/g                \
              -e s/@PASSWORD@/$PASSWORD/g            \
              -e s/@DOMAINNAME@/$DOMAINNAME/g        \
+             -e s/GUMS_[0-9]_[0-9]/GUMS_1_3/g		\
   > ../config/gums.config
