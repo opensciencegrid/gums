@@ -5,6 +5,8 @@
  */
 package gov.bnl.gums.admin;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URL;
 
 import gov.bnl.gums.command.Configuration;
@@ -23,10 +25,18 @@ import org.opensaml.xml.XMLObjectBuilderFactory;
 public class MapUser extends RemoteCommand {
 	private static Logger log = Logger.getLogger(RemoteCommand.class);
 	static XMLObjectBuilderFactory builderFactory;
+	static PrintStream printStreamOriginal = System.err;
+	
     static {
-        command = new MapUser();
+    	command = new MapUser();
         
-        Logger.getLogger(org.glite.security.trustmanager.CRLFileTrustManager.class.getName()).setLevel(Level.ERROR);
+        // Disable system error output since getBuilderFactory is outputting a bunch of information messages to it
+    	System.setErr(new PrintStream(new OutputStream() {
+    		public void write(int b) {
+    		}
+    	}));
+    	
+    	Logger.getLogger(org.glite.security.trustmanager.CRLFileTrustManager.class.getName()).setLevel(Level.ERROR);
         try {
             org.apache.xml.security.Init.init();
             org.opensaml.DefaultBootstrap.bootstrap();
@@ -35,7 +45,11 @@ public class MapUser extends RemoteCommand {
             log.error(err, e);
             throw new RuntimeException(err, e);
         }
-        builderFactory = org.opensaml.Configuration.getBuilderFactory();
+		
+    	builderFactory = org.opensaml.Configuration.getBuilderFactory();
+    	
+        // Re-enable system error output
+    	System.setErr(printStreamOriginal);
     }
 
     /**
@@ -94,12 +108,18 @@ public class MapUser extends RemoteCommand {
         return options;
     }
 
-    protected void execute(org.apache.commons.cli.CommandLine cmd)
-        throws Exception {
+    protected void execute(org.apache.commons.cli.CommandLine cmd) throws Exception {
         if (cmd.getArgs().length < 1) {
             failForWrongParameters("Missing parameters...");
         }
-
+        
+        // Disable system error output since getBuilderFactory is outputting a bunch of information messages to it
+    	PrintStream printStreamOriginal = System.err;
+    	System.setErr(new PrintStream(new OutputStream() {
+    		public void write(int b) {
+    		}
+    	}));
+        
         boolean bypass = cmd.hasOption("b");
         
         boolean debug = cmd.hasOption("d");
@@ -167,12 +187,21 @@ public class MapUser extends RemoteCommand {
             	String account = null;
                 if (!bypass) {
                 	if (gumsUrl.getPath().contains("GUMSXACMLAuthorizationServicePort")) {
+                        // Disable system error output since opensaml is outputting a bunch of information messages to it
+                    	System.setErr(new PrintStream(new OutputStream() {
+                    		public void write(int b) {
+                    		}
+                    	}));
+                    	
                 		if (client == null)
                 			client = new MapCredentialsClient();
                 		((MapCredentialsClient)client).setFqan(cmd.getOptionValue("f", null));
                 		((MapCredentialsClient)client).setX509Subject(userDN[i]);
                 		((MapCredentialsClient)client).setResourceX509ID(serviceDn);
                 		account = ((MapCredentialsClient)client).mapCredentials(gumsUrl.toString()).getUserName();
+                        
+                		// Reenable system error output
+                		System.setErr(printStreamOriginal);
                 	}
                 	else {
                 		if (client == null)
