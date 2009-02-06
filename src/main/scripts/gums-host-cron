@@ -51,8 +51,9 @@ function usage {
      file is successfully checked in order to provide a visible indication of 
      the currency of the data.
 
- Usage: $PGM [--help | -help | -h ]
+ Usage: $PGM [--help | -help | -h ] [--gumsdebug]
 "
+ exit 0
 }
 
 ###########################################################################
@@ -350,11 +351,6 @@ function run_configure_gip {
   logit "WARNING: Script is not executable"
   fi
   logit "--------------------------------------"
-}
-
-function usage {
-  echo Usage: $0 [--gumsdebug]
-  exit
 }
 
 #### MAIN ###############################################################
