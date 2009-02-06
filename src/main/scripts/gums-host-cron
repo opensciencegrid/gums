@@ -103,6 +103,9 @@ function usage {
 # 4. 10/05/07 (John Hover)
 #    - $PRIMA_CALLOUT_STRING shortened so that it will be caught on both
 #      32-bit and 64-bit systems.
+# 5. 2/06/07 (Jay Packard)
+#    - Added --gumsdebug option, which simply passes that option to the gums 
+#      scripts that are called by this script.
 #
 #
 ###########################################################################
@@ -350,7 +353,7 @@ function run_configure_gip {
 }
 
 function usage {
-  echo Usage: $0 [--debug]
+  echo Usage: $0 [--gumsdebug]
   exit
 }
 
