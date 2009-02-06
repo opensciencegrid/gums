@@ -32,16 +32,14 @@ public class HibernateDBTestBase extends TestCase {
         Statement stmt = session.connection().createStatement();
         stmt.execute("DELETE FROM USER WHERE GROUP_NAME='test'");
         stmt.execute("DELETE FROM MAPPING WHERE MAP='test'");
-        stmt.execute("DELETE FROM BANNED_USER");
         session.close();
     }
     
     protected void tearDown() throws java.lang.Exception {
-        Session session = sessions.openSession();
+    	Session session = sessions.openSession();
         Statement stmt = session.connection().createStatement();
         stmt.execute("DELETE FROM USER WHERE GROUP_NAME='test'");
         stmt.execute("DELETE FROM MAPPING WHERE MAP='test'");
-        stmt.execute("DELETE FROM BANNED_USER");
         session.close();
         sessions.close();
     }
