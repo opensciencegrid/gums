@@ -10,7 +10,6 @@ import gov.bnl.gums.command.AbstractCommand;
 import gov.bnl.gums.command.Configuration;
 import java.util.Iterator;
 import org.apache.axis.client.Stub;
-
 import org.apache.log4j.Logger;
 
 import java.net.URL;
@@ -20,11 +19,11 @@ import java.net.URL;
  */
 public abstract class RemoteCommand extends AbstractCommand {
     private Logger log = Logger.getLogger(RemoteCommand.class);
-
+	
     private GUMSAPI clientStub;
 
     protected GUMSAPI getGums(String gumsUrlStr) {
-        log.trace("Retrieving GUMS stub");
+        log.debug("Retrieving GUMS stub");
         if (clientStub != null) return clientStub;        
         try {
             GUMSAPIService service = new GUMSAPIServiceLocator();
@@ -41,7 +40,7 @@ public abstract class RemoteCommand extends AbstractCommand {
                 Iterator iter = axisStub._getPropertyNames();
                 while (iter.hasNext()) {
                     String name = (String) iter.next();
-                    log.trace("Client stub property '" + name + "' value '" + axisStub._getProperty(name));
+                    log.debug("Client stub property '" + name + "' value '" + axisStub._getProperty(name));
                 }
                 return clientStub;
             }

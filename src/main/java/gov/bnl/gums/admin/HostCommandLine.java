@@ -7,14 +7,10 @@ package gov.bnl.gums.admin;
 
 import gov.bnl.gums.command.GUMSCommandLine;
 
-import org.apache.log4j.Logger;
-
 /**
  * @author Gabriele Carcassi, Jay Packard
  */
 public class HostCommandLine extends GUMSCommandLine {
-    private static Logger log = Logger.getLogger(HostCommandLine.class);
-
     static {
         GUMSCommandLine.command = "gums-host";
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateOsgUserVoMap",

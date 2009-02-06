@@ -4,7 +4,8 @@
 	<groupId>gums</groupId>
 	<artifactId>gums-client</artifactId>
 	<name>gums-client</name>
-	<version>1.3.9</version>
+	<packaging>jar</packaging>
+	<version>1.3.10</version>
 	<description>GUMS Client provides the administrative command line tools to administer GUMS.
     It allows querying and changing the state of the GUMS server.</description>
   
@@ -20,6 +21,16 @@
 			<name>Maven Repository Switchboard</name>
 	 		<layout>default</layout>
  			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+		<repository>
+	    	<id>fermi</id>
+			<name>Fermi Repository</name>
+	 		<layout>default</layout>
+ 			<url>http://www.fnal.gov/docs/products/voprivilege/swarchive</url>
+		</repository>		
+		<repository>
+		   <id>Internet2 repository</id>
+		   <url>http://shibboleth.internet2.edu/downloads/maven2/org</url>
 		</repository>
 	</repositories>
  
@@ -60,6 +71,25 @@
     <build>
 		<plugins>
 			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-dependency-plugin</artifactId>
+		        <executions>
+		          <execution>
+		            <id>dependency-copy</id>
+		            <phase>package</phase>
+		            <goals>
+		              <goal>copy-dependencies</goal>
+		            </goals>
+		            <configuration>
+		              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+		              <overWriteReleases>false</overWriteReleases>
+		              <overWriteSnapshots>false</overWriteSnapshots>
+		              <overWriteIfNewer>true</overWriteIfNewer>
+		            </configuration>
+		          </execution>
+		        </executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
@@ -92,32 +122,9 @@
 						<configuration>
 							<tasks>
 								<mkdir dir="target/lib"/>
-								<copy filtering="on" todir="target/lib">
-                  					<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis/1.4"/>
-                  					<fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/axis/axis-jaxrpc/1.4"/>
-                  					<fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/axis/axis-saaj/1.4"/>
-                  					<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-wsdl4j/1.5.1"/>
-                  					<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-discovery/commons-discovery/0.2"/>
-                  					<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-logging/commons-logging/1.0.4"/>
-       								<fileset includes="*.jar" dir="${user.home}/.m2/repository/log4j/log4j/1.2.12"/>
-                  					<fileset includes="*.jar" dir="${user.home}/.m2/repository/gums/gums-core/${version}"/>
-                  					<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-cli/commons-cli/2.0"/>
-                  					<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-beanutils/commons-beanutils/1.7.0"/>
-                  					<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-collections/commons-collections/3.2"/>
-                  					<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-digester/commons-digester/1.8"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/glite/bcprov/jdk15-139"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/glite/glite-security-util-java/1.0.0dev"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/glite/glite-security-trustmanager/1.6.3dev"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/opensciencegrid/privilege/1.0.1.3"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/opensaml/opensaml/1.0.1"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xalan/xalan/2.6.0"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xml-security/xml-security/1.0.4"/>
-							    </copy>
-							    <mkdir dir="target/lib/endorsed"/>
 								<copy filtering="on" todir="target/lib/endorsed">
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xerces/dom3-xercesImpl/2.5.0"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xerces/dom3-xmlParserAPIs/2.5.0"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xalan/xalan/2.6.0"/>
+							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/xerces/xercesImpl/2.9.1"/>
+							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/apache-xerces/xml-apis/2.9.1"/>
 							    </copy>
 								<copy filtering="on" todir="target/lib">
 									<fileset includes="*.jar" dir="target"/>
@@ -211,7 +218,7 @@
 		        <artifactId>maven-assembly-plugin</artifactId>
 		        <executions>
 					<execution>
-						<id>5</id>
+						<id>generate-assembly</id>
 						<phase>package</phase>
 				        <configuration>
 							<descriptor>assembly.xml</descriptor>
@@ -227,7 +234,6 @@
 			<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>rpm-maven-plugin</artifactId>
-                <version>2.0-alpha-3-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <goals>
@@ -295,55 +301,20 @@
     </build>
 	 
  	<dependencies> 
-		<dependency>
-		   <groupId>axis</groupId>
-		   <artifactId>axis</artifactId>
-		   <version>1.4</version>
-		</dependency>
-		<dependency>
-		   <groupId>axis</groupId>
-		   <artifactId>axis-jaxrpc</artifactId>
-		   <version>1.4</version>
-		</dependency>
-		<dependency>
-		   <groupId>axis</groupId>
-		   <artifactId>axis-saaj</artifactId>
-		   <version>1.4</version>
-		</dependency>		
-		<dependency>
-		   <groupId>axis</groupId>
-		   <artifactId>axis-wsdl4j</artifactId>
-		   <version>1.5.1</version>
-		</dependency>	
-		<dependency>
-            <groupId>glite</groupId>
-            <artifactId>bcprov</artifactId>
-            <version>jdk15-139</version>
-        </dependency>       
-        <dependency>
-            <groupId>commons-cli</groupId>
-            <artifactId>commons-cli</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-digester</groupId>
-            <artifactId>commons-digester</artifactId>
-            <version>1.8</version>
-        </dependency>
         <dependency>
             <groupId>gums</groupId>
             <artifactId>gums-core</artifactId>
             <version>${version}</version>
         </dependency>
+		<dependency>	
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.12</version>
+		</dependency>	
 		<dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.7.0</version>
+            <groupId>opensaml</groupId>
+            <artifactId>opensaml-v1</artifactId>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>opensciencegrid</groupId>
@@ -351,29 +322,19 @@
             <version>1.0.1.3</version>
         </dependency>
         <dependency>
-            <groupId>opensaml</groupId>
-            <artifactId>opensaml</artifactId>
-            <version>1.0.1</version>
+            <groupId>opensciencegrid</groupId>
+            <artifactId>privilege-xacml</artifactId>
+            <version>2.2.4</version>
         </dependency>
 		<dependency>
-			<groupId>xalan</groupId>
-			<artifactId>xalan</artifactId>
-			<version>2.6.0</version>
-		</dependency> 
+			<groupId>apache-xerces</groupId>
+			<artifactId>xml-apis</artifactId>
+			<version>2.9.1</version>
+		</dependency>
 		<dependency>
 			<groupId>xerces</groupId>
-			<artifactId>dom3-xercesImpl</artifactId>
-			<version>2.5.0</version>
-		</dependency>   
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>dom3-xmlParserAPIs</artifactId>
-			<version>2.5.0</version>
-		</dependency>  
-		<dependency>
-			<groupId>xml-security</groupId>
-			<artifactId>xml-security</artifactId>
-			<version>1.0.4</version>
-		</dependency>		
+			<artifactId>xercesImpl</artifactId>
+			<version>2.9.1</version>
+		</dependency>
  	</dependencies>  
 </project>

@@ -9,17 +9,33 @@ import java.net.URL;
 
 import gov.bnl.gums.command.Configuration;
 import org.apache.commons.cli.*;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Level;
 import org.opensciencegrid.authz.client.GRIDIdentityMappingServiceClient;
 import org.opensciencegrid.authz.common.GridId;
 import org.opensciencegrid.authz.common.LocalId;
-import java.net.URL;
+import org.opensciencegrid.authz.xacml.client.MapCredentialsClient;
+import org.opensaml.xml.XMLObjectBuilderFactory;
 
 /**
  * @author Gabriele Carcassi, Jay Packard
  */
 public class MapUser extends RemoteCommand {
+	private static Logger log = Logger.getLogger(RemoteCommand.class);
+	static XMLObjectBuilderFactory builderFactory;
     static {
         command = new MapUser();
+        
+        Logger.getLogger(org.glite.security.trustmanager.CRLFileTrustManager.class.getName()).setLevel(Level.ERROR);
+        try {
+            org.apache.xml.security.Init.init();
+            org.opensaml.DefaultBootstrap.bootstrap();
+        } catch (Exception e) {
+            String err = "xacmlInitFailed";
+            log.error(err, e);
+            throw new RuntimeException(err, e);
+        }
+        builderFactory = org.opensaml.Configuration.getBuilderFactory();
     }
 
     /**
@@ -88,7 +104,7 @@ public class MapUser extends RemoteCommand {
         
         boolean debug = cmd.hasOption("d");
         
-        String hostname = (cmd.getOptionValue("s", null)); /* get hostname, default value is null */
+        String serviceDn = (cmd.getOptionValue("s", null)); /* get hostname, default value is null */
         
         String gumsUrlStr = (cmd.getOptionValue("g", null));
         URL gumsUrl = null;
@@ -101,13 +117,13 @@ public class MapUser extends RemoteCommand {
         		gumsUrl = Configuration.getInstance().getGUMSAuthZLocation();
         }
 
-        if (hostname == null) {
+        if (serviceDn == null) {
             if (isUsingProxy()) {
                 failForWrongParameters("No service specified: please use the -s option followed by the DN of the service.");
             }
                 
             try {
-                hostname = getClientDN();
+            	serviceDn = getClientDN();
             } catch (Exception e) {
                 System.err.print("Couldn't retrieve the DN of the service/host");
                 System.exit(-1);
@@ -139,33 +155,45 @@ public class MapUser extends RemoteCommand {
         
         long overall = System.currentTimeMillis();
         long start = System.currentTimeMillis();
-        GRIDIdentityMappingServiceClient client = new GRIDIdentityMappingServiceClient(gumsUrl);
-        GridId id = new GridId();
-        id.setHostDN(hostname);
-        id.setUserFQAN(cmd.getOptionValue("f", null));
-        id.setUserFQANIssuer(cmd.getOptionValue("i", null));
         long end = System.currentTimeMillis();
         if ((timing != null) && (!bypass)) {
             System.out.println("Initialization time: " + (end - start) + "ms");
         }
         
+        Object client = null;
         start = System.currentTimeMillis();
         for (int n = 0; n < nTimes; n++) {
             for (int i = 0; i < userDN.length; i++) {
             	String account = null;
                 if (!bypass) {
-                    id.setUserDN(userDN[i]);
-                    LocalId localId = client.mapCredentials(id);
-                    if (localId!=null)
-                    	account = localId.toString();
+                	if (gumsUrl.getPath().contains("GUMSXACMLAuthorizationServicePort")) {
+                		if (client == null)
+                			client = new MapCredentialsClient();
+                		((MapCredentialsClient)client).setFqan(cmd.getOptionValue("f", null));
+                		((MapCredentialsClient)client).setX509Subject(userDN[i]);
+                		((MapCredentialsClient)client).setResourceX509ID(serviceDn);
+                		account = ((MapCredentialsClient)client).mapCredentials(gumsUrl.toString()).getUserName();
+                	}
+                	else {
+                		if (client == null)
+                			client = new GRIDIdentityMappingServiceClient(gumsUrl);
+                		GridId id = new GridId();
+                        id.setHostDN(serviceDn);
+                        id.setUserFQAN(cmd.getOptionValue("f", null));
+                        id.setUserFQANIssuer(cmd.getOptionValue("i", null));
+	                    id.setUserDN(userDN[i]);
+	                    LocalId localId = ((GRIDIdentityMappingServiceClient)client).mapCredentials(id);
+	                    if (localId!=null)
+	                    	account = localId.toString();
+                	}
                 } else {
-                	account = getGums(gumsUrl.toString()).mapUser(hostname, userDN[i], id.getUserFQAN());
+                	account = getGums(gumsUrl.toString()).mapUser(serviceDn, userDN[i], cmd.getOptionValue("f", null));
                 }
            		if (debug && (account==null || account.equals(""))) {
            			System.out.print("Could not map user.\n");
            			System.out.print("The GUMS server configuration may not be correct.  ");
            			System.out.print("Please contact your administrator, or if you are the administrator, make sure you have the following elements in your gums.config (which can be easily configured from the web interface):\n");
-           			System.out.print("\t1) A hostToGroupMapping element which matches the requesting host name: "+hostname+"\n");
+           			System.out.print("\t1) A hostToGroupMapping element which matches the requesting host name: "+serviceDn+"\n");
            			System.out.print("\t2) A groupToAccountMapping (referenced by the hostToGroupMapping) element which contains a user group and account mapper\n");
            			System.out.print("\t3) A userGroup element (referenced by the groupToAccountMapping) to validate membership of the requested DN\n");
            			System.out.print("\t4) A accountMapper element (referenced by the groupToAccountMapping) to return the account for the requested DN\n");

@@ -7,15 +7,10 @@ package gov.bnl.gums.admin;
 
 import gov.bnl.gums.command.GUMSCommandLine;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * @author Gabriele Carcassi, Jay Packard
  */
 public class AdminCommandLine extends GUMSCommandLine {
-    private static Log log = LogFactory.getLog(AdminCommandLine.class);
-
     static {
         GUMSCommandLine.addCommand("gov.bnl.gums.admin.GenerateOsgUserVoMap",
             "Generate OSG-user-VO-map for a given service/host.");

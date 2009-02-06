@@ -357,7 +357,7 @@ function usage {
 #### MAIN ###############################################################
 PGM=$(basename $0)
 PRIMA_CALLOUT=/etc/grid-security/gsi-authz.conf
-PRIMA_CALLOUT_STRING="libprima_authz_module_gcc"
+PRIMA_CALLOUT_STRING="libprima_authz_module"
 GUMSDIR=$VDT_LOCATION/gums/scripts
 
 MAPFILE=/etc/grid-security/grid-mapfile
@@ -392,7 +392,7 @@ for arg ; do
 	case $arg in
 		--gumsdebug)
 		DEBUG=1
-		DEBUG_OPTION="--debug"
+		DEBUG_OPTION="--gumsdebug"
 		;;
 		
 		--help)
