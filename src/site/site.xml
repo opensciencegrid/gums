@@ -37,8 +37,10 @@
     </menu>
     
     <menu name="Development">
-      <item name="How to build" href="building.html"/>
-      <item name="Source documentation" href="source_docs.html"/>
+      <item name="How to Build" href="building.html"/>
+      <item name="Past History" href="past_history.html"/>
+      <item name="Future Plans" href="future_plans.html"/>
+      <item name="Source" href="source.html"/>
       <item name="Stress Test Results" href="tests.html"/>
     </menu>
     
