@@ -7,6 +7,7 @@
 package gov.bnl.gums.db;
 
 import java.util.List;
+import java.util.Map;
 
 /** The persistant layer for the ManualAccontMapper. Store a set of mappings
  * to be used by the ManualAccountMapper itself. This interface allows the 
@@ -48,9 +49,16 @@ public interface ManualAccountMapperDB {
     String retrieveMapping(String userDN);
     
     /**
-     * Retrieves user mappings from the database.
+     * Retrieves user to account map.
      * 
-     * @return all the mappings
+     * @return a Map object
      */
-    java.util.List retrieveMappings();
+    public Map retrieveAccountMap();
+ 
+    /**
+     * Retrieves account to user map.
+     * 
+     * @return a Map object
+     */
+    public Map retrieveReverseAccountMap();
 }

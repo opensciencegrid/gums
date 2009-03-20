@@ -59,34 +59,57 @@ public class GUMS {
             try {
                 Context env = (Context) new InitialContext().lookup("java:comp/env");
                 Integer updateMinutes = (Integer) env.lookup("updateGroupsMinutes");
+                Integer updateBannedMinutes = (Integer) env.lookup("updateBannedGroupsMinutes");
                 Integer emailWarningHours = (Integer) env.lookup("emailWarningHours");
                 if (updateMinutes != null) {
                 	timer = new Timer();
                 	
                     TimerTask updateTask = new TimerTask() {
                         public void run() {
-                            try {
-                                gumsAdminLog.info("Starting automatic updateGroups");
-                                gums.getCoreLogic().updateGroups();
-                                gumsAdminLog.info("Automatic updateGroups ended");
-                            } catch (Exception e) {
-                                gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage());
-                                gumsAdminEmailLog.put("updateUserGroup", e.getMessage(), false);
-                            }
+                        	synchronized(this) {
+	                            try {
+	                                gumsAdminLog.info("Starting automatic updateGroups");
+	                                gums.getCoreLogic().updateGroups();
+	                                gumsAdminLog.info("Automatic updateGroups ended");
+	                            } catch (Exception e) {
+	                                gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage());
+	                                gumsAdminEmailLog.put("updateUserGroup", e.getMessage(), false);
+	                            }
+                        	}
+                        }
+                    };
+          
+                    TimerTask updateBannedTask = new TimerTask() {
+                        public void run() {
+                        	synchronized(this) {
+	                            try {
+	                                gumsAdminLog.info("Starting automatic updateBannedGroups");
+	                                gums.getCoreLogic().updateBannedGroups();
+	                                gumsAdminLog.info("Automatic updateBannedGroups ended");
+	                            } catch (Exception e) {
+	                                gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage());
+	                                gumsAdminEmailLog.put("updateBannedGroups", e.getMessage(), false);
+	                            }
+                        	}
                         }
                     };
                     
                     TimerTask emailWarningTask = new TimerTask() {
                         public void run() {
-                     	   if (gumsAdminEmailLog.hasMessages()) {
- 	                    	   gumsAdminEmailLog.logMessages();
-                     	   }
+                           synchronized(this) {
+	                     	   if (gumsAdminEmailLog.hasMessages()) {
+	 	                    	   gumsAdminEmailLog.logMessages();
+	                     	   }
+                           }
                         }
                     };      
                     
                     timer.scheduleAtFixedRate(updateTask, 0, updateMinutes.intValue()*60*1000);
                     gumsAdminLog.info("Automatic group update set: will refresh every " + updateMinutes.intValue() + " minutes starting now.");
 
+                    timer.scheduleAtFixedRate(updateBannedTask, 0, updateBannedMinutes.intValue()*60*1000);
+                    gumsAdminLog.info("Automatic banned group update set: will refresh every " + updateBannedMinutes.intValue() + " minutes starting now.");
+                    
                     timer.scheduleAtFixedRate(emailWarningTask, 5*60*1000, emailWarningHours.intValue()*60*60*1000);
                     gumsAdminLog.info("Automatic email warning set: will refresh every " + emailWarningHours.intValue() + " hours starting in 5 minutes.");
                 } else {
@@ -302,7 +325,7 @@ public class GUMS {
     	List bannedUserGroups = config.getBannedUserGroupList();
     	Iterator it = bannedUserGroups.iterator();
     	while (it.hasNext()) {
-    		UserGroup userGroup = (ManualUserGroup)config.getUserGroup((String)it.next());
+    		UserGroup userGroup = config.getUserGroup((String)it.next());
     		return userGroup.isInGroup(user);
     	}
     	return false;

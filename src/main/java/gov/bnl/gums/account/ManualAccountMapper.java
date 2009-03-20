@@ -6,6 +6,8 @@
 
 package gov.bnl.gums.account;
 
+import java.util.Map;
+
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.ManualAccountMapperDB;
@@ -40,6 +42,10 @@ public class ManualAccountMapper extends AccountMapper {
     	super(configuration, name);
     }
     
+    public void addMapping(String userDN, String account) {
+    	getDB().createMapping(userDN, account);
+    }
+    
     public AccountMapper clone(Configuration configuration) {
     	ManualAccountMapper accountMapper = new ManualAccountMapper(configuration, new String(getName()));
     	accountMapper.setDescription(new String(getDescription()));
@@ -57,8 +63,12 @@ public class ManualAccountMapper extends AccountMapper {
     	return db;
     }
     
-    public java.util.List getMappings() {
-    	return getDB().retrieveMappings();
+    public Map getAccountMap() {
+    	return getDB().retrieveAccountMap();
+    }
+    
+    public Map getReverseAccountMap() {
+    	return getDB().retrieveReverseAccountMap();
     }
     
     public String getPersistenceFactory() {

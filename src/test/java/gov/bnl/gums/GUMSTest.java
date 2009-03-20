@@ -41,7 +41,7 @@ public class GUMSTest extends TestCase {
 		}
 		assertEquals(1, conf.getPersistenceFactories().size());
 		assertEquals("persistenceFactoryA", ((HibernatePersistenceFactory) conf.getPersistenceFactories().get("persistenceFactoryA")).getName());
-		assertEquals(3, conf.getGroupToAccountMappings().size());
+		assertEquals(4, conf.getGroupToAccountMappings().size());
 		GroupToAccountMapping groupToAccountMapping = (GroupToAccountMapping) conf.getGroupToAccountMappings().get("groupToAccountMappingA");
 		Collection userGroups = (Collection) groupToAccountMapping.getUserGroups();
 		String userGroupName = (String)userGroups.iterator().next();
@@ -50,7 +50,10 @@ public class GUMSTest extends TestCase {
 		assertEquals("write", conf.getUserGroup( userGroupName ).getAccess() );
 		Collection accountMappers = (Collection) groupToAccountMapping.getAccountMappers();
 		assertEquals("accountMapperA", (String)accountMappers.iterator().next());
-		assertEquals(1, conf.getHostToGroupMappings().size());
+		groupToAccountMapping = (GroupToAccountMapping) conf.getGroupToAccountMappings().get("_test");
+		accountMappers = (Collection) groupToAccountMapping.getAccountMappers();
+		assertEquals("_test", (String)accountMappers.iterator().next());
+		assertEquals(2, conf.getHostToGroupMappings().size());
     }
     
 }

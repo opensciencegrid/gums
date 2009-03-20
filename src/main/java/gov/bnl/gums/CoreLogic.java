@@ -215,6 +215,14 @@ public class CoreLogic {
     }
     
     /**
+     * Scans the configuration and calls updateMembers() on all the banned groups,
+     * updating the local database.
+     */
+    public void updateBannedGroups() throws Exception {
+        updateBannedGroupsImpl();
+    }
+    
+    /**
      * @param hostname
      * @return
      */
@@ -437,19 +445,22 @@ public class CoreLogic {
     
     private void updateGroupsImpl() throws Exception {
         Collection groups = gums.getConfiguration().getUserGroups().values();
-        gumsAdminLog.info("Updating user group users for all " + groups.size() + " groups");
+        gumsAdminLog.info("Updating user group users for all " + groups.size() + " user groups");
         StringBuffer failedGroups = null;
         Iterator iter = groups.iterator();
         while (iter.hasNext()) {
             UserGroup group = (UserGroup) iter.next();
-            try {
-                group.updateMembers();
-                gumsAdminLog.info("User group update for " + group.getName() + " (" + group.getMemberList().size() + " users).");
-            } catch (Exception e) {
-                gumsAdminLog.warn("User group update for " + group.getName() + " failed: " + e.getMessage());
-            	if (failedGroups == null)
-            		failedGroups = new StringBuffer("Some user groups weren't updated correctly:\n");
-            	failedGroups.append( group.getName() + " - " + e.getMessage() + "\n" );
+            if (!gums.getConfiguration().getBannedUserGroupList().contains(group)) {
+            	// Banned user groups updated in another function
+	            try {
+	                group.updateMembers();
+	                gumsAdminLog.info("User group update for " + group.getName() + " (" + group.getMemberList().size() + " users).");
+	            } catch (Exception e) {
+	                gumsAdminLog.warn("User group update for " + group.getName() + " failed: " + e.getMessage());
+	            	if (failedGroups == null)
+	            		failedGroups = new StringBuffer("Some user groups weren't updated correctly:\n");
+	            	failedGroups.append( group.getName() + " - " + e.getMessage() + "\n" );
+	            }
             }
         }
         if (failedGroups == null) {
@@ -460,4 +471,32 @@ public class CoreLogic {
             throw new RuntimeException(failedGroups.toString());
         }
     }
+    
+    private void updateBannedGroupsImpl() throws Exception {
+        Collection groups = gums.getConfiguration().getBannedUserGroupList();
+        if (groups.size()>0) {
+	        gumsAdminLog.info("Updating user group users for all " + groups.size() + " banned user groups");
+	        StringBuffer failedGroups = null;
+	        Iterator iter = groups.iterator();
+	        while (iter.hasNext()) {
+	            UserGroup group = (UserGroup) iter.next();
+	            try {
+	                group.updateMembers();
+	                gumsAdminLog.info("User group update for " + group.getName() + " (" + group.getMemberList().size() + " users).");
+	            } catch (Exception e) {
+	                gumsAdminLog.warn("User group update for " + group.getName() + " failed: " + e.getMessage());
+	            	if (failedGroups == null)
+	            		failedGroups = new StringBuffer("Some banned user groups weren't updated correctly:\n");
+	            	failedGroups.append( group.getName() + " - " + e.getMessage() + "\n" );
+	            }
+	        }
+	        if (failedGroups == null) {
+	        	gumsAdminLog.info("Finished updating banned users for all user groups");
+	        }
+	        else {
+	        	gumsAdminLog.warn("Some banned user groups weren't updated correctly");
+	            throw new RuntimeException(failedGroups.toString());
+	        }
+        }
+    }    
 }

@@ -207,6 +207,8 @@ then
 	fi
 fi
 
+cp ../config/gums.config ../config/gums.config.old
+
 cat $TEMPLATE \
   | /bin/sed -e s/@USER@/$USER/g                    \
              -e s/@SERVER@/$SERVER/g                \

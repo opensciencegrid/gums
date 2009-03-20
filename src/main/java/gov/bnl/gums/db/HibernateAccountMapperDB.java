@@ -14,6 +14,7 @@ package gov.bnl.gums.db;
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -126,7 +127,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             }
         }
     }
-
+    
     public void createMapping(String userDN, String account) {
         Session session = null;
         Transaction tx = null;
@@ -367,41 +368,6 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
         }
     }
     
-    public java.util.List retrieveMappings() {
-        Session session = null;
-        Transaction tx = null;
-        try {
-            // Retrieving members from the db
-            log.trace("Retrieving mappings from map " + map);
-            session = persistenceFactory.retrieveSessionFactory().openSession();
-            tx = session.beginTransaction();
-            List mappings = retrieveMappings(session, tx);
-            tx.commit();
-            return mappings;
-        // Handles when transaction goes wrong...
-        } catch (Exception e) {
-            log.error("Couldn't retrieve members from map " + map, e);
-            if (tx != null) {
-                try {
-                    tx.rollback();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: rollback failed", e1);
-                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
-                }
-            }
-            throw new RuntimeException("Database error: " + e.getMessage(), e);
-        } finally {
-            if (session != null) {
-                try {
-                    session.close();
-                } catch (Exception e1) {
-                    log.error("Hibernate error: couldn't close session", e1);
-                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
-                }
-            }
-        }
-    }
-
     public java.util.Map retrieveReverseAccountMap() {
         Session session = null;
         Transaction tx = null;
@@ -582,14 +548,6 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
 	        q.setString(1, account);
         }
         return (HibernateMapping) q.uniqueResult();
-    }
-    
-    private java.util.List retrieveMappings(Session session, Transaction tx) throws Exception {
-        Query q;
-        q = session.createQuery("FROM HibernateMapping m WHERE m.map = ?");
-        q.setString(0, map);
-        List hibernateMappings = q.list();
-        return hibernateMappings;
     }
     
     private void setNeedsCacheRefresh(boolean value) {

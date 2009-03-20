@@ -116,6 +116,7 @@ public class HibernateConfigurationDB implements ConfigurationDB {
 		Transaction tx = null;
 		try {
 		    // Checks whether the value is present in the database
+			log.debug("Getting last modification from database");
 			session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();			
 		    Query q;
@@ -159,6 +160,7 @@ public class HibernateConfigurationDB implements ConfigurationDB {
 		Session session = null;
 		Transaction tx = null;
 		try {
+			log.info("Restoring configuration "+name+" from database");
 		    // Checks whether the value is present in the database
 			session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();			
@@ -201,6 +203,7 @@ public class HibernateConfigurationDB implements ConfigurationDB {
 		Session session = null;
 		Transaction tx = null;
 		try {
+			log.info("Loading current configuration from database");
 		    // Checks whether the value is present in the database
 			session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();			
@@ -240,6 +243,7 @@ public class HibernateConfigurationDB implements ConfigurationDB {
         Session session = null;
         Transaction tx = null;
         try {
+		log.info("Setting configuration in database");
             // Checks whether the value is present in the database
         	session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();

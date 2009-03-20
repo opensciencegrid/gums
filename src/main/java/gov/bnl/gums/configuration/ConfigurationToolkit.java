@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.configuration;
 
+import gov.bnl.gums.GUMS;
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.account.AccountPoolMapper;
@@ -66,6 +67,7 @@ import org.apache.log4j.Logger;
  */
 public class ConfigurationToolkit {
 	static private Logger log = Logger.getLogger(ConfigurationToolkit.class); 
+	static private Logger adminLog = Logger.getLogger(GUMS.gumsAdminLogName);
 	static String schemaPath;
 	static String transformPath;
     
@@ -89,20 +91,23 @@ public class ConfigurationToolkit {
      * @author jpackard
      */
     public class SimpleErrorHandler implements ErrorHandler {
-        public boolean error = false;
+        public String error = null;
     	
         public void error(SAXParseException exception) {
         	log.error(exception.getMessage());
-        	error = true;
+        	adminLog.error(exception.getMessage());
+        	error = exception.getMessage();
         }
              
         public void fatalError(SAXParseException exception) {
         	log.fatal(exception.getMessage());
-        	error = true;
+        	adminLog.fatal(exception.getMessage());
+        	error = exception.getMessage();
         }
              
         public void warning(SAXParseException exception) {
         	log.warn(exception.getMessage());
+        	adminLog.warn(exception.getMessage());
         }
     }
     
@@ -393,9 +398,8 @@ public class ConfigurationToolkit {
 
        	builder.parse(new ByteArrayInputStream(configText.getBytes()));
         
-        if (errorHandler.error) {
-        	throw new ParserConfigurationException();
-        }
+        if (errorHandler.error != null)
+        	throw new ParserConfigurationException(errorHandler.error);
     }
 
     /** new StringBufferInputStream(configText)
@@ -439,6 +443,62 @@ public class ConfigurationToolkit {
         if (storeConfigCount>1)
         	throw new RuntimeException("Only one persistence factory may be set to store the configuration");
         
+        // Add test user and test configuration
+        Map userGroups = configuration.getUserGroups();
+        it = userGroups.values().iterator();
+		while (it.hasNext()) {
+			UserGroup userGroup = (UserGroup)it.next();
+			if (userGroup instanceof ManualUserGroup) {
+				// Add test user to manual user group
+				ManualUserGroup manualUserGroup = (ManualUserGroup)userGroup;
+				String persFactory = manualUserGroup.getPersistenceFactory();
+				GridUser testUser = new GridUser("/DC=com/DC=example/OU=People/CN=Example User 12345");
+				if (!manualUserGroup.isInGroup(testUser))
+					manualUserGroup.addMember(testUser);
+					
+				// Add test account mapper
+				ManualAccountMapper manualAccountMapper;
+				AccountMapper accountMapper = configuration.getAccountMapper("_test");
+				if (accountMapper != null && accountMapper instanceof ManualAccountMapper)
+					manualAccountMapper = (ManualAccountMapper)accountMapper;
+				else {
+					String name = "_test";
+					while (configuration.getAccountMapper(name)!=null)
+						name = name + "_";
+					manualAccountMapper = new ManualAccountMapper(configuration);
+					manualAccountMapper.setName(name);
+					manualAccountMapper.setPersistenceFactory(persFactory);
+					configuration.addAccountMapper(manualAccountMapper);
+				}
+				if (!manualAccountMapper.getAccountMap().containsKey(testUser.getCertificateDN()))
+					manualAccountMapper.addMapping(testUser.getCertificateDN(), "test");
+					
+				// Add test groupToAccountMapping
+				GroupToAccountMapping g2AMapping = configuration.getGroupToAccountMapping("_test");
+				if (g2AMapping == null) {
+					g2AMapping = new GroupToAccountMapping(configuration);
+					g2AMapping.setName("_test");
+					configuration.addGroupToAccountMapping(g2AMapping);
+				}
+				if (!g2AMapping.containsUserGroup(manualUserGroup.getName()))
+					g2AMapping.addUserGroup(manualUserGroup.getName());
+				if (!g2AMapping.containsAccountMapper(manualAccountMapper.getName()))
+					g2AMapping.addAccountMapper(manualAccountMapper.getName());
+
+				// Add test hostToGroupMapping
+				HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping("/DC=com/DC=example/OU=Services/CN=example.site.com");
+				if (h2GMapping == null) {
+					h2GMapping = new CertificateHostToGroupMapping(configuration);
+					((CertificateHostToGroupMapping)h2GMapping).setDn("/DC=com/DC=example/OU=Services/CN=example.site.com");
+					configuration.addHostToGroupMapping(0, h2GMapping);
+				}
+				if (!h2GMapping.containsGroupToAccountMapping(g2AMapping.getName()))
+					h2GMapping.addGroupToAccountMapping(g2AMapping.getName());
+				
+				break;
+			}
+		}
+        
 		return configuration;
     }
 
@@ -462,7 +522,7 @@ public class ConfigurationToolkit {
 			// Reload it to get rid of duplicates that the transform couldn't handle
 			// as well as to clean up the formatting
 			Digester digester = ConfigurationToolkit.retrieveDigester();
-			Configuration configuration = new Configuration();
+			Configuration configuration = new Configuration(true);
 			digester.push(configuration);
 			digester.parse("file://"+configFileTemp.getAbsolutePath());
 
@@ -545,7 +605,8 @@ public class ConfigurationToolkit {
 			return configuration;
 		} catch (Exception e) {
 			String message = "Could not convert older version of gums.config";
-			log.error("Could not convert older version of gums.config", e);
+			log.error(message, e);
+			adminLog.error(message);
 			throw new RuntimeException(message);	    	 
 		} 
 	}
@@ -629,8 +690,8 @@ public class ConfigurationToolkit {
 			}
 		} catch (Exception e) {
 			String message = "Could not insert GIP probe";
-			log.error(message, e);
-			throw new RuntimeException(message);	 
+			log.warn(message, e);
+			adminLog.warn(message);
 		} 
     }
     

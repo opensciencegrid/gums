@@ -39,7 +39,11 @@ public class MockManualAccountMapperDB implements ManualAccountMapperDB {
         return Collections.unmodifiableList(users);   	
     }
     
-    public java.util.List retrieveMappings() {
-    	return new ArrayList( map.values() );
-    }        
+    public Map retrieveAccountMap() {
+    	return map;
+    }    
+    
+    public Map retrieveReverseAccountMap() {
+    	return null;
+    }    
 }

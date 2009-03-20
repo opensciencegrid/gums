@@ -68,7 +68,7 @@ public class DBConfigurationStore extends ConfigurationStore {
     public Configuration retrieveConfiguration() throws Exception {
     	ByteArrayInputStream stream = null;
     	try {
-			if (needsReload()) {
+		if (needsReload()) {
 		    	String configText = configDB.retrieveCurrentConfiguration();
 		    	conf = ConfigurationToolkit.parseConfiguration(configText, false);
 		    	lastRetrieval = new Date();
@@ -86,7 +86,7 @@ public class DBConfigurationStore extends ConfigurationStore {
     	ByteArrayInputStream stream = null;
     	try {
 			if (reload) {
-		    	String configText = configDB.retrieveCurrentConfiguration();
+			String configText = configDB.retrieveCurrentConfiguration();
 		    	conf = ConfigurationToolkit.parseConfiguration(configText, false);
 		    	lastRetrieval = new Date();
 			}

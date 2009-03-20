@@ -98,6 +98,19 @@ public class GroupToAccountMapping {
     }
     
 	/**
+     * @return returns true if accountMapper is matched.
+     */
+    public boolean containsAccountMapper(String accountMapperQuery) {
+    	Iterator accountMapperIt = accountMappers.iterator();
+    	while(accountMapperIt.hasNext()) {
+    		String accountMapper = (String)accountMapperIt.next();
+    		if(accountMapper.equals(accountMapperQuery))
+    			return true;
+    	}
+    	return false;
+    }
+    
+	/**
      * @return returns true if userGroup is matched.
      */
     public boolean containsUserGroup(String userGroupQuery) {

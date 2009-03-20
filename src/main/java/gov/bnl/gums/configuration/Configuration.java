@@ -9,8 +9,11 @@ package gov.bnl.gums.configuration;
 import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.HostToGroupMapping;
+import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.UserGroup;
 import gov.bnl.gums.userGroup.VomsServer;
+import gov.bnl.gums.GUMS;
+import gov.bnl.gums.GridUser;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -36,6 +39,7 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  */
 public class Configuration {
     private Logger log = Logger.getLogger(Configuration.class);
+    private Logger adminLog = Logger.getLogger(GUMS.gumsAdminLogName);
     private List hostToGroupMappings = new ArrayList();
     private Map groupToAccountMappings = new TreeMap();
     private Map persistenceFactories = new TreeMap();
@@ -45,15 +49,30 @@ public class Configuration {
     private List bannedUserGroupList = new ArrayList();
     private String bannedUserGroups = "";
     private boolean allowGridmapFiles = true;
+    private boolean transformingFromOld11Version = false;
 	static private String version = "1.3";
     
+	public Configuration() {};
+	
+	public Configuration(boolean transformingFromOld11Version) {
+		this.transformingFromOld11Version = transformingFromOld11Version;
+	}
+	
     /**
      * @param accountMapper
      */
     public synchronized void addAccountMapper(AccountMapper accountMapper) {
-        log.trace("Adding AccountManager to the configuration: " + accountMapper.getName());
-        if (accountMappers.get(accountMapper.getName())!=null)
-        	log.warn("Account mapper " + accountMapper.getName() + " replaced with one with same name");
+        log.trace("Adding account mapper to the configuration: " + accountMapper.getName());
+        if (accountMappers.get(accountMapper.getName()) != null) {
+        	if (transformingFromOld11Version)
+        		log.trace("Replacing account mapper: " + accountMapper.getName());
+        	else {
+	        	String message = "Account mapper " + accountMapper.getName() + " already exists";
+	        	log.debug(message);
+	        	adminLog.error(message);
+	        	throw new RuntimeException(message);
+        	}
+        }     	
         accountMappers.put(accountMapper.getName(), accountMapper);
         if (accountMapper.getConfiguration()==null)
         	accountMapper.setConfiguration(this);
@@ -63,17 +82,14 @@ public class Configuration {
      * @param g2AMapping
      */
     public synchronized void addGroupToAccountMapping(GroupToAccountMapping g2AMapping) {
-        log.trace("Adding GroupToAccountMapper to the configuration: " + g2AMapping.getName());
-        if (getGroupToAccountMapping(g2AMapping.getName())!=null) {
-        	log.warn("Group to account mapping " + g2AMapping.getName() + " merged with one with same name");
-        	// For the sake of old versions of gums.config that may have duplicate g2AMappings with
-        	// different account mappers, copy over account mappers into new groupToAccountMapping
-        	Iterator it = g2AMapping.getAccountMappers().iterator();
-        	while (it.hasNext())
-        		getGroupToAccountMapping(g2AMapping.getName()).addAccountMapper( new String((String)it.next()) ); 
+        log.trace("Adding group to account mapping to the configuration: " + g2AMapping.getName());
+        if (getGroupToAccountMapping(g2AMapping.getName()) != null) {
+        	String message = "Group to account mapping " + g2AMapping.getName() + " already exists";
+        	log.debug(message);
+        	adminLog.error(message);
+        	throw new RuntimeException(message);
         }
-        else
-        	groupToAccountMappings.put(g2AMapping.getName(), g2AMapping);
+       	groupToAccountMappings.put(g2AMapping.getName(), g2AMapping);
         if (g2AMapping.getConfiguration()==null)
         	g2AMapping.setConfiguration(this);
     }
@@ -82,9 +98,13 @@ public class Configuration {
      * @param h2GMapping
      */
     public synchronized void addHostToGroupMapping(HostToGroupMapping h2GMapping) {
-        log.trace("Adding HostToGroupMapper to the configuration: " + h2GMapping.getName());
-        if ( getHostToGroupMapping(h2GMapping.getName())!=null )
-        	log.warn("Host to group mapping " + h2GMapping.getName() + " replaced with one with same name");
+        log.trace("Adding Host to group mapping to the configuration: " + h2GMapping.getName());
+        if (getHostToGroupMapping(h2GMapping.getName()) != null) {
+        	String message = "Host to group mapping " + h2GMapping.getName() + " already exists";
+        	log.debug(message);
+        	adminLog.error(message);
+        	throw new RuntimeException(message);
+        }
         hostToGroupMappings.add(h2GMapping);
         if (h2GMapping.getConfiguration()==null)
         	h2GMapping.setConfiguration(this);
@@ -95,9 +115,13 @@ public class Configuration {
      * @param h2GMapping
      */
     public synchronized void addHostToGroupMapping(int index, HostToGroupMapping h2GMapping) {
-        log.trace("Adding HostToGroupMapper to the configuration: " + h2GMapping.getName());
-        if ( getHostToGroupMapping(h2GMapping.getName())!=null )
-    		log.warn("Host to group mapping " + h2GMapping.getName() + " replaced with one with same name");
+        log.trace("Adding Host to group mapping to the configuration: " + h2GMapping.getName());
+        if (getHostToGroupMapping(h2GMapping.getName()) != null) {
+        	String message = "Host to group mapping " + h2GMapping.getName() + " already exists";
+        	log.debug(message);
+        	adminLog.error(message);
+        	throw new RuntimeException(message);
+        }
         hostToGroupMappings.add(index, h2GMapping);
         if (h2GMapping.getConfiguration()==null)
         	h2GMapping.setConfiguration(this);
@@ -107,9 +131,13 @@ public class Configuration {
      * @param peristenceFactory
      */
     public synchronized void addPersistenceFactory(PersistenceFactory peristenceFactory) {
-        log.trace("Adding PersistenceManager to the configuration: " + peristenceFactory.getName());
-        if (persistenceFactories.get(peristenceFactory.getName())!=null)
-        	log.warn("PersistenceFactory " + peristenceFactory.getName() + " replaced with one with same name");
+        log.trace("Adding persistence factory to the configuration: " + peristenceFactory.getName());
+        if (persistenceFactories.get(peristenceFactory.getName()) != null) {
+        	String message = "Persistence factory " + peristenceFactory.getName() + " already exists";
+        	log.debug(message);
+        	adminLog.error(message);
+        	throw new RuntimeException(message);
+        }        
         persistenceFactories.put(peristenceFactory.getName(), peristenceFactory);
         if (peristenceFactory.getConfiguration()==null)
         	peristenceFactory.setConfiguration(this);
@@ -119,9 +147,13 @@ public class Configuration {
      * @param userGroup
      */
     public synchronized void addUserGroup(UserGroup userGroup) {
-        log.trace("Adding UserGroup to the configuration: " + userGroup.getName());
-        if (userGroups.get(userGroup.getName())!=null)
-        	log.warn("User group " + userGroup.getName() + " replaced with one with same name");
+        log.trace("Adding user group to the configuration: " + userGroup.getName());
+        if (userGroups.get(userGroup.getName()) != null) {
+        	String message = "User group " + userGroup.getName() + " already exists";
+        	log.debug(message);
+        	adminLog.error(message);
+        	throw new RuntimeException(message);
+        }             
         userGroups.put(userGroup.getName(), userGroup);
         if (userGroup.getConfiguration()==null)
         	userGroup.setConfiguration(this);
@@ -132,8 +164,16 @@ public class Configuration {
      */
     public synchronized void addVomsServer(VomsServer vomsServer) {
         log.trace("Adding VOMS server to the configuration: " + vomsServer.getName());
-        if (vomsServers.get(vomsServer.getName())!=null)
-        	log.warn("VOMS Server " + vomsServer.getName() + " replaced with one with same name");
+        if (vomsServers.get(vomsServer.getName()) != null) {
+        	if (transformingFromOld11Version)
+        		log.trace("Replacing voms server: " + vomsServer.getName());
+        	else {
+	        	String message = "VOMS Server " + vomsServer.getName() + " already exists";
+	        	log.debug(message);
+	        	adminLog.error(message);
+	        	throw new RuntimeException(message);
+        	}
+        }
         vomsServers.put(vomsServer.getName(), vomsServer);
         if (vomsServer.getConfiguration()==null)
         	vomsServer.setConfiguration(this);
@@ -147,27 +187,27 @@ public class Configuration {
     	
     	Iterator it = persistenceFactories.values().iterator();
     	while (it.hasNext() )
-    		newConf.addPersistenceFactory( ((PersistenceFactory)it.next()).clone(newConf) );
+    		newConf.addPersistenceFactory( ((PersistenceFactory)it.next()).clone(newConf));
     	
     	it = vomsServers.values().iterator();
     	while (it.hasNext() )
-    		newConf.addVomsServer( ((VomsServer)it.next()).clone(newConf) );
+    		newConf.addVomsServer( ((VomsServer)it.next()).clone(newConf));
     	
     	it = accountMappers.values().iterator();
     	while (it.hasNext() )
-    		newConf.addAccountMapper( ((AccountMapper)it.next()).clone(newConf) );    
+    		newConf.addAccountMapper( ((AccountMapper)it.next()).clone(newConf));    
     	
     	it = userGroups.values().iterator();
     	while (it.hasNext() )
-    		newConf.addUserGroup( ((UserGroup)it.next()).clone(newConf) );  
+    		newConf.addUserGroup( ((UserGroup)it.next()).clone(newConf));  
    
     	it = groupToAccountMappings.values().iterator();
     	while (it.hasNext() )
-    		newConf.addGroupToAccountMapping( ((GroupToAccountMapping)it.next()).clone(newConf) );  
+    		newConf.addGroupToAccountMapping( ((GroupToAccountMapping)it.next()).clone(newConf));  
     	
     	it = hostToGroupMappings.iterator();
     	while (it.hasNext() )
-    		newConf.addHostToGroupMapping( ((HostToGroupMapping)it.next()).clone(newConf) ); 
+    		newConf.addHostToGroupMapping( ((HostToGroupMapping)it.next()).clone(newConf)); 
     	
     	return newConf;
     }

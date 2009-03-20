@@ -190,7 +190,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 	 * @param email
 	 */
 	public void changeEmail(String account, String email) {
-		if (emailField!=null && emailField.length()>0) {
+		if (emailField!=null && emailField.length()>0 && email!=null && email.length()>0) {
 			DirContext context = retrievePeopleContext();
 			try {
 				ModificationItem[] mods = new ModificationItem[1];

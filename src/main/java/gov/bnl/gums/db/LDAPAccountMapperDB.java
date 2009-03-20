@@ -157,7 +157,7 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		
 		return account;
 	}
-
+	
 	public void createGroupIfNotExists() {
 		if (!doesMapExist()) {
 			factory.createMap(map, mapDN);
@@ -298,10 +298,6 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		} finally {
 			factory.releaseContext(context);
 		}
-	}
-
-	public java.util.List retrieveMappings() {
-		return null;
 	}
 
 	public java.util.Map retrieveReverseAccountMap() {
