@@ -37,7 +37,7 @@ Determines the local account used for the grid identity on a specific service.
       </tr>
       <tr>
         <td style="text-align: right;">i.e.</td>
-        <td>/DC=org/DC=doegrids/OU=Services/CN=mygk.site.com</td>
+        <td>/DC=com/DC=example/OU=Services/CN=example.site.com</td>
       </tr>
       <tr>
         <td style="text-align: right;">DN (Distinguished Name) for user:<br>
@@ -47,7 +47,7 @@ Determines the local account used for the grid identity on a specific service.
       </tr>
       <tr>
         <td style="text-align: right;">i.e.</td>
-        <td>/DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345</td>
+        <td>/DC=com/DC=example/OU=People/CN=Example User 12345</td>
       </tr>
       <tr>
         <td style="text-align: right;">VOMS FQAN for user:<br>

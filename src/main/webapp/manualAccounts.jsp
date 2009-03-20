@@ -89,20 +89,23 @@ if (request.getParameter("command")==null ||
 		if (accountMapper instanceof ManualAccountMapper) {
 			ManualAccountMapper manualAccountMapper = (ManualAccountMapper)accountMapper;
 			
-			List mappings = manualAccountMapper.getMappings();
-			if (mappings==null)
+			Map accountMap = manualAccountMapper.getAccountMap();
+			if (accountMap==null)
 				continue;
 				
-			Iterator mappingsIt = mappings.iterator();
-			while (mappingsIt.hasNext()) {
-				HibernateMapping mapping = (HibernateMapping)mappingsIt.next();
+			Iterator dnIt = accountMap.keySet().iterator();
+			while (dnIt.hasNext()) {
+				String dn = (String)dnIt.next();
+				
+				if ("/DC=com/DC=example/OU=People/CN=Example User 12345".equals(dn))
+					continue;
 
 %>
    	<tr>
 		<td width="25" valign="top">
 			<form action="manualAccounts.jsp" method="get">
 				<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this mapping?'))return false;">
-				<input type="hidden" name="dn" value="<%=mapping.getDn()%>">
+				<input type="hidden" name="dn" value="<%=dn%>">
 				<input type="hidden" name="accountMapper" value="<%=manualAccountMapper.getName()%>">
 			</form>
 		</td>
@@ -110,9 +113,9 @@ if (request.getParameter("command")==null ||
 	   		<table class="userElement" width="100%">
 	  			<tr>
 		    		<td>
-			    		DN: <%=mapping.getDn()%><br>
+			    		DN: <%=dn%><br>
 			    		Account Mapper: <a href="accountMappers.jsp?name=<%=manualAccountMapper.getName()%>&command=edit"><%=manualAccountMapper.getName()%></a><br>
-			    		Account: <%=mapping.getAccount()%><br>
+			    		Account: <%=accountMap.get(dn)%><br>
 		    		</td>
 	  			</tr>
 			</table>

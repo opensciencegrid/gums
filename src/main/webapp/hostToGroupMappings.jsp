@@ -132,6 +132,9 @@ if (request.getParameter("command")==null ||
 	while(h2GMappingsIt.hasNext()) {
 		HostToGroupMapping h2GMapping = h2GMappingsIt.hasNext() ? (HostToGroupMapping)h2GMappingsIt.next() : null;
 		
+		if ("/DC=com/DC=example/OU=Services/CN=example.site.com".equals(h2GMapping.getName()))
+			continue;
+		
 		if(h2GMapping instanceof CertificateHostToGroupMapping) {
 			CertificateHostToGroupMapping cH2GMapping = (CertificateHostToGroupMapping)h2GMapping;
 			

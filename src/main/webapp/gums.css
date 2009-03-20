@@ -89,7 +89,7 @@
     float: left;
     left: 10px;
     top: 104px;
-    width: 233px;
+    width: 250px;
     background-color: rgb(255, 238, 119);
     }
 
@@ -129,7 +129,7 @@
 
   #body { margin-top: 0px;
     margin-bottom: 0px;
-    margin-left: 250px;
+    margin-left: 270px;
     }
 
   #body table#projectList { border: 3px solid rgb(0, 0, 0);
@@ -203,7 +203,7 @@
     border-top: 1px solid;
     margin-top: 20px;
     margin-bottom: 0px;
-    margin-left: 250px;
+    margin-left: 270px;
     padding-top: 5px;
     height: 40px;
     }

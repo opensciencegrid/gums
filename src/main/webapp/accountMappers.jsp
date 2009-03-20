@@ -101,7 +101,9 @@ if (request.getParameter("command")==null ||
 	Iterator accountMappersIt = accountMappers.iterator();
 	while(accountMappersIt.hasNext()) {
 		AccountMapper accountMapper = accountMappersIt.hasNext() ? (AccountMapper)accountMappersIt.next() : null;
-		
+	
+		if (accountMapper.getName().startsWith("_test"))
+			continue;
 %>
 	   	<tr>
 			<td width="1" valign="top">

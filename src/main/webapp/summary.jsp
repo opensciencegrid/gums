@@ -61,6 +61,8 @@ Collection h2GMappings = configuration.getHostToGroupMappings();
 Iterator h2GMappingsIt = h2GMappings.iterator();
 while (h2GMappingsIt.hasNext()) {
 	HostToGroupMapping h2GMapping = (HostToGroupMapping)h2GMappingsIt.next();
+	if ("/DC=com/DC=example/OU=Services/CN=example.site.com".equals(h2GMapping.getName()))
+		continue;
 	if (!(h2GMapping instanceof CertificateHostToGroupMapping)) {
 		out.write("<tr><td colspan=\"2\">Unknown host to group mapping type</td></tr>");
 		continue;

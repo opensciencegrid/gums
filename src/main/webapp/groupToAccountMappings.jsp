@@ -120,6 +120,8 @@ if (request.getParameter("command")==null ||
 	while(g2AMappingsIt.hasNext()) {
 		GroupToAccountMapping g2AMapping = g2AMappingsIt.hasNext() ? (GroupToAccountMapping)g2AMappingsIt.next() : null;
 		
+		if ("_test".equals(g2AMapping.getName()))
+			continue;
 %>	
 	   	<tr>
 			<td width="1" valign="top">

@@ -60,9 +60,11 @@ if ("save".equals(request.getParameter("command"))) {
 		while(request.getParameter("bug" + counter)!=null) {
 			String userGroupName = request.getParameter("bug" + counter).trim();
 			if (!userGroupName.equals(""))
-				buffer.append(userGroupName);
+				buffer.append(userGroupName+",");
 			counter++;
 		}
+		if (buffer.length()>0 && buffer.charAt(buffer.length()-1)==',')
+			buffer.replace(buffer.length()-1, buffer.length(), "");
 		newConfiguration.setBannedUserGroups(buffer.toString());
 		gums.setConfiguration(newConfiguration);
 		configuration = gums.getConfiguration();

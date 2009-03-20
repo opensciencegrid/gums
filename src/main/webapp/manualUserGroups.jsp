@@ -95,6 +95,9 @@ if (request.getParameter("command")==null ||
 			Iterator usersIt = users.iterator();
 			while (usersIt.hasNext()) {
 				GridUser user = (GridUser)usersIt.next();
+				
+				if ("/DC=com/DC=example/OU=People/CN=Example User 12345".equals(user.getCertificateDN()))
+					continue;
 %>
    	<tr>
 		<td width="25" valign="top">

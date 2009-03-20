@@ -37,7 +37,7 @@ Generates OSG-user-VO-map for the given service.
       </tr>
       <tr>
         <td style="text-align: right;">i.e.</td>
-        <td>/DC=org/DC=doegrids/OU=Services/CN=mygk.site.com</td>
+        <td>/DC=com/DC=example/OU=Services/CN=example.site.com</td>
       </tr>
       <tr>
         <td style="text-align: right;">NOTE: </td>
