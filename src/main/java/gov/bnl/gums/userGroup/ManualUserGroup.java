@@ -13,6 +13,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.Security;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -49,6 +51,8 @@ public class ManualUserGroup extends UserGroup {
 	private List patternList = new ArrayList();
 	private boolean needsRefresh = true;
 	private RWLock rWLock = new RWLock();
+	protected Date patternListLastUpdated;
+	protected int secondsBetweenPatternRefresh = 10;
     
     /**
      * Create a new manual user group. This empty constructor is needed by the XML Digestor.
@@ -144,7 +148,9 @@ public class ManualUserGroup extends UserGroup {
 		
     	try {
     		rWLock.getReadLock();
-        	if (needsRefresh) {
+    		Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.SECOND, -secondsBetweenPatternRefresh);
+        	if (needsRefresh || patternListLastUpdated.before(cal.getTime())) {
         		rWLock.releaseLock();
         		refreshPatternList();
             	rWLock.getReadLock();
@@ -339,6 +345,7 @@ public class ManualUserGroup extends UserGroup {
 				patternList.add(p);
 	 		}
 			needsRefresh = false;
+			patternListLastUpdated = Calendar.getInstance().getTime();
 		}
 		catch(Exception e) {
 			log.error(e);

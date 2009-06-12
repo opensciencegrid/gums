@@ -188,21 +188,22 @@ public class VOMSUserGroup extends UserGroup {
     }
     
     public boolean isInGroup(GridUser user) {
-        // If the user comes in without FQAN and we don't accept proxies without fqan,
-        // kick him out right away
-        if (user.getVoFQAN()==null && !isAcceptProxyWithoutFQAN())
-            return false;
-        
-        // If the user comes in without FQAN and we accept proxies without it,
-        // we simply check whether the DN is in the database
-        if (user.getVoFQAN()==null && isAcceptProxyWithoutFQAN() && getVoDB()!=null) {
-            if (getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan)))
-                return true;
-            return false;
-        }
-        
-        // At this point, the user has FQAN
-        // To avoid a query on the db, we check if the fqan matches first
+    	if (user.getVoFQAN() == null) {
+            // If the user comes in without FQAN and we don't accept proxies without fqan,
+            // kick him out right away
+	        if (!isAcceptProxyWithoutFQAN())
+	            return false;
+	        // If the user comes in without FQAN and we accept proxies without it,
+	        // we simply check whether the DN is in the database
+	        else {
+	        	if (getVoDB()!=null)
+	        		return getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan));
+	        	else
+	        		return false;
+	        }
+    	}
+
+        // We now know we don't have user.getVoFQAN()==null
 
         // If we have vorole match, entire fqan has to be the same
         if ("exact".equals(getMatchFQAN())) {
@@ -211,14 +212,14 @@ public class VOMSUserGroup extends UserGroup {
         }
         
         // If we have a vo-role match, vo and role has to be the same
-        if ("vorole".equals(getMatchFQAN())) {
+        if ("vorole".equals(getMatchFQAN()) && user.getVoFQAN().getVo()!=null && user.getVoFQAN().getRole()!=null) {
         	FQAN theFQAN = new FQAN(fqan);
             if (!user.getVoFQAN().getVo().equals(theFQAN.getVo()) && !user.getVoFQAN().getRole().equals(theFQAN.getRole()))
                 return false;
         }
         
         // If we have a role match, role has to be the same
-        if ("role".equals(getMatchFQAN())) {
+        if ("role".equals(getMatchFQAN()) && user.getVoFQAN().getRole()!=null) {
         	FQAN theFQAN = new FQAN(fqan);
             if (!user.getVoFQAN().getRole().equals(theFQAN.getRole()))
                 return false;
@@ -231,7 +232,7 @@ public class VOMSUserGroup extends UserGroup {
         }
 
         // If we match the vo, we check the vo is the same
-        if ("vo".equals(getMatchFQAN())) {
+        if ("vo".equals(getMatchFQAN()) && user.getVoFQAN().getVo()!=null) {
             FQAN theFQAN = new FQAN(fqan);
             if (!user.getVoFQAN().getVo().equals(theFQAN.getVo()))
                 return false;

@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
-<gums version='' allowGridmapFiles='true'>
+<gums version='1.3' allowGridmapFiles='true'>
 
 	<persistenceFactories>
 
 		<hibernatePersistenceFactory
 			name='persistenceFactory'
 			description=''
-			storeConfig='true'
+			storeConfig='false'
 			hibernate.c3p0.timeout='180'
 			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
 			hibernate.connection.autoReconnect='true'

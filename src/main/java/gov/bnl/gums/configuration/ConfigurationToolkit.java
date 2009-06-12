@@ -415,12 +415,12 @@ public class ConfigurationToolkit {
      * 
      * Either set configPath or configText
      */
-    public static synchronized Configuration parseConfiguration(String configText, boolean insertGipProbeOnTransform) throws ParserConfigurationException, IOException, SAXException {
+    public static synchronized Configuration parseConfiguration(String configText, boolean insertTest) throws ParserConfigurationException, IOException, SAXException {
     	Configuration configuration;
     	if (ConfigurationToolkit.getVersion(configText).equals("1.1")) {
     		log.trace("Loading the configuration required configuration using schema '" + transformPath);
 			configuration = doTransform(configText);
-			if (insertGipProbeOnTransform)
+			if (insertTest)
 				insertGipProbe(configuration);
     	}
     	else {
@@ -443,61 +443,63 @@ public class ConfigurationToolkit {
         if (storeConfigCount>1)
         	throw new RuntimeException("Only one persistence factory may be set to store the configuration");
         
-        // Add test user and test configuration
-        Map userGroups = configuration.getUserGroups();
-        it = userGroups.values().iterator();
-		while (it.hasNext()) {
-			UserGroup userGroup = (UserGroup)it.next();
-			if (userGroup instanceof ManualUserGroup) {
-				// Add test user to manual user group
-				ManualUserGroup manualUserGroup = (ManualUserGroup)userGroup;
-				String persFactory = manualUserGroup.getPersistenceFactory();
-				GridUser testUser = new GridUser("/DC=com/DC=example/OU=People/CN=Example User 12345");
-				if (!manualUserGroup.isInGroup(testUser))
-					manualUserGroup.addMember(testUser);
+        if (insertTest) {
+	        // Add test user and test configuration
+	        Map userGroups = configuration.getUserGroups();
+	        it = userGroups.values().iterator();
+			while (it.hasNext()) {
+				UserGroup userGroup = (UserGroup)it.next();
+				if (userGroup instanceof ManualUserGroup) {
+					// Add test user to manual user group
+					ManualUserGroup manualUserGroup = (ManualUserGroup)userGroup;
+					String persFactory = manualUserGroup.getPersistenceFactory();
+					GridUser testUser = new GridUser("/DC=com/DC=example/OU=People/CN=Example User 12345");
+					if (!manualUserGroup.isInGroup(testUser))
+						manualUserGroup.addMember(testUser);
+						
+					// Add test account mapper
+					ManualAccountMapper manualAccountMapper;
+					AccountMapper accountMapper = configuration.getAccountMapper("_test");
+					if (accountMapper != null && accountMapper instanceof ManualAccountMapper)
+						manualAccountMapper = (ManualAccountMapper)accountMapper;
+					else {
+						String name = "_test";
+						while (configuration.getAccountMapper(name)!=null)
+							name = name + "_";
+						manualAccountMapper = new ManualAccountMapper(configuration);
+						manualAccountMapper.setName(name);
+						manualAccountMapper.setPersistenceFactory(persFactory);
+						configuration.addAccountMapper(manualAccountMapper);
+					}
+					if (!manualAccountMapper.getAccountMap().containsKey(testUser.getCertificateDN()))
+						manualAccountMapper.addMapping(testUser.getCertificateDN(), "test");
+						
+					// Add test groupToAccountMapping
+					GroupToAccountMapping g2AMapping = configuration.getGroupToAccountMapping("_test");
+					if (g2AMapping == null) {
+						g2AMapping = new GroupToAccountMapping(configuration);
+						g2AMapping.setName("_test");
+						configuration.addGroupToAccountMapping(g2AMapping);
+					}
+					if (!g2AMapping.containsUserGroup(manualUserGroup.getName()))
+						g2AMapping.addUserGroup(manualUserGroup.getName());
+					if (!g2AMapping.containsAccountMapper(manualAccountMapper.getName()))
+						g2AMapping.addAccountMapper(manualAccountMapper.getName());
+	
+					// Add test hostToGroupMapping
+					HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping("/DC=com/DC=example/OU=Services/CN=example.site.com");
+					if (h2GMapping == null) {
+						h2GMapping = new CertificateHostToGroupMapping(configuration);
+						((CertificateHostToGroupMapping)h2GMapping).setDn("/DC=com/DC=example/OU=Services/CN=example.site.com");
+						configuration.addHostToGroupMapping(0, h2GMapping);
+					}
+					if (!h2GMapping.containsGroupToAccountMapping(g2AMapping.getName()))
+						h2GMapping.addGroupToAccountMapping(g2AMapping.getName());
 					
-				// Add test account mapper
-				ManualAccountMapper manualAccountMapper;
-				AccountMapper accountMapper = configuration.getAccountMapper("_test");
-				if (accountMapper != null && accountMapper instanceof ManualAccountMapper)
-					manualAccountMapper = (ManualAccountMapper)accountMapper;
-				else {
-					String name = "_test";
-					while (configuration.getAccountMapper(name)!=null)
-						name = name + "_";
-					manualAccountMapper = new ManualAccountMapper(configuration);
-					manualAccountMapper.setName(name);
-					manualAccountMapper.setPersistenceFactory(persFactory);
-					configuration.addAccountMapper(manualAccountMapper);
+					break;
 				}
-				if (!manualAccountMapper.getAccountMap().containsKey(testUser.getCertificateDN()))
-					manualAccountMapper.addMapping(testUser.getCertificateDN(), "test");
-					
-				// Add test groupToAccountMapping
-				GroupToAccountMapping g2AMapping = configuration.getGroupToAccountMapping("_test");
-				if (g2AMapping == null) {
-					g2AMapping = new GroupToAccountMapping(configuration);
-					g2AMapping.setName("_test");
-					configuration.addGroupToAccountMapping(g2AMapping);
-				}
-				if (!g2AMapping.containsUserGroup(manualUserGroup.getName()))
-					g2AMapping.addUserGroup(manualUserGroup.getName());
-				if (!g2AMapping.containsAccountMapper(manualAccountMapper.getName()))
-					g2AMapping.addAccountMapper(manualAccountMapper.getName());
-
-				// Add test hostToGroupMapping
-				HostToGroupMapping h2GMapping = configuration.getHostToGroupMapping("/DC=com/DC=example/OU=Services/CN=example.site.com");
-				if (h2GMapping == null) {
-					h2GMapping = new CertificateHostToGroupMapping(configuration);
-					((CertificateHostToGroupMapping)h2GMapping).setDn("/DC=com/DC=example/OU=Services/CN=example.site.com");
-					configuration.addHostToGroupMapping(0, h2GMapping);
-				}
-				if (!h2GMapping.containsGroupToAccountMapping(g2AMapping.getName()))
-					h2GMapping.addGroupToAccountMapping(g2AMapping.getName());
-				
-				break;
 			}
-		}
+        }
         
 		return configuration;
     }
