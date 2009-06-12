@@ -488,6 +488,8 @@ public class ConfigurationWebToolkit implements Remote {
 		while(it.hasNext())
 		{
 			String curName = getName(it.next());
+			if (curName.equals("_test") || curName.equals("/DC=com/DC=example/OU=Services/CN=example.site.com"))
+				continue;
 			if (curName.equals(selected))
 				retStr += "<option selected>" + curName + "</option>";
 			else

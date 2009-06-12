@@ -76,7 +76,7 @@ if ( "merge".equals(request.getParameter("command")) ) {
 	try{
 		gums.mergeConfiguration(clonedConfiguration, uri, persistenceFactory, h2gMapping);
 		gums.setConfiguration(clonedConfiguration);
-		message = "<div class=\"success\">Configuration has been merged.</div>";
+		message = "<div class=\"success\">Configuration has been merged. It is recommended to update VO members.</div>";
 	}catch(Exception e){
 		message = "<div class=\"failure\">Error merging configuration: " + e.getMessage() + "</div>";
 	}
@@ -103,7 +103,7 @@ else {
                 <%=ConfigurationWebToolkit.createSelectBox("persistenceFactory",
                     configuration.getPersistenceFactories().values(),
                     null,
-                    "onchange=\"document.forms[0].submit();\"",
+                    null,
                     false)%> (used in all elements requiring a persistence factory)
 			</td>
         </tr>
@@ -116,7 +116,7 @@ else {
                 <%=ConfigurationWebToolkit.createSelectBox("h2gMapping",
                     configuration.getHostToGroupMappings(),
                     null,
-                    "onchange=\"document.forms[0].submit();\"",
+                    null,
                     false)%> (in which all group to account mappings will be added)
 			</td>
         </tr>
