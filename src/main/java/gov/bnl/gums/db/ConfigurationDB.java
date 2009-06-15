@@ -61,5 +61,5 @@ public interface ConfigurationDB {
      * @param backupCopy as boolean
      * @param name as name
      */	
-	public void setConfiguration(String text, Date date, boolean backupCopy, String name);
+	public void setConfiguration(String text, boolean backupCopy, String name, Date date);
 }

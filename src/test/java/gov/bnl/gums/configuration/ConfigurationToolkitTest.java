@@ -18,6 +18,7 @@ import gov.bnl.gums.userGroup.*;
 import java.io.FileInputStream;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -264,7 +265,7 @@ public class ConfigurationToolkitTest extends TestCase {
 			fileInputStream.close();
 		}
     	Configuration configuration = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), false);
-    	confStore.setConfiguration(configuration, false, null);
+    	confStore.setConfiguration(configuration, false, null, new Date());
 		configuration = confStore.retrieveConfiguration();
 		FileConfigurationStore.moveFile(url.getPath()+".temp", url.getPath()); // This is used in later unit tests
     }

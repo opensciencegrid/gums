@@ -41,7 +41,7 @@ public class MockConfigurationDB implements ConfigurationDB {
 		return currentConf;
 	}
 	
-	public void setConfiguration(String text, Date date, boolean backupCopy, String name) {
+	public void setConfiguration(String text, boolean backupCopy, String name, Date date) {
 		configurations.put(date.toString(), text);
 		if (!backupCopy)
 			currentConf = text;

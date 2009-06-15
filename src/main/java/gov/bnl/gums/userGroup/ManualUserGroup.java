@@ -52,7 +52,8 @@ public class ManualUserGroup extends UserGroup {
 	private boolean needsRefresh = true;
 	private RWLock rWLock = new RWLock();
 	protected Date patternListLastUpdated;
-	protected int secondsBetweenPatternRefresh = 10;
+	protected int secondsBetweenPatternRefresh = 60;
+	protected int adminSecondsBetweenPatternRefresh = 10;
     
     /**
      * Create a new manual user group. This empty constructor is needed by the XML Digestor.
@@ -149,7 +150,7 @@ public class ManualUserGroup extends UserGroup {
     	try {
     		rWLock.getReadLock();
     		Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.SECOND, -secondsBetweenPatternRefresh);
+            cal.add(Calendar.SECOND, accessIndex==0 ? -adminSecondsBetweenPatternRefresh : -secondsBetweenPatternRefresh);
         	if (needsRefresh || patternListLastUpdated.before(cal.getTime())) {
         		rWLock.releaseLock();
         		refreshPatternList();
@@ -334,7 +335,7 @@ public class ManualUserGroup extends UserGroup {
     private void refreshPatternList() {
     	rWLock.getWriteLock();
     	try {
-    		log.debug("refreshed pattern list for usergroup "+getName());
+    		log.trace("refreshed pattern list for usergroup "+getName());
 	 		patternList.clear();
 	 		List members = getDB().retrieveMembers();
 	 		Iterator it = members.iterator();

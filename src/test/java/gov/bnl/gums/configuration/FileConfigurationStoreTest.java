@@ -11,6 +11,8 @@ import java.nio.channels.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
+import java.util.Date;
+
 import junit.framework.*;
 
 /**
@@ -49,7 +51,7 @@ public class FileConfigurationStoreTest extends TestCase {
 
     public void testFileStore() throws java.lang.Exception {
         Configuration conf = confStore.retrieveConfiguration();
-        confStore.setConfiguration(conf, false, null);
+        confStore.setConfiguration(conf, false, null, new Date());
         new FileConfigurationStore().retrieveConfiguration();
     }
     

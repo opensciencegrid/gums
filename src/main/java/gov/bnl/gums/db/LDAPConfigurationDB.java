@@ -42,7 +42,7 @@ public class LDAPConfigurationDB implements ConfigurationDB {
 		throw new RuntimeException("LDAP Configuration DB not yet supported");
 	}
 	
-	public void setConfiguration(String text, Date date, boolean backupCopy, String name) {
+	public void setConfiguration(String text, boolean backupCopy, String name, Date date) {
 		throw new RuntimeException("LDAP Configuration DB not yet supported");
 	} 
 }

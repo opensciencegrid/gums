@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 public class FileConfigurationStore extends ConfigurationStore {
 	private Logger log = Logger.getLogger(FileConfigurationStore.class);
 	private Configuration conf;
-	private Date lastRetrieval = null;
+	private Date curModification = null;
 	private String configBackupDir = null;
 	private String configPath = null;
 
@@ -133,7 +133,10 @@ public class FileConfigurationStore extends ConfigurationStore {
 	public Date getLastModification() {
 		try {
 			File file = new File(configPath);
-			return new Date(file.lastModified());
+			Date date = new Date(file.lastModified());
+			if (log.isTraceEnabled())
+				log.trace("Last modification from file: "+date.toString());
+			return date;
 		} catch (Exception e) {
 			log.error("Could not determine last modification time of configuration.", e);
 			return null;
@@ -157,38 +160,31 @@ public class FileConfigurationStore extends ConfigurationStore {
 //		moveFile(configPath, configBackupDir + "/gums.config~");
 		copyFile(configBackupDir + path, configPath);
 //		moveFile(configBackupDir + "/gums.config~", configBackupDir + "/gums.config.prev" );
+		log.debug("Configuration '" + name + "' restored from file");
 		return retrieveConfiguration();
-	}
-
-	public synchronized boolean needsReload() {
-		return (lastRetrieval==null || lastRetrieval.before(getLastModification()));
 	}
 	
 	public synchronized Configuration retrieveConfiguration() {
 		try {
-			if (needsReload())
+			if (curModification==null || curModification.before(getLastModification())) {
 				reloadConfiguration();
-		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
-		}
-		return conf;
-	}
-	
-	public synchronized Configuration retrieveConfiguration(boolean reload) {
-		try {
-			if (reload)
-				reloadConfiguration();
+				log.debug("Configuration reloaded from file");
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
 		return conf;
 	}
 
-	public synchronized void setConfiguration(Configuration conf, boolean backupCopy, String name) throws Exception {
-		log.debug("Configuration set programically");
+	public synchronized void setConfiguration(Configuration conf, boolean backupCopy, String name, Date date) throws Exception {
 		if (conf == null)
-			throw new RuntimeException("Configuration has not been loaded");
-		log.debug("Attempting to store configuration");
+			throw new RuntimeException("Configuration cannot be null");
+                if (date==null)
+                        date = new Date();
+
+                if (backupCopy && (name==null || name.length()==0))
+                        name = format.format(date);
+
 		String tempGumsConfigPath = configPath+"~";
 		
 		BufferedWriter out;
@@ -197,7 +193,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 		out.close();
 
 		// Make sure configuration is valid
-		FileInputStream fileInputStream = new FileInputStream(configPath);
+		FileInputStream fileInputStream = new FileInputStream(tempGumsConfigPath);
 		try {
 			StringBuffer configBuffer = new StringBuffer();
 			int ch;
@@ -222,12 +218,19 @@ public class FileConfigurationStore extends ConfigurationStore {
 			moveFile(tempGumsConfigPath, (backupCopy?configBackupDir+"/gums.config."+name:configPath));
 		else
 			moveFile(tempGumsConfigPath, (backupCopy?configBackupDir+"/gums.config.":configPath));
+
+		log.debug("Configuration set to file");
+
+		// set timestamps
+		if (!backupCopy) {
+			new File(configPath).setLastModified(date.getTime());
+			curModification = date;
+		}
 	}
 
 	private void reloadConfiguration() {
 		conf = null;
 		try {
-			log.debug("Attempting to load configuration from gums.config");
 			FileInputStream fileInputStream = new FileInputStream(configPath);
 			try {
 				StringBuffer configBuffer = new StringBuffer();
@@ -235,6 +238,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 				while ((ch = fileInputStream.read()) != -1)
 					configBuffer.append((char)ch);
 				this.conf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
+				curModification = new Date(new File(configPath).lastModified());
 			} catch (Exception e) {
 				throw new RuntimeException(e.getMessage());
 			} finally {
@@ -242,8 +246,6 @@ public class FileConfigurationStore extends ConfigurationStore {
 			}
 		
 			fileInputStream.close();
-			log.debug("Configuration reloaded from '" + configPath + "'");
-			lastRetrieval = new Date();
 		} catch (Exception e) {
 			log.error("The configuration wasn't read correctly.", e);
 			throw new RuntimeException("The configuration wasn't read correctly: " + e.getMessage());

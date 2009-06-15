@@ -80,7 +80,7 @@ public class MockConfigurationStore extends ConfigurationStore {
         return null;
     }
     
-    public void setConfiguration(Configuration conf, boolean backup, String name) {
+    public void setConfiguration(Configuration conf, boolean backup, String name, Date date) {
         this.conf = conf;
     }
     

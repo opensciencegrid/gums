@@ -71,13 +71,6 @@ public abstract class ConfigurationStore {
 	public abstract boolean isReadOnly();
     
     /**
-     * Defines whether the configuration needs to be reloaded.
-     * 
-     * @return true if configuration needs to be reloaded.
-     */    
-	public abstract boolean needsReload();
-    
-    /**
      * Restores configuration in memory. If the configuration cannot be loaded
      * due to an inconsistency in the store, it should throw an exception.
      * 
@@ -87,14 +80,6 @@ public abstract class ConfigurationStore {
 	public abstract Configuration restoreConfiguration(String dateStr) throws Exception;
     
     /**
-     * Loads the configuration in memory. If the configuration cannot be loaded
-     * due to an inconsistency in the store, it should throw an exception.
-     * 
-     * @return A configuration object.
-     */
-	public abstract Configuration retrieveConfiguration() throws Exception;
-	
-    /**
      * Loads the configuration in memory if or from storage based on reload. This is
      * useful if needsReload was called previously and you don't want to look it
      * up again for performance's sake.  If the configuration cannot be loaded due to an 
@@ -102,7 +87,7 @@ public abstract class ConfigurationStore {
      * 
      * @return A configuration object.
      */
-	public abstract Configuration retrieveConfiguration(boolean reload) throws Exception;
+	public abstract Configuration retrieveConfiguration() throws Exception;
     
     /**
      * Set and store the configuration.  A configuration may specify to store the configuration
@@ -112,7 +97,7 @@ public abstract class ConfigurationStore {
      * @param conf 
      * @param backupCopy 
      */
-	public abstract void setConfiguration(Configuration conf, boolean backupCopy, String name) throws Exception;
+	public abstract void setConfiguration(Configuration conf, boolean backupCopy, String name, Date date) throws Exception;
 
 	static public DateFormat getFormat() {
 		return format;

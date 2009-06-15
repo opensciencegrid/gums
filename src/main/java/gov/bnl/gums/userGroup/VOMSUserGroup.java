@@ -114,7 +114,7 @@ public class VOMSUserGroup extends UserGroup {
 		if (getVoDB()!=null)
 			return getVoDB().retrieveMembers();
 		else
-			return null;
+			return new ArrayList();
     }
     
     public String getRemainderUrl() {

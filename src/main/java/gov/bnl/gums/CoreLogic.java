@@ -184,7 +184,7 @@ public class CoreLogic {
                     Iterator accountMappersIt = accountMappers.iterator();
                     while (accountMappersIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-                		if (accountName.equals(accountMapper.mapUser(user, false)) && !dns.contains(user.getCertificateDN()))
+			if (accountName.equals(accountMapper.mapUser(user, false)) && !dns.contains(user.getCertificateDN()))
                         	dns.add(user.getCertificateDN());
                     }            		
             	}
@@ -194,7 +194,7 @@ public class CoreLogic {
         if (dns.size()==0) {
             gumsAdminLog.warn("Cannot map account '" + accountName + "' to any DN.");
         }
-        
+
         StringBuffer output = new StringBuffer();
         Iterator it = dns.iterator();
         while(it.hasNext()) {
@@ -278,7 +278,7 @@ public class CoreLogic {
     private String generateGridMapfile(HostToGroupMapping hToGMapping, boolean createNewMappings, boolean includeFQAN, boolean includeEmail) throws Exception {
     	Configuration conf = hToGMapping.getConfiguration();
         Iterator iter = hToGMapping.getGroupToAccountMappings().iterator();
-        TreeSet usersInMap = new TreeSet();
+        HashSet usersInMap = new HashSet();
         
         StringBuffer gridMapfileBuffer = new StringBuffer("");
         while (iter.hasNext()) {
@@ -297,10 +297,10 @@ public class CoreLogic {
 		                GridUser user = (GridUser) memberIter.next();
 		                if (gums.isUserBanned(user))
 	                    	continue;
-	                    String fqan = user.getVoFQAN()!=null?user.getVoFQAN().toString():"";
-	                    String email = user.getEmail()!=null?user.getEmail().toString():"";
-		                if ( !usersInMap.contains(user.getCertificateDN() + fqan) ) {
-		                	Collection accountMappers = gMap.getAccountMappers();
+	                    	String fqan = user.getVoFQAN()!=null?user.getVoFQAN().toString():"";
+	                    	String email = user.getEmail()!=null?user.getEmail().toString():"";
+		                if (!usersInMap.contains(user.getCertificateDN() + fqan) ) {
+		                    Collection accountMappers = gMap.getAccountMappers();
 		                    Iterator accountMappersIt = accountMappers.iterator();
 		                    while (accountMappersIt.hasNext()) {
 		                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );

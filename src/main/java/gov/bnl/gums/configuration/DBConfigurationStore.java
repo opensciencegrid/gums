@@ -31,47 +31,46 @@ public class DBConfigurationStore extends ConfigurationStore {
 	private Logger log = Logger.getLogger(FileConfigurationStore.class);
 	private ConfigurationDB configDB;
 	private Configuration conf;
-	private Date lastRetrieval = null;
-	
+	private Date curModification = null;
+
 	public DBConfigurationStore(ConfigurationDB configDB) {
 		this.configDB = configDB;
 	}
-	
+
 	public void deleteBackupConfiguration(String name) {
 		if (!configDB.deleteBackupConfiguration(name))
 			throw new RuntimeException("Could not delete backup configuration '"+name+"' from database");
 	}
-	
-    public boolean isActive() {
-    	return configDB.isActive();
-    }
-    
-    public boolean isReadOnly() {
-    	return false;
-    }
-    
-    public Collection getBackupNames() {
-    	return configDB.getBackupNames(format);
-    }
-    
-    public Date getLastModification() {
-    	Date date = configDB.getLastModification();
-    	if (log.isTraceEnabled())
-    		log.trace("Last database configuration modification is " + date);
-    	return date;
-    }
-    
-    public boolean needsReload() {
-    	return (lastRetrieval == null) || (lastRetrieval.before(getLastModification()));
-    }
-    
-    public Configuration retrieveConfiguration() throws Exception {
-    	ByteArrayInputStream stream = null;
-    	try {
-		if (needsReload()) {
-		    	String configText = configDB.retrieveCurrentConfiguration();
-		    	conf = ConfigurationToolkit.parseConfiguration(configText, false);
-		    	lastRetrieval = new Date();
+
+	public boolean isActive() {
+		return configDB.isActive();
+	}
+
+	public boolean isReadOnly() {
+		return false;
+	}
+
+	public Collection getBackupNames() {
+		return configDB.getBackupNames(format);
+	}
+
+	public Date getLastModification() {
+		Date date = configDB.getLastModification();
+		if (log.isTraceEnabled())
+			log.trace("Last modification from database: "+date.toString());
+		return date;
+	}
+
+	public synchronized Configuration retrieveConfiguration() throws Exception {
+		ByteArrayInputStream stream = null;
+		try {
+			Date lastModification = getLastModification(); 
+			if (curModification==null || curModification.before(lastModification)) {
+				String configText = configDB.retrieveCurrentConfiguration();
+				conf = ConfigurationToolkit.parseConfiguration(configText, false);
+				log.debug("Configuration reloaded from database");
+				curModification = lastModification;
+				return conf;
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -80,41 +79,34 @@ public class DBConfigurationStore extends ConfigurationStore {
 				stream.close();
 		}
 		return conf;
-    }
-    
-    public Configuration retrieveConfiguration(boolean reload) throws Exception {
-    	ByteArrayInputStream stream = null;
-    	try {
-			if (reload) {
-			String configText = configDB.retrieveCurrentConfiguration();
-		    	conf = ConfigurationToolkit.parseConfiguration(configText, false);
-		    	lastRetrieval = new Date();
-			}
+	}
+
+	public synchronized Configuration restoreConfiguration(String name) throws Exception {
+		ByteArrayInputStream stream = null;
+		try {
+			String configText = configDB.restoreConfiguration(name);
+			conf = ConfigurationToolkit.parseConfiguration(configText, false);
+			log.debug("Configuration '" + name + "' restored from database");
+			curModification = getLastModification();
+			return conf;
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		} finally {
 			if (stream != null)
 				stream.close();
 		}
-		return conf;
-    }
-    
-    public Configuration restoreConfiguration(String name) throws Exception {
-    	ByteArrayInputStream stream = null;
-    	try {
-	    	String configText = configDB.restoreConfiguration(name);
-	    	Configuration configuration = ConfigurationToolkit.parseConfiguration(configText, false);
-	    	return configuration;
-    	} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
-		} finally {
-			if (stream != null)
-				stream.close();
-		}
-    }
-    
-    public void setConfiguration(Configuration conf, boolean backupCopy, String name) throws Exception {
-    	configDB.setConfiguration(conf.toXml(), new Date(), backupCopy, name);
-    }
-	    
+	}
+
+	public synchronized void setConfiguration(Configuration conf, boolean backupCopy, String name, Date date) throws Exception {
+                if (date==null)
+                        date = new Date();
+
+		if (backupCopy && (name==null || name.length()==0))
+			name = format.format(date); 
+		
+		configDB.setConfiguration(conf.toXml(), backupCopy, name, date);
+		curModification = date;
+		log.debug("Configuration set to database");
+	}
+
 }
