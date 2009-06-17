@@ -89,7 +89,7 @@ function usage {
 #      method is that if the callout string changes, this must change.
 #    - The osg-user-vo-map.txt file is only created for OSG sites.
 #      The criterea for determining an OSG site is the existence
-#      of the $VDT_LOCATION/monitoring/osg-attributes.conf file.
+#      of the $VDT_LOCATION/osg directory.
 #      If this file does NOT exist, then the inverse map file will
 #      NOT be created.
 # 2. 11/13/06 (John Weigand)
@@ -363,20 +363,20 @@ MAPFILE=/etc/grid-security/grid-mapfile
 MAPFILE_NEW=$MAPFILE.new
 
 #--- this files existence identifies if this is an OSG site or not ------
-OSG_SITE_CRITERIA=$VDT_LOCATION/monitoring/osg-attributes.conf
+OSG_SITE_CRITERIA=$VDT_LOCATION/osg
 
-INVERSEMAP_DEPRECATED=$VDT_LOCATION/monitoring/grid3-user-vo-map.txt
+INVERSEMAP_DEPRECATED=$VDT_LOCATION/osg/etc/grid3-user-vo-map.txt
 
-INVERSEMAP=$VDT_LOCATION/monitoring/osg-user-vo-map.txt
+INVERSEMAP=$VDT_LOCATION/osg/etc/osg-user-vo-map.txt
 INVERSEMAP_NEW=$INVERSEMAP.new
 
-SUPPORTEDVOS=$VDT_LOCATION/monitoring/osg-supported-vo-list.txt 
+SUPPORTEDVOS=$VDT_LOCATION/osg/etc/osg-supported-vo-list.txt 
 SUPPORTEDVOS_NEW=$SUPPORTEDVOS.new
 
-UNDEFINED=$VDT_LOCATION/monitoring/osg-undefined-accounts.txt 
+UNDEFINED=$VDT_LOCATION/osg/etc/osg-undefined-accounts.txt 
 UNDEFINED_NEW=$UNDEFINED.new
 
-LOGFILE=$VDT_LOCATION/monitoring/log/gums-host-cron.log
+LOGFILE=$VDT_LOCATION/osg/etc/log/gums-host-cron.log
 
 BACKUP_DIR=backups
 BACKUP_DATE=$(date '+%Y-%m-%dT%H-%M-%S')
