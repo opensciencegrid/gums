@@ -1,7 +1,7 @@
 #!/bin/sh
 ######################################################################
 
-VDT_LOCATION=MAGIC_VDT_LOCATION
+VDT_LOCATION=/opt/vtb
 
 ###########################################################################
 function usage {
@@ -89,7 +89,7 @@ function usage {
 #      method is that if the callout string changes, this must change.
 #    - The osg-user-vo-map.txt file is only created for OSG sites.
 #      The criterea for determining an OSG site is the existence
-#      of the $VDT_LOCATION/osg directory.
+#      of the $VDT_LOCATION/monitoring/osg-attributes.conf file.
 #      If this file does NOT exist, then the inverse map file will
 #      NOT be created.
 # 2. 11/13/06 (John Weigand)
@@ -362,21 +362,27 @@ GUMSDIR=$VDT_LOCATION/gums/scripts
 MAPFILE=/etc/grid-security/grid-mapfile
 MAPFILE_NEW=$MAPFILE.new
 
-#--- this files existence identifies if this is an OSG site or not ------
-OSG_SITE_CRITERIA=$VDT_LOCATION/osg
+#--- this directories existence identifies if this is an OSG site or not ------
+if [ -e $VDT_LOCATION/osg ]; then 
+  OSG_LOCATION=$VDT_LOCATION/osg/etc
+else 
+  OSG_LOCATION=$VDT_LOCATION/monitoring
+fi 
 
-INVERSEMAP_DEPRECATED=$VDT_LOCATION/osg/etc/grid3-user-vo-map.txt
+OSG_SITE_CRITERIA=$OSG_LOCATION/osg-attributes.conf
 
-INVERSEMAP=$VDT_LOCATION/osg/etc/osg-user-vo-map.txt
+INVERSEMAP_DEPRECATED=$OSG_LOCATION/grid3-user-vo-map.txt
+
+INVERSEMAP=$OSG_LOCATION/osg-user-vo-map.txt
 INVERSEMAP_NEW=$INVERSEMAP.new
 
-SUPPORTEDVOS=$VDT_LOCATION/osg/etc/osg-supported-vo-list.txt 
+SUPPORTEDVOS=$OSG_LOCATION/osg-supported-vo-list.txt 
 SUPPORTEDVOS_NEW=$SUPPORTEDVOS.new
 
-UNDEFINED=$VDT_LOCATION/osg/etc/osg-undefined-accounts.txt 
+UNDEFINED=$OSG_LOCATION/osg-undefined-accounts.txt 
 UNDEFINED_NEW=$UNDEFINED.new
 
-LOGFILE=$VDT_LOCATION/osg/etc/log/gums-host-cron.log
+LOGFILE=$OSG_LOCATION/log/gums-host-cron.log
 
 BACKUP_DIR=backups
 BACKUP_DATE=$(date '+%Y-%m-%dT%H-%M-%S')
