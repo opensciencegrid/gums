@@ -1,7 +1,7 @@
 #!/bin/sh
 ######################################################################
 
-VDT_LOCATION=/opt/vtb
+VDT_LOCATION=MAGIC_VDT_LOCATION
 
 ###########################################################################
 function usage {
@@ -369,8 +369,8 @@ else
   OSG_LOCATION=$VDT_LOCATION/monitoring
 fi 
 
-OSG_SITE_CRITERIA=$OSG_LOCATION/osg-attributes.conf
 
+OSG_SITE_CRITERIA=$VDT_LOCATION/osg-vo-map/sbin/generate-vo-map
 INVERSEMAP_DEPRECATED=$OSG_LOCATION/grid3-user-vo-map.txt
 
 INVERSEMAP=$OSG_LOCATION/osg-user-vo-map.txt
