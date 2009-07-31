@@ -65,7 +65,7 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 						pf.sessionFactory.close();
 						propertyToPFSessionCreatorMap.remove(p);it = propertyToPFSessionCreatorMap.keySet().iterator();
 						numSessions--;
-			            log.debug("Closed Hibernate session factory "+sessionFactory+" with properties " + p + " - "+numSessions+" current instance(s)");
+			            log.debug("Closed Hibernate session factory "+pf.sessionFactory+" with properties " + p + " - "+numSessions+" current instance(s)");
 					}
 				}
 			}
