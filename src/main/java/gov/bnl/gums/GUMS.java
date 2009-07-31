@@ -13,7 +13,6 @@ import gov.bnl.gums.configuration.DBConfigurationStore;
 import gov.bnl.gums.configuration.FileConfigurationStore;
 import gov.bnl.gums.configuration.Version;
 import gov.bnl.gums.persistence.PersistenceFactory;
-import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.UserGroup;
 
 import java.util.Date;
@@ -58,68 +57,89 @@ public class GUMS {
 	static private synchronized void startWorkerThread(final GUMS gums) {
 		// If JNDI property is set, run the update every x minutes
 		if (timer == null) {
+			timer = new Timer();
+
+			Integer updateMinutes = null;
+			Integer updateBannedMinutes = null;
+			Integer emailWarningHours = null;
 			try {
 				Context env = (Context) new InitialContext().lookup("java:comp/env");
-				Integer updateMinutes = (Integer) env.lookup("updateGroupsMinutes");
-				Integer updateBannedMinutes = (Integer) env.lookup("updateBannedGroupsMinutes");
-				Integer emailWarningHours = (Integer) env.lookup("emailWarningHours");
-				if (updateMinutes != null) {
-					timer = new Timer();
-
-					TimerTask updateTask = new TimerTask() {
-						public void run() {
-							synchronized(this) {
-								try {
-									gumsAdminLog.info("Starting automatic updateGroups");
-									gums.getCoreLogic().updateGroups();
-									gumsAdminLog.info("Automatic updateGroups ended");
-								} catch (Exception e) {
-									gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage());
-									gumsAdminEmailLog.put("updateUserGroup", e.getMessage(), false);
-								}
-							}
-						}
-					};
-
-					TimerTask updateBannedTask = new TimerTask() {
-						public void run() {
-							synchronized(this) {
-								try {
-									gumsAdminLog.info("Starting automatic updateBannedGroups");
-									gums.getCoreLogic().updateBannedGroups();
-									gumsAdminLog.info("Automatic updateBannedGroups ended");
-								} catch (Exception e) {
-									gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage());
-									gumsAdminEmailLog.put("updateBannedGroups", e.getMessage(), false);
-								}
-							}
-						}
-					};
-
-					TimerTask emailWarningTask = new TimerTask() {
-						public void run() {
-							synchronized(this) {
-								if (gumsAdminEmailLog.hasMessages()) {
-									gumsAdminEmailLog.logMessages();
-								}
-							}
-						}
-					};      
-
-					timer.scheduleAtFixedRate(updateTask, 0, updateMinutes.intValue()*60*1000);
-					gumsAdminLog.info("Automatic group update set: will refresh every " + updateMinutes.intValue() + " minutes starting now.");
-
-					timer.scheduleAtFixedRate(updateBannedTask, 0, updateBannedMinutes.intValue()*60*1000);
-					gumsAdminLog.info("Automatic banned group update set: will refresh every " + updateBannedMinutes.intValue() + " minutes starting now.");
-
-					timer.scheduleAtFixedRate(emailWarningTask, 5*60*1000, emailWarningHours.intValue()*60*60*1000);
-					gumsAdminLog.info("Automatic email warning set: will refresh every " + emailWarningHours.intValue() + " hours starting in 5 minutes.");
-				} else {
-					gumsAdminLog.warn("Didn't start the automatic group update: 'updateGroupsMinutes' was set to null.");
-				}
+				try {
+					updateMinutes = (Integer) env.lookup("updateGroupsMinutes");
+				} catch (Exception e) {}
+				try {
+					updateBannedMinutes = (Integer) env.lookup("updateBannedGroupsMinutes");
+				} catch (Exception e) {}
+				try {
+					emailWarningHours = (Integer) env.lookup("emailWarningHours");
+				} catch (Exception e) {}
 			} catch (NamingException e) {
-				gumsAdminLog.warn("Didn't start the automatic updateGroups: " + e.getMessage());
-				log.warn("Couldn't read JNDI property: " + e.getMessage(), e);
+				log.warn("Couldn't set up JNDI context: " + e.getMessage(), e);
+			}	
+			
+			if (updateMinutes != null) {
+				TimerTask updateTask = 
+					new TimerTask() {
+					public void run() {
+						synchronized(this) {
+							try {
+								gumsAdminLog.info("Starting automatic updateGroups");
+								gums.getCoreLogic().updateGroups();
+								gumsAdminLog.info("Automatic updateGroups ended");
+							} catch (Exception e) {
+								gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage());
+								gumsAdminEmailLog.put("updateUserGroup", e.getMessage(), false);
+							}
+						}
+					}
+				};
+
+				timer.scheduleAtFixedRate(updateTask, 0, updateMinutes.intValue()*60*1000);
+				gumsAdminLog.info("Automatic group update set: will refresh every " + updateMinutes.intValue() + " minutes starting now.");
+			}
+			else {
+				gumsAdminLog.warn("Didn't start the automatic group update: 'updateGroupsMinutes' was set to null.");
+			}
+			
+			if (updateBannedMinutes != null) {
+				TimerTask updateBannedTask = new TimerTask() {
+					public void run() {
+						synchronized(this) {
+							try {
+								gumsAdminLog.info("Starting automatic updateBannedGroups");
+								gums.getCoreLogic().updateBannedGroups();
+								gumsAdminLog.info("Automatic updateBannedGroups ended");
+							} catch (Exception e) {
+								gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage());
+								gumsAdminEmailLog.put("updateBannedGroups", e.getMessage(), false);
+							}
+						}
+					}
+				};
+
+				timer.scheduleAtFixedRate(updateBannedTask, 0, updateBannedMinutes.intValue()*60*1000);
+				gumsAdminLog.info("Automatic banned group update set: will refresh every " + updateBannedMinutes.intValue() + " minutes starting now.");
+			}
+			else {
+				gumsAdminLog.warn("Didn't start the automatic banned group update: 'updateBannedMinutes' was set to null.");
+			}			
+
+			if (emailWarningHours != null) {
+				TimerTask emailWarningTask = new TimerTask() {
+					public void run() {
+						synchronized(this) {
+							if (gumsAdminEmailLog.hasMessages()) {
+								gumsAdminEmailLog.logMessages();
+							}
+						}
+					}
+				};      
+
+				timer.scheduleAtFixedRate(emailWarningTask, 5*60*1000, emailWarningHours.intValue()*60*60*1000);
+				gumsAdminLog.info("Automatic email warning set: will refresh every " + emailWarningHours.intValue() + " hours starting in 5 minutes.");
+			}
+			else {
+				gumsAdminLog.warn("Didn't start the email warning task: 'emailWarningTask' was set to null.");
 			}
 		}
 	}
@@ -192,50 +212,43 @@ public class GUMS {
 	 * 
 	 * @return current configuration or null.
 	 */
-	public Configuration getConfiguration() throws Exception {
-		Configuration conf = null;
-		Date confStoreLastMod = confStore.getLastModification();
-
-		// Load from most recent confStore and set other to be updated
-		ConfigurationStore confStoreToUpdate = null;
+	public synchronized Configuration getConfiguration() throws Exception {
+		Configuration conf;
+		
+		// Load from most recent confStore and update other
 		if (dbConfStore != null) {
+			Date confStoreLastMod = confStore.getLastModification();
 			Date dbConfStoreLastMod = dbConfStore.getLastModification();
 			if (confStoreLastMod.after(dbConfStoreLastMod)) {
 				conf = confStore.retrieveConfiguration();
-				confStoreToUpdate = dbConfStore;
-				if (lastConf != conf)
-					gumsAdminLog.info("Reloaded configuration from file which was modified on " + confStoreLastMod);
+				if (lastConf != conf) {
+					gumsAdminLog.info("Reloaded configuration from file, which was modified on " + confStoreLastMod + ", and setting to database");
+					updateConfStoreTypes(conf);
+					if (dbConfStore!=null)
+						dbConfStore.setConfiguration(conf, false, null, confStoreLastMod);
+				}
 			}
 			else if (lastConf==null || dbConfStoreLastMod.after(confStoreLastMod)) {
-				confStoreLastMod = dbConfStoreLastMod;
 				conf = dbConfStore.retrieveConfiguration();
-				confStoreToUpdate = confStore;
-				if (lastConf != conf)
-					gumsAdminLog.info("Reloaded configuration from database which was modified on " + confStoreLastMod);
+				if (lastConf != conf) {
+					gumsAdminLog.info("Reloaded configuration from database, which was modified on " + dbConfStoreLastMod + ", and setting to file");
+					updateConfStoreTypes(conf);
+					confStore.setConfiguration(conf, false, null, dbConfStoreLastMod);
+				}
 			}
 			else
-				return lastConf;
+				conf = lastConf;
 		}
 		else {
 			conf = confStore.retrieveConfiguration();
-			if (lastConf != conf)
-				gumsAdminLog.info("Reloaded configuration from file which was modified on " + confStoreLastMod);
-		}
-
-		// Update other configuration store if needed
-		if (lastConf != conf) {
-			updateConfStoreTypes(conf);
-
-			if (confStoreToUpdate != null) {
-				if (confStoreToUpdate instanceof FileConfigurationStore)
-					confStore.setConfiguration(conf, false, null, confStoreLastMod);
-				else if (dbConfStore != null)
-					dbConfStore.setConfiguration(conf, false, null, confStoreLastMod);
+			if (lastConf != conf) {
+				gumsAdminLog.info("Reloaded configuration from file");
+				updateConfStoreTypes(conf);
 			}
 		}
 		
-		lastConf = conf;	
-
+		lastConf = conf;
+		
 		return conf;
 	}
 
@@ -247,7 +260,7 @@ public class GUMS {
 	public CoreLogic getCoreLogic() {
 		return resMan;
 	}
-
+	
 	static public String getVersion() {
 		if (version==null) {
 			String pomFile = CertCache.getMetaDir()+"/maven/gums/gums-service/pom.xml";
@@ -294,20 +307,16 @@ public class GUMS {
 	 * @param dateStr
 	 */
 	public void restoreConfiguration(String name) throws Exception {
-		if (dbConfStore!=null && !dbConfStore.isReadOnly())
+		if (dbConfStore!=null)
 		{
-			lastConf = dbConfStore.restoreConfiguration(name);
+			dbConfStore.restoreConfiguration(name);
 			gumsAdminLog.info("Restored configuration from db: " + name);
 		}
-		else if (!confStore.isReadOnly())
+		else
 		{
-			lastConf = confStore.restoreConfiguration(name);
+			confStore.restoreConfiguration(name);
 			gumsAdminLog.info("Restored configuration from file: " + name);
 		}
-		else {
-			throw new RuntimeException("Could not restore configuration because there are no writable configuration stores");
-		}
-		updateConfStoreTypes(lastConf);
 	}
 
 	/**
@@ -317,89 +326,59 @@ public class GUMS {
 	 */
 	public void setConfiguration(Configuration conf, boolean backup, String name) throws Exception {
 		Date date = new Date();
-		// If backup configuration and there is a database configuration store, only backup in database
-		// If backup configuration and there is not database configuration store, backup on file
-		// If not backup configuration store on file and in database if there is a database configuration store
 		if (backup) {
 			if (dbConfStore!=null) {
-				if (!dbConfStore.isReadOnly()) {
-					dbConfStore.setConfiguration(conf, backup, name, date); 
-					gumsAdminLog.info("Backed up configuration in database: "+name);
-				}
-				else {
-					throw new RuntimeException("cannot write configuration to database because it is read-only");
-				}
+				dbConfStore.setConfiguration(conf, true, name, date); 
+				gumsAdminLog.info("Backed up configuration in database: "+name);
 			}  			
 			else {
-				if (!confStore.isReadOnly()) {
-					confStore.setConfiguration(conf, backup, name, date);
-					gumsAdminLog.info("Backed up configuration on file: "+name);
-				}
-				else {
-					throw new RuntimeException("cannot write configuration to file because it is read-only");
-				}
+				confStore.setConfiguration(conf, true, name, date);
+				gumsAdminLog.info("Backed up configuration on file: "+name);
 			}
 		}
 		else {
-			if (!confStore.isReadOnly()) {
-				confStore.setConfiguration(conf, false, null, date);
-				gumsAdminLog.info("Set configuration on file");
-			}
-			else {
-				throw new RuntimeException("cannot write configuration to file because it is read-only");
-			}
-
-			updateConfStoreTypes(conf);
-
-			if (dbConfStore!=null) {
-				if (!dbConfStore.isReadOnly()) {
-					dbConfStore.setConfiguration(conf, false, null, date);
-					gumsAdminLog.info("Set configuration in database");
-				}
-				else {
-					throw new RuntimeException("cannot write configuration to database because it is read-only");
-				}
-			}			
+			confStore.setConfiguration(conf, false, null, date);
+			gumsAdminLog.info("Set configuration on file");
 		}
-		lastConf = conf;
 	}
 
 	private void updateConfStoreTypes(Configuration conf) {
 		if (dbConfStore==null) {
-			// create database configuration store
-                        Iterator it = conf.getPersistenceFactories().values().iterator();
-                        boolean storeConfigFound = false;
-                        while (it.hasNext()) {
-                                PersistenceFactory persFact = (PersistenceFactory)it.next();
-                                if (persFact.getStoreConfig()) {
-                                         if (storeConfigFound) {
-                                                 String message = "Configuration may only contain one persistence factory set to store the configuration";
-                                                 log.error(message);
-                                                 throw new RuntimeException(message);
-                                         }
-                                         dbConfStore = new DBConfigurationStore(persFact.retrieveConfigurationDB());
-                                         String message = "Added database configuration store for persistence factory "+persFact.getName();
-                                         gumsAdminLog.debug(message);
-                                         log.debug(message);
-                                         storeConfigFound = true;
-                                 }
-                         }
-                 }
-                 else if (dbConfStore!=null) {
-                        // eliminate database configuration store 
 			Iterator it = conf.getPersistenceFactories().values().iterator();
-                         boolean storeConfigFound = false;
-                         while (it.hasNext()) {
-                                 PersistenceFactory persFact = (PersistenceFactory)it.next();
-                                 if (persFact.getStoreConfig())
-                                         storeConfigFound = true;
-                         }
-                         if (!storeConfigFound) {
-                                 dbConfStore = null;
-                                 String message = "Eliminated database configuration store";
-                                 gumsAdminLog.debug(message);
-                                 log.debug(message);
-                         }
-                 }
+			boolean storeConfigFound = false;
+			while (it.hasNext()) {
+				PersistenceFactory persFact = (PersistenceFactory)it.next();
+				if (persFact.getStoreConfig()) {
+					// create database configuration store
+					if (storeConfigFound) {
+						String message = "Configuration may only contain one persistence factory set to store the configuration";
+						log.error(message);
+						throw new RuntimeException(message);
+					}
+					dbConfStore = new DBConfigurationStore(persFact.retrieveConfigurationDB());
+					String message = "Added database configuration store for persistence factory "+persFact.getName();
+					gumsAdminLog.debug(message);
+					log.debug(message);
+					storeConfigFound = true;
+				}
+			}
+		}
+		else if (dbConfStore!=null) {
+			Iterator it = conf.getPersistenceFactories().values().iterator();
+			boolean storeConfigFound = false;
+			while (it.hasNext()) {
+				PersistenceFactory persFact = (PersistenceFactory)it.next();
+				if (persFact.getStoreConfig())
+					storeConfigFound = true;
+			}
+			if (!storeConfigFound) {
+				// eliminate database configuration store 
+				dbConfStore = null;
+				String message = "Eliminated database configuration store";
+				gumsAdminLog.debug(message);
+				log.debug(message);
+			}
+		}
 	}
+
 }

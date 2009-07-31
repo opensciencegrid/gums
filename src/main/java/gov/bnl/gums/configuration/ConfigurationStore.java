@@ -64,13 +64,6 @@ public abstract class ConfigurationStore {
 	public abstract boolean isActive();
     
     /**
-     * Defines whether the configuration can be changed or not.
-     * 
-     * @return true if storeConfiguration is allowed.
-     */
-	public abstract boolean isReadOnly();
-    
-    /**
      * Restores configuration in memory. If the configuration cannot be loaded
      * due to an inconsistency in the store, it should throw an exception.
      * 

@@ -7,6 +7,9 @@
 package gov.bnl.gums.configuration;
 
 import gov.bnl.gums.GUMS;
+import gov.bnl.gums.persistence.HibernatePersistenceFactory;
+import gov.bnl.gums.persistence.LocalPersistenceFactory;
+import gov.bnl.gums.persistence.PersistenceFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,11 +18,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 
@@ -147,10 +152,6 @@ public class FileConfigurationStore extends ConfigurationStore {
 		log.debug("Checking whether gums.config is present");
 		return new File(configPath).exists();
 	}
-
-	public boolean isReadOnly() {
-		return false;
-	}
 	
 	public synchronized Configuration restoreConfiguration(String name) {
 		String path = "/gums.config." + name;
@@ -199,7 +200,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 			int ch;
 			while ((ch = fileInputStream.read()) != -1)
 				configBuffer.append((char)ch);
-			this.conf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
+	    	this.conf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new Exception(e.getMessage());
@@ -229,7 +230,6 @@ public class FileConfigurationStore extends ConfigurationStore {
 	}
 
 	private void reloadConfiguration() {
-		conf = null;
 		try {
 			FileInputStream fileInputStream = new FileInputStream(configPath);
 			try {

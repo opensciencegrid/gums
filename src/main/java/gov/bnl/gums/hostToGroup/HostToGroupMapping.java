@@ -12,6 +12,7 @@ package gov.bnl.gums.hostToGroup;
 
 import gov.bnl.gums.configuration.Configuration;
 
+import java.lang.ref.SoftReference;
 import java.util.*;
 
 /** It defines a a group of hosts that will be using the same mappings for user
@@ -27,9 +28,10 @@ import java.util.*;
  */
 public abstract class HostToGroupMapping {
     private List groupToAccountMappers = new ArrayList();
-    private Configuration configuration = null;
+    private SoftReference configurationRef = null;
     private String name = "";
 	private String description = "";
+	
     
 	/**
 	 * Create a nwe HostToGroupMapping object.
@@ -45,7 +47,7 @@ public abstract class HostToGroupMapping {
      * @param configuration
      */
     public HostToGroupMapping(Configuration configuration) {
-    	this.configuration = configuration;
+    	this.configurationRef = new SoftReference(configuration);
     }
     
 	/**
@@ -54,7 +56,7 @@ public abstract class HostToGroupMapping {
 	 * @param configuration
 	 */
     public HostToGroupMapping(Configuration configuration, String name) {
-    	this.configuration = configuration;
+    	this.configurationRef = new SoftReference(configuration);
     	this.name = name;
     }
 
@@ -95,7 +97,9 @@ public abstract class HostToGroupMapping {
      * @return Configuration as string.
      */
     public Configuration getConfiguration() {
-    	return configuration;
+    	if (configurationRef==null)
+    		return null;
+    	return (Configuration)configurationRef.get();
     }
     
     /**
@@ -137,7 +141,7 @@ public abstract class HostToGroupMapping {
      * @param configuration.
      */
     public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 	}
     
     /**

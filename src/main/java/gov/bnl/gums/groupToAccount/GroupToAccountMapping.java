@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.groupToAccount;
 
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +32,7 @@ public class GroupToAccountMapping {
 	private String description = "";
     private String accountingVo = "";
     private String accountingVoSubgroup = "";
-    private Configuration configuration = null;
+    private SoftReference configurationRef = null;
 
 	/**
 	 * Creates a GroupToAccountMapping object. This empty constructor is needed by the XML Digestor.
@@ -45,7 +46,7 @@ public class GroupToAccountMapping {
 	 * @param configuration
 	 */
 	public GroupToAccountMapping(Configuration configuration) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 	}
 	
 	/**
@@ -55,7 +56,7 @@ public class GroupToAccountMapping {
 	 * @param name
 	 */
 	public GroupToAccountMapping(Configuration configuration, String name) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 		this.name = name;
 	}
 
@@ -158,7 +159,9 @@ public class GroupToAccountMapping {
      * @return Configuration object.
      */
     public Configuration getConfiguration() {
-		return configuration;
+    	if (configurationRef == null)
+    		return null;
+		return (Configuration)configurationRef.get();
 	}
     
     /**
@@ -213,7 +216,7 @@ public class GroupToAccountMapping {
      * @param configuration.
      */
     public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 	}
     
     /**

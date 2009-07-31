@@ -21,6 +21,7 @@
 										<xs:attribute name="hibernate.c3p0.min_size" type="xs:short"/>
 										<xs:attribute name="hibernate.c3p0.max_size" type="xs:short"/>
 										<xs:attribute name="hibernate.c3p0.timeout" type="xs:int"/>
+										<xs:anyAttribute processContents="skip"/>
 									</xs:complexType>
 								</xs:element>	
 								<xs:element name="ldapPersistenceFactory">
@@ -47,6 +48,7 @@
 										<xs:attribute name="java.naming.security.authentication" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.security.principal" type="xs:string" use="required"/>
 										<xs:attribute name="java.naming.security.credentials" type="xs:string" use="required"/>
+										<xs:anyAttribute processContents="skip"/>
 									</xs:complexType>
 								</xs:element>	
 								<xs:element name="localPersistenceFactory">
@@ -82,6 +84,7 @@
 										<xs:attribute name="mysql.hibernate.c3p0.min_size" type="xs:short" use="required"/>
 										<xs:attribute name="mysql.hibernate.c3p0.max_size" type="xs:short" use="required"/>
 										<xs:attribute name="mysql.hibernate.c3p0.timeout" type="xs:int" use="required"/>
+										<xs:anyAttribute processContents="skip"/>
 									</xs:complexType>
 								</xs:element>			
 							</xs:choice>				

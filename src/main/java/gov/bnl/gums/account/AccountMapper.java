@@ -6,6 +6,8 @@
 
 package gov.bnl.gums.account;
 
+import java.lang.ref.SoftReference;
+
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.GridUser;
 
@@ -27,7 +29,7 @@ public abstract class AccountMapper {
 	
 	private String name = "";
 	private String description = "";
-	private Configuration configuration = null;
+	private SoftReference configurationRef = null;
 	
 	/**
 	 * Create an account mapper object - empty constructor needed by XML Digestor
@@ -41,7 +43,7 @@ public abstract class AccountMapper {
 	 * @param configuration
 	 */
 	public AccountMapper(Configuration configuration) {
-    	this.configuration = configuration;
+    	this.configurationRef = new SoftReference(configuration);
     }
 	
 	/**
@@ -51,7 +53,7 @@ public abstract class AccountMapper {
 	 * @param name
 	 */
 	public AccountMapper(Configuration configuration, String name) {
-    	this.configuration = configuration;
+    	this.configurationRef = new SoftReference(configuration);
     	this.name = name;
     }
     
@@ -67,7 +69,9 @@ public abstract class AccountMapper {
 	 * @return Configuration object
 	 */
 	public Configuration getConfiguration() {
-		return configuration;
+		if (configurationRef==null)
+			return null;
+		return (Configuration)configurationRef.get();
 	}
 	
 	/**
@@ -108,7 +112,7 @@ public abstract class AccountMapper {
      * @param configuration
      */
     public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 	}
 	
     /**

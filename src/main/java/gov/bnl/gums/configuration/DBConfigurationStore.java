@@ -20,6 +20,8 @@ import org.xml.sax.SAXException;
 import gov.bnl.gums.GUMS;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.ConfigurationDB;
+import gov.bnl.gums.persistence.HibernatePersistenceFactory;
+import gov.bnl.gums.persistence.LocalPersistenceFactory;
 import gov.bnl.gums.persistence.PersistenceFactory;
 
 /** Implements the logic to store the configuration in a database except for the bare
@@ -31,7 +33,7 @@ public class DBConfigurationStore extends ConfigurationStore {
 	private Logger log = Logger.getLogger(FileConfigurationStore.class);
 	private ConfigurationDB configDB;
 	private Configuration conf;
-	private Date curModification = null;
+	private Date mostRecentModification = null;
 
 	public DBConfigurationStore(ConfigurationDB configDB) {
 		this.configDB = configDB;
@@ -44,10 +46,6 @@ public class DBConfigurationStore extends ConfigurationStore {
 
 	public boolean isActive() {
 		return configDB.isActive();
-	}
-
-	public boolean isReadOnly() {
-		return false;
 	}
 
 	public Collection getBackupNames() {
@@ -65,11 +63,11 @@ public class DBConfigurationStore extends ConfigurationStore {
 		ByteArrayInputStream stream = null;
 		try {
 			Date lastModification = getLastModification(); 
-			if (curModification==null || curModification.before(lastModification)) {
+			if (mostRecentModification==null || mostRecentModification.before(lastModification)) {
 				String configText = configDB.retrieveCurrentConfiguration();
-				conf = ConfigurationToolkit.parseConfiguration(configText, false);
+				this.conf = ConfigurationToolkit.parseConfiguration(configText, false);
 				log.debug("Configuration reloaded from database");
-				curModification = lastModification;
+				mostRecentModification = lastModification;
 				return conf;
 			}
 		} catch (Exception e) {
@@ -85,9 +83,9 @@ public class DBConfigurationStore extends ConfigurationStore {
 		ByteArrayInputStream stream = null;
 		try {
 			String configText = configDB.restoreConfiguration(name);
-			conf = ConfigurationToolkit.parseConfiguration(configText, false);
+			this.conf = ConfigurationToolkit.parseConfiguration(configText, false);
 			log.debug("Configuration '" + name + "' restored from database");
-			curModification = getLastModification();
+			mostRecentModification = getLastModification();
 			return conf;
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -105,8 +103,8 @@ public class DBConfigurationStore extends ConfigurationStore {
 			name = format.format(date); 
 		
 		configDB.setConfiguration(conf.toXml(), backupCopy, name, date);
-		curModification = date;
-		log.debug("Configuration set to database");
+		mostRecentModification = date;
+		log.debug("Configuration saved to database");
 	}
 
 }

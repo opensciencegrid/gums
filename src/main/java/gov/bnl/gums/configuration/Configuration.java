@@ -50,12 +50,27 @@ public class Configuration {
     private String bannedUserGroups = "";
     private boolean allowGridmapFiles = true;
     private boolean transformingFromOld11Version = false;
+	private Date created = new Date();
+
 	static private String version = "1.3";
+	static int instances = 0;
     
-	public Configuration() {};
+	public Configuration() {
+		instances++;
+		log.debug("Created config - " + instances + " current instance(s)");
+		//try { throw new Exception();}catch(Exception e){log.error("", e);}
+	};
 	
 	public Configuration(boolean transformingFromOld11Version) {
 		this.transformingFromOld11Version = transformingFromOld11Version;
+		instances++;
+		log.debug("Created config - " + instances + " current instance(s)");
+		//try { throw new Exception();}catch(Exception e){log.error("", e);}
+	}
+	
+	public void finalize() {
+		instances--;
+		log.debug("Destroyed config - " + instances + " current instance(s)");
 	}
 	
     /**
@@ -183,7 +198,7 @@ public class Configuration {
     	Configuration newConf = new Configuration();
     	
     	newConf.setAllowGridmapFiles(getAllowGridmapFiles());
-    	newConf.setBannedUserGroups(getBannedUserGroups());
+    	newConf.setBannedUserGroups(new String(getBannedUserGroups()));
     	
     	Iterator it = persistenceFactories.values().iterator();
     	while (it.hasNext() )
@@ -239,6 +254,10 @@ public class Configuration {
     	return bannedUserGroups;
     }
 
+	public Date getCreated() {
+		return created;
+	}
+    
     /**
      * @param groupToAccountMapping
      * @return

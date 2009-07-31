@@ -20,12 +20,17 @@ import gov.bnl.gums.db.ManualAccountMapperDB;
 import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
 
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.hibernate.*;
 
@@ -39,15 +44,40 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     static public String getTypeStatic() {
 		return "hibernate";
 	}
+    static final int expireTime = 300000;
+	static Map propertyToPFSessionCreatorMap = new HashMap();
+	static Date nonusedPropertiesExpireTime;
+	static Configuration currentConfig;
+    static int numSessions = 0;
+    private Timer timer = new Timer();
 	
 	private Logger log = Logger.getLogger(HibernatePersistenceFactory.class);
-    public SessionFactory sessions;
+	SessionFactory sessionFactory;
     
+	TimerTask closeExpiredSessions = new TimerTask() {
+		public void run() {
+			synchronized(propertyToPFSessionCreatorMap) {
+				Iterator it = propertyToPFSessionCreatorMap.keySet().iterator();
+				while (it.hasNext()) {
+					Properties p = (Properties)it.next();
+					HibernatePersistenceFactory pf = (HibernatePersistenceFactory)propertyToPFSessionCreatorMap.get(p);
+					if (pf.getConfiguration() != currentConfig && new Date().after(nonusedPropertiesExpireTime)) {
+						pf.sessionFactory.close();
+						propertyToPFSessionCreatorMap.remove(p);it = propertyToPFSessionCreatorMap.keySet().iterator();
+						numSessions--;
+			            log.debug("Closed Hibernate session factory "+sessionFactory+" with properties " + p + " - "+numSessions+" current instance(s)");
+					}
+				}
+			}
+		}
+	};
+	
 	/**
      * Create a new hibernate persistence factory.  This empty constructor is needed by the XML Digester.
 	 */
 	public HibernatePersistenceFactory() {
     	log.trace("HibernatePersistenceFactory instanciated");
+    	timer.scheduleAtFixedRate(closeExpiredSessions, new Date(new Date().getTime()+60000), 60000);
     }
     
     /**
@@ -58,6 +88,7 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     public HibernatePersistenceFactory(Configuration configuration) {
     	super(configuration);
     	log.trace("HibernatePersistenceFactory instanciated");
+    	timer.scheduleAtFixedRate(closeExpiredSessions, new Date(new Date().getTime()+60000), 60000);
     }    
 
     /**
@@ -69,6 +100,7 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     public HibernatePersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
     	log.trace("HibernatePersistenceFactory instanciated");
+    	timer.scheduleAtFixedRate(closeExpiredSessions, new Date(new Date().getTime()+60000), 60000);
     }
     
     public PersistenceFactory clone(Configuration configuration) {
@@ -77,15 +109,6 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     	persistenceFactory.setStoreConfig(getStoreConfig());
     	persistenceFactory.setProperties((Properties)getProperties().clone());
     	return persistenceFactory;
-    }
-    
-    public void finalize() {
-    	try {
-    		if (sessions!=null)
-    			sessions.close();
-		} catch (HibernateException e) {
-			log.error("Couldn't close hibernate sessions: " + e.getMessage());
-		}
     }
     
     public String getType() {
@@ -106,12 +129,6 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 
     public ManualUserGroupDB retrieveManualUserGroupDB(String name) {
         return new HibernateUserGroupDB(this, name);
-    }
-    
-    public synchronized SessionFactory retrieveSessionFactory() {
-        if (sessions != null) return sessions;
-        sessions = buildSessionFactory();
-        return sessions;
     }
     
     public UserGroupDB retrieveUserGroupDB(String name) {
@@ -145,7 +162,31 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     	
     	return retStr;
 	}
-    
+
+	public SessionFactory retrieveSessionFactory() throws Exception {
+		if (sessionFactory == null) {
+			synchronized(propertyToPFSessionCreatorMap) {
+				// If there's a hibernate persistence factory with the same properties, use it, 
+				// otherwise create a new one and register in propertyToPFSessionCreatorMap list
+				HibernatePersistenceFactory pf = ((HibernatePersistenceFactory)propertyToPFSessionCreatorMap.get(getProperties()));
+				if (pf!=null && !pf.sessionFactory.isClosed()) {
+					sessionFactory = pf.sessionFactory;
+					log.debug("Obtained previous hibernate session factory "+sessionFactory+" with properties " + pf.getProperties() + " - "+numSessions+" current instance(s)");
+				}
+				else {
+					sessionFactory = buildSessionFactory();
+					numSessions++;
+		            log.debug("Created new Hibernate session factory "+sessionFactory+" with properties " + getProperties() + " - "+numSessions+" current instance(s)");
+				}
+				propertyToPFSessionCreatorMap.put(getProperties(), this);
+				currentConfig = getConfiguration();
+				nonusedPropertiesExpireTime = new Date(getConfiguration().getCreated().getTime() + expireTime);
+			}
+		}
+		
+		return sessionFactory;
+	}
+	
     private SessionFactory buildSessionFactory() {
         try {
             log.trace("Creating Hibernate Session Factory with the following properties: " + getProperties());

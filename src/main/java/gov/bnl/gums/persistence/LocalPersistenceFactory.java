@@ -15,6 +15,7 @@ import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
 import gov.bnl.gums.db.ConfigurationDB;
 
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -24,6 +25,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
+import org.hibernate.SessionFactory;
 
 /**
  * Persistence factory instantiation that combines a hibernate persistence factory
@@ -175,7 +177,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		ldap = new LDAPPersistenceFactory(configuration, name);  
 		log.trace("LocalPersistenceFactory instanciated");
 	}
-
+	
 	public PersistenceFactory clone(Configuration configuration) {
 		LocalPersistenceFactory persistenceFactory = new LocalPersistenceFactory(configuration, new String(getName()));
 		persistenceFactory.setDescription(new String(getDescription()));
@@ -191,7 +193,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		persistenceFactory.setMemberUidField(new String(getMemberUidField()));
 		persistenceFactory.setProperties((Properties)getProperties().clone());
 		persistenceFactory.setSynch(persistenceFactory.isSynch());
-		persistenceFactory.setEmailField(persistenceFactory.getEmailField());
+		persistenceFactory.setEmailField(new String(persistenceFactory.getEmailField()));
 		return persistenceFactory;
 	}
 
@@ -309,7 +311,10 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 
 	public void setConfiguration(Configuration configuration) {
 		super.setConfiguration(configuration);
+		ldap.setConfiguration(configuration);
+		persFactory.setConfiguration(configuration);
 	}
+	
 	public void setEmailField(String emailField) {
 		ldap.setEmailField(emailField);
 	}
@@ -348,6 +353,8 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 	
 	public void setName(String name) {
 		super.setName(name);
+		ldap.setName(name);
+		persFactory.setName(name);
 	}
 
 	public void setPeopleTree(String peopleTree) {
@@ -408,7 +415,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 
 		return retStr;
 	}
-
+	
 	private Properties filterProperties(String prefix) {
 		Properties filtered = new Properties();
 		Enumeration keys = getProperties().propertyNames();

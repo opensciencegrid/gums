@@ -1,5 +1,7 @@
 package gov.bnl.gums.userGroup;
 
+import java.lang.ref.SoftReference;
+
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.UserGroupDB;
 
@@ -23,7 +25,7 @@ public class VomsServer {
     private String sslKeyPasswd = "";
     private UserGroupDB db = null;
 	private String persistenceFactory;
-	private Configuration configuration = null;
+	private SoftReference configurationRef = null;
     
 	/**
 	 * Creates a new VomsServer object. This empty 
@@ -38,7 +40,7 @@ public class VomsServer {
 	 * @param configuration
 	 */
 	public VomsServer(Configuration configuration) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 	}
 	
 	/**
@@ -48,7 +50,7 @@ public class VomsServer {
 	 * @param name
 	 */
 	public VomsServer(Configuration configuration, String name) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 		this.name = name;
 	}
 	 
@@ -74,7 +76,9 @@ public class VomsServer {
     }
 	
 	public Configuration getConfiguration() {
-		return configuration;
+		if (configurationRef==null)
+			return null;
+		return (Configuration)configurationRef.get();
 	}
 	
 	public String getDescription() {
@@ -82,7 +86,7 @@ public class VomsServer {
 	}
 	
 	public UserGroupDB getDB(String userGroup) {
-    	return configuration.getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( userGroup );
+    	return getConfiguration().getPersistenceFactory(persistenceFactory).retrieveUserGroupDB( userGroup );
     }
 	
     public String getName() {
@@ -136,7 +140,7 @@ public class VomsServer {
     }
     
     public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 	}
     
     public void setDescription(String description) {

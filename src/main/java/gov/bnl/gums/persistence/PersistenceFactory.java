@@ -13,6 +13,7 @@ import gov.bnl.gums.db.ManualUserGroupDB;
 import gov.bnl.gums.db.UserGroupDB;
 import gov.bnl.gums.db.ConfigurationDB;
 
+import java.lang.ref.SoftReference;
 import java.util.Properties;
 
 /** Represent a factory for all the classes that take care of the persistance of
@@ -40,7 +41,7 @@ public abstract class PersistenceFactory {
     private boolean storeConfig = false;
     private String description = "";
     private Properties properties;
-    private Configuration configuration;
+    private SoftReference configurationRef;
     
 	/**
 	 * Create a persistence factory. This empty constructor is needed by the XML Digestor.
@@ -54,7 +55,7 @@ public abstract class PersistenceFactory {
 	 * @param configuration
 	 */
 	public PersistenceFactory(Configuration configuration) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 	}	
     
 	/**
@@ -65,7 +66,7 @@ public abstract class PersistenceFactory {
 	 */
 	public PersistenceFactory(Configuration configuration, String name) {
 		this.name = name;
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 	}
 	
 	/**
@@ -82,7 +83,9 @@ public abstract class PersistenceFactory {
      * @return Value of property configuration.
      */
 	public Configuration getConfiguration() {
-		return configuration;
+		if (configurationRef==null)
+			return null;
+		return (Configuration)configurationRef.get();
 	}
 	
     /**
@@ -140,7 +143,7 @@ public abstract class PersistenceFactory {
      * @param configuration.
      */
 	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 	}
 	
     /**

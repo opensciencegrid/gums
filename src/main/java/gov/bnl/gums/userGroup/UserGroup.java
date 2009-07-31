@@ -9,6 +9,7 @@ package gov.bnl.gums.userGroup;
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 
+import java.lang.ref.SoftReference;
 import java.util.*;
 
 /** 
@@ -28,7 +29,7 @@ public abstract class UserGroup {
 	
 	private String name = "";
 	private String description = "";
-	private Configuration configuration = null;
+	private SoftReference configurationRef = null;
 	protected String[] accessTypes = {"write", "read all", "read self"};
 	protected int accessIndex = 2;
 	
@@ -45,7 +46,7 @@ public abstract class UserGroup {
 	 * @param name
 	 */
 	public UserGroup(Configuration configuration) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 	}
 
 	/**
@@ -55,7 +56,7 @@ public abstract class UserGroup {
 	 * @param name
 	 */
 	public UserGroup(Configuration configuration, String name) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 		this.name = name;
 	}
 	
@@ -83,7 +84,9 @@ public abstract class UserGroup {
 	 * @return Configuration object
 	 */
 	public Configuration getConfiguration() {
-		return configuration;
+		if (configurationRef==null)
+			return null;
+		return (Configuration)configurationRef.get();
 	}
 	
 	/**
@@ -176,7 +179,7 @@ public abstract class UserGroup {
      * @param configuration
      */
     public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
+		this.configurationRef = new SoftReference(configuration);
 	}
     
     /**
