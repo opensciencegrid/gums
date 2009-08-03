@@ -66,7 +66,7 @@ public class DBConfigurationStore extends ConfigurationStore {
 			if (mostRecentModification==null || mostRecentModification.before(lastModification)) {
 				String configText = configDB.retrieveCurrentConfiguration();
 				this.conf = ConfigurationToolkit.parseConfiguration(configText, false);
-				log.debug("Configuration reloaded from database");
+				log.debug("Configuration "+conf+" reloaded from database");
 				mostRecentModification = lastModification;
 				return conf;
 			}
@@ -84,7 +84,7 @@ public class DBConfigurationStore extends ConfigurationStore {
 		try {
 			String configText = configDB.restoreConfiguration(name);
 			this.conf = ConfigurationToolkit.parseConfiguration(configText, false);
-			log.debug("Configuration '" + name + "' restored from database");
+			log.debug("Configuration '" + name + "', "+conf+" restored from database");
 			mostRecentModification = getLastModification();
 			return conf;
 		} catch (Exception e) {
@@ -103,8 +103,9 @@ public class DBConfigurationStore extends ConfigurationStore {
 			name = format.format(date); 
 		
 		configDB.setConfiguration(conf.toXml(), backupCopy, name, date);
+		log.debug("Configuration "+conf+" saved to database");
+		this.conf = conf;
 		mostRecentModification = date;
-		log.debug("Configuration saved to database");
 	}
 
 }

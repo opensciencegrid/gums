@@ -46,8 +46,7 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 	}
     static final int expireTime = 300000;
 	static Map propertyToPFSessionCreatorMap = new HashMap();
-	static Date nonusedPropertiesExpireTime;
-	static Configuration currentConfig;
+	static Configuration currentConfig = null;
     static int numSessions = 0;
     private Timer timer = new Timer();
 	
@@ -61,11 +60,11 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 				while (it.hasNext()) {
 					Properties p = (Properties)it.next();
 					HibernatePersistenceFactory pf = (HibernatePersistenceFactory)propertyToPFSessionCreatorMap.get(p);
-					if (pf.getConfiguration() != currentConfig && new Date().after(nonusedPropertiesExpireTime)) {
+					if (pf.getConfiguration() != currentConfig && new Date().after(new Date(pf.getConfiguration().getCreated().getTime()+300000))) {
 						pf.sessionFactory.close();
 						propertyToPFSessionCreatorMap.remove(p);it = propertyToPFSessionCreatorMap.keySet().iterator();
 						numSessions--;
-			            log.debug("Closed Hibernate session factory "+pf.sessionFactory+" with properties " + p + " - "+numSessions+" current instance(s)");
+			            log.debug("Closed Hibernate session factory "+pf.sessionFactory+" with configuration "+pf.getConfiguration()+" and properties " + p + " - "+numSessions+" current instance(s)");
 					}
 				}
 			}
@@ -171,16 +170,15 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 				HibernatePersistenceFactory pf = ((HibernatePersistenceFactory)propertyToPFSessionCreatorMap.get(getProperties()));
 				if (pf!=null && !pf.sessionFactory.isClosed()) {
 					sessionFactory = pf.sessionFactory;
-					log.debug("Obtained previous hibernate session factory "+sessionFactory+" with properties " + pf.getProperties() + " - "+numSessions+" current instance(s)");
+					log.debug("Obtained previous hibernate session factory "+sessionFactory+" with configuration "+getConfiguration()+" and properties " + pf.getProperties() + " - "+numSessions+" current instance(s)");
 				}
 				else {
 					sessionFactory = buildSessionFactory();
 					numSessions++;
-		            log.debug("Created new Hibernate session factory "+sessionFactory+" with properties " + getProperties() + " - "+numSessions+" current instance(s)");
+		            log.debug("Created new Hibernate session factory "+sessionFactory+" with configuration "+getConfiguration()+" and properties " + getProperties() + " - "+numSessions+" current instance(s)");
 				}
 				propertyToPFSessionCreatorMap.put(getProperties(), this);
 				currentConfig = getConfiguration();
-				nonusedPropertiesExpireTime = new Date(getConfiguration().getCreated().getTime() + expireTime);
 			}
 		}
 		

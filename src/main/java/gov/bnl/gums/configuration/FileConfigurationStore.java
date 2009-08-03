@@ -161,7 +161,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 //		moveFile(configPath, configBackupDir + "/gums.config~");
 		copyFile(configBackupDir + path, configPath);
 //		moveFile(configBackupDir + "/gums.config~", configBackupDir + "/gums.config.prev" );
-		log.debug("Configuration '" + name + "' restored from file");
+		log.debug("Configuration '" + name + "', "+conf+" restored from file");
 		return retrieveConfiguration();
 	}
 	
@@ -169,7 +169,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 		try {
 			if (curModification==null || curModification.before(getLastModification())) {
 				reloadConfiguration();
-				log.debug("Configuration reloaded from file");
+				log.debug("Configuration "+conf+" reloaded from file");
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -200,7 +200,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 			int ch;
 			while ((ch = fileInputStream.read()) != -1)
 				configBuffer.append((char)ch);
-	    	this.conf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
+	    	ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new Exception(e.getMessage());
@@ -220,7 +220,9 @@ public class FileConfigurationStore extends ConfigurationStore {
 		else
 			moveFile(tempGumsConfigPath, (backupCopy?configBackupDir+"/gums.config.":configPath));
 
-		log.debug("Configuration set to file");
+		this.conf = conf;
+		
+		log.debug("Configuration "+conf+" set to file");
 
 		// set timestamps
 		if (!backupCopy) {

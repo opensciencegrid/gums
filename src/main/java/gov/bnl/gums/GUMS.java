@@ -222,7 +222,7 @@ public class GUMS {
 			if (confStoreLastMod.after(dbConfStoreLastMod)) {
 				conf = confStore.retrieveConfiguration();
 				if (lastConf != conf) {
-					gumsAdminLog.info("Reloaded configuration from file, which was modified on " + confStoreLastMod + ", and setting to database");
+					gumsAdminLog.info("Reloaded configuration "+conf+" from file, which was modified on " + confStoreLastMod + ", and setting to database");
 					updateConfStoreTypes(conf);
 					if (dbConfStore!=null)
 						dbConfStore.setConfiguration(conf, false, null, confStoreLastMod);
@@ -231,7 +231,7 @@ public class GUMS {
 			else if (lastConf==null || dbConfStoreLastMod.after(confStoreLastMod)) {
 				conf = dbConfStore.retrieveConfiguration();
 				if (lastConf != conf) {
-					gumsAdminLog.info("Reloaded configuration from database, which was modified on " + dbConfStoreLastMod + ", and setting to file");
+					gumsAdminLog.info("Reloaded configuration "+conf+" from database, which was modified on " + dbConfStoreLastMod + ", and setting to file");
 					updateConfStoreTypes(conf);
 					confStore.setConfiguration(conf, false, null, dbConfStoreLastMod);
 				}
@@ -343,41 +343,31 @@ public class GUMS {
 	}
 
 	private void updateConfStoreTypes(Configuration conf) {
-		if (dbConfStore==null) {
-			Iterator it = conf.getPersistenceFactories().values().iterator();
-			boolean storeConfigFound = false;
-			while (it.hasNext()) {
-				PersistenceFactory persFact = (PersistenceFactory)it.next();
-				if (persFact.getStoreConfig()) {
-					// create database configuration store
-					if (storeConfigFound) {
-						String message = "Configuration may only contain one persistence factory set to store the configuration";
-						log.error(message);
-						throw new RuntimeException(message);
-					}
-					dbConfStore = new DBConfigurationStore(persFact.retrieveConfigurationDB());
-					String message = "Added database configuration store for persistence factory "+persFact.getName();
-					gumsAdminLog.debug(message);
-					log.debug(message);
-					storeConfigFound = true;
+		Iterator it = conf.getPersistenceFactories().values().iterator();
+		boolean storeConfigFound = false;
+		while (it.hasNext()) {
+			PersistenceFactory persFact = (PersistenceFactory)it.next();
+			if (persFact.getStoreConfig()) {
+				// create database configuration store
+				if (storeConfigFound) {
+					String message = "Configuration may only contain one persistence factory set to store the configuration";
+					log.error(message);
+					throw new RuntimeException(message);
 				}
-			}
-		}
-		else if (dbConfStore!=null) {
-			Iterator it = conf.getPersistenceFactories().values().iterator();
-			boolean storeConfigFound = false;
-			while (it.hasNext()) {
-				PersistenceFactory persFact = (PersistenceFactory)it.next();
-				if (persFact.getStoreConfig())
-					storeConfigFound = true;
-			}
-			if (!storeConfigFound) {
-				// eliminate database configuration store 
-				dbConfStore = null;
-				String message = "Eliminated database configuration store";
+				dbConfStore = new DBConfigurationStore(persFact.retrieveConfigurationDB());
+				String message = "Added database configuration store for persistence factory "+persFact.getName();
 				gumsAdminLog.debug(message);
 				log.debug(message);
+				storeConfigFound = true;
 			}
+		}
+		
+		if (!storeConfigFound) {
+			// eliminate database configuration store 
+			dbConfStore = null;
+			String message = "Eliminated database configuration store";
+			gumsAdminLog.debug(message);
+			log.debug(message);
 		}
 	}
 
