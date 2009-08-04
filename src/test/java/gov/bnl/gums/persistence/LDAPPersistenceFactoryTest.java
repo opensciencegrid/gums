@@ -66,6 +66,7 @@ public class LDAPPersistenceFactoryTest extends TestCase {
 		try {
 			factory.retrieveGumsDirContext().destroySubcontext("group=test,ou=GUMS");
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
 		try {
 			factory.destroyMap("test", "map=test,ou=GUMS");

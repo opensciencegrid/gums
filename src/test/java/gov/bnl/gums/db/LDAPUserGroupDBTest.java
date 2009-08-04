@@ -31,12 +31,12 @@ public class LDAPUserGroupDBTest extends UserGroupDBTest {
 
     public void setUp() throws Exception {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
-        factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
+	factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
         try {
             factory.retrieveGumsDirContext().destroySubcontext("group=testUserGroup");
         } catch (Exception e) {}
-        db = factory.retrieveUserGroupDB("testUserGroup");
-        initDB();
+	db = factory.retrieveUserGroupDB("testUserGroup");
+	initDB();
     }
     
     public void tearDown() {

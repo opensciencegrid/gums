@@ -40,7 +40,7 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         this.factory = factory;
         this.group = group;
         this.groupDN = "group=" + group + "," + factory.getGumsObject();
-        createGroupIfNotExists();
+	createGroupIfNotExists();
         log.trace("LDAPUserGroupDB object create: group '" + group + "' factory " + factory);
     }
     
@@ -180,8 +180,8 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         try {
             SearchControls ctrls = new SearchControls();
             ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            NamingEnumeration result = context.search(factory.getGumsObject(), "(group={0})", new Object[] {group}, ctrls);
-            log.trace("Checking whether group '" + group + "' exists: " + result.hasMore());
+	    NamingEnumeration result = context.search(factory.getGumsObject(), "(group={0})", new Object[] {group}, ctrls);
+	    log.trace("Checking whether group '" + group + "' exists: " + result.hasMore());
             return result.hasMore();
         } catch (Exception e) {
             log.info("Couldn't determine whether group '" + group + "' exists", e);

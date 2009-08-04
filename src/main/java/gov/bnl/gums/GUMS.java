@@ -226,6 +226,7 @@ public class GUMS {
 					updateConfStoreTypes(conf);
 					if (dbConfStore!=null)
 						dbConfStore.setConfiguration(conf, false, null, confStoreLastMod);
+					System.gc();
 				}
 			}
 			else if (lastConf==null || dbConfStoreLastMod.after(confStoreLastMod)) {
@@ -234,6 +235,7 @@ public class GUMS {
 					gumsAdminLog.info("Reloaded configuration "+conf+" from database, which was modified on " + dbConfStoreLastMod + ", and setting to file");
 					updateConfStoreTypes(conf);
 					confStore.setConfiguration(conf, false, null, dbConfStoreLastMod);
+					System.gc();
 				}
 			}
 			else
@@ -244,6 +246,7 @@ public class GUMS {
 			if (lastConf != conf) {
 				gumsAdminLog.info("Reloaded configuration from file");
 				updateConfStoreTypes(conf);
+				System.gc();
 			}
 		}
 		
@@ -355,7 +358,7 @@ public class GUMS {
 					throw new RuntimeException(message);
 				}
 				dbConfStore = new DBConfigurationStore(persFact.retrieveConfigurationDB());
-				String message = "Added database configuration store for persistence factory "+persFact.getName();
+				String message = "Created database configuration store for persistence factory "+persFact.getName();
 				gumsAdminLog.debug(message);
 				log.debug(message);
 				storeConfigFound = true;
@@ -364,10 +367,12 @@ public class GUMS {
 		
 		if (!storeConfigFound) {
 			// eliminate database configuration store 
+			if (dbConfStore!=null) {
+				String message = "Eliminated database configuration store";
+				gumsAdminLog.debug(message);
+				log.debug(message);
+			}
 			dbConfStore = null;
-			String message = "Eliminated database configuration store";
-			gumsAdminLog.debug(message);
-			log.debug(message);
 		}
 	}
 

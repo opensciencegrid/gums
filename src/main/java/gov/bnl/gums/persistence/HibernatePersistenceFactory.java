@@ -60,7 +60,7 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 				while (it.hasNext()) {
 					Properties p = (Properties)it.next();
 					HibernatePersistenceFactory pf = (HibernatePersistenceFactory)propertyToPFSessionCreatorMap.get(p);
-					if (pf.getConfiguration() != currentConfig && new Date().after(new Date(pf.getConfiguration().getCreated().getTime()+300000))) {
+					if (pf.getConfiguration() != currentConfig && new Date().after(new Date(pf.getConfiguration().getCreated().getTime()+expireTime))) {
 						pf.sessionFactory.close();
 						propertyToPFSessionCreatorMap.remove(p);it = propertyToPFSessionCreatorMap.keySet().iterator();
 						numSessions--;
@@ -76,7 +76,7 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 	 */
 	public HibernatePersistenceFactory() {
     	log.trace("HibernatePersistenceFactory instanciated");
-    	timer.scheduleAtFixedRate(closeExpiredSessions, new Date(new Date().getTime()+60000), 60000);
+    	timer.scheduleAtFixedRate(closeExpiredSessions, new Date(new Date().getTime()+expireTime), expireTime);
     }
     
     /**
@@ -87,7 +87,7 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     public HibernatePersistenceFactory(Configuration configuration) {
     	super(configuration);
     	log.trace("HibernatePersistenceFactory instanciated");
-    	timer.scheduleAtFixedRate(closeExpiredSessions, new Date(new Date().getTime()+60000), 60000);
+    	timer.scheduleAtFixedRate(closeExpiredSessions, new Date(new Date().getTime()+expireTime), expireTime);
     }    
 
     /**
