@@ -37,7 +37,8 @@ usage() {
 	echo "hostToGroupMapping.  If user, password, or host is not specified an attempt "
 	echo "will be made to extract one or more of them from the current configuration."
 	echo "Usage: $0"
-	echo "   --template <template config path (../gums.config.template is default) [optional]> "
+	echo "   --template your_template (full path required)"
+  echo "        (default - ../config/gums.config.template) [optional]> "
 	echo "   --osg-template <download current osg template config> [optional]"
 	echo "   --user <database user for GUMS> [optional]"
 	echo "   --password <GUMS database password> [optional]"
@@ -193,6 +194,11 @@ echo "will use domain name \"$DOMAINNAME\" in hostToGroupMapping"
 # Create the gums.config
 #
 #-------------------------------------------
+if [ ! -e "$TEMPLATE" ];then
+	echo "ERROR: the template ($TEMPLATE) specified does not exist"
+  exit 1
+fi
+
 if [ -e ../config/gums.config ]
 then
 	if [ "$PROMPT" -eq 1 ]
@@ -202,12 +208,14 @@ then
 		read response
 		if [ "$response" != "yes" ]
 		then
-			exit -1
+      echo "Exiting at your request. No changes have been made."
+			exit 1
 		fi
 	fi
-fi
 
-cp ../config/gums.config ../config/gums.config.old
+  echo "Backing up your gums.config as gums.config.old"
+  cp ../config/gums.config ../config/gums.config.old
+fi
 
 cat $TEMPLATE \
   | /bin/sed -e s/@USER@/$USER/g                    \
@@ -216,3 +224,7 @@ cat $TEMPLATE \
              -e s/@DOMAINNAME@/$DOMAINNAME/g        \
              -e s/GUMS_[0-9]_[0-9]/GUMS_1_3/g		\
   > ../config/gums.config
+
+echo "New gums.config has been created successfully"
+ls -l ../config/gums.config
+exit 0
