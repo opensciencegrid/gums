@@ -84,7 +84,7 @@
 							
 				                <unzip dest="src/main/resources">
 				                    <fileset dir="${settings.localRepository}/gums/gums-core">
-        								<include name="**/gums-core-*.jar"/>
+        								<include name="**/gums-core-${version}.jar"/>
 								    </fileset>
 									<patternset>
 										<include name="gums.config.template"/>
