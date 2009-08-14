@@ -89,7 +89,6 @@
 									<patternset>
 										<include name="gums.config.template"/>
 										<include name="gums.config.devel"/>
-										<include name="gums.config.osg_template"/>
 										<include name="gums.config.schema"/>
 										<include name="gums.config.transform"/>
 										<include name="log4j.properties.template"/>
