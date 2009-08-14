@@ -37,9 +37,8 @@ usage() {
 	echo "hostToGroupMapping.  If user, password, or host is not specified an attempt "
 	echo "will be made to extract one or more of them from the current configuration."
 	echo "Usage: $0"
-	echo "   --template your_template (full path required)"
-  echo "        (default - ../config/gums.config.template) [optional]> "
-	echo "   --osg-template <download current osg template config> [optional]"
+	echo "   --template your_template (relative to script location)"
+	echo "        (default - ../config/gums.config.template) [optional]> "
 	echo "   --user <database user for GUMS> [optional]"
 	echo "   --password <GUMS database password> [optional]"
 	echo "   --host <GUMS database server host> [optional]"
@@ -47,7 +46,6 @@ usage() {
 	echo "   --help [Print this message]"
 	echo
 	echo "Examples:"
-	echo "  $0 --osg-template"
 	echo "  $0 --template ../mytemplate"
 	echo "  $0 --user gums --host gums.mysite.com:49151 --password secret --template ../mytemplate"
 	echo
@@ -61,7 +59,6 @@ usage() {
 #
 #-------------------------------------------
 TEMPLATE="../gums.config.template"
-OSGTEMPLATE=0
 USER=""
 SERVER=""
 PASSWORD=""
@@ -80,7 +77,6 @@ do
   case "$1" in 
 	  --noprompt) PROMPT=0;;
 	  --template) TEMPLATE="$2"; shift;;
-	  --osg-template) OSGTEMPLATE=1;;
 	  --user)     USER="$2";     shift;;
       --password) PASSWORD="$2"; shift;;
       --host)     SERVER="$2";   shift;;
@@ -91,13 +87,6 @@ do
   esac
   shift
 done
-
-if [ "$OSGTEMPLATE" -eq 1 ]
-then
-	echo Downloading OSG GUMS template...
-	wget --no-verbose --output-document=/tmp/gums.template http://software.grid.iu.edu/pacman/tarballs/vo-version/gums.template
-	TEMPLATE="/tmp/gums.template"
-fi
 
 parseConfig() {
 	if [ -e ../config/gums.config ]
