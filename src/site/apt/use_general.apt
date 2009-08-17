@@ -1,0 +1,46 @@
+ ------
+ GUMS General Use
+ ------
+
+General Use
+
+* Web Interface
+
+ In a browser with your user certificate loaded, type in the url "https://host.domain:8443/gums" with host and domain replaced with your host and domain.  
+Assuming you have properly configured GUMS and have added your DN to the "admins" group, you will see 
+three sections on the left: 
+
+	* <<Configuration>> - configure the elements involved in mapping a user to an account.
+	
+	* <<User Management>> - add individual users to user groups and account mappers, or force an member update for each user group.
+	
+	* <<View Mappings>> - view mappings to see if the output of GUMS mappings is as expected.
+	
+ Each link brings up a new page, which is typically a list of elements for which you can add, delete, or edit.
+
+* Client Tools
+
+ There are five GUMS client tools:
+ 
+	* <<gums-host>> - makes core GUMS calls such as mapUser and generateGridMapfile.  
+	This command uses the host certificate/key (e.g. /etc/grid-security/host*.pem).
+		
+	* <<gums>> - makes core GUMS calls plus administrative commands.  This command uses a user proxy (e.g.
+		using grid-proxy-init).
+		
+	* <<gums-service>> - just like "gums" but uses the host certificate/key (e.g. /etc/grid-security/host*.pem).
+	
+	* <<gums-host-cron>> - runs as a root cron process that calls "gums-host" to periodically create a grid-mapfile and an OSG-user-VO-map.
+	
+	* <<gums-nagios>> - used by {{{http://www.nagios.org/}Nagios}} to determine if GUMS is up or down.  For each DN/account pair in the 
+	gums-nagios.conf file, mapUser is called for the DN and the result compared to the account.
+
+ By running a client tool without any parameters, you are shown what commands are available.  These tools are configured 
+using the following files (within /etc/gums/ for the RPM install):
+
+	* <<gums-client.properites>> - contains the GUMS location and authz URLs - replace localhost with your GUMS host.
+	
+	* <<log4j.properties>> - contains error levels and locations of log files.
+	
+	* <<gums-nagios.conf>> - contains a set of test DN/account pairs for use by "gums-nagios".
+	

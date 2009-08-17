@@ -1,0 +1,129 @@
+ ------
+ GUMS Introduction
+ ------
+
+Introduction
+
+ The GUMS service performs one and only one function: it maps users' grid certificates/credentials to site-specific 
+identities/credentials (e.g., UNIX accounts or Kerberos principals) in accordance with the site's grid resource usage policy. 
+GUMS can be configured to generate static grid-mapfiles or to map users dynamically as each job is submitted. If configured to 
+generate a grid-mapfile, GUMS downloads the file to each gatekeeper as scheduled or requested by an administrator via the GUMS 
+client tools. If  configured to map users dynamically and individually, GUMS is called by the gatekeeper upon each job 
+submission.
+
+ Scenario: A job arrives at a site and gets routed to a particular gatekeeper. The job comes with a grid credential (the 
+proxy certificate), but it will need to run under a site-specific credential. Before the gatekeeper can forward the job to 
+the job manager, it (the gatekeeper) must obtain a site-specific credential for the job. Where does it get the site 
+credential? Depending on the configuration, it either consults the GUMS-generated grid-mapfile or it calls the site's GUMS 
+server and requests a site credential. In the latter case, GUMS maps the the grid credential dynamically to the appropriate 
+site identity and credential, and sends the mapping information back to the gatekeeper. The gatekeeper now forwards the job 
+along with its site credential to the job manager.
+
+ Notice that GUMS doesn't perform authentication: it doesn't 'su', it doesn't retrieve Kerberos 
+credentials. It just tells the gatekeeper which site credentials the job should get. The 
+gatekeeper is still in charge of enforcing the site mapping established by GUMS. 
+Technically speaking, GUMS is a Policy Decision Point (PDP) not a Policy 
+Enforcement Point (PEP).
+
+* Implementing Site Policies
+
+ GUMS runs at a grid site under the control of site administrators; it is a "site tool" as opposed to a "VO tool". 
+The users it maps may be affiliated with numerous VOs. The mappings in a site's GUMS installation are defined 
+in a single XML policy file. This file may contain multiple policies, and the administrator can assign different 
+policies to different groups of users. The administrator can also specify  different mappings on different hosts 
+or different sets of hosts.
+
+ For example, say that there are two groups of users: all the users known to the ATLAS VOMS server, and other 
+ATLAS users who are already mapped to accounts taken from a site pool of accounts. For all hosts 'atlas*.bnl.org', 
+an administrator could map the first set of users to a group account named 
+'atlas01', and let all the other users use the accounts to which they're already mapped. 
+On another host or set of hosts, there could be a different mapping.
+
+ GUMS is designed to be extensible so that it can address specific site 
+requirements. All the GUMS policy components (i.e., user group definition, mapping 
+policies, and so on) are implementated via a few simple interfaces which 
+can be implemented with almost no dependencies on GUMS. Thus a site administrator with very little 
+knowledge of GUMS itself can add external code to manipulate GUMS functionality or data, e.g, to tell 
+GUMS how to map credentials, or to pull GUMS data into a local storage system.
+
+ Components for the following functionalities are already implemented in GUMS:
+
+	* Retrieve membership information from a VO server such as LDAP or VOMS.
+	
+	* Maintain a manual group of people, stored in the GUMS database (this is useful to handle special cases).
+	
+	* Map groups of users to the same account (a group account).
+	
+	* Map groups of users to an account pool, in which one account will be assigned to each user.
+	
+	* Map groups of users according to the information present in NIS or LDAP.
+	
+	* Map groups of users according to a manual mapping, stored in the GUMS database.
+
+* The GUMS callout interface
+
+ The GUMS interface for the callout implements two standards, the older OSGA OpenSAML 1.1 AuthZ 
+format and the new OSGA OpenSAML-XACML 2.1 AuthZ format.  The existence of these interfaces
+means that any kind of client that implements one of these standards is able to contact GUMS.  Existing
+clients are GT2/Prima, GT4, and glexec.
+
+* The development of GUMS
+
+ GUMS was first designed by Rich Baker and Dantong Yu at BNL in the first half 
+of 2003. A first implementation was provided by Tomasz Wlodek and Dantong Yu. 
+Gabriele Carcassi took over the project in March 2004 and brought the system 
+into full production at BNL in May 2004. Between June and July 2004 the code was 
+refactored to allow the core logic to be called either from the command line or 
+from a web application, opening the door to a web service implementation.
+
+ Starting in August 2004, the work had been refocused on a web application 
+that would provide both a web interface for the administrator and a web service 
+that implements the OGSA AuthZ interface. This has been developed within the 
+{{{http://computing.fnal.gov/docs/products/voprivilege/}VO Privilege 
+Project}}, a joint project between USCMS and USATLAS, and has achieved a 
+finer-grained authorization based on an extended grid proxy certificate. 
+By January 2005 the service has been put in production at BNL.
+
+ Between February 2005 and July 2005 we worked on packaging for distributing 
+GUMS as part of VDT, and within OSG integration to test the whole end-to-end 
+Privilege system (VOMS+PRIMA+GUMS). Release 1.1.0 is the result of the feedback 
+of that activity as it implements some use cases uncovered by it.
+
+ Since August 2006, Jay Packard and John Hover have become the lead developers
+of GUMS 1.3.  In 2007, the focus was to provide ease of use and completeness for 
+both administrators and developers, which entailed a much more comprehensive
+web site where gums can be configured and managed and some additional
+functionality in the client admin tool.  The code was refactored, the build system
+was converted to use the Maven 2 build system, the unit tests were generalized, 
+a test system was created, and the code was put in subversion with SSL access to 
+allow development collaboration.  In 2008, our focus was to implement the OpenSAML-XACML
+interface and add several new features as requested by OSG management and the user community 
+such as banning capabilities, centralized configuration, and several new types of map files.
+
+* GUMS in the future
+
+ The grid community, and especially the grid security groups, are moving toward a computing model in 
+which (1) a grid job would be able to access a service only through grid credentials and (2) a job 
+would not be allowed to leave any trace of its passage (or any traces would subsequently be erased). 
+These two requirements would lessen the importance of site-specific credential 
+mapping. The need to map to local identities therefore might go away in the long-term future. 
+Currently, though, many site-specific authorization decisions are still made using the username and uid, 
+and GUMS provides a necessary function.
+
+ The following is an incomplete list of issues that will need to be 
+resolved before local account mapping becomes irrelevant:
+
+	* File access control. If file access for all inputs and outputs of a 
+	job were to go through an interface with grid authorization, say an SRM, then 
+	whether a job was mapped to a particular account wouldn't affect file access 
+	privileges. As long as we use UNIX file systems directly for storage, local 
+	account mappings are crucial.
+	
+	* Priority on a batch system. Many batch systems use uids and gids to 
+	determine submission rights to queues and/or to determine priorities for 
+	users. Batch system interfaces that make decisions based-only on grid credentials 
+	would be needed.
+	
+	* Identification of running processes. The easiest way to track a process running on 
+	a host is to look at the username under which it is running. We'd need a mechanism that
+	associates a process id with a grid identity.

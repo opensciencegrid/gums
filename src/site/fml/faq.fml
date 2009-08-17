@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<faqs id="General FAQ" title="FAQ">
+  <part id="General">
+  	<title>General</title>
+    <faq id="where">
+      <question>Is GUMS being used in production anywhere?</question>
+      <answer>
+        <p>
+          Yes, GUMS is being used at BNL, and at other OSG sites.
+        </p>
+      </answer>
+    </faq>
+    <faq id="why">
+      <question> I hear GUMS allows you to have different mappings on 
+      different gatekeeper. Why do you want to do that? Doesn't it complicate things?</question>
+      <answer>
+        <p>
+			At BNL we have different gatekeepers for different experiments , each of which 
+			has its own individual requirements. Furthermore, each experiment may have some 
+			gatekeepers in production and others in test; these might require slightly different 
+			configurations. It also comes in handy for troubleshooting (an admin may want to 
+			temporarily change his mapping to a user's if the user is having troule with an 
+			operation) and when testing/implementing a new policy. Allowing different mappings 
+			is only one way to address these situations. For example, they could be addressed 
+			by implementing roles in the VO servers. It turns out that GUMS actually helps in 
+			keeping the mapping identical at all gatekeepers: this is what we generally want 
+			to do at BNL and one of the reasons we developed GUMS. But we still need to cope 
+			with the "irregularities" that a production environment may present.
+        </p>
+      </answer>
+    </faq>
+  </part>
+  <part id="Using GUMS">
+  	<title>Using GUMS</title>
+    <faq id="root">
+      <question>Does GUMS have to run as root?</question>
+      <answer>
+        <p>
+          No. GUMS runs under tomcat/apache, and will run fine no matter what userid you use to run tomcat/apache.
+        </p>
+      </answer>
+    </faq>
+    <faq id="otherweb">
+      <question> Does GUMS run in other web application servers? (i.e. Weblogic, Websphere, ... ?)</question>
+      <answer>
+        <p>
+			The only non-J2EE part that is being used is the authentication. If they can be configured to use the egee 
+			trustmanager, or to accept Grid Certificates and proxies, the rest shouldn't be a problem.
+        </p>
+      </answer>
+    </faq>
+  </part>  
+  <part id="Comparing GUMS">
+   	<title>Comparing GUMS with Other Tools</title>
+    <faq id="voms">
+      <question>What's the difference between GUMS and VOMS (or VOMRS)?</question>
+      <answer>
+        <p>
+        	First of all, GUMS is a site tool and VOMS is a VO tool. I.e., you have a BNL GUMS, whereas 
+        	you have an ATLAS VOMS. A VO uses VOMS to keep a list of members and their roles within the 
+        	organization. A site uses GUMS to maintain the mapping between members' GRID credentials 
+        	(certificates) and local site credentials (e.g., UNIX accounts).
+		</p>
+		<p>
+    		GUMS can contact VOMS to retrieve the list of VO users that require a particular mapping. For 
+    		example, if the GUMS configuration says: "all ATLAS members should be mapped to the 'atlas' 
+    		account" then GUMS would contact the ATLAS VOMS server to find out who all the ATLAS members are.
+        </p>
+      </answer>
+    </faq>
+    <faq id="gridmap">
+      <question>What's the difference between using GUMS and using grid-mapfiles?</question>
+      <answer>
+      	<p>
+      		If you want to use grid-mapfiles, GUMS can be used to generate them, as can various other external 
+      		tools. Usually grid-mapfiles are generated according to the information present in the VOMS servers. 
+      		For example, the external tool would contact the ATLAS VOMS, download the list of current users, and 
+      		add them to the grid-mapfile.
+      	</p>
+      	<p>
+			Using grid-mapfiles by itself is typically good only in testing environments. GUMS provides an 
+			alternative. GUMS can be configured to provide dynamic mapping, thereby making grid-mapfiles 
+			unnecessary. In this configuration, the gatekeeper contacts GUMS directly when it needs a mapping, 
+			instead of consulting a grid-mapfile.
+		</p>
+      </answer>
+    </faq>
+    <faq id="gridmap">
+      <question>What's the difference between GUMS and edg-mkgridmap?</question>
+      <answer>
+      	<p>
+	      	Edg-mkgridmap and the GUMS host (client) tool can both be used to create a grid-mapfile for a host. 
+	      	Edg-mkgridmap is a client (gatekeeper) tool only; it connects to the VOMRS databases, downloads 
+	      	info and creates a grid-mapfile for that gatekeeper only. GUMS has server and client portions. 
+	      	The GUMS server (which serves all the gatekeepers at the site) connects to the VOMRS databases, 
+	      	downloads info, and performs the mapping, then the GUMS host tool creates the site-wide grid-mapfile. 
+	      	GUMS provides a way to centrally manage resource access and the mapfile generation. Edg-mkgridmap 
+	      	can be used to contact GUMS to retrieve an already prepared grid-mapfile.
+	    </p>
+		<p>
+			In addition, GUMS supports a richer, more complex and flexible policy than does edg-mkgridmap. 
+			You can also use GUMS for both grid-mapfile generation and in conjuction with a gatekeeper 
+			(or service) callout. For a small site with a simple configuration, edg-mkgridmap might be a 
+			simpler solution. For a bigger site, with a more complicated environment, GUMS offers more 
+			control and flexibility.
+		</p>
+      </answer>
+    </faq>  
+     <faq id="gridmap">
+      <question>What's the difference between GUMS and LCMAPS?</question>
+      <answer>
+      	<p>
+	      	WARNING: I (Gabriele) am not an expert in LCMAPS. This is my understanding of the differences.
+      	</p>
+      	<p>
+			The short (and not 100% precise) answer is: GUMS is a Policy Decision Point while LCMAPS is a 
+			Policy Enforcement Point. The longer answer is: GUMS allows you to set a policy at the site level 
+			for all your gatekeepers or resources. It's a service that waits for and responds to questions 
+			like: "Who should I map this guy to?". It doesn't actually enforce the mapping. In fact, GUMS 
+			cannot stand by itself; it needs to have other software contact it to either retrieve a grid-mapfile 
+			or to request a specific mapping (e.g., the GUMS host tools, or the gatekeeper callout).
+      	</p>
+      	<p>
+			LCMAPS, on the other hand, is inside the gatekeeper (or the gridftp server). It implements the 
+			callout, it determines and enforces the mapping. There is one for every gatekeeper; there is 
+			no central mapping, and no central policy. You configure each gatekeeper individually.
+      	</p>
+      	<p>
+			They are two different things, even though they implement some similar functionalities. In fact, 
+			LCMAPS could be used as the PDP for GUMS (i.e., LCAMPS could connect to GUMS as part of its decision process).
+      	</p>
+      </answer>
+    </faq>  
+  </part> 
+</faqs>

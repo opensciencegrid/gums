@@ -1,0 +1,12 @@
+ ------
+ GUMS Upgrade from Version 1.2
+ ------
+
+Upgrade from Version 1.2
+
+ The GUMS schema has changed since version 1.2.  The new database is named GUMS_1_3. VDT will automatically populate your 
+GUMS_1_3 database with your GUMS_1_1 database entries (GUMS_1_1 was used in GUMS 1.2).  
+If manually installing, run "mysql \< WEB-INF/sql/importFrom1.1to1.3.mysql" to populate your GUMS_1_3 database from your GUMS_1_1 database.  
+
+ GUMS version 1.3 configuration has some changes since version 1.2 configuration.  GUMS 1.3 will automatically import a 1.2 or 1.1 version configuration, but keep in mind that it will not be compatible with previous 
+versions of GUMS.

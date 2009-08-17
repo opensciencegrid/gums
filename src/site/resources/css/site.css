@@ -1,0 +1,96 @@
+body, td, select, input, li{
+  font-family: Verdana, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+}
+a {
+    color: rgb(102, 51, 0);
+    text-decoration: none;
+}
+a:link {
+  color: rgb(102, 51, 0);
+}
+a:visited  {
+  color: rgb(102, 51, 0);
+}
+a:active, a:hover {
+  text-decoration: underline;
+}
+a.externalLink, a.externalLink:link, a.externalLink:visited, a.externalLink:active, a.externalLink:hover {
+  background: url(../images/external.png) right center no-repeat;
+  padding-right: 15px;
+}
+a.newWindow, a.newWindow:link, a.newWindow:visited, a.newWindow:active, a.newWindow:hover {
+  background: url(../images/newwindow.png) right center no-repeat;
+  padding-right: 18px;
+}
+h2 {
+  padding: 4px 4px 4px 6px;
+  border: 1px solid rgb(255, 204, 51);
+  color: rgb(153, 51, 0);
+  background-color: rgb(255, 238, 119);
+  font-weight:900;
+  font-size: x-large;
+}
+h3 {
+  padding: 4px 4px 4px 6px;
+  border: 1px solid rgb(255, 204, 51);
+  color: rgb(153, 51, 0);
+  background-color: rgb(255, 238, 119);
+  font-weight: normal;
+  font-size: large;
+}
+p {
+  line-height: 1.3em;
+  font-size: small;
+}
+#banner {
+  background-color: rgb(255, 204, 51);
+  border-bottom: none;
+  color: rgb(102, 51, 0);
+}
+#projectLogo span{
+    border: 1px solid rgb(255, 204, 51);
+    padding: 4px 10px 4px 10px;
+    background-color: rgb(255, 204, 51);
+    cursor: pointer;
+    color: rgb(153, 51, 0);
+}
+#breadcrumbs {
+  border-top: 1px solid rgb(255, 238, 119);
+  border-bottom: 1px solid #000;
+  background-color: rgb(255, 204, 51);
+}
+#leftColumn {
+  margin: 10px 0 0 5px;
+  border: 1px solid rgb(255, 204, 51);
+  background-color: rgb(255, 238, 119);
+}
+#navcolumn h5 {
+  font-size: smaller;
+  border-bottom: 1px solid rgb(255, 204, 51);
+  padding-top: 2px;
+  color: rgb(153, 51, 0);
+}
+
+table.bodyTable th {
+  color: rgb(255, 238, 119);
+  background-color: rgb(153, 51, 0);
+  text-align: left;
+  font-weight: bold;
+}
+
+table.bodyTable th, table.bodyTable td {
+  font-size: 1em;
+}
+
+table.bodyTable tr.a {
+  background-color: rgb(255, 204, 51);
+}
+
+table.bodyTable tr.b {
+  background-color: rgb(255, 238, 119);
+}
+
+.source {
+  border: 1px solid #999;
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Maven">
+  <bannerLeft>
+    <name>GUMS 1.3</name>
+  </bannerLeft>
+  <body>
+    <links>
+      <item name="Privilege Project" href="http://computing.fnal.gov/docs/products/voprivilege/index.html" />
+      <item name="BNL RACF" href="https://www.racf.bnl.gov"/>
+    </links>
+
+    <menu name="General">
+      <item name="Overview" href="index.html"/>
+      <item name="Introduction" href="intro.html"/>
+      <item name="Integration" href="integration.html"/>
+      <item name="New in Version 1.3" href="version.html"/>
+      <item name="FAQ" href="faq.html"/>
+      <item name="Mailing Lists" href="mailing_lists.html"/>
+    </menu>
+    
+    <menu name="Deployment">
+      <item name="Download" href="download.html"/>
+      <item name="Installation" href="installation.html">
+	      <item name="VDT Installation" href="installation_vdt.html"/>
+	      <item name="Manual Installation" href="installation_manual.html"/>
+	      <item name="Upgrade from Version 1.2" href="installation_upgrade.html"/>
+	      <item name="Security Considerations" href="installation_security.html"/>
+      </item>
+      <item name="Using GUMS" href="use.html">
+	      <item name="General Use" href="use_general.html"/>
+	      <item name="Configure Mappings" href="use_configuration.html"/>
+	      <item name="Manage Users" href="use_users.html"/>	
+	      <item name="Test Mappings" href="use_test.html"/>
+	      <item name="Logging" href="use_logging.html"/>
+      </item>
+      <item name="Troubleshooting FAQ" href="troubleshooting.html"/>
+    </menu>
+    
+    <menu name="Development">
+      <item name="How to Build" href="building.html"/>
+      <item name="Past History" href="past_history.html"/>
+      <item name="Future Plans" href="future_plans.html"/>
+      <item name="Source" href="source.html"/>
+      <item name="Stress Test Results" href="tests.html"/>
+    </menu>
+    
+    ${reports}
+  </body>
+</project>

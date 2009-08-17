@@ -1,0 +1,4 @@
+dn: ou=GUMS,dc=griddev,dc=org
+ou: GUMS
+description: All groups in organization
+objectClass: organizationalUnit

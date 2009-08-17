@@ -1,0 +1,79 @@
+ ------
+ GUMS Logging
+ ------
+ 
+Logging
+
+ <This page explains GUMS logging.>
+
+* Introduction
+ 
+ All information in GUMS is logged through the apache log4j logging package. The configuration is controlled by the log4j.properties file. This is a normal log4j configuration file: refer to the log4j manual for more information.  GUMS using the follow conventions for log names within the log4j.properties file:
+
+	* The administrator log uses the log named "gums.gumsAdmin".
+	
+	* The administrator's email log uses the log "gums.gumsAdminEmailReportsLogName".
+	
+	* The site security log is at "gums.siteAdmin".
+
+	* The developer's log uses one log for each different class, with the name being the class name. Given the GUMS package structure, "gov.bnl.gums" contains the whole development log for GUMS. This allows the develop to filter the log of the code he is working on.
+
+ Each of these is explained below.  Note that a certain logging level contains all errors above it.  For example, the WARN level will also log ERROR and FATAL.
+
+* Administrator's log
+
+ This log is meant for whoever is maintaining GUMS installation at a particular site.
+
+	* FATAL - GUMS is unable to operate: no functionalities are available, and the error condition cannot be recovered at runtime.
+	
+	* ERROR - A condition that hints to a major GUMS misconfiguration or incorrect usage.
+	
+	* WARN - A condition that suggests a problem with a dependent service or its configuration as well as user-specific mapping failures.  Also logs unauthorized accesses.
+	
+	* INFO - A normal operation has succeeded.
+	
+	* DEBUG - A normal operation that has particular verbose output such as a gridmap file
+	
+	* TRACE - Not used
+	
+* Administrator's email log
+
+ This log is also meant for emailing whoever is maintaining GUMS installation at a particular site.  This is new in GUMS 1.3 and is meant to be relatively quiet and concise.  When a log occurs, an email is sent according to the email configuration.  It logs warnings every 2 days or as configured in web.xml for the emailWarningHours variable.  It logs errors and fatal messages immediately.  It is disabled by default.  To enable, uncomment the line, "log4j.logger.gums.gumsAdminEmailReportsLogName=WARN, mail", and uncomment and configure the "Site Admin Mail appender" section at the bottom.
+
+	* FATAL - GUMS is unable to operate: no functionalities are available, and the error condition cannot be recovered at runtime.
+	
+	* ERROR - A condition that hints to a major GUMS misconfiguration or incorrect usage and are logged immediately.  For example, the configuration cannot be read.
+	
+	* WARN - A condition that suggests a problem with a dependent service or its configuration as well as user-specific mapping failures.  For example, a VOMS server cannot be contacted or there are no more available pool accounts.  
+	
+	* INFO - Not used
+	
+	* DEBUG - Not used
+	
+	* TRACE - Not used	
+
+* Site security log
+
+ The site security log will log all accesses to syslog (see syslog documentation).  It is meant to be used by a site's security team:
+
+    * WARN - Will log all unauthorized accesses
+
+    * INFO - Will log all the "write" accesses
+    
+    * DEBUG - Will log all the "read" accesses
+
+* Developer's log
+
+ The developer log is meant for someone developing the code or fixing bugs. Each class will use the log named as their full class name. The breakdown on the logging level is:
+
+	* FATAL - An exception or an inconsistency that forces GUMS to terminate or not function at all. For example, a configuration file was not written correctly or couldn't be found.
+	
+	* ERROR - An exception or an inconsistency that doesn't allow GUMS to complete a particular operation or part of it. For example, the CMS VOMS server couldn't be contacted, so it's members weren't refreshed (even though the ATLAS group was); the NIS server didn't respond, so it is impossible to generate the grid-mapfile for atlasgrid25, though the grid-mapfile for atlasgrid26 could be generated since it doesn't require the NIS information.
+	
+	* WARN - An exception or an inconsistency that is not necessarily going to affect functionalities, or an error condition that was recovered. For example, a particular cache was found to be out of synch and was rebuilt.
+	
+	* INFO - The successful completion of a macro-event (i.e. something that happens only once in a while). For example, the configuration file was read, the server was started. Typically used to debug configuration problems.
+	
+	* DEBUG - The attempt or successful completion of a smaller event. For example, a query was executed, a user was mapped. Typically one shouldn't have more than one DEBUG statement in a method.
+	
+	* TRACE - Shows the internal execution of the code. As a contrast, building a query would be at this level. Inside method logging should be done at this level

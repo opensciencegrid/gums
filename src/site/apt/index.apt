@@ -1,0 +1,26 @@
+ ------
+ GUMS Overview
+ ------
+
+Overview
+
+ GUMS (Grid User Management System) is a Grid Identity Mapping Service. Identity mapping is necessary when 
+a site's resources do not use GRID credentials natively, but instead use a different mechanism to identify users, 
+such as UNIX accounts or Kerberos principals.  In these cases, the  GRID credential for each incoming job must be 
+associated with an appropriate site credential.  The GUMS server performs this mapping upon request and returns the
+mapping to the gatekeeper.  The gatekeepers are charged with enforcing the site mapping established by GUMS.
+GUMS is comprised of web services, web pages for GUMS administration, and command-line tools which interact with 
+the web services.  Typically, the term "GUMS" refers to the server portion. 
+      
+ GUMS is particularly well suited to a heterogeneous environment  with multiple gatekeepers; it allows the 
+implemenation of a single site-wide usage policy, thereby providing better control and security for access to the 
+site's grid resources. Using GUMS, individual resource administrators are able to assign different mapping policies 
+to different groups of users and define groups of hosts on which the mappings will be used. GUMS was designed to 
+integrate with the site's local information services (such as HR databases or LDAP).
+      
+ GUMS has been a production system at BNL since May 2004, managing gatekeepers for USATLAS, STAR and PHENIX. 
+Current development, led by Jay Packard and John Hover, is centered on providing ease of use and completeness for 
+both administrators and developers.  Part of the development is dedicated to the 
+{{{http://computing.fnal.gov/docs/products/voprivilege/}VO Privilege Project}}, a collaboration between 
+USATLAS and USCMS, which has just completed work to provide access to GUMS from clients that implement the OpenSAML-XACML grid 
+interoperability profile (for example, GT2/Prima, GT4, and gplazma).

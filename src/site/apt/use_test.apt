@@ -1,0 +1,92 @@
+ ------
+ GUMS Test Mappings
+ ------
+
+Test Mappings
+
+ On the web interface you will see the following options under 'Test Mappings':
+  
+	* <<Map Grid Identity to Account>> - determines the which local account a grid identity on a specific service is mapped to.  This is the 
+	primary function of GUMS which gatekeepers will also call via a gums-client tools.
+	
+	* <<Map Account to Grid Identity(s)>> - determines which grid identity or identities are mapped to a local account.
+	
+	* <<Generate Grid Mapfile>> - generates a Grid-Mapfile (list of DN to account mappings) on a specific service.  This file
+	is used by services that do not support making GUMS service calls (i.e. dCache).  Click "include extended attributes" to include
+	the FQAN in the list as "DN, FQAN, account".
+	
+	* <<Generate Grid Email Mapfile>> - generates a Grid-Email-Mapfile (list of DN, FQAN, account, and email when available) on a specific service.
+
+	* <<Generate FQAN Mapfile>> - generates a FQAN-Mapfile (list of FQAN and account or range of accounts) on a specific service.  This is
+	used by the GUMS RSV probe to determine OSG mapping policy compliance.  Only VOMS user groups and group/pool account mappers will be included.
+	
+	* <<Generate OSG-User-VO-Map>> - generates an OSG-user-VO-map (list of accounts for a VO) for the given service, which is used
+	for VO accounting purposes.  To be included in this list, you must fill in the 'Accounting VO' field in a "group to account mapping".
+
+ This functionality is also available for the client tools "gums", "gums-host", and "gums-service".  Usage is:
+ 
++-------------------------------------------+ 
+[root@gums /]# su - username
+[username@gums /]# ./gums-service 
+usage: gums command [command-options] 
+Commands:
+  clientVersion - Retrieve GUMS client version.
+  generateEmailMapfile - Generate an Email-mapfile for a given service/host.
+  generateFqanMapfile - Generate FQAN-mapfile for a given service/host .
+  generateGridMapfile - Generate grid-mapfile for a given service/host.
+  generateOsgUserVoMap - Generate OSG-user-VO-map for a given service/host.
+  generateVoGridMapfile - Generate a VO grid-mapfile for a given service/host.
+  manualGroupAdd - Includes a DN in a group.
+  manualGroupRemove - Removes a DN from a group.
+  manualMappingAdd - Adds a DN-to-account mapping.
+  manualMappingRemove - Removes mapping for DN.
+  mapAccount - Maps a local account to a grid identity.
+  mapUser - Maps a grid identity to a local account.
+  poolAddRange - Adds accounts to an account pool.
+  poolGetAssignments - Get printout of current pool account assignments.
+  poolRemoveRange - Removes accounts from an account pool.
+  poolUnassignRange - Unassigns accounts from an account pool.
+  serverVersion - Retrieve GUMS server version.
+  updateGroups - Contact VO servers and retrieve user lists.
+For help on any command:
+  gums command --help
+[root@gums /]#  ./gums-service mapUser --help
+usage: gums mapUser [-s SERVICEDN] [-n TIMES] [-t NREQUESTS] [-b] 
+	[-f FQAN] [-i FQANISSUER] USERDN1 [USERDN2] ...
+Maps the grid identity to the local account.
+Options:
+ -s,--service         DN of the service. When using gums-host, it defaults
+                      to the host credential DN.
+ -f,--fqan            Fully Qualified Attribute Name, as it would be
+                      selected using voms-proxy-init; no extended information by default
+ -t,--timing          enables timing, grouping the requests. For example,
+                      "-t 100" will give you timing information on 100 requests at a time
+    --help            print this message
+ -b,--bypassCallout   connects directly to GUMS instead of using the
+                      callout
+ -i,--issuer          Fully Qualified Attribute Name Issuer, that is the
+                      DN of the VOMS service that issued the attribute certificate
+ -n,--ntimes          number of times the request will be repeated
+
+[root@gums /]#  ./gums-service mapAccount --help
+usage: gums mapAccount ACCOUNTNAME
+Determines which grid identities are mapped to a local account.
+ACCOUNTNAME is the local account. 
+[root@gums /]# ./gums-service generateGridMapfile --help
+usage: gums generateGridMapfile [-f FILENAME] [SERVICEDN]
+Generates the grid-mapfile for a service/host.
+Options:
+    --help    print this message
+ -f,--file    saves in the specified file; prints to the console by
+              default
+[root@gums /]# 
+[root@gums /]# ./gums-service generateOsgUserVoMap --help
+usage: gums generateOsgUserVoMap [-f FILENAME] [SERVICEDN]
+Generates the osg-user-vo-map.txt for a service/host. When using
+./bin/gums, SERVICEDN must be specified. When using ./bin/gums-host,
+SERVICEDN defaults to the host certificate DN.
+Options:
+    --help    print this message
+ -f,--file    saves in the specified file; prints to the console by
+              default
++-------------------------------------------+ 

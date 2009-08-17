@@ -1,0 +1,27 @@
+ ------
+ GUMS Security Considerations
+ ------
+
+Security Considerations
+
+ GUMS should be protected by a firewall to avoid DOS attacks since it is a key piece of the authentication and authorization
+process.  Outside access should not be required anyway since it is an internal service.  
+
+ We recommend either putting the GUMS server behind a firewall or running iptables configured to block GUMS port 8443.
+For example, for the fnal.gov domain, the iptables configuration should look something like:
+
++--------------------------+
+*filter
+:INPUT ACCEPT [35:5488]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [22:1588]
+-A INPUT  -m state --state RELATED,ESTABLISHED -j ACCEPT # Accept all from within 131.225.0.0
+-A INPUT -s 131.225.0.0/255.255.0.0  -j ACCEPT # Allow external access to httpd
+-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT -A INPUT -p udp -m udp --dport 80 -j ACCEPT # ...
+
+# drop everything else
+-A INPUT  -j DROP COMMIT 
++--------------------------+ 
+
+ Please customize the ip address/mask for your own site.  Your iptables configuration file should be placed in 
+/etc/sysconfig.  Start iptables by executing 'service iptables start'.
