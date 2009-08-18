@@ -41,7 +41,7 @@ persistence factories, which are used for storing individual user information.
  On the left side of the web interface you see the following options under 'Configuration':
  
  	* <<Configuration>> - stores global options: 1) whether to allow gridmap file generation, 2) an optional list
- 	of user groups containing users to be banned, that is to be denied a mapping.
+ 	of user groups containing users to be banned, that is, to be denied a mapping.
  
 	* <<Back Up/Restore>> - back up the current gums.config to WEB-INF/config/backup/gums.config.date or
 	restore or delete configuration from WEB-INF/config/backup.
@@ -68,6 +68,10 @@ persistence factories, which are used for storing individual user information.
 	* <<Shortcut>> - adds multiple related elements (all those that are required for a mapping) in one step.  GUMS is very 
 	flexible but at the cost that configuration can sometimes be tedious for simple cases.  This shortcut feature
 	ameliorates this.
+	
+	* <<Merge Configuration>> - merge configuration into current configuration, replacing user groups, account mappers, and 
+	group to account mappings with the same name.  It uses the selected persistence factory and inserts the group to account
+	mappers in the selected host to group mapping.
 	
  On the more detailed page from clicking add or edit, you see various fields to fill in.  Most of these are straight
 forward.  The text to the left of the fields reads as a sentence to help clarify the purpose of each field.  Most
@@ -345,4 +349,5 @@ comprises the string: /<VO>/<group>/Role=<role>.
 
  If you need to generate an OSG-user-VO-map, which is used for VO accounting purposes, you should create a 'group to account mapping'
 for each VO you want to show up in this file and fill in the the 'Accounting VO' and 'Accounting VO Subgroup' fields.
+
 
