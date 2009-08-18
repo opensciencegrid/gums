@@ -154,10 +154,11 @@
         </license>
     </licenses>
     
-	<modules>
-	    <module>../gums-core</module>
-		<module>../gums-client</module>
+
+        <modules>
+		<module>../gums-core</module>
 		<module>../gums-service</module>
+		<module>../gums-client</module>
 	</modules>
   
 </project>

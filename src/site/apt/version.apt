@@ -6,7 +6,7 @@ New in Version 1.3
 
  The focus of GUMS version 1.3 has been to provide an OSG OpenSAML-XACML AuthZ interface to allow for interoperability with other grid
 components, the ability to store the configuration in a persistence factory so that it can be shared between multiple 
-gums servers, and the ability to ban users or VOs (which can be added manually or read from a file).  Several other features have also been added:
+gums servers, the ability to merge a configuration template from a URL, and the ability to ban users or VOs (which can be added manually or read from a file).  Several other features have also been added:
 	
 	* Ability to insert into any location within a list of elements from the web interface.
 	
