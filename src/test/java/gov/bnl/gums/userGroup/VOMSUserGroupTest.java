@@ -9,13 +9,8 @@ package gov.bnl.gums.userGroup;
 
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
-import gov.bnl.gums.persistence.LDAPPersistenceFactory;
-import gov.bnl.gums.persistence.MockPersistenceFactory;
-import gov.bnl.gums.persistence.PersistenceFactory;
 
 import java.util.*;
-
-import org.apache.log4j.Logger;
 
 import junit.framework.*;
 
@@ -25,7 +20,6 @@ import junit.framework.*;
  * @author jhover
  */
 public class VOMSUserGroupTest extends TestCase {
-	VomsServer vomsServer;
 	UserGroup userGroup;
 	Configuration configuration = new Configuration();
        
@@ -39,10 +33,9 @@ public class VOMSUserGroupTest extends TestCase {
     }
     
     protected static Properties readVomsProperties() {
-    	Logger.getLogger(LDAPPersistenceFactory.class).trace("Retrieving VOMS properties from voms.properties in the classpath");
         PropertyResourceBundle prop = (PropertyResourceBundle) ResourceBundle.getBundle("voms");
         Properties prop2 = new Properties();
-        Enumeration keys = prop.getKeys();
+        Enumeration<String> keys = prop.getKeys();
         while (keys.hasMoreElements()) {
             String key = (String) keys.nextElement();
             prop2.setProperty(key, prop.getString(key));
@@ -52,22 +45,14 @@ public class VOMSUserGroupTest extends TestCase {
     
     public void setUp() {
     	Properties properties = readVomsProperties();
-        vomsServer = new VomsServer(configuration, "vo");
-        vomsServer.setBaseUrl( properties.getProperty("voms.connection.baseUrl") );
-        vomsServer.setSslCertfile( properties.getProperty("voms.security.sslCertfile") );
-        vomsServer.setSslKey( properties.getProperty("voms.security.sslKey") );
-        PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "test");
-        configuration.addPersistenceFactory(persistenceFactory);
-        vomsServer.setPersistenceFactory(persistenceFactory.getName());
-        configuration.addVomsServer(vomsServer);
-        
         VOMSUserGroup vomsUserGroup = new VOMSUserGroup(configuration, "group1");
         userGroup = vomsUserGroup;
-        vomsUserGroup.setRemainderUrl("");
-        vomsUserGroup.setVomsServer(vomsServer.getName());
+        vomsUserGroup.setVomsServerUrls(properties.getProperty("voms.connection.vomsServerUrls"));
         vomsUserGroup.setVoGroup("/griddev/subgriddev");
         vomsUserGroup.setRole("griddevrole");
-        configuration.addUserGroup(userGroup);
+        configuration.setSslCertfile(properties.getProperty("voms.security.sslCertfile"));
+        configuration.setSslKey(properties.getProperty("voms.security.sslKey"));
+    	userGroup.updateMembers();
     }
 
     public void testDummyTest() {
@@ -76,78 +61,80 @@ public class VOMSUserGroupTest extends TestCase {
     }   
  
     public void testGetMemberList() {
-        userGroup.updateMembers();
-        List members = userGroup.getMemberList();
+        Set<GridUser> members = userGroup.getMembers();
         assertTrue(members.size() > 0);
-        Iterator iter = members.iterator();
+        Iterator<GridUser> iter = members.iterator();
         while (iter.hasNext()) {
             GridUser user = (GridUser) iter.next();
-            assertTrue(userGroup.isInGroup(user));
-            if (user.getCertificateDN().equals("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345"))
+            assertTrue(userGroup.isMember(user));
+            if (user.getDn().equals("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345"))
             	assertEquals("jdoe@griddev.org", user.getEmail());
-            else if (user.getCertificateDN().equals("/DC=org/DC=griddev/OU=People/CN=John Smith"))
+            else if (user.getDn().equals("/DC=org/DC=griddev/OU=People/CN=John Smith"))
             	assertEquals("jsmith@griddev.org", user.getEmail());
         }
     }
     
     public void testSetMatchFQAN() {
-        VOMSUserGroup VOMSUserGroup = (VOMSUserGroup) userGroup;
-        VOMSUserGroup.setMatchFQAN("exact");
-        assertEquals("exact", VOMSUserGroup.getMatchFQAN());
-        VOMSUserGroup.setMatchFQAN("vo");
-        VOMSUserGroup.setMatchFQAN("group");
-        VOMSUserGroup.setMatchFQAN("ignore");
+        VOMSUserGroup vomsUserGroup = (VOMSUserGroup) userGroup;
+        vomsUserGroup.setMatchFQAN("exact");
+        assertEquals("exact", vomsUserGroup.getMatchFQAN());
+        vomsUserGroup.setMatchFQAN("vo");
+        assertEquals("vo", vomsUserGroup.getMatchFQAN());
+        vomsUserGroup.setMatchFQAN("group");
+        assertEquals("vogroup", vomsUserGroup.getMatchFQAN());
+        vomsUserGroup.setMatchFQAN("ignore");
+        assertEquals("ignore", vomsUserGroup.getMatchFQAN());
     }
     
     public void testMatchFQAN() {
         VOMSUserGroup VOMSUserGroup = (VOMSUserGroup) userGroup;
         VOMSUserGroup.setMatchFQAN("ignore");
         VOMSUserGroup.setAcceptProxyWithoutFQAN(true);
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/Role=production")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=otherrole")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/Role=production")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=otherrole")));
         VOMSUserGroup.setAcceptProxyWithoutFQAN(false);
         VOMSUserGroup.setMatchFQAN("vo");
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/Role=production")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=otherrole")));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/Role=production")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=otherrole")));
         VOMSUserGroup.setAcceptProxyWithoutFQAN(true);
         VOMSUserGroup.setMatchFQAN("vo");
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/Role=production")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=otherrole")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/Role=production")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=otherrole")));
         VOMSUserGroup.setAcceptProxyWithoutFQAN(false);
         VOMSUserGroup.setMatchFQAN("group");
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev")));
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/Role=production")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=otherrole")));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev")));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/Role=production")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=otherrole")));
         VOMSUserGroup.setMatchFQAN("exact");
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev")));
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/Role=production")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=otherrole")));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev")));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/Role=production")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=otherrole")));
         VOMSUserGroup.setAcceptProxyWithoutFQAN(true);
         VOMSUserGroup.setMatchFQAN("exact");
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev")));
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/Role=production")));
-        assertTrue(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
-        assertFalse(userGroup.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=otherrole")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev")));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/Role=production")));
+        assertTrue(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=griddevrole")));
+        assertFalse(userGroup.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev/subgriddev/Role=otherrole")));
     }
 
 }
