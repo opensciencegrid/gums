@@ -1,5 +1,5 @@
 /*
- * LDAPUserGroupTest.java
+ * VOMSGroupTest.java
  * JUnit based test
  *
  * Created on May 25, 2004, 11:41 AM
@@ -8,6 +8,10 @@
 package gov.bnl.gums.userGroup;
 
 import gov.bnl.gums.configuration.Configuration;
+import gov.bnl.gums.persistence.LDAPPersistenceFactory;
+import gov.bnl.gums.persistence.LDAPPersistenceFactoryTest;
+import gov.bnl.gums.persistence.MockPersistenceFactory;
+import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.GridUser;
 
 import java.util.*;
@@ -37,24 +41,16 @@ public class LDAPUserGroupTest extends TestCase {
 		TestSuite suite = new TestSuite(LDAPUserGroupTest.class);
 		return suite;
 	}
-	
-	static public Properties readLdapProperties() {
-		PropertyResourceBundle prop = (PropertyResourceBundle) ResourceBundle.getBundle("ldap");
-		Properties prop2 = new Properties();
-		Enumeration<String> keys = prop.getKeys();
-		while (keys.hasMoreElements()) {
-			String key = (String) keys.nextElement();
-			prop2.setProperty(key, prop.getString(key));
-		}
-		return prop2;
-	}
 
 	public void setUp() {
 		LDAPUserGroup ldapGroup = new LDAPUserGroup(configuration, "group1");
 		group = ldapGroup;
 		configuration.addUserGroup(group);
+		PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "mock");
+		ldapGroup.setPersistenceFactory(persistenceFactory.getName());
+		configuration.addPersistenceFactory(persistenceFactory);
 
-		Properties properties = LDAPUserGroupTest.readLdapProperties();
+		Properties properties = LDAPPersistenceFactoryTest.readLdapProperties();
 		String url = properties.getProperty("java.naming.provider.url");
 		server = url.substring(url.indexOf("//")+2).split("/")[0].split(":")[0];
 		principal = url.substring(url.indexOf("//")+2).split("/")[1];
@@ -67,18 +63,18 @@ public class LDAPUserGroupTest extends TestCase {
 
 	public void testUpdateMembers() {
 		group.updateMembers();
-		assertTrue(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
-		assertTrue(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null)));
+		assertTrue(group.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+		assertTrue(group.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null)));
 	}
 
 	public void testGetMemberList() {
 		group.updateMembers();
-		Set<GridUser> members = group.getMembers();
+		List members = group.getMemberList();
 		assertTrue(members.size() > 0);
-		Iterator<GridUser> iter = members.iterator();
+		Iterator iter = members.iterator();
 		while (iter.hasNext()) {
 			GridUser dn = (GridUser) iter.next();
-			assertTrue(group.isMember(dn));
+			assertTrue(group.isInGroup(dn));
 		}
 	}
 
@@ -91,25 +87,25 @@ public class LDAPUserGroupTest extends TestCase {
 		// The group has a member attribute with a list of people of the LDAP present in the VO Group
 		DirContext ctx = (DirContext) jndiCtx.lookup(principal);
 		LDAPUserGroup group = new LDAPUserGroup(configuration, "group1");
-		Map<String, String> map = group.retrievePeopleMap(ctx);
+		Map map = group.retrievePeopleMap(ctx);
 		assertEquals("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", map.get("jdoe"));
 	}
 
 	public void testUpdateMembers2() {
 		((LDAPUserGroup)group).setGroupTree("");
 		group.updateMembers();
-		assertTrue(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
-		assertTrue(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null)));
+		assertTrue(group.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+		assertTrue(group.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null)));
 	}
 
 	public void testGetMemberList2() {
 		group.updateMembers();
-		Set<GridUser> members = group.getMembers();
+		List members = group.getMemberList();
 		assertTrue(members.size() > 0);
-		Iterator<GridUser> iter = members.iterator();
+		Iterator iter = members.iterator();
 		while (iter.hasNext()) {
 			GridUser dn = (GridUser) iter.next();
-			assertTrue(group.isMember(dn));
+			assertTrue(group.isInGroup(dn));
 		}
 	}
 
