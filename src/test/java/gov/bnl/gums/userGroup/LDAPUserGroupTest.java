@@ -1,5 +1,5 @@
 /*
- * VOMSGroupTest.java
+ * LDAPUserGroupTest.java
  * JUnit based test
  *
  * Created on May 25, 2004, 11:41 AM

@@ -1,5 +1,5 @@
 /*
- * VOMSGroupTest.java
+ * ManualUserGroupTest.java
  * JUnit based test
  *
  * Created on May 25, 2004, 11:41 AM
@@ -8,9 +8,10 @@
 package gov.bnl.gums.userGroup;
 
 import gov.bnl.gums.configuration.Configuration;
+import gov.bnl.gums.persistence.MockPersistenceFactory;
+import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.GridUser;
 
-import java.net.URL;
 import java.util.*;
 
 import junit.framework.*;
@@ -35,50 +36,43 @@ public class ManualUserGroupTest extends TestCase {
     
     public void setUp() {
         ManualUserGroup userGroup = new ManualUserGroup(configuration, "mockUserGroup");
+        configuration.addUserGroup(userGroup);
+        PersistenceFactory persistenceFactory = new MockPersistenceFactory(configuration, "mockPers");
+        configuration.addPersistenceFactory(persistenceFactory);
+        userGroup.setPersistenceFactory(persistenceFactory.getName());
         group = userGroup;
     }
     
     public void testUpdateMembers() {
-    	ManualUserGroup userGroup = (ManualUserGroup)group;
-    	URL url = getClass().getClassLoader().getResource("manual_members");
-        userGroup.setMembersUri(url.toString());
-        userGroup.updateMembers();
-        assertTrue(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
-        assertTrue(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null)));
         group.updateMembers();
+    }
+
+    public void testToString() {
+        assertEquals("ManualUserGroup: persistenceFactory='mockPers' - group='mockUserGroup'", group.toString());
     }
     
     public void testAddMember() {
         ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null));
-        assertTrue(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
     }
 
     public void testRemoveMember() {
         ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null));
-        assertTrue(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+        assertTrue(group.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
         assertTrue(((ManualUserGroup) group).removeMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
-        assertFalse(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
+        assertFalse(group.isInGroup(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
     }
     
     public void testGetMemberList() {
         ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null));
         ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null));
-        Set<GridUser> members = group.getMembers();
+        List members = group.getMemberList();
         assertTrue(members.size() > 0);
-        Iterator<GridUser> iter = members.iterator();
+        Iterator iter = members.iterator();
         while (iter.hasNext()) {
             GridUser user = (GridUser) iter.next();
-            assertTrue(group.isMember(user));
+            assertTrue(group.isInGroup(user));
         }
-    }
-    
-    public void testFqan() {
-        ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev"));
-        assertFalse(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", null)));
-        assertTrue(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=John Smith", "/griddev")));
-        ((ManualUserGroup) group).addMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null));
-        assertTrue(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", null)));
-        assertFalse(group.isMember(new GridUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", "/griddev")));
     }
     
 }
