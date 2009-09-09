@@ -14,7 +14,7 @@
 	    	<id>usatlas</id>
 			<name>usatlas repository</name>
 	 		<layout>default</layout>
- 			<url>http://grid.racf.bnl.gov/mvn</url>		
+ 			<url>http://www.racf.bnl.gov/mvn/</url>		
 		</repository>
 		<repository>
 	    	<id>central</id>
