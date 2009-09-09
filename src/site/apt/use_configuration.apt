@@ -249,6 +249,65 @@ read access by Tomcat (e.g. readable by user 'daemon' in VDT/OSG).
 	* <<local>> - for storing user information in a MySQL database as well as for assigning
 	primary and secondary groups to accounts in the main LDAP tree.  LDAP doesn't need to be set 
 	up with the GUMS schema for this type.
+
+ Below are the steps to enable GSSAPI and Kerberos in the LDAP/local persistence factory (from Richard Jones):
+ 	
++----------------+
+
+   1. Use kadmin to create a credential for a new service principal called gums/<your gums 
+host FQDN>
+   2. Use kadmin to store this new credential in a file called ldapgums.keytab, as in 
+"ktadd -k ldapgums.keytab gums/<your gums host FQDN>"
+   3. Save the keytab file you created in the previous step in the 
+$VDT_LOCATION/tomcat/v55/conf directory. Make the owner daemon:daemon and disable all of 
+its group/world access bits.
+   4. Edit your ldap configuration (usually /etc/openldap/slapd.conf) and add access 
+permissions for the new principal to grant read/write permission to the GUMS portion of 
+the ldap tree.  The following example should be customized to fit your own ldap installation:
+    access to dn.subtree="ou=GUMS,dc=pan,dc=phys,dc=uconn,dc=edu" 
+        by dn="uid=gums/pan.phys.uconn.edu,cn=phys.uconn.edu,cn=gssapi,cn=auth" write
+        by users auth
+        by anonymous auth 
+    	access to * by * read
+Then restart the ldap server to reread the configuration.  
+   5. Create a keytab called ldaproot.keytab containing the principal that the ldap server 
+accepts as its root identity -- root/pan.phys.uconn.edu in my case -- and save it in the 
+tomcat/v55/conf directory.  Make the owner daemon:daemon and disable all of its group/world 
+access bits.
+   6. Create a file called jaas.conf containing the lines listed below and save it in the 
+tomcat/v55/conf directory.  It must be readable by user daemon, but otherwise has no 
+specific required permissions.
+   7. Edit the script tomcat/v55/bin/catalina.sh and add the if clause listed below to point 
+the jgss security layer to the jaas.conf file, if it exists.  This modification should be 
+backwards compatible.
+   8. Edit the vdt-app-data/gums/config/gums.config xml file and change 
+java.naming.security.authentication from 'simple' to 'GSSAPI'.  The arguments 
+java.naming.security.principal and java.naming.security.credentials can be anything (are 
+ignored), and the principal to be passed to the ldap server is the one identified (see 
+below) in the jaas.conf file.  No plaintext passwords are needed any more.
+
+Listing of jaas.conf:
+
+    com.sun.security.jgss.initiate {
+      com.sun.security.auth.module.Krb5LoginModule required
+      useKeyTab=true
+      keyTab="/usr/local/osg/tomcat/v55/conf/ldaproot.keytab"
+      storeKey=true
+      principal="root/pan.phys.uconn.edu"
+      doNotPrompt=true;
+    };
+
+
+Listing of new if-clause in catalina.sh:
+
+    # Load the configuration for the JAAS security context
+    if [ -r "$CATALINA_HOME"/conf/jaas.conf ]; then
+      JAVA_OPTS="$JAVA_OPTS \
+      -Djavax.security.auth.useSubjectCredsOnly=false \
+      -Djava.security.krb5.conf=/etc/krb5.conf \
+      -Djava.security.auth.login.config=$CATALINA_HOME/conf/jaas.conf"
+    fi
++----------------+
 	
 *** Centrally stored configuration	
 	

@@ -156,14 +156,14 @@ You will need to configure the persistence factory's LDAP fields to be compatibl
 
  If you are using the LDAP persistence factory, you (or your site's LDAP administrator) or will need to further 
 configure the LDAP server to understand the GUMS LDAP schema.  
-Downloaded the schema from {{{gums.schema}here}} and should be put in /etc/openldap/schema.  
+Downloaded the schema from {{{./gums.schema}here}} and should be put in /etc/openldap/schema.  
 Restart the LDAP server for the changes to take effect as:
 
 +----------------------------------------------+
 [root@ldap /]# /etc/init.d/ldap restart
 +----------------------------------------------+
 
- Also, an object of type GUMSStruct needs to be created named 'GUMS'.  Do this by downloading {{{gums.ldif}this}} LDIF file 
+ Also, an object of type GUMSStruct needs to be created named 'GUMS'.  Do this by downloading {{{./gums.ldif}this}} LDIF file 
 and running something like: 
 
 +----------------------------------------------+
