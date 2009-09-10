@@ -12,13 +12,13 @@
 	    	<id>usatlas</id>
 			<name>usatlas repository</name>
 	 		<layout>default</layout>
- 			<url>http://www.racf.bnl.gov/mvn/</url>
+ 			<url>https://www.racf.bnl.gov/Facility/GUMS/mvn</url>
 		</repository>
 		<repository>
-	    	<id>central</id>
-			<name>Maven Repository Switchboard</name>
-	 		<layout>default</layout>
- 			<url>http://repo1.maven.org/maven2</url>
+			<id>ibiblio</id>
+			<name>ibiblio</name>
+			<layout>default</layout>
+			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
 		</repository>
 		<repository>
 	    	<id>ibiblio</id>
