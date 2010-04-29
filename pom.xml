@@ -5,7 +5,7 @@
 	<artifactId>gums-service</artifactId>
 	<packaging>war</packaging>
 	<name>gums-service</name>
-	<version>1.3.17</version>
+	<version>1.3.17-SNAPSHOT</version>
 	<description>GUMS Service provides web services used by the client tool and a 
 		web interface for administering GUMS</description>
     
@@ -147,14 +147,15 @@
 		        <groupId>org.apache.maven.plugins</groupId>
 		        <artifactId>maven-war-plugin</artifactId>
 		        <configuration>
+			       <!-- drs - replace ../gums-service/ with nothing - hard wired directory name should not be necessary -->
 			       <webResources>
 			         <resource>
-			           <directory>../gums-service/src/main/config</directory>
+			           <directory>src/main/config</directory>
 			           <targetPath>WEB-INF/config</targetPath>
 			           <filtering>false</filtering>
 			         </resource>
 			         <resource>
-			           <directory>../gums-service/src/main/classes</directory>
+			           <directory>src/main/classes</directory>
 			           <targetPath>WEB-INF/classes</targetPath>
 			           <filtering>true</filtering>
 			           <includes>
@@ -162,7 +163,7 @@
 			           </includes>
 			         </resource>
 			         <resource>
-			           <directory>../gums-service/src/main/resources</directory>
+			           <directory>src/main/resources</directory>
 			           <targetPath>WEB-INF</targetPath>
 			           <filtering>false</filtering>
 			         </resource>
