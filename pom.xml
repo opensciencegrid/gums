@@ -316,7 +316,7 @@
 		<profile>
 			<id>no-test</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<activeByDefault>true</activeByDefault>
 			</activation>
 			<build>
 				<plugins>
@@ -340,7 +340,7 @@
 		<profile>
 			<id>standard-test</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<!-- Only tests that do not require other services (best practice for JUnit) -->
 			<build>
