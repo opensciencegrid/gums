@@ -8,12 +8,14 @@
 	<description>GUMS Core provides the core functionality used by other GUMS components</description>
 
   	<repositories>
+<!-- - this repository is poison. Don't use.
 		<repository>
 	    	<id>usatlas</id>
 			<name>usatlas repository</name>
 	 		<layout>default</layout>
  			<url>https://www.racf.bnl.gov/Facility/GUMS/mvn</url>
 		</repository>
+-->
 		<repository>
 			<id>ibiblio</id>
 			<name>ibiblio</name>
@@ -322,7 +324,7 @@
 		<profile>
 			<id>no-test</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<build>
 				<plugins>
@@ -345,6 +347,9 @@
 		</profile>	
 		<profile>
 			<id>standard-test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<!-- Only tests that do not require other services (best practice for JUnit) -->
 			<build>
 				<plugins>
@@ -377,6 +382,9 @@
 			<!-- Standard tests and those that require Tomcat and MySQL to be installed 
 				and configured along with db.properties and hibernate.properties present and correctly
 				configured within the src/test/config directory -->
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
 			<build>
 				<plugins>
 				    <plugin>
@@ -402,6 +410,9 @@
 		</profile>		
 		<profile>
 			<id>external-test</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
 			<!-- Standard and Local tests plus those that rely on an external voms and ldap server.  Requires 
 				voms.properties and ldap.properties be present and correctly
 				configured within the src/test/config directory.  The voms server should be named griddev and 
