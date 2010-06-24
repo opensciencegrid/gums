@@ -8,25 +8,17 @@
 	<description>GUMS Core provides the core functionality used by other GUMS components</description>
 
   	<repositories>
-<!-- - this repository is poison. Don't use.
 		<repository>
 	    	<id>usatlas</id>
 			<name>usatlas repository</name>
 	 		<layout>default</layout>
  			<url>https://www.racf.bnl.gov/Facility/GUMS/mvn</url>
 		</repository>
--->
 		<repository>
 			<id>ibiblio</id>
 			<name>ibiblio</name>
 			<layout>default</layout>
 			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
-		</repository>
-		<repository>
-	    	<id>ibiblio</id>
-			<name>IBiblio</name>
-	 		<layout>default</layout>
- 			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
 		</repository>
 	</repositories>
 	
