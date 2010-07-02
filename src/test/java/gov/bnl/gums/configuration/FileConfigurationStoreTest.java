@@ -33,13 +33,21 @@ public class FileConfigurationStoreTest extends TestCase {
     }
  
     protected void setUp() throws java.lang.Exception {
+        System.out.println("test setup");   // drs
+
+        // create and initialize an ad-hoc database.
+
+        Derby.init();
+
         confStore = new FileConfigurationStore();
     }    
     
     public void testFileChange() throws java.lang.Exception {
+        System.out.println("testFileChange");
     	Configuration conf1 = confStore.retrieveConfiguration();
         Configuration conf2 = confStore.retrieveConfiguration();
         assertEquals(conf1, conf2);
+        System.out.println("trivial equality ok");
         URL url = getClass().getClassLoader().getResource("gums.config");
         URI uri = new URI(url.toString());
         File file = new File(uri);
@@ -47,9 +55,11 @@ public class FileConfigurationStoreTest extends TestCase {
         file.setLastModified(System.currentTimeMillis());
         conf2 = confStore.retrieveConfiguration();
         assertNotSame(conf1, conf2);
+        System.out.println("touching file ok");
     }
 
     public void testFileStore() throws java.lang.Exception {
+        System.out.println("testFileStore");
         Configuration conf = confStore.retrieveConfiguration();
         confStore.setConfiguration(conf, false, null, new Date());
         new FileConfigurationStore().retrieveConfiguration();

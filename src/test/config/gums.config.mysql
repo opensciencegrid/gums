@@ -9,13 +9,13 @@
 			storeConfig='true'
 			description='This is persistence factory A'
 			hibernate.c3p0.timeout='180'
-			hibernate.connection.driver_class='org.apache.derby.jdbc.EmbeddedDriver'
+			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
 			hibernate.connection.autoReconnect='true'
 			hibernate.c3p0.max_size='20'
-			hibernate.dialect='org.hibernate.dialect.DerbyDialect'
+			hibernate.dialect='org.hibernate.dialect.MySQLDialect'
 			hibernate.c3p0.min_size='3'
-			hibernate.connection.username=''
-			hibernate.connection.url='jdbc:derby:gums-test'
+			hibernate.connection.username='gums'
+			hibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_3'
 			hibernate.connection.password=''/>
 
 	</persistenceFactories>

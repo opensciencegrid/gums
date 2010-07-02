@@ -30,7 +30,13 @@ public class HibernateDBTestBase extends TestCase {
         sessions = cfg.buildSessionFactory();
         Session session = sessions.openSession();
         Statement stmt = session.connection().createStatement();
-        stmt.execute("DELETE FROM USER WHERE GROUP_NAME='test'");
+
+        /* drs - note with MySql, you can get away with calling the table USER.
+         * However, with Derby, which is used in testing, one must quote the
+         * name USER since it is the name of a system function. I'd like to
+         * revisit this and use hibernate to delete these, rather than sql.
+         */
+        stmt.execute("DELETE FROM \"USER\" WHERE GROUP_NAME='test'");
         stmt.execute("DELETE FROM MAPPING WHERE MAP='test'");
         session.close();
     }
@@ -38,7 +44,8 @@ public class HibernateDBTestBase extends TestCase {
     protected void tearDown() throws java.lang.Exception {
     	Session session = sessions.openSession();
         Statement stmt = session.connection().createStatement();
-        stmt.execute("DELETE FROM USER WHERE GROUP_NAME='test'");
+        /* drs - see above comment */
+        stmt.execute("DELETE FROM \"USER\" WHERE GROUP_NAME='test'");
         stmt.execute("DELETE FROM MAPPING WHERE MAP='test'");
         session.close();
         sessions.close();
