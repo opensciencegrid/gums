@@ -9,15 +9,15 @@
         <persistenceFactory 
 	        name="mysql" 
 	        className="gov.bnl.gums.hibernate.HibernatePersistenceFactory" 
-	        hibernate.connection.driver_class="com.mysql.jdbc.Driver" 
-	        hibernate.dialect="org.hibernate.dialect.MySQLDialect" 
-            hibernate.c3p0.min_size="3" 
+                hibernate.connection.driver_class='org.apache.derby.jdbc.EmbeddedDriver'
+                hibernate.dialect='org.hibernate.dialect.DerbyDialect'
+                hibernate.c3p0.min_size="3" 
 	        hibernate.c3p0.max_size="20" 
 	        hibernate.c3p0.timeout="180" 
-            hibernate.connection.url="jdbc:mysql://localhost:3306/GUMS_1_3" 
-	        hibernate.connection.username="gums" 
+                hibernate.connection.url="jdbc:derby:gums-test"
+	        hibernate.connection.username="" 
 	        hibernate.connection.password="" 
-	        hibernate.connection.autoReconnect="true"/>
+	        hibernate.connection.autoReconnect="true" />
 </persistenceFactories>
 
 <adminUserGroup

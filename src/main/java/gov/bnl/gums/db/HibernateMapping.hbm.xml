@@ -5,7 +5,7 @@
 <hibernate-mapping>
   <class name="gov.bnl.gums.db.HibernateMapping" table="MAPPING">
     <id name="id" column="ID" type="long" unsaved-value="null">
-      <generator class="native"/>
+      <generator class="identity"/>
     </id>
     <property name="dn" column="DN" type="string" length="255"/>
     <property name="account" column="ACCOUNT" type="string" length="31" />

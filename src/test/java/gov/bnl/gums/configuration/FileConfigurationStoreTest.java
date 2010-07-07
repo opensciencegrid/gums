@@ -33,14 +33,18 @@ public class FileConfigurationStoreTest extends TestCase {
     }
  
     protected void setUp() throws java.lang.Exception {
-        System.out.println("test setup");   // drs
 
         // create and initialize an ad-hoc database.
 
         Derby.init();
 
         confStore = new FileConfigurationStore();
-    }    
+    }
+
+    protected void tearDown() throws Exception {
+        Derby.shutdown();
+    }
+
     
     public void testFileChange() throws java.lang.Exception {
         System.out.println("testFileChange");

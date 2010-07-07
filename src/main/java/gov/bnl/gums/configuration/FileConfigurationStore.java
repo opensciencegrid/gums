@@ -166,8 +166,6 @@ public class FileConfigurationStore extends ConfigurationStore {
 	}
 	
 	public synchronized Configuration retrieveConfiguration() {
-            System.out.println("drs - in retrieveConfiguration");
-            System.out.println("drs - curModification = " + curModification);
 		try {
 			if (curModification==null || curModification.before(getLastModification())) {
 				reloadConfiguration();
@@ -176,7 +174,6 @@ public class FileConfigurationStore extends ConfigurationStore {
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
-            System.out.println("drs about to return from Configuration");
 		return conf;
 	}
 
@@ -235,8 +232,6 @@ public class FileConfigurationStore extends ConfigurationStore {
 	}
 
 	private void reloadConfiguration() {
-            System.out.println("drs in reloadConfiguration");
-            System.out.println("drs configPath = " + configPath);
 		try {
 			FileInputStream fileInputStream = new FileInputStream(configPath);
 			try {
@@ -244,7 +239,6 @@ public class FileConfigurationStore extends ConfigurationStore {
 				int ch;
 				while ((ch = fileInputStream.read()) != -1)
 					configBuffer.append((char)ch);
-                                System.out.println("drs - configuation " + configBuffer);
 				this.conf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
 				curModification = new Date(new File(configPath).lastModified());
 			} catch (Exception e) {
