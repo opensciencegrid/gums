@@ -6,8 +6,11 @@
 package gov.bnl.gums.configuration;
 
 import java.sql.*;
+import org.apache.log4j.*;
 
 public class Derby {
+
+	static Logger logger = Logger.getLogger("gov.bnl.gov.configuration.Derby");
 
     static String[] users = {
         "/DC=org/DC=doegrids/OU=People/CN=Jay Packard 335585",
@@ -31,7 +34,8 @@ public class Derby {
         String dbName = "gums-test";
         String connectionURL = "jdbc:derby:" + dbName + ";create=true";
 
-        System.out.println(connectionURL);
+	logger.info("connect to: " + connectionURL);
+        //System.out.println(connectionURL);
 
         try {
             Class.forName(driver);
