@@ -49,6 +49,19 @@
     
   </repositories>
 
+	<pluginRepositories>
+		<pluginRepository>
+			<id>codehaus-plugins</id>
+			<url>http://dist.codehaus.org/</url>
+			<layout>legacy</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
 
     <scm>
         <connection>scm:svn:http://svn.racf.bnl.gov/svn/privilege/branches/GUMS_CORE_1.3.X</connection>
