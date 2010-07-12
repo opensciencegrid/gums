@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>gums</groupId>
+	<groupId>gov.bnl.racf.gums</groupId>
 	<artifactId>gums-service</artifactId>
 	<packaging>war</packaging>
 	<name>gums-service</name>
@@ -9,36 +9,47 @@
 	<description>GUMS Service provides web services used by the client tool and a 
 		web interface for administering GUMS</description>
     
-  	<repositories>
-        <repository>
-	    	<id>usatlas</id>
-			<name>usatlas repository</name>
-	 		<layout>default</layout>
- 			<url>https://www.racf.bnl.gov/Facility/GUMS/mvn</url>
-		</repository>    
-		<repository>
-			<id>ibiblio</id>
-			<name>ibiblio</name>
-			<layout>default</layout>
-			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
-		</repository>
-		<repository>
-	    	<id>central</id>
-			<name>Fermi Repository</name>
-	 		<layout>default</layout>
- 			<url>http://www.fnal.gov/docs/products/voprivilege/swarchive</url>
-		</repository>	
-		<repository>
-		   <id>Internet2 repository</id>
-		   <url>http://shibboleth.internet2.edu/downloads/maven2/org</url>
-		</repository>
-		<repository>
-        	<id>no-commons-logging</id>
-        	<name>No-commons-logging Maven Repository</name>
-        	<layout>default</layout>
-        	<url>http://no-commons-logging.zapto.org/mvn2</url>
-		</repository>
-    </repositories>
+  	 <distributionManagement>
+      <repository>
+        <id>internal</id>
+        <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
+      </repository>
+
+      <snapshotRepository>
+         <id>snapshots</id>
+         <name>Archiva Managed Snapshot Repository</name>
+         <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+      
+   </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>internal</id>
+      <name>Archiva Managed Internal Repository</name>
+      <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    
+      <repository>
+      <id>snapshots</id>
+      <name>Archiva Managed Snapshot Repository</name>
+      <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    
+  </repositories>
     
     <pluginRepositories>
 		<pluginRepository>
@@ -50,18 +61,16 @@
 		</pluginRepository>
     </pluginRepositories>
 
-	<distributionManagement>
-		<repository>
-			<id>usatlas</id>
-			<name>usatlas repository</name>
-			<url>scp://grid.racf.bnl.gov/var/www/html/mvn</url>
-		</repository>
-	</distributionManagement>
-	
+
 	<scm>
-	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</connection>
-	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</developerConnection>
-    	<url>https://svn.usatlas.bnl.gov/svn/privilege/gums-client</url>
+		<connection>
+			scm:svn:http://svn.racf.bnl.gov/svn/privilege/branches/GUMS_SERVICE_1.3.X
+		</connection>
+		<developerConnection>
+			scm:svn:http://svn.racf.bnl.gov/svn/privilege/branches/GUMS_SERVICE_1.3.X
+		</developerConnection>
+		   <url>http://svn.racf.bnl.gov/svn/privilege/branches/GUMS_SERVICE_1.3.X
+		</url>
 	</scm>
 
   	<build>	
