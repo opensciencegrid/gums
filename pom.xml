@@ -88,7 +88,7 @@
             </resource>
         </resources>
         <plugins>
-        <!--
+        
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -96,7 +96,7 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
-         -->
+     
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
