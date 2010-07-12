@@ -7,88 +7,48 @@
     <version>1.3.17-SNAPSHOT</version>
     <description>GUMS Core provides the core functionality used by other GUMS components</description>
 
-    <repositories>
-        <!-- drs - try not to use these repositories at all.
-                <repository>
-                <id>usatlas</id>
-                        <name>usatlas repository</name>
-                        <layout>default</layout>
-                        <url>https://www.racf.bnl.gov/Facility/GUMS/mvn</url>
-                </repository>
+  <distributionManagement>
+      <repository>
+        <id>internal</id>
+        <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
+      </repository>
 
-                <repository>
-                        <id>ibiblio</id>
-                        <name>ibiblio</name>
-                        <layout>default</layout>
-                        <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
-                </repository>
-                -->
-                <!-- drs - using just the default repository, the following items
-                           were not found:
+      <snapshotRepository>
+         <id>snapshots</id>
+         <name>Archiva Managed Snapshot Repository</name>
+         <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+      
+   </distributionManagement>
 
-                           1) glite:glite-security-trustmanager:jar:1.8.16
-                           2) commons-cli:commons-cli:jar:2.0
-                           3) javax.security:jacc:jar:1.0
-                           4) gums:nis:jar:unknown
-                           5) gums:activation:jar:unknown
-                           6) gums:mail:jar:unknown
-                           7) javax.transaction:jta:jar:1.0.1
-                           8) glite:glite-security-util-java:jar:1.0.0dev
-                           9) glite:bcprov:jar:jdk15-139
+  <repositories>
+    <repository>
+      <id>internal</id>
+      <name>Archiva Managed Internal Repository</name>
+      <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    
+      <repository>
+      <id>snapshots</id>
+      <name>Archiva Managed Snapshot Repository</name>
+      <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    
+  </repositories>
 
-                in2p3 should take care of the glite stuff. There is an issue
-                however with bcprov. I cannot find a source site for this. I've
-                installed locally a version (binary only) that I found kicking
-                around bnl.
-
-                Also, I had to install random copies of gums:nis, gums:mail and
-                gums:activation - need to revisit this chicken and egg issue.
-
-                In the future, we should once again create a complete build from
-                nothing and see if things have improved.
-
-                -->
-
-        <repository>
-            <id>in2p3</id>
-            <name>in2p3</name>
-            <layout>default</layout>
-            <url>http://grid.in2p3.fr/maven2</url>
-        </repository>
-        <!-- drs - need the following for javax.security.jacc -->
-
-        <repository>
-            <id>JBOSS</id>
-            <name>JBoss Repository</name>
-            <url>http://repository.jboss.org/maven2/</url>
-        </repository>
-
-	<!-- to clear up the javax.activation and javax.mail issue -->
-
-	<repository>
-	  <id>maven2-repository.dev.java.net</id>
-	  <name>Java.net Repository for Maven</name>
-	  <url>http://download.java.net/maven/2/</url>
-	  <layout>default</layout>
-	</repository>
-	
-        <!-- drs - need next for sun stuff -->
-
-        <repository>
-            <id>sun</id>
-            <name>sun</name>
-            <url>http://download.java.net/maven/2/</url>
-        </repository>
-
-    </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>usatlas</id>
-            <name>usatlas repository</name>
-            <url>scp://grid.racf.bnl.gov/var/www/html/mvn</url>
-        </repository>
-    </distributionManagement>
 
     <scm>
         <connection>scm:svn:http://svn.racf.bnl.gov/svn/privilege/branches/GUMS_CORE_1.3.X</connection>
@@ -377,12 +337,14 @@
             <version>1.4</version>
             <scope>runtime</scope>
         </dependency>
+        
         <dependency>
-            <groupId>glite</groupId>
-            <artifactId>bcprov</artifactId>
-            <version>jdk15-139</version>
-            <scope>runtime</scope>
-        </dependency>
+			<groupId>bouncycastle</groupId>
+			<artifactId>bcprov-jdk15</artifactId>
+			<version>140</version>
+			<scope>runtime</scope>
+		</dependency>
+        
 <!--
         <dependency>
             <groupId>gums</groupId>
