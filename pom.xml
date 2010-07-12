@@ -90,18 +90,15 @@
         </repository>
     </distributionManagement>
 
-    <!-- drs - this is no longer correct. Needs to be fixed. -->
-
     <scm>
-        <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</connection>
-        <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</developerConnection>
-        <url>https://svn.usatlas.bnl.gov/svn/privilege/gums-client</url>
+        <connection>scm:svn:http://svn.racf.bnl.gov/svn/privilege/branches/GUMS_CORE_1.3.X</connection>
+        <developerConnection>scm:svn:https://svn.racf.bnl.gov/svn/privilege/branches/GUMS_CORE_1.3.X</developerConnection>
+        <url>http://svn.racf.bnl.gov/svn/privilege/</url>
     </scm>
 
     <!-- drs - some serious stuff missing here - JDK version, JUnit version, etc. -->
 
     <build>
-
 
         <testResources>
             <testResource>
