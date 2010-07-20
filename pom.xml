@@ -9,6 +9,48 @@
 	<description>GUMS Service provides web services used by the client tool and a 
 		web interface for administering GUMS</description>
     
+  <distributionManagement>
+      <repository>
+        <id>internal</id>
+        <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
+      </repository>
+
+      <snapshotRepository>
+         <id>snapshots</id>
+         <name>Archiva Managed Snapshot Repository</name>
+         <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+
+   </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>internal</id>
+      <name>Archiva Managed Internal Repository</name>
+      <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+      <repository>
+      <id>snapshots</id>
+      <name>Archiva Managed Snapshot Repository</name>
+      <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+  </repositories>
+<!--
   	 <distributionManagement>
       <repository>
         <id>internal</id>
@@ -50,7 +92,7 @@
     </repository>
     
   </repositories>
-    
+   --> 
     <pluginRepositories>
 		<pluginRepository>
           <id>codehaus snapshot repository</id>
@@ -93,7 +135,7 @@
 								</delete>
 							
 				                <unzip dest="src/main/resources">
-				                    <fileset dir="${settings.localRepository}/gums/gums-core">
+				                    <fileset dir="${settings.localRepository}/gov/bnl/racf/gums/gums-core">
         								<include name="**/gums-core-${version}.jar"/>
 								    </fileset>
 									<patternset>
@@ -228,7 +270,7 @@
  	<dependencies> 
         <!-- compile scope -->
         <dependency>
-            <groupId>gums</groupId>
+            <groupId>gov.bnl.racf.gums</groupId>
             <artifactId>gums-core</artifactId>
             <version>${version}</version>
         </dependency>
