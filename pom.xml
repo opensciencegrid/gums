@@ -64,9 +64,9 @@
 	</pluginRepositories>
 
     <scm>
-        <connection>scm:svn:http://svn.racf.bnl.gov/svn/privilege/branches/GUMS_CORE_1.3.X</connection>
-        <developerConnection>scm:svn:https://svn.racf.bnl.gov/svn/privilege/branches/GUMS_CORE_1.3.X</developerConnection>
-        <url>http://svn.racf.bnl.gov/svn/privilege/</url>
+        <connection>scm:svn:http://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CORE_1.3.X</connection>
+        <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CORE_1.3.X</developerConnection>
+        <url>http://svn.usatlas.bnl.gov/svn/privilege/</url>
     </scm>
 
     <!-- drs - some serious stuff missing here - JDK version, JUnit version, etc. -->
