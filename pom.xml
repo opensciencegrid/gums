@@ -292,6 +292,9 @@
 			<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>rpm-maven-plugin</artifactId>
+<!-- commented out by drs - the rpm program is not available on all platforms and this might
+     hide other problems. To build an rpm, type mvn rpm:rpm
+
                 <executions>
                     <execution>
                         <goals>
@@ -299,6 +302,7 @@
                         </goals>
                     </execution>
                 </executions>
+-->
                 <configuration>
                     <release>1</release>
                     <copyright>GPL</copyright>
