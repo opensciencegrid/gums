@@ -218,7 +218,7 @@ then
 fi
 
 cat $TEMPLATE \
-  | /bin/sed -e s/@USER@/$USER/g                    \
+  | sed -e s/@USER@/$USER/g                    \
              -e s/@SERVER@/$SERVER/g                \
              -e s/@PASSWORD@/$PASSWORD/g            \
              -e s/@DOMAINNAME@/$DOMAINNAME/g        \
