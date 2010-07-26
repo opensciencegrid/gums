@@ -16,7 +16,7 @@
 			hibernate.c3p0.min_size='3'
 			hibernate.connection.username='gums'
 			hibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_3'
-			hibernate.connection.password=''/>
+			hibernate.connection.password='mysecret'/>
 
 	</persistenceFactories>
 
