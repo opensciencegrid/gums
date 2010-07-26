@@ -42,7 +42,7 @@ then
 fi
 
 
-MYSQLPARAM="-p"
+MYSQLPARAM="-u gums -p"
 ADMINDN=$1
 
 echo WARNING: You must have created the database before running this script!
@@ -62,6 +62,7 @@ fi
 echo
 echo Adding the admin:
 echo Enter the root mysql password
-cat ../sql/addAdmin.mysql | /bin/sed -e "s%@ADMINDN@%$ADMINDN%g" | mysql $MYSQLPARAM
+echo ../sql/addAdmin.mysql pipe sed -e "s%@ADMINDN@%$ADMINDN%g" pipe mysql $MYSQLPARAM
+cat ../sql/addAdmin.mysql | sed -e "s%@ADMINDN@%$ADMINDN%g" | mysql $MYSQLPARAM
 echo
 
