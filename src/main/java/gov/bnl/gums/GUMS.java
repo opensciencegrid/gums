@@ -266,7 +266,7 @@ public class GUMS {
 	
 	static public String getVersion() {
 		if (version==null) {
-			String pomFile = CertCache.getMetaDir()+"/maven/gums/gums-service/pom.xml";
+			String pomFile = CertCache.getMetaDir()+"/maven/gov.bnl.racf.gums/gums-service/pom.xml";
 			Digester digester = new Digester();
 			digester.addObjectCreate("project/version", Version.class);
 			digester.addCallMethod("project/version","setVersion",0);
