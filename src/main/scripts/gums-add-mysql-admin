@@ -61,7 +61,7 @@ fi
 
 echo
 echo Adding the admin:
-echo Enter the root mysql password
+echo Enter the gums mysql password
 echo ../sql/addAdmin.mysql pipe sed -e "s%@ADMINDN@%$ADMINDN%g" pipe mysql $MYSQLPARAM
 cat ../sql/addAdmin.mysql | sed -e "s%@ADMINDN@%$ADMINDN%g" | mysql $MYSQLPARAM
 echo
