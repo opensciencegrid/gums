@@ -172,6 +172,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 				log.debug("Configuration "+conf+" reloaded from file");
 			}
 		} catch (Exception e) {
+			System.out.println("Excpetion thrown");
 			throw new RuntimeException(e.getMessage());
 		}
 		return conf;
