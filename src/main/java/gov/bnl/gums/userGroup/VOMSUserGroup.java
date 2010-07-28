@@ -333,6 +333,20 @@ public class VOMSUserGroup extends UserGroup {
     public void updateMembers() {
 		if (getVoDB()!=null)
 	   		getVoDB().loadUpdatedList(retrieveMembers());
+                else 
+                    throw new RuntimeException("Could not updateMembers for " + vomsServer + " getVoDB returned null");
+                // note, if for some reason getVoDB returns null, you SILENTLY
+                // fail to load the new updated list It is no longer silent.
+                // note - this ***SHOULD*** not happen.
+                //
+                // getVoDB returns null if 1) getVoObject() returns null, or if
+                // getVoDB does not return null, but getVoObject().getDB(getName())
+                // does.
+
+                // getVoObject checks to make sure that there is a configuration
+                // and if so, gets it and calls getVomsServer(vomsServer) on it.
+                // if there is no configuration, it crashes
+
     }
     
     private UserGroupDB getVoDB() {
