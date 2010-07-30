@@ -14,7 +14,7 @@ for arg ; do
 		
 		--gumsdebug)
 		DEBUG=1
-		echo "[DEBUG] gums-host: Setting debug."
+		echo "[DEBUG] gums-host: Setting debug." 1>&2	
 		ARGS="$ARGS $arg"
 		;;
 	
@@ -31,8 +31,8 @@ for arg ; do
 		
 	esac
 	if [ $DEBUG -eq 1 ] ; then
-		echo "[DEBUG] gums-host: Arg is $arg"
-		echo "[DEBUG] gums-host: ARGS are: $ARGS"
+		echo "[DEBUG] gums-host: Arg is $arg" 1>&2
+		echo "[DEBUG] gums-host: ARGS are: $ARGS" 1>&2
 	fi 
 done 
 eval $BINDIR/gums --host "$ARGS"

@@ -41,8 +41,8 @@ MODE="CLIENT"
 ARGS=""
 for arg ; do
 	if [ $DEBUG -eq 1 ] ; then 
-		echo "[DEBUG] gums: Arg is $arg"
-		echo "[DEBUG] gums: ARGS are: $ARGS"
+		echo "[DEBUG] gums: Arg is $arg" 1>&2
+		echo "[DEBUG] gums: ARGS are: $ARGS" 1>&2
 	fi
 	case $arg in
 		--gumsdebug)
@@ -111,16 +111,16 @@ cd $OLDDIR
 GUMSDIR=`dirname $INVOKE_DIR`
 
 if [ $DEBUG -eq 1 ] ; then 
-	echo "[DEBUG] gums: Invoke is $INVOKE"
-	echo "[DEBUG] gums: Dirpath is $DIRPATH"
-	echo "[DEBUG] gums: Invoke directory is $INVOKE_DIR"
-	echo "[DEBUG] gums: Gumsdir is $GUMSDIR"
+	echo "[DEBUG] gums: Invoke is $INVOKE" 1>&2
+	echo "[DEBUG] gums: Dirpath is $DIRPATH" 1>&2
+	echo "[DEBUG] gums: Invoke directory is $INVOKE_DIR" 1>&2
+	echo "[DEBUG] gums: Gumsdir is $GUMSDIR" 1>&2
 fi
 
 # Handle VDT install
 if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ] ; then
 	if [ $DEBUG -eq 1 ] ; then
-		echo "[DEBUG] gums: Setting paths using VDT_LOCATION..."
+		echo "[DEBUG] gums: Setting paths using VDT_LOCATION..." 1>&2
 	fi
 	BIN=$VDT_LOCATION/gums/scripts/
 	ETC=$VDT_LOCATION/gums/config/
@@ -130,7 +130,7 @@ if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ] ; then
 # Handle RPM install
 elif [ "$INVOKE_DIR" == "/usr/bin" ] && [ -d /etc/gums/ ] ; then
 	if [ $DEBUG -eq 1 ] ; then
-		echo "[DEBUG] gums: Seems to be an RPM install. Setting paths..."
+		echo "[DEBUG] gums: Seems to be an RPM install. Setting paths..." 1>&2
 	fi
 	BIN=/usr/bin
 	ETC=/etc/gums
@@ -140,7 +140,7 @@ elif [ "$INVOKE_DIR" == "/usr/bin" ] && [ -d /etc/gums/ ] ; then
 # Handle tarball/ development location	
 else
 	if [ $DEBUG -eq 1 ] ; then
-		echo "[DEBUG] gums: Setting paths by guessing based on script location."
+		echo "[DEBUG] gums: Setting paths by guessing based on script location." 1>&2
 	fi
 	
 	# Handle scripts/bin directory
@@ -210,20 +210,20 @@ fi
 SECURITY_OPTS="$TRUST_OPTS $CERT_OPTS"
 
 if [ $DEBUG -eq 1 ] ; then 
-	echo "[DEBUG] gums: Program is $PROG"
-	echo "[DEBUG] gums: Program dir is $BINDIR"
-	echo "[DEBUG] gums: Binary dir is $BIN"
-	echo "[DEBUG] gums: Config dir is $ETC"
-	echo "[DEBUG] gums: Library dir is $LIB"
-	echo "[DEBUG] gums: Endorsed lib dir is $ENDORSED"
-	echo "[DEBUG] gums: Cert dir is $CERTDIR"
-	echo "[DEBUG] gums: Full classpath is: $GUMSCP"
-	echo "[DEBUG] gums: Security opts are: $SECURITY_OPTS"
-	echo "[DEBUG] gums: Pass-through args are $ARGS"
-	echo "[DEBUG] gums: Mode is $MODE"
-	echo "[DEBUG] gums: ARGS are $ARGS"
+	echo "[DEBUG] gums: Program is $PROG" 1>&2
+	echo "[DEBUG] gums: Program dir is $BINDIR" 1>&2
+	echo "[DEBUG] gums: Binary dir is $BIN" 1>&2
+	echo "[DEBUG] gums: Config dir is $ETC" 1>&2
+	echo "[DEBUG] gums: Library dir is $LIB" 1>&2
+	echo "[DEBUG] gums: Endorsed lib dir is $ENDORSED" 1>&2
+	echo "[DEBUG] gums: Cert dir is $CERTDIR" 1>&2
+	echo "[DEBUG] gums: Full classpath is: $GUMSCP" 1>&2
+	echo "[DEBUG] gums: Security opts are: $SECURITY_OPTS" 1>&2
+	echo "[DEBUG] gums: Pass-through args are $ARGS" 1>&2
+	echo "[DEBUG] gums: Mode is $MODE" 1>&2
+	echo "[DEBUG] gums: ARGS are $ARGS" 1>&2
 	for arg ; do
-		echo "[DEBUG] gums: Arg: $arg"
+		echo "[DEBUG] gums: Arg: $arg" 1>&2
 	done
 fi
 
