@@ -11,8 +11,8 @@
 # Logging categories
 # ------------------
 
-# Catch all category: won't be logged
-log4j.rootLogger=ERROR
+# Catch all category: if an error makes it here, it should probably be brought to someones attention
+log4j.rootLogger=ERROR, mail
 
 # Logs for GUMS administrator.
 log4j.logger.gums.gumsAdmin=INFO, adminFile
@@ -20,7 +20,10 @@ log4j.logger.gums.gumsAdmin=INFO, adminFile
 # Logs for GUMS administrative email.
 # This log is meant to be relatively quiet and concise.
 # You have to setup the mail appender later in the file and uncomment below
+#
+# sadly, the logger names "gumsAdminEmailReportsLogName" never appears in the source. 
 #log4j.logger.gums.gumsAdminEmailReportsLogName=WARN, mail
+#log4j.logger.gums.gumsAdminEmailReportsLogName=INFO, mail
 
 # Log for cybersecurity
 # This log is sent to both a file and to syslogd.
@@ -102,10 +105,16 @@ log4j.appender.syslogAuth.layout.ConversionPattern=gums: %m%n
 # You must provide all the parameters to send e-mail. You will also need to
 # set the GUMS admin log to be forwarded by mail (see above)
 # I don't believe this supports SMTP with ssl and authentication
-# log4j.appender.mail=org.apache.log4j.net.SMTPAppender
-# log4j.appender.mail.from=gums@localhost
-# log4j.appender.mail.subject=GUMS test server
-# log4j.appender.mail.SMTPHost=smtp.bnl.gov
-# log4j.appender.mail.to=gums-dev-l@lists.bnl.gov
-# log4j.appender.mail.layout=org.apache.log4j.PatternLayout
-# log4j.appender.mail.layout.ConversionPattern=%d{DATE} [%-5p]: %m%n
+# first, static parameters - rarely if ever change
+log4j.appender.mail=org.apache.log4j.net.SMTPAppender
+log4j.appender.mail.subject=GUMS test error report
+log4j.appender.mail.layout=org.apache.log4j.PatternLayout
+log4j.appender.mail.layout.ConversionPattern=%d{DATE} [%-5p]: %m%n
+log4j.appender.mail.from=no-reply@localhost
+#
+# and things that must be set up for each site. What machine is the smtp server and who gets the mail.
+# buffer size is how many messages are saved before mail is sent
+#
+log4j.appender.mail.SMTPHost=smtp.fnal.gov
+log4j.appender.mail.to=gums-dev-l@lists.bnl.gov, drs@bnl.gov
+log4j.appender.mail.bufferSize=1

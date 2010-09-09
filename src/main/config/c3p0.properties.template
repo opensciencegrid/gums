@@ -1,2 +1,6 @@
+# drs trace masako c3p0.properties.template
+
 c3p0.acquireRetryAttempts=3
 c3p0.checkoutTimeout=5000
+c3p0.drs='tracing'
+

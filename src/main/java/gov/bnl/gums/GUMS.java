@@ -56,7 +56,10 @@ public class GUMS {
 	 */
 	static private synchronized void startWorkerThread(final GUMS gums) {
 		// If JNDI property is set, run the update every x minutes
+System.out.println("drs - startWorkerThread");
 		if (timer == null) {
+System.out.println("drs - timer was null");
+
 			timer = new Timer();
 
 			Integer updateMinutes = null;
@@ -76,11 +79,17 @@ public class GUMS {
 			} catch (NamingException e) {
 				log.warn("Couldn't set up JNDI context: " + e.getMessage(), e);
 			}	
+System.out.println("drs - read environment, updateMinutes, updateBannedMinutes, emailWarningHours are " + updateMinutes + " " + updateBannedMinutes + " " + emailWarningHours);
 			
 			if (updateMinutes != null) {
 				TimerTask updateTask = 
 					new TimerTask() {
 					public void run() {
+System.out.println("drs - in task to update groups");
+System.out.println("drs - gumsAdminLog is " + gumsAdminLog);
+System.out.println("drs - gums is " + gums);
+System.out.println("drs - timer is " + timer);
+
 						synchronized(this) {
 							try {
 								gumsAdminLog.info("Starting automatic updateGroups");
@@ -101,7 +110,12 @@ public class GUMS {
 				gumsAdminLog.warn("Didn't start the automatic group update: 'updateGroupsMinutes' was set to null.");
 			}
 			
+System.out.println("drs - about to check up on updateBannedMinutes");
 			if (updateBannedMinutes != null) {
+System.out.println("drs - in task to update banned groups");
+System.out.println("drs - gumsAdminLog is " + gumsAdminLog);
+System.out.println("drs - gums is " + gums);
+System.out.println("drs - timer is " + timer);
 				TimerTask updateBannedTask = new TimerTask() {
 					public void run() {
 						synchronized(this) {
@@ -125,6 +139,9 @@ public class GUMS {
 			}			
 
 			if (emailWarningHours != null) {
+System.out.println("drs - in task to mail");
+System.out.println("drs - gumsAdminEmailLog is " + gumsAdminEmailLog);
+System.out.println("drs - timer is " + timer);
 				TimerTask emailWarningTask = new TimerTask() {
 					public void run() {
 						synchronized(this) {
