@@ -119,6 +119,7 @@
 		<plugins>
 	 		<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.3</version> 
 				<executions>
 					<execution>
 						<id>1</id>
