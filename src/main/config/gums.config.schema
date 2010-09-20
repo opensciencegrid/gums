@@ -21,6 +21,8 @@
 										<xs:attribute name="hibernate.c3p0.min_size" type="xs:short"/>
 										<xs:attribute name="hibernate.c3p0.max_size" type="xs:short"/>
 										<xs:attribute name="hibernate.c3p0.timeout" type="xs:int"/>
+										<xs:attribute name="hibernate.c3p0.idle_test_period" type="xs:int" />
+										<xs:attribute name="hibernate.connection.provider_class" type="xs:string" />
 										<xs:anyAttribute processContents="skip"/>
 									</xs:complexType>
 								</xs:element>	
@@ -84,6 +86,8 @@
 										<xs:attribute name="mysql.hibernate.c3p0.min_size" type="xs:short" use="required"/>
 										<xs:attribute name="mysql.hibernate.c3p0.max_size" type="xs:short" use="required"/>
 										<xs:attribute name="mysql.hibernate.c3p0.timeout" type="xs:int" use="required"/>
+										<xs:attribute name="hibernate.c3p0.idle_test_period" type="xs:int" />
+										<xs:attribute name="hibernate.connection.provider_class" type="xs:string" />
 										<xs:anyAttribute processContents="skip"/>
 									</xs:complexType>
 								</xs:element>			

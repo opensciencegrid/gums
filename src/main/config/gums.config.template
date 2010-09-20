@@ -10,9 +10,11 @@
 			hibernate.c3p0.min_size='3'
 			hibernate.c3p0.max_size='20'
 			hibernate.c3p0.timeout='180'
+			hibernate.c3p0.idle_test_period='60'
 			hibernate.connection.username='@USER@'
 			hibernate.connection.url='jdbc:mysql://@SERVER@/GUMS_1_3'
 			hibernate.connection.password='@PASSWORD@'/>
+                        hibernate.connection.provider_class='org.hibernate.connection.C3P0ConnectionProvider'
 	</persistenceFactories>
 	
 	<vomsServers></vomsServers>
