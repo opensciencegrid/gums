@@ -41,7 +41,13 @@ public class ClientVersion extends RemoteCommand {
     }
 
     protected void execute(org.apache.commons.cli.CommandLine cmd) throws Exception {
-    	String pomFile = getClass().getClassLoader().getSystemResource("META-INF/maven/gums/gums-core/pom.xml").toString();
+    	String pomPath = "META-INF/maven/gov.bnl.racf.gums/gums-core/pom.xml";
+    	URL resourceURL = getClass().getClassLoader().getSystemResource(pomPath);
+    	if (resourceURL == null) {
+			System.out.println("Unable to retrieve resource: "+ pomPath);
+			return;
+		}
+    	String pomFile = resourceURL.toString();
 		Digester digester = new Digester();
 		digester.addObjectCreate("project/version", Version.class);
 		digester.addCallMethod("project/version","setVersion",0);
