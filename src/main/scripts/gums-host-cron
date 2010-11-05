@@ -368,7 +368,9 @@ SUPPORTEDVOS_NEW=$SUPPORTEDVOS.new
 UNDEFINED=$OSG_LOCATION/osg-undefined-accounts.txt 
 UNDEFINED_NEW=$UNDEFINED.new
 
-LOGFILE=$OSG_LOCATION/log/gums-host-cron.log
+#
+#LOGFILE=$OSG_LOCATION/log/gums-host-cron.log
+LOGFILE=$VDT_LOCATION/gums/log/gums-host-cron.log
 
 BACKUP_DIR=backups
 BACKUP_DATE=$(date '+%Y-%m-%dT%H-%M-%S')
@@ -384,6 +386,7 @@ for arg ; do
 		--gumsdebug)
 		DEBUG=1
 		DEBUG_OPTION="--gumsdebug"
+		shift
 		;;
 		
 		--help)
@@ -393,6 +396,12 @@ for arg ; do
 		-h)
 		usage
 		;;
+
+        --log)
+        LOGFILE=$2
+        shift
+        ;;
+
 
 		*)
 		origlen=${#arg}
