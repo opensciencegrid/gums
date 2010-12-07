@@ -397,7 +397,7 @@ public class VOMSUserGroup extends UserGroup {
                 users = voms.listUsersWithRole( getVoGroup(), "Role=" + getRole());
             }        	
             if (users.length > 0) {
-                log.info("Retrieved " + users.length + " users.";
+                log.info("Retrieved " + users.length + " users.");
                 log.info("First user is: '" + users[0].getDN() + "'");
                 log.info("Last user is: '" + users[users.length - 1 ].getDN() + "'");
             } else {
