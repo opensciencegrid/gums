@@ -99,7 +99,7 @@ public class VOMSUserGroup extends UserGroup {
      * <ul>
      *   <li>exact (default) - role, group, and vo have to match. </li>
      *   <li>vorole - role and vo have to match.</li>
-     *   <li>role - rolehas to match.</li>
+     *   <li>role - role has to match.</li>
      *   <li>group, vogroup - group and vo have to match.</li>
      *   <li>vo - vo has to match.</li>
      *   <li>ignore - no matching.</li>
@@ -150,7 +150,7 @@ public class VOMSUserGroup extends UserGroup {
     
     public VOMSAdmin getVOMSAdmin() {
         try {
-            log.trace("VOMS Service Locater: url='" + getUrl() + "'");
+            log.trace("VOMS Service Locator: url='" + getUrl() + "'");
 //            System.setProperty("axis.socketSecureManager", "org.glite.security.trustmanager.axis.AXISSocketManager");
             VOMSAdminServiceLocator locator = new VOMSAdminServiceLocator();
             URL vomsUrl = new URL( getUrl() );
@@ -397,7 +397,9 @@ public class VOMSUserGroup extends UserGroup {
                 users = voms.listUsersWithRole( getVoGroup(), "Role=" + getRole());
             }        	
             if (users.length > 0) {
-                log.info("Retrieved " + users.length + " users. First is: '" + users[0].getDN() + "'");
+                log.info("Retrieved " + users.length + " users.";
+                log.info("First user is: '" + users[0].getDN() + "'");
+                log.info("Last user is: '" + users[users.length - 1 ].getDN() + "'");
             } else {
                 log.info("Retrieved no users.");
             }
