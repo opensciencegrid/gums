@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 
 /** 
  * Facade for the whole business logic available in GUMS. Using GUMS means
- * instanciating an object of this class, and use it to reach the rest of the
+ * instantiating an object of this class, and use it to reach the rest of the
  * functionalities.
  *
  * @author  Gabriele Carcassi, Jay Packard
