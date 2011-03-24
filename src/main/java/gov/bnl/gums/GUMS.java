@@ -15,6 +15,7 @@ import gov.bnl.gums.configuration.Version;
 import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.userGroup.UserGroup;
 
+import java.lang.reflect.*;
 import java.util.Date;
 import java.util.Collection;
 import java.util.Iterator;
@@ -74,78 +75,95 @@ public class GUMS {
 					emailWarningHours = (Integer) env.lookup("emailWarningHours");
 				} catch (Exception e) {}
 			} catch (NamingException e) {
-				log.warn("Couldn't set up JNDI context: " + e.getMessage(), e);
+				gumsAdminLog.warn("Couldn't set up JNDI context: " + e.getMessage(), e);
 			}	
 
-			
-			if (updateMinutes != null) {
-				TimerTask updateTask = 
-					new TimerTask() {
-					public void run() {
-
-						synchronized(this) {
-							try {
-								gumsAdminLog.info("Starting automatic updateGroups");
-								gums.getCoreLogic().updateGroups();
-								gumsAdminLog.info("Automatic updateGroups ended");
-							} catch (Exception e) {
-								gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage());
-								gumsAdminEmailLog.put("updateUserGroup", e.getMessage(), false);
+						
+			if (updateMinutes != null ) {
+				if (updateMinutes > 0) {
+					TimerTask updateTask = 
+						new TimerTask() {
+						public void run() {
+							synchronized(this) {
+								try {
+									gumsAdminLog.info("Starting automatic updateGroups");
+									gums.getCoreLogic().updateGroups();
+									gumsAdminLog.info("Automatic updateGroups ended");
+								} catch (Exception e) {
+									gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage());
+									gumsAdminEmailLog.put("updateUserGroup", e.getMessage(), false);
+								}
 							}
 						}
-					}
-				};
-
-				timer.scheduleAtFixedRate(updateTask, 0, updateMinutes.intValue()*60*1000);
-				gumsAdminLog.info("Automatic group update set: will refresh every " + updateMinutes.intValue() + " minutes starting now.");
+					};
+				
+					timer.scheduleAtFixedRate(updateTask, 0, updateMinutes.intValue()*60*1000);
+					gumsAdminLog.info("Automatic group update set: will refresh every " + updateMinutes.intValue() + " minutes starting now.");
+				}
+				else {
+					gumsAdminLog.warn("Didn't start the automatic group update: 'updateGroupsMinutes' given non-positive value.");
+				} // end if updateMinutes positive
 			}
 			else {
-				gumsAdminLog.warn("Didn't start the automatic group update: 'updateGroupsMinutes' was set to null.");
-			}
+				gumsAdminLog.warn("Didn't start the automatic group update: 'updateGroupsMinutes' was null.");
+			} // end if updateMinutes not null
 			
 			if (updateBannedMinutes != null) {
-				TimerTask updateBannedTask = new TimerTask() {
-					public void run() {
-						synchronized(this) {
-							try {
-								gumsAdminLog.info("Starting automatic updateBannedGroups");
-								gums.getCoreLogic().updateBannedGroups();
-								gumsAdminLog.info("Automatic updateBannedGroups ended");
-							} catch (Exception e) {
-								gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage());
-								gumsAdminEmailLog.put("updateBannedGroups", e.getMessage(), false);
+				if (updateBannedMinutes > 0) {
+					TimerTask updateBannedTask = new TimerTask() {
+						public void run() {
+							synchronized(this) {
+								try {
+									gumsAdminLog.info("Starting automatic updateBannedGroups");
+									gums.getCoreLogic().updateBannedGroups();
+									gumsAdminLog.info("Automatic updateBannedGroups ended");
+								} catch (Exception e) {
+									gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage());
+									gumsAdminEmailLog.put("updateBannedGroups", e.getMessage(), false);
+								}
 							}
 						}
-					}
-				};
+					};
 
-				timer.scheduleAtFixedRate(updateBannedTask, 0, updateBannedMinutes.intValue()*60*1000);
-				gumsAdminLog.info("Automatic banned group update set: will refresh every " + updateBannedMinutes.intValue() + " minutes starting now.");
+					timer.scheduleAtFixedRate(updateBannedTask, 0, updateBannedMinutes.intValue()*60*1000);
+					gumsAdminLog.info("Automatic banned group update set: will refresh every " + updateBannedMinutes.intValue() + " minutes starting now.");
+				}
+				else {
+					gumsAdminLog.warn("Didn't start the automatic banned group update: 'updateBannedMinutes' given non-positive value.");
+				}
+					
 			}
 			else {
-				gumsAdminLog.warn("Didn't start the automatic banned group update: 'updateBannedMinutes' was set to null.");
+				gumsAdminLog.warn("Didn't start the automatic banned group update: 'updateBannedMinutes' was null.");
 			}			
 
 			if (emailWarningHours != null) {
-				TimerTask emailWarningTask = new TimerTask() {
-					public void run() {
-						synchronized(this) {
-							if (gumsAdminEmailLog.hasMessages()) {
-								gumsAdminEmailLog.logMessages();
+				if (emailWarningHours > 0) {
+					TimerTask emailWarningTask = new TimerTask() {
+						public void run() {
+							synchronized(this) {
+								if (gumsAdminEmailLog.hasMessages()) {
+									gumsAdminEmailLog.logMessages();
+								}
 							}
 						}
-					}
-				};      
+					};      
 
-				timer.scheduleAtFixedRate(emailWarningTask, 5*60*1000, emailWarningHours.intValue()*60*60*1000);
-				gumsAdminLog.info("Automatic email warning set: will refresh every " + emailWarningHours.intValue() + " hours starting in 5 minutes.");
+					timer.scheduleAtFixedRate(emailWarningTask, 5*60*1000, emailWarningHours.intValue()*60*60*1000);
+					gumsAdminLog.info("Automatic email warning set: will refresh every " + emailWarningHours.intValue() + " hours starting in 5 minutes.");
+				}
+				else {
+					gumsAdminLog.warn("Didn't start the email warning task: 'emailWarningTask' was non-positive.");
+				}
 			}
 			else {
-				gumsAdminLog.warn("Didn't start the email warning task: 'emailWarningTask' was set to null.");
+				gumsAdminLog.warn("Didn't start the email warning task: 'emailWarningTask' was null.");
 			}
-		}
-	}
+		} // end if Timer == null {}
+	} //end startWorkerThread()
 
+	
+	
 	/**
 	 * Create timed tasks for various housekeeping functions. 
 	 * 
@@ -264,21 +282,22 @@ public class GUMS {
     	String callMethod; // the name of the method to call
     	String name;       // the name of this task to be used in log messages
     	String envName;    // the JNDI environment var in which the time will be set (in minutes or hours). 
+    	GUMS gums;
     	
-    	public GumsTask(String callClass, Object callObject, String callMethod, String name, String envName) {
-    		this.callClass = ;
-	        
+    	private GumsTask(GUMS gums, Class callClass, Object callObject, String callMethod, String name, String envName) {
+    		this.callClass = callClass;
+	        this.gums = gums;
     		
     	} // end constructor
     	    	
     	public void run() {
-    		synchronized(callclass) {
+    		synchronized(callClass) {
 				try {
 					gumsAdminLog.info("Starting automatic " + this.callMethod );
-					CoreLogic cl = gums.getCoreLogic();
-					aclass 
-					Method m = cl.getMethod(this.callMethod);
-					m.invoke(cl)
+					Class cl = this.gums.getCoreLogic().getClass();
+					//Method m = cl.getMethod(this.callMethod,  new Class[] {});
+					Method m = cl.getMethod(this.callMethod,  null);
+					m.invoke(cl);
 					gums.getCoreLogic().updateBannedGroups();
 					gumsAdminLog.info("Automatic updateBannedGroups ended");
 				} catch (Exception e) {
