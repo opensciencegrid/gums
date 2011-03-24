@@ -147,6 +147,152 @@ public class GUMS {
 	}
 
 	/**
+	 * Create timed tasks for various housekeeping functions. 
+	 * 
+	 * @param gums
+	 */
+	static private synchronized void startWorkerThread2(final GUMS gums) {
+		
+
+		
+		
+		
+		
+		
+		if (timer == null) {
+			timer = new Timer();
+		}
+
+		
+		Integer updateMinutes = null;
+		Integer updateBannedMinutes = null;
+		Integer emailWarningHours = null;
+		try {
+			Context env = (Context) new InitialContext().lookup("java:comp/env");
+		  	try {
+					updateMinutes = (Integer) env.lookup("updateGroupsMinutes");
+				} catch (Exception e) {}
+				try {
+					updateBannedMinutes = (Integer) env.lookup("updateBannedGroupsMinutes");
+				} catch (Exception e) {}
+				try {
+					emailWarningHours = (Integer) env.lookup("emailWarningHours");
+				} catch (Exception e) {}
+			} catch (NamingException e) {
+				log.warn("Couldn't set up JNDI context: " + e.getMessage(), e);
+			}	
+
+			
+			if (updateMinutes != null) {
+				TimerTask updateTask = 
+					new TimerTask() {
+					public void run() {
+
+						synchronized(this) {
+							try {
+								gumsAdminLog.info("Starting automatic updateGroups");
+								gums.getCoreLogic().updateGroups();
+								gumsAdminLog.info("Automatic updateGroups ended");
+							} catch (Exception e) {
+								gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage());
+								gumsAdminEmailLog.put("updateUserGroup", e.getMessage(), false);
+							}
+						}
+					}
+				}; // end new TimerTask()
+
+				timer.scheduleAtFixedRate(updateTask, 0, updateMinutes.intValue()*60*1000);
+				gumsAdminLog.info("Automatic group update set: will refresh every " + updateMinutes.intValue() + " minutes starting now.");
+			}
+			else {
+				gumsAdminLog.warn("Didn't start the automatic group update: 'updateGroupsMinutes' was set to null.");
+			}
+			
+			if (updateBannedMinutes != null) {
+				TimerTask updateBannedTask = new TimerTask() {
+					public void run() {
+						synchronized(this) {
+							try {
+								gumsAdminLog.info("Starting automatic updateBannedGroups");
+								gums.getCoreLogic().updateBannedGroups();
+								gumsAdminLog.info("Automatic updateBannedGroups ended");
+							} catch (Exception e) {
+								gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage());
+								gumsAdminEmailLog.put("updateBannedGroups", e.getMessage(), false);
+							}
+						}
+					}
+				};
+
+				timer.scheduleAtFixedRate(updateBannedTask, 0, updateBannedMinutes.intValue()*60*1000);
+				gumsAdminLog.info("Automatic banned group update set: will refresh every " + updateBannedMinutes.intValue() + " minutes starting now.");
+			}
+			else {
+				gumsAdminLog.warn("Didn't start the automatic banned group update: 'updateBannedMinutes' was set to null.");
+			}			
+
+			if (emailWarningHours != null) {
+				TimerTask emailWarningTask = new TimerTask() {
+					public void run() {
+						synchronized(this) {
+							if (gumsAdminEmailLog.hasMessages()) {
+								gumsAdminEmailLog.logMessages();
+							}
+						}
+					}
+				};      
+
+				timer.scheduleAtFixedRate(emailWarningTask, 5*60*1000, emailWarningHours.intValue()*60*60*1000);
+				gumsAdminLog.info("Automatic email warning set: will refresh every " + emailWarningHours.intValue() + " hours starting in 5 minutes.");
+			}
+			else {
+				gumsAdminLog.warn("Didn't start the email warning task: 'emailWarningTask' was set to null.");
+			} // end else
+	}
+
+
+	/****
+	 * Encapsulate a timed method to call and dynamically call it via reflection. 
+	 * 
+	 * @author jhover
+	 *
+	 * see http://stackoverflow.com/questions/160970/how-do-i-invoke-a-java-method-when-given-the-method-name-as-a-string 
+	 */
+    private class GumsTask extends TimerTask {
+    	Class callClass;   // the Class upon which a method will be called. 
+    	Object callObject; // the instance from which a method will be called.  
+    	String callMethod; // the name of the method to call
+    	String name;       // the name of this task to be used in log messages
+    	String envName;    // the JNDI environment var in which the time will be set (in minutes or hours). 
+    	
+    	public GumsTask(String callClass, Object callObject, String callMethod, String name, String envName) {
+    		this.callClass = ;
+	        
+    		
+    	} // end constructor
+    	    	
+    	public void run() {
+    		synchronized(callclass) {
+				try {
+					gumsAdminLog.info("Starting automatic " + this.callMethod );
+					CoreLogic cl = gums.getCoreLogic();
+					aclass 
+					Method m = cl.getMethod(this.callMethod);
+					m.invoke(cl)
+					gums.getCoreLogic().updateBannedGroups();
+					gumsAdminLog.info("Automatic updateBannedGroups ended");
+				} catch (Exception e) {
+					gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage());
+					gumsAdminEmailLog.put("updateBannedGroups", e.getMessage(), false);
+				}
+			}
+    	
+    	
+    	} // end run()
+    } // end class GumsTask
+	
+	
+	/**
 	 * Creates and initilializes a new instance of GUMS
 	 */
 	public GUMS() {
@@ -159,7 +305,7 @@ public class GUMS {
 		}
 
 		startWorkerThread(this);
-	}
+	} // end GUMS() constructor
 
 	/**
 	 * Creates and initilializes a new instance of GUMS with a specified configuration store
@@ -176,7 +322,7 @@ public class GUMS {
 		}
 
 		startWorkerThread(this);
-	}
+	} // end GUMS() constructor
 
 	/**
 	 * Delete a backup configuration by date
@@ -192,7 +338,7 @@ public class GUMS {
 			confStore.deleteBackupConfiguration(dateStr);
 			gumsAdminLog.info("Deleted backup configuration "+dateStr+" from file");
 		}
-	}
+	} //end deleteBackupConfiguration()
 
 	/**
 	 * Get a list of dates for which a backup gums.config exists
@@ -204,7 +350,7 @@ public class GUMS {
 			return dbConfStore.getBackupNames();
 		else
 			return confStore.getBackupNames();
-	}
+	} // end getBackupNames()
 
 	/**
 	 * Retrieves the configuration being used by GUMS. The configuration might
@@ -255,7 +401,7 @@ public class GUMS {
 		lastConf = conf;
 		
 		return conf;
-	}
+	} // end getConfiguration()
 
 	/**
 	 * Retrieve the ResourceManager to perform actions on the business logic.
@@ -264,7 +410,7 @@ public class GUMS {
 	 */
 	public CoreLogic getCoreLogic() {
 		return resMan;
-	}
+	} // end getCoreLogic()
 	
 	static public String getVersion() {
 		if (version==null) {
@@ -288,7 +434,7 @@ public class GUMS {
 			version = versionCls.getVersion();
 		}
 		return version;
-	}
+	} // end getVersion()
 
 	public boolean isUserBanned(GridUser user) throws Exception {
 		Configuration config = getConfiguration();
@@ -299,12 +445,12 @@ public class GUMS {
 			return userGroup.isInGroup(user);
 		}
 		return false;
-	}
+	} // end isUserBanned()
 
 	public void mergeConfiguration(Configuration configuration, String persistenceFactory, String hostToGroupMapping) throws Exception
 	{
 		getConfiguration().mergeConfiguration(configuration, persistenceFactory, hostToGroupMapping);
-	}
+	} // end mergeConfiguration()
 
 	/**
 	 * Restore a configuration from a certain date
@@ -322,7 +468,7 @@ public class GUMS {
 			confStore.restoreConfiguration(name);
 			gumsAdminLog.info("Restored configuration from file: " + name);
 		}
-	}
+	} // end restoreConfiguration()
 
 	/**
 	 * Changes the configuration used by GUMS.
@@ -345,7 +491,7 @@ public class GUMS {
 			confStore.setConfiguration(conf, false, null, date);
 			gumsAdminLog.info("Set configuration on file");
 		}
-	}
+	} // end setConfiguration()
 
 	private void updateConfStoreTypes(Configuration conf) {
 		Iterator it = conf.getPersistenceFactories().values().iterator();
@@ -376,6 +522,5 @@ public class GUMS {
 			}
 			dbConfStore = null;
 		}
-	}
-
-}
+	} // end updateConfStoreTypes()
+} // end class GUMS
