@@ -121,9 +121,9 @@
 	</distributionManagement>
 --> 
    	<scm>
-	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</connection>
-	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/gums-client</developerConnection>
-    	<url>https://svn.usatlas.bnl.gov/svn/privilege/gums-client</url>
+	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</connection>
+	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</developerConnection>
+    	<url>https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</url>
 	</scm>
 	
     <build>
@@ -289,6 +289,16 @@
 					</execution>
 				</executions>
 			</plugin>
+			 <plugin>
+            <artifactId>maven-release-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <tagBase>
+                    https://svn.usatlas.bnl.gov/svn/privilege/tags
+                    </tagBase>
+                </configuration>
+            </plugin>
+			
 			<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>rpm-maven-plugin</artifactId>
