@@ -1,3 +1,2 @@
-INSERT INTO USERDN SET DN='/DC=org/DC=doegrids/OU=People/CN=Jay Packard 335585', GROUP_NAME="admins";
-INSERT INTO USERDN SET DN='/DC=org/DC=doegrids/OU=People/CN=John R. Hover 47116', GROUP_NAME="admins";
-INSERT INTO USERDN SET DN='/DC=org/DC=doegrids/OU=People/CN=John Weigand 458491', GROUP_NAME="admins";
+INSERT INTO GRIDUSER SET DN='/DC=org/DC=doegrids/OU=People/CN=John R. Hover 47116', GROUP_NAME="admins";
+INSERT INTO GRIDUSER SET DN='/DC=org/DC=doegrids/OU=People/CN=John Weigand 458491', GROUP_NAME="admins";
