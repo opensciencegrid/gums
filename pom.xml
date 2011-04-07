@@ -51,46 +51,7 @@
 
   </repositories>
   
-<!--
-  	<repositories>
-		<repository>
-	    	<id>usatlas</id>
-			<name>usatlas repository</name>
-	 		<layout>default</layout>
- 			<url>http://www.racf.bnl.gov/mvn/</url>		
-		</repository>
-		<repository>
-	    	<id>central</id>
-			<name>Maven Repository Switchboard</name>
-	 		<layout>default</layout>
- 			<url>http://repo1.maven.org/maven2</url>
-		</repository>
-		<repository>
-	    	<id>fermi</id>
-			<name>Fermi Repository</name>
-	 		<layout>default</layout>
- 			<url>http://www.fnal.gov/docs/products/voprivilege/swarchive</url>
-		</repository>		
-		<repository>
-		   <id>Internet2 repository</id>
-		   <url>http://shibboleth.internet2.edu/downloads/maven2/org</url>
-		</repository>
-                <repository>
-                        <id>jboss</id>
-                        <name>JBOSS</name>
-                        <layout>default</layout>
-                        <url>http://repository.jboss.org/maven2</url>
-                </repository>
-                <repository>
-                        <id>ibiblio</id>
-                        <name>ibiblio</name>
-                        <layout>default</layout>
-                        <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
-                </repository>
 
-	</repositories>
--->
- 
      <pluginRepositories>
 		<pluginRepository>
           <id>codehaus snapshot repository</id>
@@ -111,15 +72,6 @@
   		</pluginRepository>
     </pluginRepositories>
  
-<!--
-  	<distributionManagement>
-		<repository>
-	      <id>usatlas</id>
-	      <name>usatlas repository</name>
-	      <url>scp://grid.racf.bnl.gov/var/www/html/mvn</url>
-		</repository>
-	</distributionManagement>
---> 
    	<scm>
 	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</connection>
 	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</developerConnection>
