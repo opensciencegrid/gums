@@ -496,7 +496,7 @@ else if ("edit".equals(request.getParameter("command"))
 					VO/Group:
 				</td>
 				<td>
-					<input name="vogroup" value="<%=((VOMSUserGroup)userGroup).getVoGroup()%>"/> (optional)
+					<input name="vogroup" value="<%=((VOMSUserGroup)userGroup).getVoGroup()%>"/> (Must be specified unless above is "ignore")
 				</td>
 			</tr>
 		    <tr>
