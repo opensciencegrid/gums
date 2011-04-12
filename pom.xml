@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gums</groupId>
 	<artifactId>gums-client</artifactId>
@@ -255,7 +258,10 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>rpm-maven-plugin</artifactId>
 <!-- commented out by drs - the rpm program is not available on all platforms and this might
-     hide other problems. To build an rpm, type mvn rpm:rpm -->
+     hide other problems. To build an rpm, type mvn rpm:rpm 
+     
+     However, it can only be run from the normal lifecycle, no via rpm:rpm, so it must stay. 
+-->
 
                 <executions>
                     <execution>
@@ -264,7 +270,7 @@
                         </goals>
                     </execution>
                 </executions>
-<!--   -->
+
                 <configuration>
                     <release>1</release>
                     <copyright>GPL</copyright>
