@@ -251,12 +251,14 @@
                     <tagBase>
                     https://svn.usatlas.bnl.gov/svn/privilege/tags
                     </tagBase>
+                    <!-- 
                     <checkModificationExcludes>
                         <checkModificationExclude>${basedir}/src/main/java/org/apache/xml/xml_soap/MapItem.java</checkModificationExclude>
                         <checkModificationExclude>${basedir}/src/main/java/gov/bnl/gums/admin/AdminSoapBindingStub.java</checkModificationExclude>
                         <checkModificationExclude>${basedir}/src/main/java/gov/bnl/gums/admin/GUMSAPIService.java</checkModificationExclude>
                         <checkModificationExclude>${basedir}/src/main/java/gov/bnl/gums/admin/GUMSAPIServiceLocator.java</checkModificationExclude>
                     </checkModificationExcludes>
+                    -->
                 </configuration>
             </plugin>
 			
