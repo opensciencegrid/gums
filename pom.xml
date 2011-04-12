@@ -118,14 +118,11 @@
                 <artifactId>axistools-maven-plugin</artifactId>
                 <version>1.4</version>
                 <configuration>
-                    <outputDirectory>/src/main/java</outputDirectory> 
                     <deployScope>Application</deployScope>
-                                         
-                    <testCases>true</testCases>
+                    <useEmitter>true</useEmitter>                     
+                    <testCases>false</testCases>
                     <serverSide>true</serverSide>
-                    <subPackageByFileName>true</subPackageByFileName>
-                    
-                     
+                    <subPackageByFileName>true</subPackageByFileName>                     
                     <mappings>
                         <mapping>
                             <namespace>http://glite.org/wsdl/services/org.glite.security.voms</namespace>
@@ -139,11 +136,10 @@
                     
                     <wsdlFiles>
                         <wsdlFiles>glite-security-voms-admin-2.0.2.wsdl</wsdlFiles>
-                        <!--  <wsdlFiles>glite-security-voms-acl-2.0.2.wsdl</wsdlFiles>
+                        <wsdlFiles>glite-security-voms-acl-2.0.2.wsdl</wsdlFiles>
                         <wsdlFiles>glite-security-voms-attributes-2.0.2.wsdl</wsdlFiles>
                         <wsdlFiles>glite-security-voms-compatibility-2.0.2.wsdl</wsdlFiles>
                         <wsdlFiles>glite-security-voms-registration-2.0.2.wsdl</wsdlFiles>
-                        -->
                         </wsdlFiles>
                     </configuration>
                     <executions>
@@ -218,7 +214,7 @@
                         </execution>
                     </executions>
                     <dependencies>
-		              <dependency>
+                      <dependency>
 			              <groupId>javax.mail</groupId>
 			             <artifactId>mail</artifactId>
 			             <version>1.4.1</version>
@@ -277,7 +273,6 @@
     </build>
 
     <dependencies>
-        <!--compile scope-->
         <dependency>
             <groupId>axis</groupId>
             <artifactId>axis</artifactId>
@@ -304,7 +299,6 @@
             <artifactId>commons-codec</artifactId>
             <version>1.3</version>
         </dependency>
-        <!-- drs - changed version back to 1.2. There is no released 2.0 -->
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
@@ -321,27 +315,16 @@
             <version>1.8</version>
         </dependency>
         <dependency>
-            <groupId>org.glite</groupId>    <!-- drs - added org. -->
+            <groupId>org.glite</groupId>  
             <artifactId>glite-security-trustmanager</artifactId>
-            <!-- drs - there version 1.8.16 is on the default server - try to use that
-            <version>1.6.3dev</version>
-            -->
             <version>1.8.16</version>
         </dependency>
-        <!-- drs modified to allow it to be found at in2p3 with version 1.4.0
-             rather than 1.0.0dev -->
+
         <dependency>
             <groupId>org.glite</groupId>
             <artifactId>glite-security-util-java</artifactId>
             <version>1.4.0</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>gums</groupId>
-            <artifactId>nis</artifactId>
-            <version>unknown</version>
-        </dependency>
--->
         <dependency>
             <groupId>hibernate</groupId>
             <artifactId>hibernate</artifactId>
