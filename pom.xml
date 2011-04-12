@@ -118,7 +118,7 @@
                 <artifactId>axistools-maven-plugin</artifactId>
                 <version>1.4</version>
                 <configuration>
-                    <!--  <outputDirectory>/src/main/java</outputDirectory> -->
+                    <outputDirectory>/src/main/java</outputDirectory> 
                     <deployScope>Application</deployScope>
                                          
                     <testCases>true</testCases>
