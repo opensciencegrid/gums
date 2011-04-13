@@ -78,7 +78,7 @@
    	<scm>
 	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</connection>
 	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</developerConnection>
-    	<url>https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</url>
+    	<url>http://svn.usatlas.bnl.gov/svn/privilege/</url>
 	</scm>
 	
     <build>
