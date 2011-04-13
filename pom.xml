@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>gums</groupId>
+	<groupId>gov.bnl.racf.gums</groupId>
 	<artifactId>gums-client</artifactId>
 	<name>gums-client</name>
 	<packaging>jar</packaging>
@@ -102,9 +102,89 @@
 		          </execution>
 		        </executions>
 			</plugin>
+			
+			
+			<plugin>
+                <groupId>org.apache.axis2</groupId>
+                <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
+                <configuration>
+                    <className>gov.bnl.gums.admin.GUMSAPI</className>
+                    <outputFileName>${basedir}/target/generated-resources/gums.wsdl</outputFileName>          
+                    <serviceName>gums</serviceName>
+                    <targetNamespace>http://www.bnl.gov/namespaces/2004/09/gums/GUMSService</targetNamespace>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java2wsdl</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+				
+			<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>axistools-maven-plugin</artifactId>
+                <version>1.4</version>
+                <configuration>
+                    <deployScope>Application</deployScope>
+                    <useEmitter>true</useEmitter>                     
+                    <testCases>false</testCases>
+                    <serverSide>false</serverSide>
+                    <subPackageByFileName>true</subPackageByFileName>                     
+                    <mappings>
+                        <mapping>
+                            <namespace>http://www.bnl.gov/namespaces/2004/09/gums/GUMSService</namespace>
+                            <targetPackage>gov.bnl.gums.admin</targetPackage>
+                        </mapping>
+                    </mappings>
+                    
+                    <wsdlFiles>
+                        <wsdlFiles>${basedir}/target/generated-resources/gums.wsdl</wsdlFiles>
+                    </wsdlFiles>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>wsdl2java</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>javax.mail</groupId>
+                            <artifactId>mail</artifactId>
+                            <version>1.4.1</version>
+                            <scope>runtime</scope>
+                        </dependency>
+                        <dependency>
+                            <groupId>axis</groupId>
+                            <artifactId>axis</artifactId>
+                            <version>1.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.axis</groupId>
+                            <artifactId>axis-jaxrpc</artifactId>
+                            <version>1.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.axis</groupId>
+                            <artifactId>axis-saaj</artifactId>
+                            <version>1.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>axis</groupId>
+                            <artifactId>axis-wsdl4j</artifactId>
+                            <version>1.5.1</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+			
+			 
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
+					<!-- 
 					<execution>
 						<id>1</id>
 						<phase>generate-sources</phase>
@@ -129,8 +209,10 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
+					-->
+					
 					<execution>
-						<id>2</id>
+						<id>1</id>
 						<phase>package</phase>
 						<configuration>
 							<tasks>
@@ -166,49 +248,13 @@
 						</goals>
 					</execution>
 				</executions>
-				<dependencies> 
-			       <dependency>
-					   <groupId>axis</groupId>
-					   <artifactId>axis</artifactId>
-					   <version>1.4</version>
-				   </dependency>
-				   <dependency>
-						<groupId>axis</groupId>
-						<artifactId>axis-jaxrpc</artifactId>
-						<version>1.4</version>
-				   </dependency>
-				   <dependency>
-						<groupId>axis</groupId>
-						<artifactId>axis-saaj</artifactId>
-						<version>1.4</version>
-				   </dependency>		
-			       <dependency>
-						<groupId>axis</groupId>
-						<artifactId>axis-wsdl4j</artifactId>
-						<version>1.5.1</version>
-				   </dependency>	
-						<dependency>
-						<groupId>axis</groupId>
-						<artifactId>axis-ant</artifactId>
-						<version>1.4</version>
-					</dependency>		
-					<dependency>
-						<groupId>commons-discovery</groupId>
-						<artifactId>commons-discovery</artifactId>
-						<version>0.2</version>
-				   </dependency>	
-						<dependency>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-						<version>1.0.4</version>
-					</dependency>
-					<dependency>	
-						<groupId>log4j</groupId>
-						<artifactId>log4j</artifactId>
-						<version>1.2.12</version>
-					</dependency>			 
-			   </dependencies>   
+				
 			</plugin>
+			
+			
+			
+			
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
