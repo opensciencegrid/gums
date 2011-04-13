@@ -1,0 +1,278 @@
+<?xml version="1.0" ?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xalan="http://xml.apache.org/xslt">
+<xsl:output method='xml' indent='yes' xalan:indent-amount='4'/>
+  <xsl:template match="/">
+	<gums version="1.3">
+		<persistenceFactories>
+    		<xsl:for-each select="gums/persistenceFactories/persistenceFactory">
+		      <xsl:if test="@className = 'gov.bnl.gums.hibernate.HibernatePersistenceFactory'">
+		        <hibernatePersistenceFactory
+		        	name='{@name}'
+		        	description=''
+					hibernate.connection.driver_class='{@hibernate.connection.driver_class}'
+					hibernate.dialect='{@hibernate.dialect}'
+					hibernate.connection.url='{@hibernate.connection.url}'
+					hibernate.connection.username='{@hibernate.connection.username}'
+					hibernate.connection.password='{@hibernate.connection.password}'
+					hibernate.connection.autoReconnect='{@hibernate.connection.autoReconnect}'
+					hibernate.c3p0.min_size='{@hibernate.c3p0.min_size}'
+					hibernate.c3p0.max_size='{@hibernate.c3p0.max_size}'
+					hibernate.c3p0.timeout='{@hibernate.c3p0.timeout}'
+		        />
+		      </xsl:if>
+  		      <xsl:if test="@className = 'gov.bnl.gums.MySQLPersistenceFactory'">
+		        <hibernatePersistenceFactory
+		        	name='{@name}'
+		        	description=''
+					hibernate.connection.driver_class='com.mysql.jdbc.Driver'
+					hibernate.dialect='org.hibernate.dialect.MySQLDialect'
+					hibernate.connection.url='{@jdbcUrl}'
+					hibernate.connection.username='{@user}'
+					hibernate.connection.password='{@password}'
+					hibernate.connection.autoReconnect='true'
+					hibernate.c3p0.min_size='3'
+					hibernate.c3p0.max_size='20'
+					hibernate.c3p0.timeout='180'
+		        />
+		      </xsl:if>
+  		      <xsl:if test="@className = 'gov.bnl.gums.LDAPPersistenceFactory'">
+		        <ldapPersistenceFactory
+		        	name='{@name}'
+		        	description=''
+					synchGroups='{@synchGroups}'
+					java.naming.provider.url='{@java.naming.provider.url}'
+					java.naming.factory.initial='{@java.naming.factory.initial}'
+					java.naming.security.authentication='{@java.naming.security.authentication}'
+					java.naming.security.principal='{@java.naming.security.principal}'
+					java.naming.security.credentials='{@java.naming.security.credentials}'
+		        />
+		      </xsl:if>
+  		      <xsl:if test="@className = 'gov.bnl.gums.BNLPersistenceFactory'">
+		        <localPersistenceFactory
+		        	name='{@name}'
+		        	description=''
+					synchGroups='{@synchGroups}'
+					mysql.hibernate.connection.driver_class='{@mysql.hibernate.connection.driver_class}'
+					mysql.hibernate.dialect='{@mysql.hibernate.dialect}'
+					mysql.hibernate.connection.url='{@mysql.hibernate.connection.url}'
+					mysql.hibernate.connection.username='{@mysql.hibernate.connection.username}'
+					mysql.hibernate.connection.password='{@mysql.hibernate.connection.password}'
+					mysql.hibernate.connection.autoReconnect='{@mysql.hibernate.connection.autoReconnect}'
+					mysql.hibernate.c3p0.min_size='{@mysql.hibernate.c3p0.min_size}'
+					mysql.hibernate.c3p0.max_size='{@mysql.hibernate.c3p0.max_size}'
+					mysql.hibernate.c3p0.timeout='{@mysql.hibernate.c3p0.timeout}'
+					ldap.java.naming.provider.url='{@ldap.java.naming.provider.url}'
+					ldap.java.naming.factory.initial='{@ldap.java.naming.factory.initial}'
+					ldap.java.naming.security.authentication='{@ldap.java.naming.security.authentication}'
+					ldap.java.naming.security.principal='{@ldap.java.naming.security.principal}'
+					ldap.java.naming.security.credentials='{@ldap.java.naming.security.credentials}'
+		        />
+		      </xsl:if>		      
+		    </xsl:for-each>
+    	</persistenceFactories>
+
+    	<vomsServers>
+    		<xsl:for-each select="gums/groupMappings/groupMapping/userGroup">
+		      <xsl:if test="@className = 'gov.bnl.gums.VOMSGroup'">
+		        <vomsServer
+					name='{@url}'
+		        	description=''
+					baseUrl='{@url}'
+					persistenceFactory='{@persistenceFactory}'
+					sslCertfile='{@sslCertfile}'
+					sslKey='{@sslKey}'
+					sslCAFiles='{@sslCAFiles}'
+					sslKeyPasswd='{@sslKeyPasswd}'
+		        />
+		      </xsl:if>
+			</xsl:for-each>
+    	</vomsServers>
+
+		<accountMappers>
+    		<xsl:for-each select="gums/groupMappings/groupMapping/accountMapping">
+		      <xsl:if test="@className = 'gov.bnl.gums.AccountPoolMapper'">
+		        <accountPoolMapper
+					name='{@name}'
+		        	description=''
+					persistenceFactory='{@persistenceFactory}'
+					accountPool='{@name}'
+				/>
+				</xsl:if>
+				<xsl:if test="@className = 'gov.bnl.gums.ManualAccountMapper'">
+					<manualAccountMapper
+						name='{@name}'
+		        		description=''
+						persistenceFactory='{@persistenceFactory}'
+				    />
+				</xsl:if>
+				<xsl:if test="@className = 'gov.bnl.gums.GroupAccountMapper'">
+				    <groupAccountMapper
+						name='{@groupName}'
+						description=''
+						accountName='{@groupName}'
+				    />
+				</xsl:if>
+				<xsl:if test="@className = 'gov.bnl.gums.GecosLdapAccountMapper'">
+				    <gecosLdapAccountMapper
+						name='{translate(@jndiLdapUrl,",","_")}'
+						description=''
+						jndiLdapUrl='{@jndiLdapUrl}'
+				    />
+				</xsl:if>
+				<xsl:if test="@className = 'gov.bnl.gums.GecosNisAccountMapper'">
+				    <gecosNisAccountMapper
+						name='{translate(@jndiNisUrl,",","_")}'
+						description=''
+						jndiNisUrl='{@jndiNisUrl}'
+				    />
+				</xsl:if>
+				<xsl:if test="@className = 'gov.bnl.gums.NISAccountMapper'">
+				    <gecosNisAccountMapper
+						name='{translate(@jndiNisUrl,",","_")}'
+						description=''
+						jndiNisUrl='{@jndiNisUrl}'
+				    />
+				</xsl:if>
+			</xsl:for-each>	
+		    <xsl:for-each select="gums/groupMappings/groupMapping/compositeAccountMapping/accountMapping">
+		      <xsl:if test="@className = 'gov.bnl.gums.AccountPoolMapper'">
+		        <accountPoolMapper
+					name='{@name}'
+					description=''
+					persistenceFactory='{@persistenceFactory}'
+					accountPool='{@name}'
+				/>
+			</xsl:if>
+			<xsl:if test="@className = 'gov.bnl.gums.ManualAccountMapper'">
+		        <manualAccountMapper
+					name='{@name}'
+					description=''
+					persistenceFactory='{@persistenceFactory}'
+		        />
+		      </xsl:if>
+		      <xsl:if test="@className = 'gov.bnl.gums.GroupAccountMapper'">
+		        <groupAccountMapper
+					name='{@groupName}'
+					description=''
+					accountName='{@groupName}'
+		        />
+		      </xsl:if>
+		      <xsl:if test="@className = 'gov.bnl.gums.GecosLdapAccountMapper'">
+		        <gecosLdapAccountMapper
+					name='{translate(@jndiLdapUrl,",","_")}'
+					description=''
+					jndiLdapUrl='{@jndiLdapUrl}'
+		        />
+		      </xsl:if>
+		      <xsl:if test="@className = 'gov.bnl.gums.GecosNisAccountMapper'">
+		        <gecosNisAccountMapper
+					name='{translate(@jndiNisUrl,",","_")}'
+					description=''
+					jndiNisUrl='{@jndiNisUrl}'
+		        />
+		      </xsl:if>
+		      <xsl:if test="@className = 'gov.bnl.gums.NISAccountMapper'">
+		        <gecosNisAccountMapper
+					name='{translate(@jndiNisUrl,",","_")}'
+					description=''
+					jndiNisUrl='{@jndiNisUrl}'
+		        />
+		      </xsl:if>
+		    </xsl:for-each>	
+		</accountMappers>
+		
+		<userGroups>
+			<xsl:for-each select="gums/adminUserGroup">
+				<manualUserGroup
+					name='{@name}'
+					description=''
+					persistenceFactory='{@persistenceFactory}'
+					access='write'
+				/>
+			</xsl:for-each>
+    		<xsl:for-each select="gums/groupMappings/groupMapping/userGroup">
+				<xsl:if test="@className = 'gov.bnl.gums.VOMSGroup'">
+			        <vomsUserGroup
+						name='{@name}'
+						description=''
+						acceptProxyWithoutFQAN='{@acceptProxyWithoutFQAN}'
+						matchFQAN='{@matchFQAN}'
+						vomsServer='{@url}'
+						remainderUrl=''
+						access='read self'
+						voGroup='{@voGroup}'
+						role='{@voRole}'
+			        />
+				</xsl:if>
+				<xsl:if test="@className = 'gov.bnl.gums.LDAPGroup'">
+					<ldapUserGroup
+						name='{@name}'
+						description=''
+						persistenceFactory='{@persistenceFactory}'
+						access='read self'
+						server='{@server}'
+						query='{@query}'
+					/>
+				</xsl:if>
+				<xsl:if test="@className = 'gov.bnl.gums.ManualUserGroup'">
+					<manualUserGroup
+						name='{@name}'
+						description=''
+						persistenceFactory='{@persistenceFactory}'
+						access='read all'
+					/>
+				</xsl:if>	
+			</xsl:for-each>
+		</userGroups>
+		
+		<groupToAccountMappings>
+    		<xsl:for-each select="gums/groupMappings/groupMapping/accountMapping">
+    			<groupToAccountMapping
+					name='{../@name}'
+					description=''
+					accountingVoSubgroup='{../@accountingVo}'
+					accountingVo='{../@accountingDesc}'
+					userGroups='{../userGroup/@name}'
+					accountMappers='{concat(@name,@groupName,translate(@jndiNisUrl,",","_"),translate(@jndiLdapUrl,",","_"))}'
+				/>
+		    </xsl:for-each>		
+		    <xsl:for-each select="gums/groupMappings/groupMapping/compositeAccountMapping/accountMapping">
+    			<groupToAccountMapping
+					name='{../../@name}'
+					description=''
+					accountingVoSubgroup='{../../@accountingVo}'
+					accountingVo='{../../@accountingDesc}'
+					userGroups='{../../userGroup/@name}'
+					accountMappers='{concat(@name,@groupName,translate(@jndiNisUrl,",","_"),translate(@jndiLdapUrl,",","_"))}'
+				/>
+		    </xsl:for-each>				
+		</groupToAccountMappings>
+
+		<hostToGroupMappings>
+    		<xsl:for-each select="gums/hostGroups/hostGroup">
+    			<xsl:if test="@className = 'gov.bnl.gums.CertificateHostGroup' and @dn">
+	    			<hostToGroupMapping
+						dn='{@dn}'
+						description=''
+				    	groupToAccountMappings='{@groups}'
+					/>
+				</xsl:if>
+    			<xsl:if test="@className = 'gov.bnl.gums.CertificateHostGroup' and @cn">
+	    			<hostToGroupMapping
+						cn='{@cn}'
+						description=''
+				    	groupToAccountMappings='{@groups}'
+					/>
+				</xsl:if>
+    			<xsl:if test="@className = 'gov.bnl.gums.WildcardHostGroup'">
+	    			<hostToGroupMapping
+						cn='{@wildcard}'
+						description=''
+				    	groupToAccountMappings='{@groups}'					
+				    />
+				</xsl:if>				
+		    </xsl:for-each>			
+		</hostToGroupMappings>
+    </gums>
+  </xsl:template>
+</xsl:stylesheet>

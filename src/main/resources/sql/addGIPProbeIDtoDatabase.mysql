@@ -1,0 +1,4 @@
+USE GUMS_1_3;
+
+DELETE FROM USERS WHERE DN="/GIP-GUMS-Probe-Identity" AND GROUP_NAME="gums-test";
+INSERT INTO USERS SET DN="/GIP-GUMS-Probe-Identity", GROUP_NAME="gums-test";

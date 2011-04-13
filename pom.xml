@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gov.bnl.racf.gums</groupId>
 	<artifactId>gums-service</artifactId>
@@ -50,49 +53,7 @@
     </repository>
 
   </repositories>
-<!--
-  	 <distributionManagement>
-      <repository>
-        <id>internal</id>
-        <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
-      </repository>
-
-      <snapshotRepository>
-         <id>snapshots</id>
-         <name>Archiva Managed Snapshot Repository</name>
-         <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
-         <uniqueVersion>false</uniqueVersion>
-      </snapshotRepository>
-      
-   </distributionManagement>
-
-  <repositories>
-    <repository>
-      <id>internal</id>
-      <name>Archiva Managed Internal Repository</name>
-      <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    
-      <repository>
-      <id>snapshots</id>
-      <name>Archiva Managed Snapshot Repository</name>
-      <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    
-  </repositories>
-   --> 
+ 
     <pluginRepositories>
 		<pluginRepository>
           <id>codehaus snapshot repository</id>
@@ -200,7 +161,6 @@
 		        <groupId>org.apache.maven.plugins</groupId>
 		        <artifactId>maven-war-plugin</artifactId>
 		        <configuration>
-			       <!-- drs - replace ../gums-service/ with nothing - hard wired directory name should not be necessary -->
 			       <webResources>
 			         <resource>
 			           <directory>src/main/config</directory>
@@ -279,7 +239,6 @@
 	</build>
   
  	<dependencies> 
-        <!-- compile scope -->
         <dependency>
             <groupId>gov.bnl.racf.gums</groupId>
             <artifactId>gums-core</artifactId>
