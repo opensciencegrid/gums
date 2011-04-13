@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gov.bnl.racf.gums</groupId>
 	<artifactId>gums-service</artifactId>
 	<packaging>war</packaging>
 	<name>gums-service</name>
-	<version>1.3.18.001-SNAPSHOT</version>
+	<version>1.3.18.001</version>
 	<description>GUMS Service provides web services used by the client tool and a 
 		web interface for administering GUMS</description>
     
@@ -67,12 +64,12 @@
 
 	<scm>
 		<connection>
-			scm:svn:http://svn.racf.bnl.gov/svn/privilege/branches/GUMS_SERVICE_1.3.X
+			scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-service-1.3.18.001
 		</connection>
 		<developerConnection>
-			scm:svn:http://svn.racf.bnl.gov/svn/privilege/branches/GUMS_SERVICE_1.3.X
+			scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-service-1.3.18.001
 		</developerConnection>
-		   <url>http://svn.racf.bnl.gov/svn/privilege/branches/GUMS_SERVICE_1.3.X
+		   <url>https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-service-1.3.18.001
 		</url>
 	</scm>
 
@@ -89,40 +86,40 @@
 						<configuration>
 							<tasks>
 								<delete includeemptydirs="true">
-									<fileset dir="src/main/resources" includes="log4j.properties.template"/>
-									<fileset dir="src/main/resources" includes="c3p0.properties.template"/>
-									<fileset dir="src/main/resources" includes="gums.*"/>
-									<fileset dir="src/main/resources" includes="*README*"/>
-									<fileset dir="src/main/resources/sql" includes="*"/>
-									<fileset dir="src/main/resources/scripts" includes="*"/>
+									<fileset dir="src/main/resources" includes="log4j.properties.template" />
+									<fileset dir="src/main/resources" includes="c3p0.properties.template" />
+									<fileset dir="src/main/resources" includes="gums.*" />
+									<fileset dir="src/main/resources" includes="*README*" />
+									<fileset dir="src/main/resources/sql" includes="*" />
+									<fileset dir="src/main/resources/scripts" includes="*" />
 								</delete>
 							
 				                <unzip dest="src/main/resources">
 				                    <fileset dir="${settings.localRepository}/gov/bnl/racf/gums/gums-core">
-        								<include name="**/gums-core-${version}.jar"/>
+        								<include name="**/gums-core-${version}.jar" />
 								    </fileset>
 									<patternset>
-										<include name="gums.config.template"/>
-										<include name="gums.config.devel"/>
-										<include name="gums.config.schema"/>
-										<include name="gums.config.transform"/>
-										<include name="c3p0.properties.template"/>
-										<include name="log4j.properties.template"/>
-										<include name="sql/**"/>
-										<include name="scripts/**"/>
+										<include name="gums.config.template" />
+										<include name="gums.config.devel" />
+										<include name="gums.config.schema" />
+										<include name="gums.config.transform" />
+										<include name="c3p0.properties.template" />
+										<include name="log4j.properties.template" />
+										<include name="sql/**" />
+										<include name="scripts/**" />
 									</patternset>
 				                </unzip>
 				                
-				                <copy file="src/main/resources/gums.config.devel" tofile="src/main/config/gums.config" overwrite="yes"/>
-				                <copy file="src/main/resources/log4j.properties.template" tofile="src/main/classes/log4j.properties" overwrite="yes"/>
-				                <copy file="src/main/resources/c3p0.properties.template" tofile="src/main/classes/c3p0.properties" overwrite="yes"/>
+				                <copy file="src/main/resources/gums.config.devel" tofile="src/main/config/gums.config" overwrite="yes" />
+				                <copy file="src/main/resources/log4j.properties.template" tofile="src/main/classes/log4j.properties" overwrite="yes" />
+				                <copy file="src/main/resources/c3p0.properties.template" tofile="src/main/classes/c3p0.properties" overwrite="yes" />
 
-   				                <chmod file="src/main/resources/scripts/gums-add-mysql-admin" perm="ug+x"/>
-				                <chmod file="src/main/resources/scripts/gums-create-config" perm="ug+x"/>
-				                <chmod file="src/main/resources/scripts/gums-setup-mysql-database" perm="ug+x"/>
-								<chmod file="src/main/resources/scripts/addMySQLAdmin" perm="ug+x"/>
-								<chmod file="src/main/resources/scripts/setupMySQLDatabase" perm="ug+x"/>
-								<chmod file="src/main/config/gums.config" perm="640"/>
+   				                <chmod file="src/main/resources/scripts/gums-add-mysql-admin" perm="ug+x" />
+				                <chmod file="src/main/resources/scripts/gums-create-config" perm="ug+x" />
+				                <chmod file="src/main/resources/scripts/gums-setup-mysql-database" perm="ug+x" />
+								<chmod file="src/main/resources/scripts/addMySQLAdmin" perm="ug+x" />
+								<chmod file="src/main/resources/scripts/setupMySQLDatabase" perm="ug+x" />
+								<chmod file="src/main/config/gums.config" perm="640" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -242,7 +239,7 @@
         <dependency>
             <groupId>gov.bnl.racf.gums</groupId>
             <artifactId>gums-core</artifactId>
-            <version>${version}</version>
+            <version>1.3.18.001</version>
         </dependency>
 		<dependency>
             <groupId>log4j</groupId>
