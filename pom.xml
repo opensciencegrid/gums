@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gov.bnl.racf.gums</groupId>
 	<artifactId>gums-client</artifactId>
 	<name>gums-client</name>
 	<packaging>jar</packaging>
-	<version>1.3.18.001-SNAPSHOT</version>
+	<version>1.3.18.001</version>
 	<description>GUMS Client provides the administrative command line tools to administer GUMS.
     It allows querying and changing the state of the GUMS server.</description>
 
@@ -76,9 +73,9 @@
     </pluginRepositories>
  
    	<scm>
-	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</connection>
-	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</developerConnection>
-    	<url>https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</url>
+	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-client-1.3.18.001</connection>
+	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-client-1.3.18.001</developerConnection>
+    	<url>https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-client-1.3.18.001</url>
 	</scm>
 	
     <build>
@@ -190,19 +187,19 @@
 						<phase>generate-sources</phase>
 						<configuration>
 							<tasks>
-								<mkdir dir="target/temp"/>
+								<mkdir dir="target/temp" />
 								<copy filtering="on" todir="target/temp">
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-ant/1.4"/>
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis/1.4"/>
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-saaj/1.4"/>
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-jaxrpc/1.4"/>
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-wsdl4j/1.5.1"/>
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-discovery/commons-discovery/0.2"/>
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-logging/commons-logging/1.0.4"/>
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/log4j/log4j/1.2.12"/>
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-ant/1.4" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis/1.4" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-saaj/1.4" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-jaxrpc/1.4" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-wsdl4j/1.5.1" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-discovery/commons-discovery/0.2" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-logging/commons-logging/1.0.4" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/log4j/log4j/1.2.12" />
 								</copy>
-								<ant antfile="wsdl2java.xml" target="createClientStub" inheritRefs="true"/>
-								<delete dir="target/temp"/>
+								<ant antfile="wsdl2java.xml" target="createClientStub" inheritRefs="true" />
+								<delete dir="target/temp" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -216,31 +213,31 @@
 						<phase>package</phase>
 						<configuration>
 							<tasks>
-								<mkdir dir="target/lib"/>
+								<mkdir dir="target/lib" />
 								<copy filtering="on" todir="target/lib/endorsed">
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/xerces/xercesImpl/2.9.1"/>
-							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/xerces/xml-apis/2.9.1"/>
+							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/xerces/xercesImpl/2.9.1" />
+							        <fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/xerces/xml-apis/2.9.1" />
 							    </copy>
 								<copy filtering="on" todir="target/lib">
-									<fileset includes="*.jar" dir="target"/>
+									<fileset includes="*.jar" dir="target" />
 								</copy>
 															    
-							    <mkdir dir="target/scripts"/>
+							    <mkdir dir="target/scripts" />
 				                <copy todir="target/scripts"> 
-				                	<fileset dir="src/main/scripts/"/>
+				                	<fileset dir="src/main/scripts/" />
 				                </copy>
-   				                <chmod file="target/scripts/gums" perm="ug+x"/>
-				                <chmod file="target/scripts/gums-service" perm="ug+x"/>
-				                <chmod file="target/scripts/gums-host" perm="ug+x"/>
-				                <chmod file="target/scripts/gums-host-cron" perm="ug+x"/>
-				                <chmod file="target/scripts/gums-nagios" perm="ug+x"/>
+   				                <chmod file="target/scripts/gums" perm="ug+x" />
+				                <chmod file="target/scripts/gums-service" perm="ug+x" />
+				                <chmod file="target/scripts/gums-host" perm="ug+x" />
+				                <chmod file="target/scripts/gums-host-cron" perm="ug+x" />
+				                <chmod file="target/scripts/gums-nagios" perm="ug+x" />
 				                
-				                <mkdir dir="target/config"/>
+				                <mkdir dir="target/config" />
 				                <copy todir="target/config">
-				                	<fileset dir="src/main/config/"/>
+				                	<fileset dir="src/main/config/" />
 				                </copy>
 
-								<mkdir dir="target/log"/>
+								<mkdir dir="target/log" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -364,7 +361,7 @@
                             <filemode>755</filemode>
                             <username>root</username>
                             <groupname>root</groupname>
-                            <artifact/>
+                            <artifact />
                             <sources>
                                 <source>
                                     <location>target/lib</location>
@@ -388,7 +385,7 @@
         <dependency>
             <groupId>gov.bnl.racf.gums</groupId>
             <artifactId>gums-core</artifactId>
-            <version>${version}</version>
+            <version>1.3.18.001</version>
         </dependency>
 		<dependency>	
 			<groupId>log4j</groupId>
