@@ -220,8 +220,8 @@ then
   # X509CERTDIR=`cd $X509CERTDIR; pwd`
   echo "will use the certificate dir: $X509CERTDIR"
 else
-  echo "ERROR: the certificate dir ($X509CERTDIR) specified does not exist"
-  exit 1
+  echo "WARNING: the certificate dir ($X509CERTDIR) specified does not exist"
+  echo "Be sure to set up your CA certificates before attempting to use GUMS"
 fi
   
 #-------------------------------------------
