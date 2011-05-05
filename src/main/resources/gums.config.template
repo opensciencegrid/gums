@@ -6,6 +6,7 @@
 			description=''
 			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
 			hibernate.dialect='org.hibernate.dialect.MySQLDialect'
+			hibernate.connection.provider_class='org.hibernate.connection.C3P0ConnectionProvider'
 			hibernate.connection.autoReconnect='true'
 			hibernate.c3p0.min_size='3'
 			hibernate.c3p0.max_size='20'
@@ -14,7 +15,6 @@
 			hibernate.connection.username='@USER@'
 			hibernate.connection.url='jdbc:mysql://@SERVER@/GUMS_1_3'
 			hibernate.connection.password='@PASSWORD@'/>
-                        hibernate.connection.provider_class='org.hibernate.connection.C3P0ConnectionProvider'
 	</persistenceFactories>
 	
 	<vomsServers></vomsServers>
