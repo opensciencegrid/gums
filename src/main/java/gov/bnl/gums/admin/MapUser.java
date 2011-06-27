@@ -18,8 +18,7 @@ import org.opensciencegrid.authz.common.GridId;
 import org.opensciencegrid.authz.common.LocalId;
 import org.opensciencegrid.authz.xacml.client.MapCredentialsClient;
 import org.opensaml.xml.XMLObjectBuilderFactory;
-import org.opensaml.DefaultBootstrap;
-import org.opensaml.Configuration;
+
 
 /**
  * @author Gabriele Carcassi, Jay Packard

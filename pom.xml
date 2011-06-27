@@ -392,6 +392,13 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.12</version>
 		</dependency>	
+		
+        <dependency>
+            <groupId>org.opensaml</groupId>
+            <artifactId>opensaml</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+		
 		<dependency>
             <groupId>org.opensaml</groupId>
             <artifactId>opensaml</artifactId>
