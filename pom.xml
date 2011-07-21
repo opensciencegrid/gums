@@ -102,14 +102,7 @@
         </resources>
         <plugins>
         
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-    
+   
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>axistools-maven-plugin</artifactId>
@@ -347,11 +340,6 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>javax.security</groupId>
-            <artifactId>jacc</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
             <version>1.4.3</version>
@@ -385,13 +373,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--test scope-->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
