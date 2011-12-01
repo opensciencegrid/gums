@@ -59,13 +59,16 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 
 		// Get information from request
 		RequestType request = xacmlQuery.getRequest();
-		String hostDn = getResourceAttributeValue(request, XACMLConstants.RESOURCE_X509_ID);
 		String userDn = getSubjectAttributeValue(request, XACMLConstants.SUBJECT_X509_ID);
 		String userFqan = getSubjectAttributeValue(request, XACMLConstants.SUBJECT_VOMS_PRIMARY_FQAN_ID);
 		
+		String hostDn = getResourceAttributeValue(request, XACMLConstants.RESOURCE_X509_ID);
 		if (hostDn==null || hostDn.length()==0) {
-			log.debug("missing attribute: "+XACMLConstants.RESOURCE_X509_ID);
-			throw new Exception("missing attribute: "+XACMLConstants.RESOURCE_X509_ID);
+			hostDn = getResourceAttributeValue(request, XACMLConstants.RESOURCE_DNS_HOST_NAME_ID);
+			if (hostDn==null || hostDn.length()==0) {
+				log.debug("missing attributes: "+XACMLConstants.RESOURCE_X509_ID + " or " + XACMLConstants.RESOURCE_DNS_HOST_NAME_ID);
+				throw new Exception("missing attribute: "+XACMLConstants.RESOURCE_X509_ID + " or " + XACMLConstants.RESOURCE_DNS_HOST_NAME_ID);
+			}
 		}
 		if (userDn==null || userDn.length()==0) {
 			log.debug("missing attribute: "+XACMLConstants.SUBJECT_X509_ID);
