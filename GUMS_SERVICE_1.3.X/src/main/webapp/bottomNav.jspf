@@ -1,0 +1,8 @@
+</div>
+<div id="tail">
+<p><b>(c) 2004-11 Brookhaven National Laboratory </b>- send suggestions
+and comments to <a href="mailto:gums-users-l@lists.bnl.gov">gums-users-l@lists.bnl.gov</a><br>
+<i>You are signed in as <%=gums.getCurrentDn()%></i></p>
+</div>
+</body>
+</html>

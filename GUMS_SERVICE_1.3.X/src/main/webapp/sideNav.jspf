@@ -1,0 +1,30 @@
+<%@page pageEncoding="UTF-8"%>
+<div id="content">
+<div id="sideNav">
+<ul>
+  <li><a href="index.jsp">Home</a></li>
+  <li><a href="globalConfiguration.jsp">Configuration</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="backupRestoreConfiguration_form.jsp">Back Up/Restore</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="summary.jsp">Summary</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="persistenceFactories.jsp">Persistence Factories</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="vomsServers.jsp">VOMS Servers</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="accountMappers.jsp">Account Mappers</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="accountRange_form.jsp">Manage Pool Accounts</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="userGroups.jsp">User Groups</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="groupToAccountMappings.jsp">Group To Account Mappings</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="hostToGroupMappings.jsp">Host To Group Mappings</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="shortcut.jsp">Shortcut</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="mergeConfiguration.jsp">Merge Configuration</a></li>
+  <li>User Management</li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="updateMembers_form.jsp">Update VO Members</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="manualUserGroups.jsp">Manual User Group Members</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="manualAccounts.jsp">Manual Account Mappings</a></li>
+  <li>View Mappings</li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="map_grid_identity_form.jsp">Map Grid Identity to Account</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="map_account_form.jsp">Map Account to Grid Identity(s)</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="generateGridMapfile_form.jsp">Generate Grid-Mapfile</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="generateEmailMapfile_form.jsp">Generate Email-Mapfile</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="generateFqanMapfile_form.jsp">Generate FQAN-Mapfile</a></li>
+  <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="generateOsgUserVoMap_form.jsp">Generate OSG-User-VO-Map</a></li>
+</ul>
+</div>
