@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<gums version='1.3'>
+
+	<persistenceFactories>
+
+		<hibernatePersistenceFactory
+			name='persistenceFactoryA'
+			storeConfig='true'
+			description='This is persistence factory A'
+			hibernate.c3p0.timeout='180'
+			hibernate.connection.driver_class='com.mysql.jdbc.Driver'
+			hibernate.connection.autoReconnect='true'
+			hibernate.c3p0.max_size='20'
+			hibernate.dialect='org.hibernate.dialect.MySQLDialect'
+			hibernate.c3p0.min_size='3'
+			hibernate.connection.username='gums'
+			hibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_3'
+			hibernate.connection.password=''/>
+
+	</persistenceFactories>
+
+	<vomsServers>
+
+		<vomsServer
+			name='vomsServerA'
+			description=''
+			persistenceFactory='persistenceFactoryA'
+			baseUrl='https://lcg-voms.cern.ch:8443/voms'
+			sslKey='/etc/grid-security/gumskey.pem'
+			sslCertfile='/etc/grid-security/gumscert.pem'
+			sslKeyPasswd=''
+			sslCAFiles=''/>
+
+	</vomsServers>
+
+	<userGroups>
+
+		<manualUserGroup
+			access='write'
+			name='admins'
+			description=''
+			persistenceFactory='persistenceFactoryA'/>
+
+		<vomsUserGroup
+			access='read self'
+			name='userGroupB'
+			description=''
+			vomsServer='vomsServerA'
+			remainderUrl='/atlas/services/VOMSAdmin'
+			matchFQAN='exact'
+			acceptProxyWithoutFQAN='false'/>
+
+		<ldapUserGroup
+			access='read self'
+			name='userGroupC'
+			description=''
+			server='grid-vo.nikhef.nl'
+			query='ou=usatlas,o=atlas,dc=eu-datagrid,dc=org'
+			certDNField='description'
+			persistenceFactory='persistenceFactoryA'/>
+
+	</userGroups>
+
+	<accountMappers>
+
+		<manualAccountMapper
+			name='accountMapperA'
+			description=''
+			persistenceFactory='persistenceFactoryA'/>
+
+		<groupAccountMapper
+			name='accountMapperB'
+			description=''
+			accountName='accountB'/>
+
+		<ldapAccountMapper
+			name='accountMapperC'
+			description=''
+			accountField='uid'
+			dnField='description'
+			jndiLdapUrl='ldaps://griddev01.usatlas.bnl.gov:636/dc=griddev,dc=org'/>
+
+	</accountMappers>
+
+	<groupToAccountMappings>
+
+		<groupToAccountMapping
+			name='groupToAccountMappingA'
+			description=''
+			accountingVoSubgroup=''
+			accountingVo=''
+			userGroups='admins'
+			accountMappers='accountMapperA'/>
+
+		<groupToAccountMapping
+			name='groupToAccountMappingB'
+			description=''
+			accountingVoSubgroup=''
+			accountingVo=''
+			userGroups='userGroupB'
+			accountMappers='accountMapperB'/>
+
+		<groupToAccountMapping
+			name='groupToAccountMappingC'
+			description=''
+			accountingVoSubgroup=''
+			accountingVo=''
+			userGroups='admins, userGroupB'
+			accountMappers='accountMapperA, accountMapperB'/>
+
+	</groupToAccountMappings>
+
+	<hostToGroupMappings>
+
+		<hostToGroupMapping
+			groupToAccountMappings='groupToAccountMappingA, groupToAccountMappingB, groupToAccountMappingC'
+			description=''
+			cn='*.site.com'/>
+
+	</hostToGroupMappings>
+
+</gums>

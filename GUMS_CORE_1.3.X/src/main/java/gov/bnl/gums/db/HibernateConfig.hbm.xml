@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class name="gov.bnl.gums.db.HibernateConfig" table="CONFIG">
+    <id name="id" column="ID" type="long" unsaved-value="null">
+      <generator class="native"/>
+    </id>
+    <property name="xml" column="XML" type="string" length="16777215" not-null="true"/>
+    <property name="timestamp">
+    	<column name="TIMESTAMP" sql-type="DateTime"/>
+    </property>
+    <property name="current" column="CURRENT" type="boolean" not-null="true"/>
+    <property name="name" column="NAME" type="string" length="255" />
+  </class>
+</hibernate-mapping>
+

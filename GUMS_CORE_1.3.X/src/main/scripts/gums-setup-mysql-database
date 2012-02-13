@@ -1,0 +1,188 @@
+#!/bin/sh
+
+# Detects where gums is installed and puts the directory
+# name in ScriptPath. Then cd to that directory.
+
+ScriptPath=""
+CommandPath=`dirname $0`
+if [ $CommandPath = "." ]
+then
+
+    # The command path is the current directory:
+    # check if file is really here
+
+    if [ ! -e "$0" ]
+    then
+        # The command is not in the current directory:
+        # must have used the path.
+        # Locating with which.
+
+        WhichFull=`which $0`
+        WhichPath=`dirname $WhichFull`
+        ScriptPath=$WhichPath
+    else
+        # It was really the current directory
+        ScriptPath=$CommandPath
+    fi
+else
+    ScriptPath=$CommandPath
+fi
+
+cd $ScriptPath
+
+usage() {
+	echo "Creates the database for GUMS on localhost and creates configuration "
+	echo "with the appropriate database and host information. "
+	echo "Usage: $0 "
+	echo "   --template <template config path (../../main/config/gums.config.template is default) [optional]> "
+	echo "   --nocreateconfig [configuration configured for database] "
+	echo "   --user <mysql user for GUMS> "
+	echo "   --password  <GUMS mysql password>"
+	echo "   --host <GUMS server host>"
+	echo "   --socket <MySQL socket> [optional]"
+	echo "   --noprompt [Don't prompt user, optional]"
+	echo "   --help [Print this message]"
+	echo
+	echo "Examples:"
+	echo "  $0 --user gums --host gums.mysite.com:49151 --password secret --template ../mytemplate"
+	echo
+	echo "This will make mysql authenticate as root with a password (-p), create a "
+	echo "<gums> user with password <secret> authorized to connect from <gums.mysite.com>."
+	exit -1;
+}
+
+#-------------------------------------------
+#
+# Setup global variables
+#
+#-------------------------------------------
+TEMPLATE="../../main/config/gums.config.template"
+USER=""
+SERVER=""
+PASSWORD=""
+PROMPT=1
+CREATECONFIG=1
+SOCKET=""
+SHOW_USAGE=0
+MYSQLPARAM=""
+
+#-------------------------------------------
+#
+# Parse command line
+#
+#-------------------------------------------
+while [ $# -gt 0 ]
+do
+  case "$1" in 
+	  --noprompt) PROMPT=0;;
+	  --nocreateconfig) CREATECONFIG=0;;
+	  --template) TEMPLATE="$2"; shift;;
+	  --user)     USER="$2";     shift;;
+      --password) PASSWORD="$2"; shift;;
+      --host)     SERVER="$2";   shift;;
+      --socket)   SOCKET="$2";   shift;;
+      --help)     usage;;
+      -help)     usage;;
+      -h)         usage;;
+      *)          echo "Invalid parameter '$1'"; usage;;
+  esac
+  shift
+done
+
+if [ -z "$USER" ] 
+then
+	echo "Missing parameter: You must specify the mysql user with --user"
+	SHOW_USAGE=1
+fi
+
+if [ -z "$PASSWORD" ] 
+then
+	echo "Missing parameter: You must specify the mysql password with --password"
+	SHOW_USAGE=1
+fi
+
+if [ -z "$SERVER" ] 
+then
+	echo "Missing parameter: You must specify the mysql server host with --host"
+	SHOW_USAGE=1
+fi
+
+if [ "$SHOW_USAGE" -eq 1 ]
+then
+	echo ""
+	usage
+fi
+
+#-------------------------------------------
+#
+# Construct MySQL parameters
+#
+#-------------------------------------------
+if [ "$PROMPT" -eq 1 ]
+then
+	MYSQLPARAM="-u root -p"
+else
+	# When the root doesn't have a password
+	# (like in the VDT setup), -u root doesn't
+	# cause a prompt.
+	MYSQLPARAM="-u root"
+fi
+
+if [ -n "$SOCKET" ]
+then
+	MYSQLPARAM="${MYSQLPARAM} -S $SOCKET"
+fi
+
+#-------------------------------------------
+#
+# Verify what we are about to do
+#
+#-------------------------------------------
+if [ "$PROMPT" -eq 1 ]
+then
+	echo Creating GUMS 1.0 database with the following parameters:
+	echo GUMS mysql user to be created: \"$USER\"
+	echo GUMS server host: \"$SERVER\"
+	echo
+	echo "Is this correct? (Enter 'yes' to proceed)"
+
+	read response
+	if [ "$response" != "yes" ]
+		then
+		exit -1
+	fi
+fi
+
+#-------------------------------------------
+#
+# Setup the MySQL Database
+#
+#-------------------------------------------
+echo
+echo Preparing database:
+if [ "$PROMPT" -eq 1 ]
+then
+	echo Enter the root mysql password
+fi
+
+SERVER_WO_PORT=`echo $SERVER | awk -F: '{ print $1 }'`
+cat ../sql/setupDatabase.mysql       \
+  | sed -e s/@USER@/$USER/g         \
+             -e s/@SERVER@/$SERVER_WO_PORT/g     \
+             -e s/@PASSWORD@/$PASSWORD/g \
+  | mysql $MYSQLPARAM
+
+#-------------------------------------------
+#
+# Create the gums.config
+#
+#-------------------------------------------
+if [ "$CREATECONFIG" -eq 1 ]
+then
+	if [ "$PROMPT" -eq 1 ]
+	then
+		./gums-create-config --user $USER --host $SERVER --password $PASSWORD --template $TEMPLATE
+	else
+	    ./gums-create-config --user $USER --host $SERVER --password $PASSWORD --template $TEMPLATE --noprompt
+	fi
+fi	  

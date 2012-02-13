@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>gov.bnl.racf.gums</groupId>
+    <artifactId>gums-core</artifactId>
+    <name>gums-core</name>
+    <version>1.3.18.003-SNAPSHOT</version>
+    <description>GUMS Core provides the core functionality used by other GUMS components</description>
+
+  <distributionManagement>
+      <repository>
+        <id>internal</id>
+        <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
+      </repository>
+
+      <snapshotRepository>
+         <id>snapshots</id>
+         <name>Archiva Managed Snapshot Repository</name>
+         <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+      
+   </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>internal</id>
+      <name>Archiva Managed Internal Repository</name>
+      <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    
+      <repository>
+      <id>snapshots</id>
+      <name>Archiva Managed Snapshot Repository</name>
+      <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    
+  </repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>codehaus-plugins</id>
+			<url>http://dist.codehaus.org/</url>
+			<layout>legacy</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+
+    <scm>
+        <connection>scm:svn:http://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CORE_1.3.X</connection>
+        <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CORE_1.3.X</developerConnection>
+        <url>http://svn.usatlas.bnl.gov/svn/privilege/</url>
+    </scm>
+
+    <!-- drs - some serious stuff missing here - JDK version, JUnit version, etc. -->
+
+    <build>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/config</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+        </testResources>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/config</directory>
+            </resource>
+            <resource>
+                <targetPath>sql</targetPath>
+                <directory>src/main/sql</directory>
+            </resource>
+            <resource>
+                <targetPath>scripts</targetPath>
+                <directory>src/main/scripts</directory>
+            </resource>
+        </resources>
+        <plugins>
+        	<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-compiler-plugin</artifactId>
+        		<configuration>
+          			<source>1.5</source>
+          			<target>1.5</target>
+        		</configuration>
+      		</plugin>
+   
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>axistools-maven-plugin</artifactId>
+                <version>1.4</version>
+                <configuration>
+                    <deployScope>Application</deployScope>
+                    <useEmitter>true</useEmitter>                     
+                    <testCases>false</testCases>
+                    <serverSide>true</serverSide>
+                    <subPackageByFileName>true</subPackageByFileName>                     
+                    <mappings>
+                        <mapping>
+                            <namespace>http://glite.org/wsdl/services/org.glite.security.voms</namespace>
+                            <targetPackage>org.glite.security.voms</targetPackage>
+                        </mapping>
+                        <mapping>
+                            <namespace>http://glite.org/wsdl/services/org.glite.security.voms.service.admin</namespace>
+                            <targetPackage>org.glite.security.voms</targetPackage>
+                        </mapping>
+                    </mappings>
+                    
+                    <wsdlFiles>
+                        <wsdlFiles>glite-security-voms-admin-2.0.2.wsdl</wsdlFiles>
+                        <wsdlFiles>glite-security-voms-acl-2.0.2.wsdl</wsdlFiles>
+                        <wsdlFiles>glite-security-voms-attributes-2.0.2.wsdl</wsdlFiles>
+                        <wsdlFiles>glite-security-voms-compatibility-2.0.2.wsdl</wsdlFiles>
+                        <wsdlFiles>glite-security-voms-registration-2.0.2.wsdl</wsdlFiles>
+                        </wsdlFiles>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>wsdl2java</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>javax.mail</groupId>
+                            <artifactId>mail</artifactId>
+                            <version>1.4.1</version>
+                            <scope>runtime</scope>
+                        </dependency>
+                        <dependency>
+                            <groupId>axis</groupId>
+                            <artifactId>axis</artifactId>
+                            <version>1.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.axis</groupId>
+                            <artifactId>axis-jaxrpc</artifactId>
+                            <version>1.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.axis</groupId>
+                            <artifactId>axis-saaj</artifactId>
+                            <version>1.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>axis</groupId>
+                            <artifactId>axis-wsdl4j</artifactId>
+                            <version>1.5.1</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+    
+                
+                <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>1</id>
+                            <phase>generate-sources</phase>
+                            <configuration>
+                                <tasks>
+                                    <!-- 
+                                    <mkdir dir="target/temp" />
+                                    <copy filtering="on" todir="target/temp">
+                                        <fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/axis/axis-ant/1.4" />
+                                        <fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis/1.4" />
+                                        <fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/axis/axis-saaj/1.4" />
+                                        <fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/axis/axis-jaxrpc/1.4" />
+                                        <fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-wsdl4j/1.5.1" />
+                                        <fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-discovery/commons-discovery/0.2" />
+                                        <fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-logging/commons-logging/1.0.4" />
+                                    </copy>
+                                    <ant antfile="wsdl2java.xml" target="createClientStub" inheritRefs="true" />
+                                    <delete dir="target/temp" />
+                                    -->
+                                    <copy todir="src/test/config">
+                                        <fileset includes="gums.config.schema" dir="src/main/config/" />
+                                        <fileset includes="gums.config.transform" dir="src/main/config/" />
+                                    </copy>
+                                </tasks>
+                            </configuration>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                      <dependency>
+			              <groupId>javax.mail</groupId>
+			             <artifactId>mail</artifactId>
+			             <version>1.4.1</version>
+			             <scope>runtime</scope>
+		              </dependency>
+                      <dependency>
+                        <groupId>axis</groupId>
+                        <artifactId>axis</artifactId>
+                        <version>1.4</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.axis</groupId>
+                        <artifactId>axis-jaxrpc</artifactId>
+                        <version>1.4</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.axis</groupId>
+                        <artifactId>axis-saaj</artifactId>
+                        <version>1.4</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>axis</groupId>
+                        <artifactId>axis-wsdl4j</artifactId>
+                        <version>1.5.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.axis</groupId>
+                        <artifactId>axis-ant</artifactId>
+                        <version>1.4</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>commons-discovery</groupId>
+                        <artifactId>commons-discovery</artifactId>
+                        <version>0.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                        <version>1.0.4</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*.*</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/.svn</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis</groupId>
+            <artifactId>axis-jaxrpc</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.axis</groupId>
+            <artifactId>axis-saaj</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-wsdl4j</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+            <version>1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glite</groupId>  
+            <artifactId>glite-security-trustmanager</artifactId>
+            <version>1.8.16</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glite</groupId>
+            <artifactId>glite-security-util-java</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        
+        <dependency>
+    		<groupId>org.slf4j</groupId>
+    		<artifactId>slf4j-jdk14</artifactId>
+    		<version>1.5.2</version>
+		</dependency>
+        
+        <dependency>
+            <groupId>hibernate</groupId>
+            <artifactId>hibernate</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- drs - replaced with a better one below -->
+        <dependency>
+            <groupId>javax.security</groupId>
+            <artifactId>jacc</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis</groupId>
+            <artifactId>axis-ant</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+        </dependency>
+
+        <!--provided-->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.6.1.0</version>
+	    <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <version>10.6.1.0</version>
+	    <scope>test</scope>
+        </dependency>
+
+
+        <!--runtime scope-->
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-full</artifactId>
+            <version>2.0.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.4</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+			<groupId>bouncycastle</groupId>
+			<artifactId>bcprov-jdk15</artifactId>
+			<version>140</version>
+			<scope>runtime</scope>
+		</dependency>
+        
+<!--
+        <dependency>
+            <groupId>gums</groupId>
+            <artifactId>activation</artifactId>
+            <version>unknown</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>gums</groupId>
+            <artifactId>mail</artifactId>
+            <version>unknown</version>
+            <scope>runtime</scope>
+        </dependency>
+-->
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.0.1B</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.6</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.8.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xmlParserAPIs</artifactId>
+            <version>2.6.2</version>
+            <scope>runtime</scope>
+        </dependency>
+
+    </dependencies>
+
+    <!-- drs for now, trimming down to 3 profiles - no-test, standard-test (no external
+     infrastructure at all, and local-test which will use mock objects, derby, etc.
+     to provide a test environemnt.
+     -->
+
+    <profiles>
+        <profile>
+            <id>no-test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/**</exclude>
+                            </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>standard-test</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <!-- Only tests that do not require other services (best practice for JUnit) -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/Hibernate*</exclude>
+                                <exclude>**/*VOMS*Test*</exclude>
+                                <exclude>**/*DB*Test*</exclude>
+                                <exclude>**/*LDAP*Test*</exclude>
+                                <exclude>**/*Ldap*Test*</exclude>
+                                <exclude>**/*Nis*</exclude>
+                                <exclude>**/unused/*</exclude>
+                                <exclude>**/.svn</exclude>
+                            </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>local-test</id>
+            <!-- Standard tests and those that require Tomcat and MySQL to be installed
+                                and configured along with db.properties and hibernate.properties present and correctly
+                                configured within the src/test/config directory -->
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <!-- Standard and Local tests plus those that rely on an external voms and ldap server.  Requires
+                                voms.properties and ldap.properties be present and correctly
+                                configured within the src/test/config directory.  The voms server should be named griddev and
+                                contain group /griddev/subgriddev, role griddevRole, and users belonging to that group and role of
+                                /DC=org/DC=griddev/OU=People/CN=John Smith and /DC=org/DC=griddev/OU=People/CN=Jane Doe 12345.
+                                -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/.svn</exclude>
+                                <exclude>**/*Nis*</exclude>
+                            </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.1</version>
+                        <configuration>
+                            <tagBase>
+                                https://svn.usatlas.bnl.gov/svn/privilege/tags
+                            </tagBase>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

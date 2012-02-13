@@ -1,0 +1,281 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="gums">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="persistenceFactories" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:choice minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="hibernatePersistenceFactory">
+									<xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="storeConfig" type="xs:boolean"/>
+										<xs:attribute name="hibernate.connection.driver_class" type="xs:string"/>
+										<xs:attribute name="hibernate.dialect" type="xs:string"/>
+										<xs:attribute name="hibernate.connection.url" type="xs:string"/>
+										<xs:attribute name="hibernate.connection.username" type="xs:string"/>
+										<xs:attribute name="hibernate.connection.password" type="xs:string"/>
+										<xs:attribute name="hibernate.connection.autoReconnect" type="xs:boolean"/>
+										<xs:attribute name="hibernate.c3p0.min_size" type="xs:short"/>
+										<xs:attribute name="hibernate.c3p0.max_size" type="xs:short"/>
+										<xs:attribute name="hibernate.c3p0.timeout" type="xs:int"/>
+										<xs:attribute name="hibernate.c3p0.idle_test_period" type="xs:int" />
+										<xs:attribute name="hibernate.connection.provider_class" type="xs:string" />
+										<xs:anyAttribute processContents="skip"/>
+									</xs:complexType>
+								</xs:element>	
+								<xs:element name="ldapPersistenceFactory">
+									<xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="storeConfig" type="xs:boolean"/>
+										<xs:attribute name="synchGroups" type="xs:string"/>
+										<xs:attribute name="synch" type="xs:string"/>
+										<xs:attribute name="groupField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="groupCnField" type="xs:string"/>
+										<xs:attribute name="groupTree" type="xs:string"/>
+										<xs:attribute name="peopleTree" type="xs:string"/>
+										<xs:attribute name="gumsTree" type="xs:string"/>
+										<xs:attribute name="memberAccountField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="memberUidField" type="xs:string"/>
+										<xs:attribute name="groupIdField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="gidNumberField" type="xs:string"/>
+										<xs:attribute name="accountField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="uidField" type="xs:string"/>
+										<xs:attribute name="emailField" type="xs:string"/>
+										<xs:attribute name="java.naming.provider.url" type="xs:string" use="required"/>
+										<xs:attribute name="java.naming.factory.initial" type="xs:string" use="required"/>
+										<xs:attribute name="java.naming.security.authentication" type="xs:string" use="required"/>
+										<xs:attribute name="java.naming.security.principal" type="xs:string" use="required"/>
+										<xs:attribute name="java.naming.security.credentials" type="xs:string" use="required"/>
+										<xs:anyAttribute processContents="skip"/>
+									</xs:complexType>
+								</xs:element>	
+								<xs:element name="localPersistenceFactory">
+									<xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="storeConfig" type="xs:boolean"/>
+										<xs:attribute name="synchGroups" type="xs:string"/>
+										<xs:attribute name="synch" type="xs:string"/>
+										<xs:attribute name="groupField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="groupCnField" type="xs:string"/>
+										<xs:attribute name="groupIdField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="gidNumberField" type="xs:string"/>
+										<xs:attribute name="groupTree" type="xs:string"/>
+										<xs:attribute name="peopleTree" type="xs:string"/>
+										<xs:attribute name="gumsTree" type="xs:string"/>
+										<xs:attribute name="accountField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="uidField" type="xs:string"/>										
+										<xs:attribute name="memberAccountField" type="xs:string"/><!--depricated-->
+										<xs:attribute name="memberUidField" type="xs:string"/>
+										<xs:attribute name="emailField" type="xs:string"/>
+										<xs:attribute name="ldap.java.naming.provider.url" type="xs:string"/><!--depricated-->
+										<xs:attribute name="ldap.java.naming.factory.initial" type="xs:string" use="required"/>
+										<xs:attribute name="ldap.java.naming.security.authentication" type="xs:string" use="required"/>
+										<xs:attribute name="ldap.java.naming.security.principal" type="xs:string" use="required"/>
+										<xs:attribute name="ldap.java.naming.security.credentials" type="xs:string" use="required"/>
+										<xs:attribute name="mysql.hibernate.connection.driver_class" type="xs:string" use="required"/>
+										<xs:attribute name="mysql.hibernate.dialect" type="xs:string" use="required"/>
+										<xs:attribute name="mysql.hibernate.connection.url" type="xs:string" use="required"/>
+										<xs:attribute name="mysql.hibernate.connection.username" type="xs:string" use="required"/>
+										<xs:attribute name="mysql.hibernate.connection.password" type="xs:string" use="required"/>
+										<xs:attribute name="mysql.hibernate.connection.autoReconnect" type="xs:boolean" use="required"/>
+										<xs:attribute name="mysql.hibernate.c3p0.min_size" type="xs:short" use="required"/>
+										<xs:attribute name="mysql.hibernate.c3p0.max_size" type="xs:short" use="required"/>
+										<xs:attribute name="mysql.hibernate.c3p0.timeout" type="xs:int" use="required"/>
+										<xs:attribute name="hibernate.c3p0.idle_test_period" type="xs:int" />
+										<xs:attribute name="hibernate.connection.provider_class" type="xs:string" />
+										<xs:anyAttribute processContents="skip"/>
+									</xs:complexType>
+								</xs:element>			
+							</xs:choice>				
+						</xs:sequence>
+					</xs:complexType>
+					<xs:unique name="uniquePersistenceFactoryName">
+						<xs:selector xpath="persistenceFactory"/>
+						<xs:field xpath="@name"/>
+					</xs:unique>
+				</xs:element>	
+				
+				<xs:element name="vomsServers" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="vomsServer" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="name" type="xs:string" use="required"/>
+									<xs:attribute name="description" type="xs:string"/>
+									<xs:attribute name="baseUrl" type="xs:string" use="required"/>
+									<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
+									<xs:attribute name="sslCertfile" type="xs:string"/>
+									<xs:attribute name="sslKey" type="xs:string"/>
+									<xs:attribute name="sslCAFiles" type="xs:string"/>
+									<xs:attribute name="sslKeyPasswd" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>							
+						</xs:sequence>
+					</xs:complexType>
+					<xs:unique name="uniqueVomsServerName">
+						<xs:selector xpath="vomsServer"/>
+						<xs:field xpath="@name"/>
+					</xs:unique>
+				</xs:element>		
+			
+				<xs:element name="userGroups" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:choice minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="manualUserGroup">
+									<xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
+										<xs:attribute name="access" type="xs:string"/>
+										<xs:attribute name="membersUri" type="xs:string"/>
+										<xs:attribute name="nonMembersUri" type="xs:string"/>
+									</xs:complexType>
+								</xs:element>		
+								<xs:element name="vomsUserGroup">
+									<xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="acceptProxyWithoutFQAN" type="xs:boolean" use="required"/>
+										<xs:attribute name="matchFQAN" type="xs:string" use="required"/>
+										<xs:attribute name="vomsServer" type="xs:string"/>
+										<xs:attribute name="access" type="xs:string"/>
+										<xs:attribute name="remainderUrl" type="xs:string"/>
+										<xs:attribute name="voGroup" type="xs:string"/>
+										<xs:attribute name="role" type="xs:string"/>
+									</xs:complexType>
+								</xs:element>	
+								<xs:element name="ldapUserGroup">
+									<xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
+										<xs:attribute name="access" type="xs:string"/>
+										<xs:attribute name="server" type="xs:string"/>
+										<xs:attribute name="query" type="xs:string"/><!--depricated-->
+										<xs:attribute name="certDNField" type="xs:string"/>
+										<xs:attribute name="memberUidField" type="xs:string"/>
+										<xs:attribute name="peopleTree" type="xs:string"/>
+										<xs:attribute name="groupTree" type="xs:string"/>
+										<xs:attribute name="uidField" type="xs:string"/>
+									</xs:complexType>
+								</xs:element>						
+							</xs:choice>
+						</xs:sequence>
+					</xs:complexType>
+					<xs:unique name="uniqueUserGroupName">
+						<xs:selector xpath="userGroup"/>
+						<xs:field xpath="@name"/>
+					</xs:unique>
+				</xs:element>		
+			
+				<xs:element name="accountMappers" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:choice minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="accountPoolMapper">
+								    <xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
+										<xs:attribute name="accountPool" type="xs:string" use="required"/>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="manualAccountMapper">
+								    <xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="groupAccountMapper">
+								    <xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="accountName" type="xs:string" use="required"/>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="gecosNisAccountMapper">
+								    <xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="jndiNisUrl" type="xs:string" use="required"/>
+										<xs:attribute name="gecosField" type="xs:string"/>
+										<xs:attribute name="accountField" type="xs:string"/>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="gecosLdapAccountMapper">
+								    <xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="jndiLdapUrl" type="xs:string" use="required"/>
+										<xs:attribute name="peopleObject" type="xs:string"/>
+										<xs:attribute name="gecosField" type="xs:string"/>
+										<xs:attribute name="accountField" type="xs:string"/>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="ldapAccountMapper">
+								    <xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="jndiLdapUrl" type="xs:string" use="required"/>
+										<xs:attribute name="dnField" type="xs:string"/>
+										<xs:attribute name="accountField" type="xs:string"/>
+										<xs:attribute name="peopleObject" type="xs:string"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:choice>
+						</xs:sequence>
+					</xs:complexType>
+					<xs:unique name="uniqueAccountMapperName">
+						<xs:selector xpath="accountMapper"/>
+						<xs:field xpath="@name"/>
+					</xs:unique>
+				</xs:element>		
+				
+				<xs:element name="groupToAccountMappings" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="groupToAccountMapping" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="name" type="xs:string" use="required"/>
+									<xs:attribute name="description" type="xs:string"/>
+									<xs:attribute name="userGroups" type="xs:string" use="required"/>
+									<xs:attribute name="accountMappers" type="xs:string" use="required"/>
+									<xs:attribute name="accountingVoSubgroup" type="xs:string"/>
+									<xs:attribute name="accountingVo" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>	
+						</xs:sequence>
+					</xs:complexType>
+					<xs:unique name="uniqueGroupToAccountMappingName">
+						<xs:selector xpath="groupToAccountMapping"/>
+						<xs:field xpath="@name"/>
+					</xs:unique>
+				</xs:element>
+				
+				<xs:element name="hostToGroupMappings" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="hostToGroupMapping" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="dn" type="xs:string"/>
+									<xs:attribute name="cn" type="xs:string"/>
+									<xs:attribute name="description" type="xs:string"/>
+									<xs:attribute name="groupToAccountMappings" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>	
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+	
+			</xs:sequence>
+			<xs:anyAttribute processContents="skip"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

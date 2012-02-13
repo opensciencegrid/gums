@@ -1,0 +1,6 @@
+mysql.hibernate.connection.username="gums"
+mysql.hibernate.connection.password=""
+mysql.hibernate.connection.url="jdbc:mysql://localhost:3306/GUMS_1_3"
+mysql.hibernate.connection.driver_class="com.mysql.jdbc.Driver"
+mysql.hibernate.dialect="org.hibernate.dialect.MySQLDialect"
+mysql.hibernate.connection.pool_size=3
