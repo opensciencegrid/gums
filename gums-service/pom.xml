@@ -239,18 +239,14 @@
         <dependency>
             <groupId>gov.bnl.racf.gums</groupId>
             <artifactId>gums-core</artifactId>
-            <version>1.3.18.001</version>
+            <version>1.3.18.003-SNAPSHOT</version>
         </dependency>
 		<dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.12</version>
         </dependency>
-	<dependency>
-		<groupId>org.slf4j</groupId>
-		<artifactId>slf4j-simple</artifactId>
-		<version>1.6.1</version>
-	</dependency>
+        	
         <dependency>
             <groupId>org.opensciencegrid</groupId>
             <artifactId>privilege</artifactId>

@@ -1,0 +1,132 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>gov.bnl.racf</groupId>
+    <artifactId>gums</artifactId>
+    <version>1.3.18.003-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Grid User Management System</name>
+    <description>Grid authorization utility that allows the configuration of complex mapping between grid identities and UNIX accounts. </description>
+
+    <url>http://www.racf.bnl.gov/Facility/GUMS/</url>
+    <issueManagement>
+  	     <system>TRAC</system>
+  	     <url>https://svn.usatlas.bnl.gov/trac/gums</url>
+    </issueManagement>
+  
+    <ciManagement>
+  	     <system>Continuum</system>
+  	     <url>http://dev.racf.bnl.gov/continuum/</url>
+    </ciManagement>
+  
+    <scm>
+  	     <connection>scm:svn:http://svn.usatlas.bnl.gov/svn/privilege/branches/gums-1.3.x</connection>
+  	     <developerConnection>scm:svn:http://svn.usatlas.bnl.gov/svn/privilege/branches/gums-1.3.x</developerConnection>
+  	     <url>http://svn.usatlas.bnl.gov/svn/privilege/gums</url>
+    </scm>
+  
+    <organization>
+  	     <name>RHIC/ATLAS Computing Facility, Brookhaven National Laboratory</name>
+  	     <url>http://www.racf.bnl.gov/experiments/usatlas/griddev</url>
+    </organization>
+  
+    <repositories>
+        <repository>
+            <id>internal</id>
+            <name>Archiva Managed Internal Repository</name>
+            <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    
+        <repository>
+            <id>snapshots</id>
+            <name>Archiva Managed Snapshot Repository</name>
+            <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>codehaus snapshot repository</id>
+            <url>http://snapshots.repository.codehaus.org/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <distributionManagement>
+        <repository>
+            <id>internal</id>
+            <url>http://dev.racf.bnl.gov/archiva/repository/internal</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Archiva Managed Snapshot Repository</name>
+            <url>http://dev.racf.bnl.gov/archiva/repository/snapshots</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>  
+    </distributionManagement>
+ 
+    <modules>
+ 	      <module>gums-core</module>
+ 	      <module>gums-service</module>
+    	  <module>gums-client</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.2.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                  <excludes>
+                    <exclude>**/.svn</exclude>
+                  </excludes>
+                </configuration>
+            </plugin>
+              
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                    <version>2.2.1</version>
+                        <configuration>
+                            <tagBase>
+                                https://svn.usatlas.bnl.gov/svn/privilege/tags
+                            </tagBase>
+                            <autoversionsubmodules>true</autoversionsubmodules>
+                        </configuration>
+             </plugin>
+             <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.5</source>
+                        <target>1.5</target>
+                        <excludes>
+                            <exclude>**/.svn</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+        </plugins>
+    </build>
+</project>

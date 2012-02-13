@@ -69,7 +69,7 @@ public class VomsServer {
 
 	/**
      * Returns the address of the VOMS server to contact.
-     * @return The address of the VOMS server (i.e. https://voms.myste.org:8443/edg-voms-admin/myvo/services/VOMSAdmin)
+     * @return The address of the VOMS server (i.e. https://voms.mysite.org:8443/edg-voms-admin/myvo/services/VOMSAdmin)
      */
     public String getBaseUrl() {
         return baseUrl;

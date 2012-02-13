@@ -148,6 +148,8 @@ public class VOMSUserGroup extends UserGroup {
         return this.voGroup;
     }
     
+    
+    
     public VOMSAdmin getVOMSAdmin() {
         try {
             log.trace("VOMS Service Locator: url='" + getUrl() + "'");
@@ -161,6 +163,22 @@ public class VOMSUserGroup extends UserGroup {
             throw new RuntimeException("Couldn't get VOMS Admin: " + e.getMessage(), e);
         }
     }    
+    
+    public VOMSCompatibility getVOMSCompatibility() {
+        try {
+            log.trace("VOMS Service Locator: url='" + getUrl() + "'");
+            VOMSCompatibilityServiceLocator locator = new VOMSCompatibilityServiceLocator();
+            URL vomsUrl = new URL( getUrl() );
+            log.info("Connecting to VOMS Compatibility at " + vomsUrl);
+            return locator.getVOMSCompatibility(vomsUrl);
+        } catch (Throwable e) {
+            log.error("Couldn't get VOMS Compatiblity interface: ", e);
+            throw new RuntimeException("Couldn't get VOMS Compatibility interface: " + e.getMessage(), e);
+        }    	
+    }
+    
+    
+    
     
     /**
      * Changes the role.
@@ -373,16 +391,12 @@ public class VOMSUserGroup extends UserGroup {
         }
     }
     
-    private List retrieveMembers() {
+    private List retrieveMembersOriginal() {
 		if (getVoObject()==null)
 			return null;
         Properties p = System.getProperties();
         try {
             setProperties();
-    		/*if (getVoObject().getSslCAFiles()!=null && getVoObject().getSslCAFiles().length()>0)
-       			VOMSValidator.setTrustStore(new BasicVOMSTrustStore(getVoObject().getSslCAFiles(), 12*3600*1000));
-    		else
-    			VOMSValidator.setTrustStore(new BasicVOMSTrustStore(BasicVOMSTrustStore.DEFAULT_TRUST_STORE_LISTING, 12*3600*1000));*/
             log.debug("SSL properties read: " + 
             "sslCertfile='" + System.getProperty("sslCertfile") +
             "' sslKey='" + System.getProperty("sslKey") +
@@ -417,6 +431,65 @@ public class VOMSUserGroup extends UserGroup {
             throw new RuntimeException(message + e.getMessage());
         }
     }
+    
+    /**
+    * Retrieves the list of members for this VOMSUserGroup
+    * 
+    * 
+    * 
+    */
+    private List retrieveMembers() {
+		if (getVoObject()==null)
+			return null;
+        Properties p = System.getProperties();
+        try {
+            setProperties();
+            log.debug("SSL properties read: " + 
+            "sslCertfile='" + System.getProperty("sslCertfile") +
+            "' sslKey='" + System.getProperty("sslKey") +
+            "' sslKeyPasswd set:" + (System.getProperty("sslKeyPasswd")!=null) +
+            " sslCAFiles='" + System.getProperty("sslCAFiles") + "'" ); 
+            System.setProperty("axis.socketSecureFactory", "org.glite.security.trustmanager.axis.AXISSocketFactory");
+                     
+            VOMSCompatibility vomscompat = getVOMSCompatibility();
+            
+        	String[] users = null;
+            String container = null;
+            
+        	if ((getVoGroup().equals("") && role.equals("") )) {
+        		container = null;
+            } else if (!getVoGroup().equals("") && role.equals("") ) {
+            	container = getVoGroup();
+            } else {
+            	container = getVoGroup() + "/Role=" + getRole();
+            	
+            }
+        	users = vomscompat.getGridmapUsers(container);        	
+    	
+            if (users.length > 0) {
+                log.info("Retrieved " + users.length + " users.");
+                log.info("First user is: '" + users[0] + "'");
+                log.info("Last user is: '" + users[users.length - 1 ] + "'");
+            } else {
+                log.info("Retrieved no users.");
+            }
+            System.setProperties(p);
+            List entries = new ArrayList();
+            for (int n=0; n < users.length; n++) {
+            	GridUser gridUser = new GridUser(users[n]);
+                entries.add(gridUser);
+            }
+            return entries;
+        } catch (Throwable e) {
+        	String message = "Couldn't retrieve users: ";
+            log.error(message, e);
+            e.printStackTrace();
+            throw new RuntimeException(message + e.getMessage());
+        }
+    }
+        
+    
+    
     
     private void setProperties() {
     	VomsServer voObject = getVoObject();

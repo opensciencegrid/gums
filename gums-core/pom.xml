@@ -129,6 +129,11 @@
                             <namespace>http://glite.org/wsdl/services/org.glite.security.voms.service.admin</namespace>
                             <targetPackage>org.glite.security.voms</targetPackage>
                         </mapping>
+                        <mapping>
+                            <namespace>http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility</namespace>
+                            <targetPackage>org.glite.security.voms</targetPackage>
+                        </mapping>
+
                     </mappings>
                     
                     <wsdlFiles>
@@ -322,13 +327,7 @@
             <artifactId>glite-security-util-java</artifactId>
             <version>1.4.0</version>
         </dependency>
-        
-        <dependency>
-    		<groupId>org.slf4j</groupId>
-    		<artifactId>slf4j-jdk14</artifactId>
-    		<version>1.5.2</version>
-		</dependency>
-        
+              
         <dependency>
             <groupId>hibernate</groupId>
             <artifactId>hibernate</artifactId>

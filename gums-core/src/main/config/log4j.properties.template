@@ -116,5 +116,5 @@ log4j.appender.mail.from=no-reply@localhost
 # buffer size is how many messages are saved before mail is sent
 #
 log4j.appender.mail.SMTPHost=smtp.fnal.gov
-log4j.appender.mail.to=gums-dev-l@lists.bnl.gov, drs@bnl.gov
+log4j.appender.mail.to=gums-dev-l@lists.bnl.gov
 log4j.appender.mail.bufferSize=1
