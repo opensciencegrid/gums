@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>gov.bnl.racf.gums</groupId>
+	<artifactId>gums-client</artifactId>
+	<name>gums-client</name>
+	<packaging>jar</packaging>
+	<version>1.3.18.003-SNAPSHOT</version>
+	<description>GUMS Client provides the administrative command line tools to administer GUMS.
+    It allows querying and changing the state of the GUMS server.</description>
+
+  <distributionManagement>
+      <repository>
+        <id>internal</id>
+        <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
+      </repository>
+
+      <snapshotRepository>
+         <id>snapshots</id>
+         <name>Archiva Managed Snapshot Repository</name>
+         <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+
+   </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>internal</id>
+      <name>Archiva Managed Internal Repository</name>
+      <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+      <repository>
+      <id>snapshots</id>
+      <name>Archiva Managed Snapshot Repository</name>
+      <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+  </repositories>
+  
+
+     <pluginRepositories>
+		<pluginRepository>
+          <id>codehaus snapshot repository</id>
+			<url>http://snapshots.repository.codehaus.org/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+    		<id>Mojo Snapshots</id>
+    		<url>http://snapshots.repository.codehaus.org/</url>
+    		<snapshots>
+      			<enabled>true</enabled>
+    		</snapshots>
+    		<releases>
+      			<enabled>false</enabled>
+    		</releases>
+  		</pluginRepository>
+    </pluginRepositories>
+ 
+   	<scm>
+	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</connection>
+	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CLIENT_1.3.X</developerConnection>
+    	<url>http://svn.usatlas.bnl.gov/svn/privilege/</url>
+	</scm>
+	
+    <build>
+		<plugins>
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-dependency-plugin</artifactId>
+		        <executions>
+		          <execution>
+		            <id>dependency-copy</id>
+		            <phase>package</phase>
+		            <goals>
+		              <goal>copy-dependencies</goal>
+		            </goals>
+		            <configuration>
+		              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+		              <overWriteReleases>false</overWriteReleases>
+		              <overWriteSnapshots>false</overWriteSnapshots>
+		              <overWriteIfNewer>true</overWriteIfNewer>
+		            </configuration>
+		          </execution>
+		        </executions>
+			</plugin>
+			
+			
+			<plugin>
+                <groupId>org.apache.axis2</groupId>
+                <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
+                <configuration>
+                    <className>gov.bnl.gums.admin.GUMSAPI</className>
+                    <outputFileName>${basedir}/target/generated-resources/gums.wsdl</outputFileName>          
+                    <serviceName>gums</serviceName>
+                    <targetNamespace>http://www.bnl.gov/namespaces/2004/09/gums/GUMSService</targetNamespace>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java2wsdl</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+				
+			<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>axistools-maven-plugin</artifactId>
+                <version>1.4</version>
+                <configuration>
+                    <deployScope>Application</deployScope>
+                    <useEmitter>true</useEmitter>                     
+                    <testCases>false</testCases>
+                    <serverSide>false</serverSide>
+                    <subPackageByFileName>true</subPackageByFileName>                     
+                    <mappings>
+                        <mapping>
+                            <namespace>http://www.bnl.gov/namespaces/2004/09/gums/GUMSService</namespace>
+                            <targetPackage>gov.bnl.gums.admin</targetPackage>
+                        </mapping>
+                    </mappings>
+                    
+                    <wsdlFiles>
+                        <wsdlFiles>${basedir}/target/generated-resources/gums.wsdl</wsdlFiles>
+                    </wsdlFiles>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>wsdl2java</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>javax.mail</groupId>
+                            <artifactId>mail</artifactId>
+                            <version>1.4.1</version>
+                            <scope>runtime</scope>
+                        </dependency>
+                        <dependency>
+                            <groupId>axis</groupId>
+                            <artifactId>axis</artifactId>
+                            <version>1.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.axis</groupId>
+                            <artifactId>axis-jaxrpc</artifactId>
+                            <version>1.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.axis</groupId>
+                            <artifactId>axis-saaj</artifactId>
+                            <version>1.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>axis</groupId>
+                            <artifactId>axis-wsdl4j</artifactId>
+                            <version>1.5.1</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+			
+			 
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<!-- 
+					<execution>
+						<id>1</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<mkdir dir="target/temp" />
+								<copy filtering="on" todir="target/temp">
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-ant/1.4" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis/1.4" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-saaj/1.4" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-jaxrpc/1.4" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-wsdl4j/1.5.1" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-discovery/commons-discovery/0.2" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-logging/commons-logging/1.0.4" />
+									<fileset includes="*.jar" dir="${user.home}/.m2/repository/log4j/log4j/1.2.12" />
+								</copy>
+								<ant antfile="wsdl2java.xml" target="createClientStub" inheritRefs="true" />
+								<delete dir="target/temp" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					-->
+					
+					<execution>
+						<id>1</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<mkdir dir="target/lib" />
+								<copy filtering="on" todir="target/lib/endorsed">
+   								     <fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xercesImpl/2.9.1" />
+                                     <fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xml-apis/2.9.1" />
+							    </copy>
+								<copy filtering="on" todir="target/lib">
+									<fileset includes="*.jar" dir="target" />
+								</copy>
+															    
+							    <mkdir dir="target/scripts" />
+				                <copy todir="target/scripts"> 
+				                	<fileset dir="src/main/scripts/" />
+				                </copy>
+   				                <chmod file="target/scripts/gums" perm="ug+x" />
+				                <chmod file="target/scripts/gums-service" perm="ug+x" />
+				                <chmod file="target/scripts/gums-host" perm="ug+x" />
+				                <chmod file="target/scripts/gums-host-cron" perm="ug+x" />
+				                <chmod file="target/scripts/gums-nagios" perm="ug+x" />
+				                
+				                <mkdir dir="target/config" />
+				                <copy todir="target/config">
+				                	<fileset dir="src/main/config/" />
+				                </copy>
+
+								<mkdir dir="target/log" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				
+			</plugin>
+			
+			
+			
+			
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/.svn</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-surefire-plugin</artifactId>
+		        <configuration>
+			      <excludes>
+		            <exclude>**/.svn</exclude>
+		          </excludes>
+		        </configuration>
+			</plugin>
+			<plugin>
+		        <artifactId>maven-assembly-plugin</artifactId>
+		        <executions>
+					<execution>
+						<id>generate-assembly</id>
+						<phase>package</phase>
+				        <configuration>
+							<descriptor>assembly.xml</descriptor>
+							<finalName>gums-client-${version}</finalName>
+							<outputDirectory>target</outputDirectory>
+				        </configuration>
+				   		<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			 <plugin>
+            <artifactId>maven-release-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <tagBase>
+                    https://svn.usatlas.bnl.gov/svn/privilege/tags
+                    </tagBase>
+                    <!-- 
+                    <checkModificationExcludes>
+                        <checkModificationExclude>${basedir}/src/main/java/org/apache/xml/xml_soap/MapItem.java</checkModificationExclude>
+                        <checkModificationExclude>${basedir}/src/main/java/gov/bnl/gums/admin/AdminSoapBindingStub.java</checkModificationExclude>
+                        <checkModificationExclude>${basedir}/src/main/java/gov/bnl/gums/admin/GUMSAPIService.java</checkModificationExclude>
+                        <checkModificationExclude>${basedir}/src/main/java/gov/bnl/gums/admin/GUMSAPIServiceLocator.java</checkModificationExclude>
+                    </checkModificationExcludes>
+                    -->
+                </configuration>
+            </plugin>
+			
+			<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+<!-- commented out by drs - the rpm program is not available on all platforms and this might
+     hide other problems. To build an rpm, type mvn rpm:rpm 
+     
+     However, it can only be run from the normal lifecycle, no via rpm:rpm, so it must stay. 
+-->
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>rpm</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <release>1</release>
+                    <copyright>GPL</copyright>
+                    <distribution>myapp</distribution>
+                    <group>Grid/Security</group>
+                    <packager>John R. Hover</packager>
+                    <prefix>/usr</prefix>
+
+                    <mappings>
+                        <mapping>
+                            <directory>/usr/bin</directory>
+                            <filemode>775</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/scripts</location>
+                                </source>
+                            </sources>
+                        </mapping>
+             
+                        <mapping>
+                            <directory>/etc/gums</directory>
+                            <configuration>true</configuration>
+                            <filemode>655</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/config</location>
+                                </source>
+                            </sources>
+                        </mapping>
+
+                        <mapping>
+                            <directory>/usr/lib/gums</directory>
+                            <filemode>755</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <artifact />
+                            <sources>
+                                <source>
+                                    <location>target/lib</location>
+                                </source>
+                            </sources>
+                        </mapping>             
+              
+                        <mapping>
+                            <directory>/log</directory>
+                            <filemode>750</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                        </mapping>
+                    </mappings>                    
+                </configuration>
+            </plugin>
+		</plugins>
+    </build>
+	 
+ 	<dependencies> 
+        <dependency>
+            <groupId>gov.bnl.racf.gums</groupId>
+            <artifactId>gums-core</artifactId>
+            <version>1.3.18.003-SNAPSHOT</version>
+        </dependency>
+		<dependency>	
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.12</version>
+		</dependency>	
+		
+        <dependency>
+            <groupId>org.opensaml</groupId>
+            <artifactId>opensaml</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+		
+		<dependency>
+            <groupId>org.opensaml</groupId>
+            <artifactId>opensaml</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+		<dependency>
+            <groupId>org.opensaml</groupId>
+            <artifactId>xmltooling</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opensciencegrid</groupId>
+            <artifactId>privilege</artifactId>
+            <version>1.0.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opensciencegrid</groupId>
+            <artifactId>privilege-xacml</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+		<dependency>
+			<groupId>org.apache.xerces</groupId>
+			<artifactId>xml-apis</artifactId>
+			<version>2.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.9.1</version>
+		</dependency>
+
+ 	</dependencies>  
+</project>

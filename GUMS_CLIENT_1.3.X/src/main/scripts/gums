@@ -1,0 +1,283 @@
+#!/bin/bash
+# Script to run GUMS Java CLI application. Works with both
+# standard VDT layout and standard RPM layout. Made to be wrapped by 
+# simple gums-* wrapper scripts that call this script with following args:
+#
+# --client (or default with no argument)
+#    AdminCommandLine, user proxy 
+#
+# --service
+#    AdminCommandLine, usercert + key
+#
+# --host
+#    HostCommandLine, hostcert + key
+#
+# --nagios
+#    HostCommandLine, hostcert + key, + nagios probe functionality
+#
+# --gumsdebug
+#    Turns on script debugging
+#
+# Author: John R. Hover <jhover@bnl.gov> 
+# based on initial gums script by Gabriele Carcassi.
+# Nagios probe section: Jay Packard <jpackard@bnl.gov> 
+#
+
+exit_confused () {
+	echo "[ERROR]: Unable to set directories based on script location. Set DEBUG=1 in script to troubleshoot."
+	exit 1
+	
+}
+
+#
+# Defaults
+#
+DEBUG=0
+MODE="CLIENT"
+
+#
+# Differentiate script args, collect other arguments to pass to Java CLI...
+#
+ARGS=""
+for arg ; do
+	if [ $DEBUG -eq 1 ] ; then 
+		echo "[DEBUG] gums: Arg is $arg" 1>&2
+		echo "[DEBUG] gums: ARGS are: $ARGS" 1>&2
+	fi
+	case $arg in
+		--gumsdebug)
+		DEBUG=1
+		;;
+
+		--host)
+		MODE="HOST"
+		;;
+
+		--service)
+		MODE="SERVICE"
+		;;
+
+		--nagios)
+		MODE="NAGIOS"
+		;;
+
+		--client)
+		MODE="CLIENT"
+		;;
+
+		*)
+		origlen=${#arg}
+		nospace=${arg//' '/''}
+		newlen=${#nospace}
+		if [ $newlen -lt $origlen ]; then
+			ARGS="$ARGS \"$arg\""
+		else
+			ARGS="$ARGS $arg"
+		fi
+		;;
+		
+	esac
+
+done
+
+#
+# Global Defaults that apply everywhere
+#
+
+# defaults for the CA Certs
+CERTDIR=${X509_CERT_DIR-/etc/grid-security/certificates}
+# Calculate user proxy filename
+CURRENT_UID=`id -u`
+PROXY=${X509_PROXY_FILE-/tmp/x509up_u$CURRENT_UID}
+TRUST_OPTS="-Daxis.socketSecureFactory=org.glite.security.trustmanager.axis.AXISSocketFactory" 
+HOST_CERT=${X509_HOST_CERT-/etc/grid-security/hostcert.pem}
+HOST_KEY=${X509_HOST_KEY-/etc/grid-security/hostkey.pem}
+USER_CERT=${X509_USER_CERT-$HOME/.globus/usercert.pem}
+USER_KEY=${X509_USER_KEY-$HOME/.globus/userkey.pem}
+
+#
+# Distinguish between Maven development tree, Maven assembly tarball, VDT install, or RPM
+# and adjust paths accordingly. Decisions are based on the actual gums wrapper script invoked. 
+#
+#
+INVOKE=$0
+PROG=$(basename $0)
+BINDIR=$(dirname $0)
+DIRPATH=`dirname $INVOKE`
+OLDDIR=$PWD
+cd $DIRPATH
+INVOKE_DIR=$PWD
+cd $OLDDIR
+GUMSDIR=`dirname $INVOKE_DIR`
+
+if [ $DEBUG -eq 1 ] ; then 
+	echo "[DEBUG] gums: Invoke is $INVOKE" 1>&2
+	echo "[DEBUG] gums: Dirpath is $DIRPATH" 1>&2
+	echo "[DEBUG] gums: Invoke directory is $INVOKE_DIR" 1>&2
+	echo "[DEBUG] gums: Gumsdir is $GUMSDIR" 1>&2
+fi
+
+# Handle VDT install
+if [ -n "$VDT_LOCATION" ] && [ "$VDT_LOCATION/gums" == "$GUMSDIR" ] ; then
+	if [ $DEBUG -eq 1 ] ; then
+		echo "[DEBUG] gums: Setting paths using VDT_LOCATION..." 1>&2
+	fi
+	BIN=$VDT_LOCATION/gums/scripts/
+	ETC=$VDT_LOCATION/gums/config/
+	LIB=$VDT_LOCATION/gums/lib/
+	ENDORSED=$LIB/endorsed
+
+# Handle RPM install
+elif [ "$INVOKE_DIR" == "/usr/bin" ] && [ -d /etc/gums/ ] ; then
+	if [ $DEBUG -eq 1 ] ; then
+		echo "[DEBUG] gums: Seems to be an RPM install. Setting paths..." 1>&2
+	fi
+	BIN=/usr/bin
+	ETC=/etc/gums
+	LIB=/usr/lib/gums
+	ENDORSED=$LIB/endorsed
+
+# Handle tarball/ development location	
+else
+	if [ $DEBUG -eq 1 ] ; then
+		echo "[DEBUG] gums: Setting paths by guessing based on script location." 1>&2
+	fi
+	
+	# Handle scripts/bin directory
+	if [ -d $GUMSDIR/scripts ]; then
+		BIN=$GUMSDIR/scripts
+	elif [ -d $GUMSDIR/bin ]; then
+		BIN=$GUMSDIR/bin
+	else
+		exit_confused
+	fi
+
+	# Handle config/etc directory
+	if [ -d $GUMSDIR/config ]; then
+		ETC=$GUMSDIR/config
+	elif [ -d $GUMSDIR/etc ]; then
+		ETC=$GUMSDIR/etc
+	else
+		exit_confused
+	fi	
+
+	# Handle lib, endorsed directories
+	if [ -d $GUMSDIR/lib ]; then
+		LIB=$GUMSDIR/lib 
+	else
+		exit_confused
+	fi
+
+	if [ -d $LIB/endorsed ]; then
+		ENDORSED=$LIB/endorsed
+	else
+		echo "[ERROR] gums: $GUMSDIR/lib/endorsed not found. You probably need to symlink all target libs there."
+		exit_confused
+	fi
+fi
+
+
+#
+# Construct GUMS classpath.
+# Be careful about the ordering in GUMSCP since resources are retrieved in order.
+#
+LIBCLASSPATH=`ls -1 $LIB/*.jar | tr "\n" ":"`
+GUMSCP=$ETC:$LIBCLASSPATH$ETC  # The ETC at the end is a hack to prevent an ending colon.
+
+#
+# Set command line class and cert handling by mode
+#
+if [ "$MODE" = "CLIENT" ]; then
+	MAINCLASS=gov.bnl.gums.admin.AdminCommandLine
+	CERT_OPTS="-DsslCAFiles=$CERTDIR/*.0 -DgridProxyFile=$PROXY" 	
+
+elif [ "$MODE" = "HOST" ]; then
+	MAINCLASS=gov.bnl.gums.admin.HostCommandLine
+	CERT_OPTS="-DsslCAFiles=$CERTDIR/*.0 -DsslCertfile=$HOST_CERT -DsslKey=$HOST_KEY" 	
+
+elif [ "$MODE" = "NAGIOS" ]; then
+	MAINCLASS=gov.bnl.gums.admin.HostCommandLine
+	CERT_OPTS="-DsslCAFiles=$CERTDIR/*.0 -DsslCertfile=$HOST_CERT -DsslKey=$HOST_KEY"
+
+elif [ "$MODE" = "SERVICE" ]; then
+	MAINCLASS=gov.bnl.gums.admin.AdminCommandLine
+	CERT_OPTS="-DsslCAFiles=$CERTDIR/*.0 -DsslCertfile=$USER_CERT -DsslKey=$USER_KEY"
+else
+	echo "[ERROR] gums: Unknown mode $MODE. Exitting."
+	exit 1
+fi	
+
+SECURITY_OPTS="$TRUST_OPTS $CERT_OPTS"
+
+if [ $DEBUG -eq 1 ] ; then 
+	echo "[DEBUG] gums: Program is $PROG" 1>&2
+	echo "[DEBUG] gums: Program dir is $BINDIR" 1>&2
+	echo "[DEBUG] gums: Binary dir is $BIN" 1>&2
+	echo "[DEBUG] gums: Config dir is $ETC" 1>&2
+	echo "[DEBUG] gums: Library dir is $LIB" 1>&2
+	echo "[DEBUG] gums: Endorsed lib dir is $ENDORSED" 1>&2
+	echo "[DEBUG] gums: Cert dir is $CERTDIR" 1>&2
+	echo "[DEBUG] gums: Full classpath is: $GUMSCP" 1>&2
+	echo "[DEBUG] gums: Security opts are: $SECURITY_OPTS" 1>&2
+	echo "[DEBUG] gums: Pass-through args are $ARGS" 1>&2
+	echo "[DEBUG] gums: Mode is $MODE" 1>&2
+	echo "[DEBUG] gums: ARGS are $ARGS" 1>&2
+	for arg ; do
+		echo "[DEBUG] gums: Arg: $arg" 1>&2
+	done
+fi
+
+#
+# Execute correct main class with proper arguments depending on mode.
+#
+if [ "$MODE" != "NAGIOS" ] ; then
+	if [ $DEBUG -eq 1 ] ; then
+		echo java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp $GUMSCP $MAINCLASS $ARGS
+	fi
+	eval java -Djava.endorsed.dirs=$ENDORSED $SECURITY_OPTS -cp $GUMSCP $MAINCLASS $ARGS
+else
+#
+# Perform nagios probe...
+#
+	if [ -f $ETC/gums-nagios.conf ]; then
+		exec 0< $ETC/gums-nagios.conf
+		STATE=0
+		SUCCESS_COUNT=0
+		TOTAL_COUNT=0
+		while read LINE
+			do
+				LINE=${LINE## }
+				if [ "${LINE:0:1}" != "#" ] && [ "$LINE" != "" ]; then
+					if [ $STATE -eq 0 ] ;	then
+						USERDN=$LINE
+					fi
+					if [ $STATE -eq 1 ] ; then
+						ACCOUNT=$LINE
+					fi
+					let STATE=$STATE+1
+					if [ $STATE -eq 2 ] ; then
+						ANSWER=`$BINDIR/gums-host mapUser -b $USERDN` 
+						if [ "$ANSWER" == "$ACCOUNT" ] ; then
+							let SUCCESS_COUNT=$SUCCESS_COUNT+1 
+						fi
+						let TOTAL_COUNT=$TOTAL_COUNT+1;
+						STATE=0
+					fi
+				fi
+			done
+	
+		if [ $SUCCESS_COUNT -eq $TOTAL_COUNT ] ; then
+			echo All GUMS mappings succeeded
+			exit 0
+		fi
+		if [ $SUCCESS_COUNT -gt 0 ] ; then
+			echo Some GUMS mappings did not succeed 
+			exit 1
+		fi
+		echo No GUMS mappings succeeded 
+		exit 2	
+	else
+		echo "Nagios config file $ETC/gums-nagios.conf doesn't exist."
+		exit 3
+	fi
+fi
