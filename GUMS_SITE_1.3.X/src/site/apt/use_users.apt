@@ -1,0 +1,107 @@
+ ------
+ GUMS Manage Manual Users
+ ------
+
+Manage Manual Users
+
+ On the web interface you will see the following options under 'User Management':
+ 
+	* <<Manual User Group Members>> - for manually adding or removing individual users to a manual user group.  Click 'add'
+	to add or the trash icon next to an entry to delete.  The DN and FQAN are regular expressions, but wild cards are only appropriate 
+	for members of user groups configured to act as a banning user group.  Example regular expressions used for
+	banning are:
+	
+		* Ban Jane Doe's generic grid proxy: DN="/DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345", FQAN=""
+
+		* Ban all Jane Doe's VOMS and generic grid proxies: DN="/DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345", FQAN=".*"
+
+		* Ban Jane Doe's ATLAS VOMS proxy: DN="/DC=org/DC=doegrids/OU=People/CN=Jane Doe 12345", FQAN="/atlas/.*"
+
+		* Ban all ATLAS VOMS proxies: DN=".*", FQAN="/atlas/.*"
+	
+	* <<Manual Account Mappings>> - for manually adding or removing individual DN to account mappings to a manual account mapper.  Click 'add'
+	to add or the trash icon next to an entry to delete.
+	
+	* <<Update VO Members>> - for user groups that specify a server and a persistence factory, the DNs are retrieved
+	from the server and put into the persistence factory, which is the source of the matching.  This happens at 
+	a regular interval, but you may want to update manually after new users have been added.
+	
+ This functionality is also available for the client admin tools "gums" and "gums-service".  Usage is:
+ 
++-------------------------------------------+ 
+[root@gums /]# su - username
+[username@gums /]# ./gums-service 
+usage: gums command [command-options] 
+Commands:
+  clientVersion - Retrieve GUMS client version.
+  generateEmailMapfile - Generate an Email-mapfile for a given service/host.
+  generateFqanMapfile - Generate FQAN-mapfile for a given service/host .
+  generateGridMapfile - Generate grid-mapfile for a given service/host.
+  generateOsgUserVoMap - Generate OSG-user-VO-map for a given service/host.
+  generateVoGridMapfile - Generate a VO grid-mapfile for a given service/host.
+  manualGroupAdd - Includes a DN in a group.
+  manualGroupRemove - Removes a DN from a group.
+  manualMappingAdd - Adds a DN-to-account mapping.
+  manualMappingRemove - Removes mapping for DN.
+  mapAccount - Maps a local account to a grid identity.
+  mapUser - Maps a grid identity to a local account.
+  poolAddRange - Adds accounts to an account pool.
+  poolGetAssignments - Get printout of current pool account assignments.
+  poolRemoveRange - Removes accounts from an account pool.
+  poolUnassignRange - Unassigns accounts from an account pool.
+  serverVersion - Retrieve GUMS server version.
+  updateGroups - Contact VO servers and retrieve user lists.
+For help on any command:
+  gums command --help
+[root@gums /]# ./gums-service manualGroupAdd --help
+usage: gums manualGroupAdd [-g GUMSURL] [-f FQAN] [-e EMAIL]
+            MANUALUSERGROUP USERDN0 USERDN1...
+Adds a user to a manually managed group. MANUALUSERGROUP is the name of
+the manual user group. Only one USERDN allowed at a time if email is
+specified.
+Options:
+ -e,--email <arg>     email Address
+ -f,--fqan <arg>      Fully Qualified Attribute Name
+ -g,--gumsUrl <arg>   Fully Qualified GUMS URL to override gums.location
+                      within the gums-client.properties file
+    --help            print this message
+[root@gums /]# ./gums-service manualGroupRemove --help
+usage: gums manualGroupRemove [-g GUMSURL] [-f FQAN] MANUALUSERGROUP
+            USERDN1 [USERDN2] ...
+Removes a user from a manually managed group. USERGROUP is the name of the
+manual user group.
+Options:
+ -f,--fqan <arg>      Fully Qualified Attribute Name
+ -g,--gumsUrl <arg>   Fully Qualified GUMS URL to override gums.location
+                      within the gums-client.properties file
+    --help            print this message
+[root@gums /]# ./gums-service manualMappingAdd --help
+usage: gums manualMappingAdd [-g GUMSURL] ACCOUNTMAPPER USERDN USERNAME
+Maps a DN to a user in a manually managed mapping. ACCOUNTMAPPER is the
+name of the manual account mapper.
+Options:
+ -g,--gumsUrl <arg>   Fully Qualified GUMS URL to override gums.location
+                      within the gums-client.properties file
+    --help            print this message
+[root@gums /]# ./gums-service manualMappingRemove --help
+usage: gums manualMappingRemove [-g GUMSURL] MANUALACCOUNTMAPPER USERDN
+Maps a DN to a user in a manually managed mapping. ACCOUNTMAPPER is the
+name of the manual account mapper.
+Options:
+ -g,--gumsUrl <arg>   Fully Qualified GUMS URL to override gums.location
+                      within the gums-client.properties file
+    --help            print this message
+[root@gums /]# ./gums-service updateGroups --help
+usage: gums updateGroups [-g GUMSURL]
+Contact all VO servers and update the local lists of users.
+Options:
+ -g,--gumsUrl <arg>   Fully Qualified GUMS URL to override gums.location
+                      within the gums-client.properties file
+    --help            print this message
+[root@gums /]# 
++-------------------------------------------+ 
+
+ Only users and mappings managed by manual user groups and account mappers should be managed by an administrator through GUMS.
+All others should be handled via the appropriate callouts to the 3rd party servers (i.e. VOMS, LDAP) or handled 
+automatically by GUMS (i.e. pool account mapper).
+	

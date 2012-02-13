@@ -1,0 +1,10 @@
+ ------
+ GUMS Tests
+ ------
+
+Stress Test Results 
+ 
+ GUMS 1.3 tests have not been performed yet, but GUMS 1.2 tests can be seen at 
+{{{http://home.fnal.gov/~weigand/gums-1.2.0/gums-stress-test-results.html}http://home.fnal.gov/~weigand/gums-1.2.0/gums-stress-test-results.html}}.
+One possible degradation of performance could occur with the new banned user functionality since all banned users are checked
+before each request to GUMS.  One thing is clear though, that the more banned users there are, the more it will affect performance.

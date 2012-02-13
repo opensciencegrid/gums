@@ -1,0 +1,17 @@
+ ------
+ Future Plans
+ ------
+
+Future Plans
+
+ 1.4
+
+ 	* Merge configuration (such as OSG template)
+ 	
+ 	* Save last 10 configuration changes
+ 	
+ 1.5
+ 
+    * Recyclable Accounts
+    
+    * Plug-in architecture for ease of 3rd party development

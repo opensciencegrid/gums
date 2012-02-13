@@ -1,0 +1,325 @@
+ ------
+ GUMS Manual Installation
+ ------
+
+Manual Installation
+
+ <This page provides installation instructions for the GUMS Service and also the GUMS Client.>
+
+* Installing the GUMS Service
+
+ <This section describes how to install the GUMS Service which provides the GUMS web interface and web services.>
+
+** Prepare Java
+ 
+ GUMS is written in Java, and requires Java 1.4.2 or greater to be installed to run. 
+Be sure it is installed in your $PATH. Try running:
+
++-----------------------------------------+
+[root@gums root]# java -version
+java version "1.4.2_04";
+Java(TM) 2 Runtime Environment, Standard Edition (build 1.4.2_04-b05)
+Java HotSpot(TM) Client VM (build 1.4.2_04-b05, mixed mode)
++-----------------------------------------+
+
+ If you do not have java installed, go to {{{http://java.sun.com}http://java.sun.com}}
+and follow the instructions to get the latest version. Then add java to $PATH.
+
+** Install the Persistence Factory
+
+ User membership and account mappings need to be stored in a "persistence factory".  This can be done either
+via a MySQL database (4.0.18 or greater) or LDAP or both. 
+We recommend using LDAP so that all user information is stored and retrieved from one place.  The other advantage of LDAP
+is that GUMS will assign primary and secondary group information to accounts within your site's main LDAP tree.  
+Install a database and/or LDAP from scratch or you can use an installation you have ready.  The default GUMS
+configuration assumes MySQL is installed on the local machine, but it does not have to be.
+
+** Prepare the Certificate Directory
+ 
+ GUMS requires a host GRID certificate and key be present. The easiest way is to use the VDT,
+but since but you are not, you are on your own here.
+
+** Prepare Tomcat
+ 
+ You will need Tomcat with version 5 or greater installed.  You will also need
+to configure Tomcat to use the EGEE Security Manager to handle SSL authentication.  
+To do this, download and run the 
+{{{http://grid.racf.bnl.gov/mvn/gums/gums-service/tomcat5-glite-trustmanager-1.6.3-1.noarch.rpm}tomcat5-glite-trustmanager RPM}}.
+Next, review the configuration of the server as:
+ 
++---------------------------------------+ 
+[root@gums /]# cd /etc/tomcat5
+[root@gums tomcat5]# vi server.xml
++---------------------------------------+
+
+ Add the following section with the appropriate paths for your installation:
+
++---------------------------------------+
+	<Connector port="8443"
+               maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
+               enableLookups="false" disableUploadTimeout="true"
+               acceptCount="100" debug="0" scheme="https" secure="true"
+               sSLImplementation="org.glite.security.trustmanager.tomcat.TMSSLImplementation"
+               sslCAFiles="/etc/grid-security/certificates/*.0"
+               crlFiles="/etc/grid-security/certificates/*.r0"
+               sslCertFile="/etc/grid-security/hostcert.pem"
+               sslKey="/etc/grid-security/hostkey.pem"
+               log4jConfFile="/etc/tomcat5/log4j-trustmanager.properties"
+               clientAuth="true" sslProtocol="TLS" />
++---------------------------------------+
+
+ You will probably want to increase the maximum memory size set in java since the default is low (64MB in 1.4.2).  
+This can be set in /etc/tomcat5/tomcat5.conf using JAVA_OPTS.  For example, to change the maximum memory size to 400MB, add
+the following entry:
+
++---------------------------------------+
+JAVA_OPTS="-server -Xmx400m"
++---------------------------------------+
+
+ Once you have completed the configuration of Tomcat, be sure to restart it for the changes to take effect.
+ 
+** Download the GUMS Service
+
+ The service itself is a standard java web application. Grab the latest 
+gums-service war from {{{http://grid.racf.bnl.gov/mvn/gums/gums-service/}
+http://grid.racf.bnl.gov/mvn/gums/gums-service/}} and extract it in the
+webapps directory of tomcat.
+
+** Configure Persistence Factory
+
+*** MySQL Persistence
+
+ Run MySQL.  Assuming it is installed by RPM, this is done as:
+
++----------------------------------------------+	
+[root@gums /]# /etc/init.d/mysqld start
++----------------------------------------------+
+
+ If using MySQL, you will need to create the database. On the machine with MySQL running, you can do this by running the 
+setupDatabase script as:
+	
++----------------------------------------------+	
+[root@gums gums]# cd gums-service-1.3.0/WEB-INF/scripts
+[root@gums scripts]# chmod ug+x *
+[root@gums scripts]# ./gums-setup-mysql-database
+Usage: ./gums-setup-mysql-database --help
+Creates the database for GUMS on localhost and creates configuration 
+with the appropriate database and host information. 
+Usage: ./gums-setup-mysql-database 
+   --template <template config path (../gums.config.template is default) [optional]> 
+   --nocreateconfig [configuration configured for database] 
+   --user <mysql user for GUMS> 
+   --password  <GUMS mysql password>
+   --host <GUMS server host>
+   --socket <MySQL socket> [optional]
+   --noprompt [Don't prompt user, optional]
+   --help [Print this message]
+
+Examples:
+  ./gums-setup-mysql-database --user gums --host gums.mysite.com:49151 --password secret --template ../mytemplate
+
+This will make mysql authenticate as root with a password (-p), create a 
+<gums> user with password <secret> authorized to connect from <gums.mysite.com>.
+
+[root@gums scripts]# ./setupDatabase --host gums --host gums.mysite.com --password secret
++----------------------------------------------+
+
+ The script will only run on localhost. If you need to create db on 
+another server, or with different account then root, edit the gums-setup-mysql-database script as:
+
++----------------------------------------------+	
+[root@gums scripts]# cat gums-setup-mysql-database
+#!/bin/sh
+...
+MYSQLPARAM="-p"
+..
++----------------------------------------------+
+
+ You must also add yourself to the admins user group in the MySQL database using the gums-add-mysql-admin script as:
+
++----------------------------------------------+
+[root@gums scripts]# ./gums-add-mysql-admin
+Adds an admin in the GUMS database on localhost
+Usage: ./gums-add-mysql-admin [mysql|ldap] [DN for administrator]
+[root@gums scripts]# ./gums-add-mysql-admin mysql "/DC=org/DC=doegrids/OU=People/CN=Your Self 12345"
++----------------------------------------------+	 
+
+ All additional users may be added through the web interface or client tools.
+
+*** LDAP Persistence
+
+ If using LDAP, you will need to configure LDAP.  During the configuration phase of GUMS, you will
+choose whether to use a "LDAP persistence factory" or a "local persistence factory" (you should not use both).  Both of them
+use LDAP to assign primary and secondary groups to the main LDAP tree, but the LDAP persistence
+factory stores GUMS specific information in LDAP whereas the local persistence factory stores it in MySQL.  
+You will need to configure the persistence factory's LDAP fields to be compatible with your LDAP schema.
+
+ If you are using the LDAP persistence factory, you (or your site's LDAP administrator) or will need to further 
+configure the LDAP server to understand the GUMS LDAP schema.  
+Downloaded the schema from {{{./gums.schema}here}} and should be put in /etc/openldap/schema.  
+Restart the LDAP server for the changes to take effect as:
+
++----------------------------------------------+
+[root@ldap /]# /etc/init.d/ldap restart
++----------------------------------------------+
+
+ Also, an object of type GUMSStruct needs to be created named 'GUMS'.  Do this by downloading {{{./gums.ldif}this}} LDIF file 
+and running something like: 
+
++----------------------------------------------+
+ ldapadd -x -h localhost -D uid=Manager,dc=mydomain,dc=org -w secret -f gums.ldif
++----------------------------------------------+
+
+ You must also add yourself to the admins user group in LDAP.  Create a file named admins.ldif with the
+following contents except with your DN:
+ 
++----------------------------------------------+
+dn: group=admins,ou=GUMS,dc=griddev,dc=org
+objectClass: GUMStruct
+objectClass: GUMSGroup
+group: admins
+user: /DC=org/DC=doegrids/OU=People/CN=Your Self 83753
++----------------------------------------------+	 
+
+ and add these using openldap's "ldapadd" command.  All additional users may be added through 
+the web interface or client tools.  
+
+ See openldap documentation for more information at {{{http://www.openldap.org/doc/admin23/}http://www.openldap.org/doc/admin23/}}
+
+** Configure GUMS for Admin Lookup
+
+ Open ...WEB-INF/config/gums.config (main GUMS configuration file) and ensure the persistence factory at which you 
+added the administrator DN is set up in the persistenceFactories section.  If using MySQL to 
+store the admin, check that the url, username, and password are correct.  If using LDAP to store the admin, 
+see the {{{use_configuration.html}configuration}} section for instructions how to set up a ldapPersistenceFactory; 
+also make sure the admins userGroup refers to this by name in the "persistenceFactory" field.  From this point
+on, you no longer need to manually edit the gums.config file, but can configure GUMS using the web interface.
+
+** Setting the {Frequency} to Refresh GUMS from VOMS
+
+ .../WEB-INF/web.xml contains some interval parameters that can be changed.  
+ 
+ GUMS will update the user group members defined in the gums.config file on a periodic basis based on the 
+updateGroupsMinutes parameter, whos value is in minutes.  
+
++----------------------------------------------+
+  <env-entry>
+    <env-entry-name>updateGroupsMinutes</env-entry-name>
+    <env-entry-type>java.lang.Integer</env-entry-type>
+    <env-entry-value>720</env-entry-value>
+  </env-entry>
+</web-app>
++----------------------------------------------+	
+
+ GUMS will update the banned user group (defined in the global section of gums.config) members based on a periodic basis based on the 
+updateBannedGroupsMinutes parameter, whos value is in minutes.  
+
++----------------------------------------------+
+  <env-entry>
+    <env-entry-name>updateGroupsMinutes</env-entry-name>
+    <env-entry-type>java.lang.Integer</env-entry-type>
+    <env-entry-value>60</env-entry-value>
+  </env-entry>
+</web-app>
++----------------------------------------------+	
+
+ GUMS will send batched warning emails on a periodic basis based on the emailWarningHours parameter, whos value is in hours.  
+
++----------------------------------------------+
+  <env-entry>
+    <env-entry-name>emailWarningHours</env-entry-name>
+    <env-entry-type>java.lang.Integer</env-entry-type>
+    <env-entry-value>48</env-entry-value>
+  </env-entry>
+</web-app>
++----------------------------------------------+	
+
+ You may want to adjust these values.  If tomcat is already running, you will need to restart it to effect the change.
+
+** Run Tomcat and MySQL
+
+ Run Tomcat.  Assuming it is installed by RPM, this is done as:
+
++----------------------------------------------+	
+[root@gums /]# /etc/init.d/tomcat5 start
++----------------------------------------------+	
+
+** Test
+
+ Using a browser in which you have imported your grid certificate, go to:
+{{{https://machine:8443/gums}https://machine:8443/gums}} or with
+the port you configured Tomcat with.  You should
+see the GUMS web interface. You might need to wait a bit for tomcat to 
+realize the gums application was installed.  Try generating the grid map-file 
+for the host "test.site.com" and it should give you some response.
+
+* Installing the GUMS Client
+
+ <This section describes how to install the GUMS Client, which provides command line tools for hosts and administrators. 
+This package depends on the GUMS service being up and running.>
+
+** Download and Run the GUMS Client RPM
+
+ The client consists of several executables installed by RPM. Download and run the latest RPM from 
+{{{http://grid.racf.bnl.gov/mvn/gums/gums-client/}
+http://grid.racf.bnl.gov/mvn/gums/gums-client/}}. Listing the files
+as:
+
++--------------------------------------------------+
+[root@gums /]# ls /usr/sbin | grep gums
+gums
+gums-host
+gums-host-cron
+gums-nagios
+gums-service
+[username@gums /]#
++--------------------------------------------------+
+
+ you will notice that there are several executables in the bin directory:
+	
+	* <<gums-host>> - Allows access to the GUMS mapping services.
+	
+	* <<gums>> - Same functionality as gums-host only it uses a grid proxy file 
+	(see use of Globus grid-proxy-init).
+
+	* <<gums-host-cron>> - This script is intended to be run as a root cron process.  It calls the
+	gums-host executable.  It generates a grid-map file, an inverse map, a list of VOs that can be authorized by 
+	this CE node, and a list of	UNIX accounts that can potentially be authorized.  
+	
+	* <<gums-service>> - Allows access to all GUMS services including all those available
+	through gums-host for administrator use.  It also uses a grid proxy file.
+	
+	* <<check-gums>> - A {{{http://www.nagios.org/}Nagios}} plugin for monitoring GUMS.
+
+** Prepare the Certificate Directory and/or Globus
+
+ Except for gums-host and gums-host-cron, the executables require use of the grid-proxy-init command
+provided by Globus, which is provided by the VDT.  gums-host and gums-host-cron depend on a valid
+certificate being present at /etc/grid-security/hostcert.pem and /etc/grid-security/hostkey.pem.
+You are again on your own here.
+
+** Configure
+
+ Tell the gums-client where your GUMS server is by filling in your full machine name (even if you installed GUMS 
+Admin on the same machine) as:
+
++--------------------------------------------------+
+[root@gums /]# vi /etc/gums/gums-client.properties
+gums.location=https://gums.mysite.com:8443/gums/services/GUMSAdmin
+gums.authz=https://gums.mysite.com:8443/gums/services/GUMSAuthorizationServicePort
++--------------------------------------------------+
+
+** Test
+
+ Test the client by generating a mapfile at the command line
+
++--------------------------------------------------+
+[root@gums /]# su - username
+[username@gums /]# /usr/sbin/gums-host generateGridMapfile /DC=org/DC=doegrids/OU=Services/CN=test.site.com
++--------------------------------------------------+
+
+ You should get the same response you got from the web server.
+
+* Configure GUMS
+
+ To do anything useful, you need to configure GUMS mappings, which is described in the "Configure Mappings" section.

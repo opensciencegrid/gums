@@ -1,0 +1,37 @@
+ ------
+ GUMS Version 1.3
+ ------
+
+New in Version 1.3
+
+ The focus of GUMS version 1.3 has been to provide an OSG OpenSAML-XACML AuthZ interface to allow for interoperability with other grid
+components, the ability to store the configuration in a persistence factory so that it can be shared between multiple 
+gums servers, the ability to merge a configuration template from a URL, and the ability to ban users or VOs (which can be added manually or read from a file).  Several other features have also been added:
+	
+	* Ability to insert into any location within a list of elements from the web interface.
+	
+	* Ability to add multiple related elements (all those that are required for a mapping) in one step.
+	
+	* Ability to disallow gridmap file generation to avoid assigning a large number of pool accounts.  With gplazma
+	and glexec, dependence on gridmap files is diminishing.
+	
+	* Ability to create a grid-mapfile containing lines of DN, FQAN, and account and thus avoid the problem where a member of 
+	mutliple VOs can only be mapped to one account.
+	
+	* Ability to grab emails from VOMS and show them in an email-mapfile.
+	
+	* Ability to generate a FQAN mapfile containing lines of FQAN and account or account range.  This will be used
+	primarily for the GUMS RSV probe for validating a site's compliance to the OSG mapping policies.
+	
+	* Cached pool assignments for quicker loading of summary page
+
+* Database
+
+ A new table for storing the configuration has been added.  Also, an email column has been added to the USER table.
+
+* Configuration   
+
+ GUMS 1.3 server can read configuration formats 1.1, 1.2, and 1.3, but a previous version of GUMS cannot read a later version
+of the configuration.  New in the 1.3 configuration format is additional fields in all the LDAP classes, two global options to 
+disallow gridmap file creation and banned user groups, and the ability to configure a persistenceFactory element to store the 
+configuration within it for clustered GUMS servers.

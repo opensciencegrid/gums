@@ -1,0 +1,412 @@
+ ------
+ GUMS Configure Mappings
+ ------
+
+Configure Mappings
+
+ <This page describes how to configure the GUMS mappings.>
+
+* Introduction
+
+ The mapping configuration has six main parts:
+
+	* <<persistenceFactories>> - defines where the local user data can be stored. 
+
+	* <<vomsServers>> - defines VOMS servers as well as the
+	authentication information needed to access them.  These are referenced
+	by multiple user groups.
+
+	* <<userGroups>> - defines groups of users that somehow belong together (such as belonging
+	to the same project).
+
+	* <<accountMappers>> - defines account mappers for mapping a grid identity to a local account.
+	A particular account mapper is only chosen to perform the mapping if previous logic has determined
+	that this is the account mapper to use (this will be explained further).
+
+	* <<groupToAccountMappings>> - bundles a set of userGroups and a set of accountMappers together.
+	If a user is verified to be a member of at least one of the userGroups, the first account mapper
+	tries to map the user, and if it cannot, the second account mapper tries, and so forth. A particular
+	groupToAccountMapping is only chosen if the hostToGroupMapping has chosen it.
+		
+	* <<hostToGroupMappings>> - defines which groupToAccountMappings are used for different	hosts. 
+	
+ These may all be added, modified, and removed from the web interface.  Changes from the web interface
+ultimately end up in the XML file, gums.config, located in WEB-INF/config, which can also
+be edited by hand.  It is easy to see the correlation of the configuration as seen in the web interface 
+with the configuration as seen in the XML file.  These settings do not affect data stored in the
+persistence factories, which are used for storing individual user information.
+
+* Web Interface
+	
+ On the left side of the web interface you see the following options under 'Configuration':
+ 
+ 	* <<Configuration>> - stores global options: 1) whether to allow gridmap file generation, 2) an optional list
+ 	of user groups containing users to be banned, that is, to be denied a mapping.
+ 
+	* <<Back Up/Restore>> - back up the current gums.config to WEB-INF/config/backup/gums.config.date or
+	restore or delete configuration from WEB-INF/config/backup.
+	
+	* <<Summary>> - shows a concise view of all the mappings to easily follow the flow of
+	host -> group -> user group -> account mapper -> account.
+	
+	* <<Persistence Factories>> - shows a list of persistence factories with key attributes.  Clicking 'add' allows
+	you to create a new persistence factory.  Clicking the edit or delete icon next to an item allows you to edit or delete
+	the persistence factory.  More detail is shown when you add or edit an item.
+	
+	* <<VOMS Servers>> - shows a list of VOMS servers with key attributes. Also allows adding, editing, and deleting.
+
+	* <<Account Mapper>> - shows a list of account mappers with key attributes. Also allows adding, editing, and deleting.
+
+	* <<User Group>> - shows a list of user groups with key attributes. Also allows adding, editing, and deleting.
+	
+	* <<Group To Account>> - shows a list of 'group to account mappers' with key attributes. Also allows adding, editing, and deleting.
+
+	* <<Host to Group>> - shows a list of 'host to group mappers' with key attributes.  Also allows adding, editing, and deleting.
+	One may also change the order (and thus the order of matching) by clicking the up arrow for moving up and 
+	the down arrow for moving down.
+	
+	* <<Shortcut>> - adds multiple related elements (all those that are required for a mapping) in one step.  GUMS is very 
+	flexible but at the cost that configuration can sometimes be tedious for simple cases.  This shortcut feature
+	ameliorates this.
+	
+	* <<Merge Configuration>> - merge configuration into current configuration, replacing user groups, account mappers, and 
+	group to account mappings with the same name.  It uses the selected persistence factory and inserts the group to account
+	mappers in the selected host to group mapping.
+	
+ On the more detailed page from clicking add or edit, you see various fields to fill in.  Most of these are straight
+forward.  The text to the left of the fields reads as a sentence to help clarify the purpose of each field.  Most
+fields provide an example.  You will see a 'type' drop down menu, which when changed, changes what other fields 
+are available since not all fields are appropriate for each type.
+
+* Example
+
+ Let's go through an example to understand the mappings logic by analyzing the configuration XML. A request comes in to map 
+user DN="/DC=org/DC=doegrids/OU=People/CN=John Smith" FQAN="/atlas/usatlas" 
+coming from gatekeeper "/DC=org/DC=doegrids/OU=Services/CN=mygk.usatlas.bnl.gov".  Gums will first 
+look through the hostToGroupMappings section to find a match to the gatekeeper CN. Say we have:
+
++---------------------------+
+<hostToGroupMappings>
+	<!-- RHIC gatekeepers -->
+	<hostToGroupMapping cn='star*.*.bnl.gov' ... />
+	<hostToGroupMapping cn='phenix*.*.bnl.gov' ... />
+
+	<!-- ATLAS test gatekeeper -->
+	<hostToGroupMapping cn='mygk.usatlas.bnl.gov' ... />
+
+	<!-- Rest of ATLAS gatekeepers -->
+	<hostToGroupMapping cn='*.usatlas.bnl.gov' ... />
+</hostToGroupMappings>
++---------------------------+
+
+ GUMS will go through that list <<in the order specified>>, and find the first match to the "wildcard" attribute. 
+In this case, we match the third hostToGroupMapping specification. Notice that if you put the third 
+hostToGroupMapping last, it would never actually be used, because mygk.usatlas.bnl.gov also matches 
+"*.usatlas.bnl.gov", which covers a broader range of hosts. If you have broader match together with 
+more specific cases, the more specific cases must preceed the broader case.
+
+ Let's look at what was hidden in the hostToGroupMapping entry; there are additional attributes, 
+in particular "groups". This attribute refers to group mappings. In our case it is:
+
++---------------------------+
+<hostToGroupMapping cn='mygk.usatlas.bnl.gov' groups='atlasProd,usatlasPool,ivdglPool, ...' />
++---------------------------+
+
+ GUMS will now go through the list of groups (i.e. groupToAccountMappings) in the order specified 
+and choose the first one that matches the given credentials. GUMS will check whether 
+the credentials are part of atlasProd; if not, then usatlasPool, and so on, until 
+either a match is found or the list ends. The first match will define the mapping, and 
+the user will get mapped accordingly. As before, if you have both a broad default 
+and a more specific case, the specific case must come first.
+
+ In a correct configuration, each group (e.g., atlasProd, usatlasPool,...) must be defined 
+in the groupToAccountMappings section in a groupToAccountMapping element. GUMS first checks the first one 
+listed, e.g., atlasProd. A groupToAccountMapping element contains userGroup elements. Let's 
+look at the atlasProd group mapping:
+
++---------------------------+
+<groupToAccountMapping 
+	name='atlasProd'
+	userGroups='osgusatlas, osgusatlasBackup'
+	.../>
++---------------------------+
+
+ The userGroups defines the member which are allowed to be part of this map. GUMS will 
+go through the list of user groups in the order specified.  If the user is a member of
+osgusatlas, it will be done with this step; if not, it will check for membership in
+osgusatlasBackup.  If this also fails, this groupToAccountMapping will not
+be chosen to perform the mapping and GUMS tries additional groupToAccountMappings
+if they are defined in the hostToGroupMapping.
+
+  Let's look at what was hidden in the groupToAccountMapping entry; there are additional attributes, 
+in particular "accountMappers", which map a grid identity to a local account:
+
++---------------------------+
+<groupToAccountMapping 
+	name='atlasProd'
+	userGroups='osgusatlas, osgusatlasBackup'
+	accountMappers='bnlLdap, usatlasProd'/>
++---------------------------+
+
+ GUMS will go through the list of account mappers in order. 
+It will first try bnlPool, which as it turns out in our case will
+attempt to lookup the user in BNL's LDAP server.  If
+the user is found, it returns the local account and this 
+is the final result of the request.  If not, it looks up whether the user
+is a member of usatlasProd.  If this succeeds, this is the final
+result of the request.  If not, since there are no more 
+account mappers, the final result returned is 'null', meaning this user cannot be mapped.
+
+ Now let's look at a user group which was referred to in the groupToAccountMapping:
+
++---------------------------+
+<vomsUserGroup
+	name='osgusatlas'
+	vomsServer='bnlVoms'
+	remainderUrl='/atlas/services/VOMSAdmin'
+	voGroup="/atlas/usatlas"
+	acceptProxiesWithoutFQAN="true"/>
++---------------------------+
+
+ This says all the people in USATLAS, retrieved through the server specified by
+the VOMS server element 'bnlVoms', are part of this group. The attribute 
+'remainderUrl' will be described below.  The attribute 
+'acceptProxiesWithoutFQAN="true"' means standard/non-VOMS proxies are allowed. 
+Our case, DN='/DC=org/DC=doegrids/OU=People/CN=John Smith' 
+FQAN='/atlas/usatlas', is clearly part of /atlas/usatlas. Even if it 
+came in with no FQAN, however, it would still be considered a match, 
+and get mapped. If it came with a different FQAN, though, it wouldn't 
+have matched the FQAN; if present, it needs to match. One can use matchFQAN 
+to change how the FQAN is matched. The persistenceFactory attribute
+refers to a persistence factory that has been defined that will
+cache the users of this VO.  There are other types of user groups
+besides vomsUserGroup which will be explained later.
+
+ Let's also look at an account mapper which was referred to in the groupToAccountMapping:
+
++---------------------------+
+<gecosLdapAccountMapper
+	name='bnlLdap'
+	jndiLdapUrl='ldap://ldap.bnl.gov/dc=domain,dc=mysite,dc=gov'/>
++---------------------------+ 
+ 
+ This says to query ldap at 'ldap://ldap.bnl.gov' in the domain 'dc=domain,dc=mysite,dc=gov'.
+If the user's CN matches a gecos field in ldap, the respective account is returned.  There
+are other types of account mappers besides gecosLdapAccountMapper which are explained later.
+
+ Almost done with this example. Let's look at the persistence factory referred to in the user group:
+
++---------------------------+
+ <hibernatePersistenceFactory
+ 	name='mysql'
+	hibernate.connection.url='jdbc:mysql://mydb.mysite.org/GUMS_1_3'
+	hibernate.connection.driver_class='com.mysql.jdbc.Driver'
+	.../>
++---------------------------+ 
+
+ This says is to use a MySQL database at 'mydb.mysite.org/GUMS_1_3' to cache user information.  
+Note that besides being referred to by user groups to store users, persistence factories are referred 
+to by some account mapper types to store mappings.
+
+ Finally, let's look at the VOMS server referred to in the user group:
+ 
++---------------------------+ 
+	<vomsServer
+		name='bnlVoms'
+		baseUrl='https://griddev01.usatlas.bnl.gov:8443/voms'
+		persistenceFactory='mysql' 
+		sslCertfile='/etc/grid-security/gumscert.pem'
+		sslKey='/etc/grid-security/gumskey.pem'
+		sslCAFiles='/etc/grid-security/certificates/*.0'
+		.../>
++---------------------------+ 
+
+ This says to lookup VO membership at the server 'griddev01.usatlas.bnl.gov' 
+and to cache the users in persistence factory 'mysql'.  The actual URL
+used for the request is the baseUrl concatenated with the remainderUrl specified
+in the VOMS user group.  This allows for sharing a server serving multiple VOs. Also, 
+be sure that the certificates referenced in sslCertfile, sslKey, and sslCAFiles have
+read access by Tomcat (e.g. readable by user 'daemon' in VDT/OSG).
+
+ You should now understand the basic way GUMS makes mapping decisions.
+
+* Configuration Elements
+
+ The configuration elements with more than one type will first be described.
+
+** Peristence Factories
+
+ There are currently three types of persistence factores:
+ 
+	* <<hibernate>> - for storing user information in a database.  Hibernate is the name of a Java library that 
+	stores Java object in a relational database.  GUMS currently supports MySQL but could be extended to support other databases
+	will mimimal effort (i.e. Postgres, Oracle, ...).
+
+	* <<ldap>> - for storing user information in a special GUMS area within a site's LDAP server as well as for assigning
+	primary and secondary groups to accounts in the main LDAP tree.  To support this LDAP needs access to the GUMS LDAP schema file.  
+	Please see the {{{installation_manual.html}manual installation}} section for instructions on how to configure LDAP.
+	
+	* <<local>> - for storing user information in a MySQL database as well as for assigning
+	primary and secondary groups to accounts in the main LDAP tree.  LDAP doesn't need to be set 
+	up with the GUMS schema for this type.
+
+ Below are the steps to enable GSSAPI and Kerberos in the LDAP/local persistence factory (from Richard Jones):
+ 	
++----------------+
+
+   1. Use kadmin to create a credential for a new service principal called gums/<your gums 
+host FQDN>
+   2. Use kadmin to store this new credential in a file called ldapgums.keytab, as in 
+"ktadd -k ldapgums.keytab gums/<your gums host FQDN>"
+   3. Save the keytab file you created in the previous step in the 
+$VDT_LOCATION/tomcat/v55/conf directory. Make the owner daemon:daemon and disable all of 
+its group/world access bits.
+   4. Edit your ldap configuration (usually /etc/openldap/slapd.conf) and add access 
+permissions for the new principal to grant read/write permission to the GUMS portion of 
+the ldap tree.  The following example should be customized to fit your own ldap installation:
+    access to dn.subtree="ou=GUMS,dc=pan,dc=phys,dc=uconn,dc=edu" 
+        by dn="uid=gums/pan.phys.uconn.edu,cn=phys.uconn.edu,cn=gssapi,cn=auth" write
+        by users auth
+        by anonymous auth 
+    	access to * by * read
+Then restart the ldap server to reread the configuration.  
+   5. Create a keytab called ldaproot.keytab containing the principal that the ldap server 
+accepts as its root identity -- root/pan.phys.uconn.edu in my case -- and save it in the 
+tomcat/v55/conf directory.  Make the owner daemon:daemon and disable all of its group/world 
+access bits.
+   6. Create a file called jaas.conf containing the lines listed below and save it in the 
+tomcat/v55/conf directory.  It must be readable by user daemon, but otherwise has no 
+specific required permissions.
+   7. Edit the script tomcat/v55/bin/catalina.sh and add the if clause listed below to point 
+the jgss security layer to the jaas.conf file, if it exists.  This modification should be 
+backwards compatible.
+   8. Edit the vdt-app-data/gums/config/gums.config xml file and change 
+java.naming.security.authentication from 'simple' to 'GSSAPI'.  The arguments 
+java.naming.security.principal and java.naming.security.credentials can be anything (are 
+ignored), and the principal to be passed to the ldap server is the one identified (see 
+below) in the jaas.conf file.  No plaintext passwords are needed any more.
+
+Listing of jaas.conf:
+
+    com.sun.security.jgss.initiate {
+      com.sun.security.auth.module.Krb5LoginModule required
+      useKeyTab=true
+      keyTab="/usr/local/osg/tomcat/v55/conf/ldaproot.keytab"
+      storeKey=true
+      principal="root/pan.phys.uconn.edu"
+      doNotPrompt=true;
+    };
+
+
+Listing of new if-clause in catalina.sh:
+
+    # Load the configuration for the JAAS security context
+    if [ -r "$CATALINA_HOME"/conf/jaas.conf ]; then
+      JAVA_OPTS="$JAVA_OPTS \
+      -Djavax.security.auth.useSubjectCredsOnly=false \
+      -Djava.security.krb5.conf=/etc/krb5.conf \
+      -Djava.security.auth.login.config=$CATALINA_HOME/conf/jaas.conf"
+    fi
++----------------+
+	
+*** Centrally stored configuration	
+	
+ Currently, except for the ldap persistence factory, you can select the "Store Configuration" box to have the configuration stored
+in that persistence factory.  This allows multiple GUMS servers to share the same configuration for clustering
+purposes. A copy of the configuration is still kept current in .../WEB-INF/config/gums.config.  To change the configuration stored
+in the persistence factory, simply change .../WEB-INF/config/gums.config (either directly by hand or indirectly through the web interface)
+and the databases configuration will automatically be updated.  This, in turn will update the configuration on all other GUMS 
+servers also configured to use the same underlying storage used by the persistence factory.
+
+** Account Mappers
+
+ There are currently five types of account mappers:
+ 
+	* <<group>> - for mapping all users to the same account.
+	
+	* <<manual>> - for mapping a user to a manually added account.  On the web interface these are added 
+	via the "Manual User Group Members" link.  When adding a mapping, you will choose this account mapper 
+	as the one that has access to this this mapping.
+	
+	* <<pool>> - for mapping a user to an account from a pool of accounts, which is automatically assigned.  The administrator
+	need only add the pool of accounts to GUMS, which are added on the web interface via the "Manage Pool Accounts" link.
+	
+	* <<gecosLdap>> - for mapping a user to an account in LDAP if the user's name from her certificate CN matches a 
+	name found in the gecos attribute of LDAP.  The 'gecos' attribute is the default but can be set to another.  Likewise, 
+	the attribute that contains the account can also be set ('uid' is the default).  This type is independent of
+	the LDAP persistence factory and doesn't require LDAP be configured to use the GUMS LDAP schema.  Note that this 
+	type only reads from LDAP (vs writing).
+
+	* <<ldap>> - for mapping a user to an account in LDAP if the user's name from her certificate DN matches a 
+	name found in the 'description' attribute of LDAP.  The 'description' attribute is the default but can be set to another.  Likewise, 
+	the attribute that contains the account can also be set ('uid' is the default).  This type is independent of
+	the LDAP persistence factory and doesn't require LDAP be configured to use the GUMS LDAP schema.  Note that this 
+	type only reads from LDAP (vs writing).
+	
+	* <<gecosNIS>> - for mapping a user to an account using NIS if the user's name from her certificate DN matches a 
+	name found in the gecos attribute of NIS.  The 'gecos' attribute is the default but can be set to another.  Likewise, 
+	the attribute that contains the account can also be set ('uid' is the default).
+ 
+ Keep in mind that GUMS does not create accounts, it only returns the account name.  Therefore, a prerequisite to using
+GUMS is to create all the accounts that GUMS can map to at your local site.
+ 
+** User Groups
+
+ There are currently four types of user groups:
+ 
+	* <<manual>> - for checking membership against a group of manually added users. On the web interface these are added 
+	via the "Manual User Group Members" link.  When adding a user, you will choose this user group as the one that
+	has access to this this user.  
+	
+	* <<voms>> - for checking membership against users stored at a {{{http://www.globus.org/grid_software/security/voms.php}VOMS}} 
+	(Virtual Organization Membership Service) server.  Users are downloaded every few hours from the server and stored locally, which
+	is where the checking occurs.
+	
+	* <<ldap>> - for checking membership against users from LDAP. The LDAP field to contain the certificate DN can be specified 
+	('description' is the default).  This type is independent of the LDAP persistence factory and doesn't require LDAP be configured to 
+	use the GUMS LDAP schema.  Note that this type only reads from LDAP.
+ 
+ Keep in mind that GUMS does not create accounts, it only returns the account name.  Therefore, a prerequisite to using
+GUMS is to create all the accounts that GUMS maps to at your local site.
+
+ You may choose whether users of this user group have "read self", "read all", or "write" access to GUMS.  At least one should be
+configured with "write" access so that GUMS can be administered.
+
+*** VOMS User Group Matching
+
+ For 'voms' user groups, the vo/group and role affect what users are retrieved from the VOMS server and put into the database (regardless of other options):
+
+	* <<vo/group is empty, role is empty>>  =>  all members are retrieved.
+	
+	* <<vo/group is set, role  is empty>>  =>  only members in vo/group are retrieved.
+	
+	* <<vo/group is empty, role is set>>  =>  <not valid>.
+	
+	* <<vo/group is set, role is set>>  =>  only members in vo/group with role are retrieved.
+
+ These values along with whether non-VOMS certificates are allowed (acceptProxyWithoutFQAN) and how 
+a VOMS certificate's FQAN is matched (matchFQAN) determine how users are matched.  FQAN stands for Fully Qualified Attribute Name and
+comprises the string: /<VO>/<group>/Role=<role>.
+
+	* <<acceptProxyWithoutFQAN=true, matchFQAN=?>>  =>  match if user's FQAN is null and his DN is found in database.
+	
+	* <<acceptProxyWithoutFQAN=false, matchFQAN=ignore>>  =>  match if user's FQAN is set to anything and his DN found in database.
+	
+	* <<acceptProxyWithoutFQAN=false, matchFQAN=vo>>  =>  match if user's VO matches and his DN found in database.
+	
+	* <<acceptProxyWithoutFQAN=false, matchFQAN=vogroup>>  =>  match if user's VO and group match and his DN found in database.
+
+	* <<acceptProxyWithoutFQAN=false, matchFQAN=role>>  =>  match if user's role matches and his DN found in database.
+
+	* <<acceptProxyWithoutFQAN=false, matchFQAN=vorole>>  =>  match if user's VO and role match and his DN found in database.
+
+	* <<acceptProxyWithoutFQAN=false, matchFQAN=exact>>  =>  match if user's VO, group, and role match and his DN found in database.
+	
+ As you can see, there is a lot of flexibility for matching and user retrieval. 
+ 
+** OSG-User-VO-Map
+
+ If you need to generate an OSG-user-VO-map, which is used for VO accounting purposes, you should create a 'group to account mapping'
+for each VO you want to show up in this file and fill in the the 'Accounting VO' and 'Accounting VO Subgroup' fields.
+
+

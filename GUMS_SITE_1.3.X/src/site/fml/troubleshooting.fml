@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<faqs id="General FAQ">
+  <part id="General Tips">
+  	<title>General Tips</title>
+    <faq id="logs">
+      <question>Where can I find the logs?</question>
+      <answer>
+        <p>
+		    There are 2 different set of logs for GUMS: the client logs and the server logs. To solve some problems, you 
+		    may also look in the apache logs (VDT installation only).
+			The client logs are located in $VDT_LOCATION/gums/var/log for a VDT installation or /var/log for a
+			manual installation.  These logs cover the activities associated with the gums and gums-host commands:
+			<ul>
+				<li>gums-developer.[USER].log</li>
+				<li>gums-edg-security.[USER.log</li>
+				<li>gums-privilege.[USER].log</li>
+			</ul>
+			Their location and information levels are controlled by the log4j.properties located in $VDT_LOCATION/gums for a
+			VDT installation or /var/log for a manual installation.
+			The server logs are located in $VDT_LOCATION/tomcat/v5/logs for a VDT installation or 
+			/var/logs/tomcat5 for a manual installation.  These logs cover those activities using web services/ui:
+			<ul>
+				<li>gums-service-admin.log</li>
+				<li>gums-service-cybersecurity.log</li>
+				<li>gums-service-edg-security.log</li>
+				<li>gums-service-privilege.log</li>
+			</ul>
+			Their location and information levels are controlled by the log4j.properties located in $VDT_LOCATION/gums for a
+			VDT installation or /var/log for a manual installation.
+			The	Apache logs are located in $VDT_LOCATION/apache/logs. 
+        </p>
+      </answer>
+    </faq>
+  </part>
+  <part id="Access Problems">
+  	<title>Access Problems</title>
+    <faq id="auth denied">
+      <question>I keep getting AuthorizationDenied...</question>
+      <answer>
+        <p>
+			This occurs if you have not added your DN to the 'admins' user group using the 'addAdmin' tool or if 
+			the 'admins' user group is not added to the configuration with "write" access.  This can also happen you if 
+			you use gums-host to retrieve maps that do not match the certificate host.  A couple of 
+			other things to watch for are:
+			<ul>
+				<li>If you encounter this in your browser, verify you are using the correct certificate.</li>
+				<li>From the command line, verfiy you have a valid proxy (grid or voms) and it is for for the DN that is
+				part of the admins user group.</li>
+				<li>If you have access to the GUMS database in MySql, execute the following query:
+				select userDN from User where userGroup = 'admins'.</li>
+			</ul>
+        </p>
+      </answer>
+    </faq>
+    <faq id="error connecting">
+      <question>I keep getting "An error accoured when connecting to GUMS: (0)null"</question>
+      <answer>
+        <p>
+			This is probably a problem related to apache in VDT: it doesn't accept GT3 style proxy.  Check your apache log, you might find
+			"Certificate Verification: Error (20): unable to get local issuer certificate".  Try using "grid-proxy-init -old" when 
+			generating your proxy certificate.
+        </p>
+      </answer>
+    </faq>
+  </part>  
+</faqs>

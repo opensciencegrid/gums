@@ -1,0 +1,164 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>gums</groupId>
+  <artifactId>gums-site</artifactId>
+  <version>1</version>
+  <packaging>pom</packaging>
+  <name>Maven</name>
+  <url>http://maven.apache.org/maven2</url>
+  <inceptionYear>2004</inceptionYear>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <locales>en</locales>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <scm>
+    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege</connection>
+    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege</developerConnection>
+    <url>https://svn.usatlas.bnl.gov/svn/privilege</url>
+  </scm>
+  
+  <mailingLists>
+    <mailingList>
+      <name>GUMS user list</name>
+      <subscribe>
+        http://lists.bnl.gov/mailman/listinfo/gums-users-l
+      </subscribe>
+      <unsubscribe>
+        http://lists.bnl.gov/mailman/listinfo/gums-users-l
+      </unsubscribe>
+	  <post>
+        gums-users-l@lists.bnl.gov
+      </post>
+      <archive>
+        http://lists.bnl.gov/pipermail/gums-users-l/
+      </archive>
+    </mailingList>
+    <mailingList>
+      <name>GUMS developer list</name>
+      <subscribe>
+        http://lists.bnl.gov/mailman/listinfo/gums-dev-l
+      </subscribe>
+      <unsubscribe>
+        http://lists.bnl.gov/mailman/listinfo/gums-dev-l
+      </unsubscribe>
+	  <post>
+        gums-dev-l@lists.bnl.gov
+      </post>      
+      <archive>
+        http://lists.bnl.gov/pipermail/gums-dev-l/
+      </archive>
+    </mailingList>
+  </mailingLists>
+  
+  <reporting>
+	<plugins>
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-project-info-reports-plugin</artifactId>
+		<reportSets>
+			<reportSet>
+	            <id>Project</id>
+	            <reports>
+	               <report>dependency-convergence</report>
+	               <report>project-team</report>
+	               <report>mailing-list</report>
+	               <!--report>summary</report-->
+	               <!--report>cim</report-->
+	               <!--report>issue-tracking</report-->
+	               <report>license</report>
+	               <!--report>scm</report-->
+	            </reports>
+			</reportSet>
+		</reportSets>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<configuration>
+				<aggregate>true</aggregate>
+			</configuration>
+		</plugin>
+	  	<plugin>
+	    	<groupId>org.apache.maven.plugins</groupId>
+	    	<artifactId>maven-jxr-plugin</artifactId>
+	    	<configuration>
+	      		<aggregate>true</aggregate>
+	    	</configuration>
+		</plugin>
+	  	<plugin>
+	    	<groupId>org.apache.maven.plugins</groupId>
+	    	<artifactId>maven-pmd-plugin</artifactId>
+	    	<configuration>
+	      		<aggregate>true</aggregate>
+	    	</configuration>
+	  	</plugin>
+		<!--plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-changelog-plugin</artifactId>
+		</plugin-->
+	</plugins>
+  </reporting>
+  
+  <developers>
+       <developer>
+            <id>jaypackard</id>
+            <name>Jay Packard</name>
+            <email>jpackard@bnl.gov</email>
+            <organization>BNL</organization>
+            <organizationUrl>http://www.bnl.gov</organizationUrl>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+           <timezone>-5</timezone>
+        </developer>
+		<developer>
+            <id>johnhover</id>
+            <name>John Hover</name>
+            <email>jhover@bnl.gov</email>
+            <organization>BNL</organization>
+            <organizationUrl>http://www.bnl.gov</organizationUrl>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+           <timezone>-5</timezone>
+        </developer>
+    </developers>
+
+    <contributors>
+        <contributor>
+            <name>John Weigand</name>
+            <email>weigand@fnal.gov</email>
+            <organization>BNL</organization>
+            <organizationUrl>http://www.fnal.gov/</organizationUrl>
+            <roles>
+               <role>Testing and Integration</role>
+            </roles>
+            <timezone>-6</timezone>
+        </contributor>
+    </contributors>
+
+    <licenses>
+        <license>
+            <name>GUMS License</name>
+            <url>license.txt</url>
+            <comments>GUMS is licensed by the GNU General Public License:</comments>
+        </license>
+    </licenses>
+    
+
+        <modules>
+		<module>../gums-core</module>
+		<module>../gums-service</module>
+		<module>../gums-client</module>
+	</modules>
+  
+</project>
