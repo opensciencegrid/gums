@@ -4,7 +4,7 @@
     <groupId>gov.bnl.racf.gums</groupId>
     <artifactId>gums-core</artifactId>
     <name>gums-core</name>
-    <version>1.3.18.003</version>
+    <version>1.3.18.003-SNAPSHOT</version>
     <description>GUMS Core provides the core functionality used by other GUMS components</description>
 
   <distributionManagement>
@@ -64,9 +64,9 @@
 	</pluginRepositories>
 
     <scm>
-        <connection>scm:svn:http://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.3.18.003/GUMS_CORE_1.3.X</connection>
-        <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.3.18.003/GUMS_CORE_1.3.X</developerConnection>
-        <url>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.3.18.003/privilege</url>
+        <connection>scm:svn:http://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CORE_1.3.X</connection>
+        <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_CORE_1.3.X</developerConnection>
+        <url>http://svn.usatlas.bnl.gov/svn/privilege/</url>
     </scm>
 
     <!-- drs - some serious stuff missing here - JDK version, JUnit version, etc. -->
