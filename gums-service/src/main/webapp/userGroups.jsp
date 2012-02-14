@@ -465,7 +465,7 @@ else if ("edit".equals(request.getParameter("command"))
 		    		i.e.
 			    </td>
 			    <td nowrap>
-			    	/atlas/services/VOMSAdmin
+			    	/atlas/services/VOMSCompatibility
 			    </td>
 			</tr>
 			<tr>
