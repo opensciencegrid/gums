@@ -129,6 +129,10 @@
                             <namespace>http://glite.org/wsdl/services/org.glite.security.voms.service.admin</namespace>
                             <targetPackage>org.glite.security.voms</targetPackage>
                         </mapping>
+                        <mapping>
+                            <namespace>http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility</namespace>
+                            <targetPackage>org.glite.security.voms</targetPackage>
+                        </mapping>
                     </mappings>
                     
                     <wsdlFiles>
