@@ -63,14 +63,9 @@
 
 
 	<scm>
-		<connection>
-			scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_SERVICE_1.3.X
-		</connection>
-		<developerConnection>
-			scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_SERVICE_1.3.X
-		</developerConnection>
-		   <url>https://svn.usatlas.bnl.gov/svn/privilege/branches/GUMS_SERVICE_1.3.X
-		</url>
+		<connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/gums-1.3.x/gums-service</connection>
+		<developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/gums-1.3.x/gums-service</developerConnection>
+		   <url>https://svn.usatlas.bnl.gov/svn/privilege/branches/gums-1.3.x/gums-service</url>
 	</scm>
 
   	<build>
