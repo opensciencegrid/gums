@@ -69,8 +69,6 @@
         <url>http://svn.usatlas.bnl.gov/svn/privilege/</url>
     </scm>
 
-    <!-- drs - some serious stuff missing here - JDK version, JUnit version, etc. -->
-
     <build>
 
         <testResources>
@@ -180,7 +178,7 @@
                     </dependencies>
                 </plugin>
     
-                
+                <!-- 
                 <plugin>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <executions>
@@ -189,7 +187,6 @@
                             <phase>generate-sources</phase>
                             <configuration>
                                 <tasks>
-                                    <!-- 
                                     <mkdir dir="target/temp" />
                                     <copy filtering="on" todir="target/temp">
                                         <fileset includes="*.jar" dir="${user.home}/.m2/repository/org/apache/axis/axis-ant/1.4" />
@@ -202,7 +199,6 @@
                                     </copy>
                                     <ant antfile="wsdl2java.xml" target="createClientStub" inheritRefs="true" />
                                     <delete dir="target/temp" />
-                                    -->
                                     <copy todir="src/test/config">
                                         <fileset includes="gums.config.schema" dir="src/main/config/" />
                                         <fileset includes="gums.config.transform" dir="src/main/config/" />
@@ -258,6 +254,8 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            -->
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
