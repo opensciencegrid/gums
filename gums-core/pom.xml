@@ -475,6 +475,13 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
+                        <systemProperties>
+            				<property>
+                				<name>derby.stream.error.file</name>
+                				<value>target/derby.log</value>
+            				</property>
+        				</systemProperties>
+                        
                             <excludes>
                                 <exclude>**/**</exclude>
                             </excludes>
@@ -500,6 +507,12 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
+                            <systemProperties>
+            				   <property>
+                				   <name>derby.stream.error.file</name>
+                				   <value>target/derby.log</value>
+            				   </property>
+        				    </systemProperties>
                             <excludes>
                                 <exclude>**/Hibernate*</exclude>
                                 <exclude>**/*VOMS*Test*</exclude>
@@ -520,48 +533,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>local-test</id>
-            <!-- Standard tests and those that require Tomcat and MySQL to be installed
-                                and configured along with db.properties and hibernate.properties present and correctly
-                                configured within the src/test/config directory -->
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <!-- Standard and Local tests plus those that rely on an external voms and ldap server.  Requires
-                                voms.properties and ldap.properties be present and correctly
-                                configured within the src/test/config directory.  The voms server should be named griddev and
-                                contain group /griddev/subgriddev, role griddevRole, and users belonging to that group and role of
-                                /DC=org/DC=griddev/OU=People/CN=John Smith and /DC=org/DC=griddev/OU=People/CN=Jane Doe 12345.
-                                -->
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/.svn</exclude>
-                                <exclude>**/*Nis*</exclude>
-                            </excludes>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>test</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-release-plugin</artifactId>
-                        <version>2.1</version>
-                        <configuration>
-                            <tagBase>
-                                https://svn.usatlas.bnl.gov/svn/privilege/tags
-                            </tagBase>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+
     </profiles>
 </project>

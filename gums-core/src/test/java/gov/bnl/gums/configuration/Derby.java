@@ -30,7 +30,7 @@ public class Derby {
         // every time we run?
 
         String driver = "org.apache.derby.jdbc.EmbeddedDriver";
-        String dbName = "gums-test";
+        String dbName = "target/gums-test";
         String connectionURL = "jdbc:derby:" + dbName + ";create=true";
 
 	logger.info("connect to: " + connectionURL);
