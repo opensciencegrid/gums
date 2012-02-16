@@ -142,7 +142,7 @@ else {
                 i.e.
             </td>
             <td nowrap>
-                https://lcg-voms.cern.ch:8443/voms/atlas/services/VOMSAdmin
+                https://lcg-voms.cern.ch:8443/voms/atlas/services/VOMSCompatibility
             </td>
         </tr>
         <tr>

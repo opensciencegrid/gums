@@ -17,7 +17,7 @@
 			hibernate.connection.username='gums'
 			hibernate.connection.url='jdbc:mysql://localhost.localdomain:3306/GUMS_1_3'
 			hibernate.c3p0.idle_test_period='60'
-                        hibernate.connection.provider_class='org.hibernate.connection.C3P0ConnectionProvider'
+            hibernate.connection.provider_class='org.hibernate.connection.C3P0ConnectionProvider'
 			hibernate.connection.password='mysecret'/>
 	</persistenceFactories>
 

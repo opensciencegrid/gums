@@ -152,6 +152,8 @@
 		          </excludes>
 		        </configuration>
         	</plugin>
+        	
+        	<!--  
         	<plugin>
 		        <groupId>org.apache.maven.plugins</groupId>
 		        <artifactId>maven-war-plugin</artifactId>
@@ -163,10 +165,20 @@
 			           <filtering>false</filtering>
 			         </resource>
 			         </webResources>
+			         <resource>
+			           <directory>src/main/resources</directory>
+			           <targetPath>WEB-INF/classes</targetPath>
+			           <filtering>true</filtering>
+			           <includes>
+			              <include>*.properties</include>
+			              <include>*.schema</include>
+			              <include>*.template</include>
+			           </includes>
+			         </resource>
         		  </configuration>
         	</plugin>
         	
-        	<!-- 
+        	-->
         	<plugin>
 		        <groupId>org.apache.maven.plugins</groupId>
 		        <artifactId>maven-war-plugin</artifactId>
@@ -193,7 +205,7 @@
 			       </webResources>
 			    </configuration>
         	</plugin>
-        	-->
+
         	
             <plugin>
                <groupId>org.codehaus.cargo</groupId>
