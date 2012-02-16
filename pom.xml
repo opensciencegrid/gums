@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>gov.bnl.racf</groupId>
     <artifactId>gums</artifactId>
-    <version>1.3.18.004-SNAPSHOT</version>
+    <version>1.3.18.004</version>
     <packaging>pom</packaging>
     <name>Grid User Management System</name>
     <description>Grid authorization utility that allows the configuration of complex mapping between grid identities and UNIX accounts. </description>
@@ -19,9 +19,9 @@
     </ciManagement>
   
     <scm>
-  	     <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/gums-1.3.x</connection>
-  	     <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/gums-1.3.x</developerConnection>
-  	     <url>http://svn.usatlas.bnl.gov/svn/privilege/gums</url>
+  	     <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.3.18.004</connection>
+  	     <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.3.18.004</developerConnection>
+  	     <url>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.3.18.004</url>
     </scm>
   
     <organization>
