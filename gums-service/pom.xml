@@ -162,6 +162,21 @@
 			           <targetPath>WEB-INF/config</targetPath>
 			           <filtering>false</filtering>
 			         </resource>
+			         </webResources>
+        		  </configuration>
+        	</plugin>
+        	
+        	<!-- 
+        	<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-war-plugin</artifactId>
+		        <configuration>
+			       <webResources>
+			         <resource>
+			           <directory>src/main/config</directory>
+			           <targetPath>WEB-INF/config</targetPath>
+			           <filtering>false</filtering>
+			         </resource>
 			         <resource>
 			           <directory>src/main/classes</directory>
 			           <targetPath>WEB-INF/classes</targetPath>
@@ -178,6 +193,8 @@
 			       </webResources>
 			    </configuration>
         	</plugin>
+        	-->
+        	
             <plugin>
                <groupId>org.codehaus.cargo</groupId>
                <artifactId>cargo-maven2-plugin</artifactId>
@@ -216,6 +233,7 @@
             </configuration>
             </plugin>
         </plugins>
+        <!-- 
        <resources>
 	      <resource>
 	        <directory>src/main/java</directory>
@@ -230,7 +248,9 @@
 	          <include>**/log4j.properties</include>
 	        </includes>
 	      </resource>
-	    </resources> 
+	    </resources>
+	    -->
+	     
 	</build>
   
  	<dependencies> 
