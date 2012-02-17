@@ -429,6 +429,21 @@
 			<artifactId>xercesImpl</artifactId>
 			<version>2.9.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+		<dependency>
+		     <groupId>javax.activation</groupId>
+		     <artifactId>activation</artifactId>
+		      <version>1.1</version>
+	    </dependency>	
+    	<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mail</artifactId>
+		   <version>1.4.1</version>
+	    </dependency>	
 
  	</dependencies>  
 </project>

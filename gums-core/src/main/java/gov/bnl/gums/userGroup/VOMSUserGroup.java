@@ -476,7 +476,7 @@ public class VOMSUserGroup extends UserGroup {
             System.setProperties(p);
             List entries = new ArrayList();
             for (int n=0; n < users.length; n++) {
-            	GridUser gridUser = new GridUser(users[n]);
+            	GridUser gridUser = new GridUser(users[n], fqan);
                 entries.add(gridUser);
             }
             return entries;
