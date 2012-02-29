@@ -5,7 +5,7 @@
 	<artifactId>gums-client</artifactId>
 	<name>gums-client</name>
 	<packaging>jar</packaging>
-	<version>1.3.18.007</version>
+	<version>1.3.18.008-SNAPSHOT</version>
 	<description>GUMS Client provides the administrative command line tools to administer GUMS.
     It allows querying and changing the state of the GUMS server.</description>
 
@@ -73,9 +73,9 @@
     </pluginRepositories>
  
    	<scm>
-	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.3.18.007/gums-client</connection>
-	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.3.18.007/gums-client</developerConnection>
-    	<url>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.3.18.007/privilege</url>
+	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/gums-1.3.x/gums-client</connection>
+	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/branches/gums-1.3.x/gums-client</developerConnection>
+    	<url>http://svn.usatlas.bnl.gov/svn/privilege/</url>
 	</scm>
 	
     <build>
@@ -385,7 +385,7 @@
         <dependency>
             <groupId>gov.bnl.racf.gums</groupId>
             <artifactId>gums-core</artifactId>
-            <version>1.3.18.007</version>
+            <version>1.3.18.008-SNAPSHOT</version>
         </dependency>
 		<dependency>	
 			<groupId>log4j</groupId>
