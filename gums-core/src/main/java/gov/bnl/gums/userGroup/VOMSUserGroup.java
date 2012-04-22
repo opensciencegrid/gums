@@ -152,10 +152,10 @@ public class VOMSUserGroup extends UserGroup {
     
     public VOMSAdmin getVOMSAdmin() {
         try {
-            log.trace("VOMS Service Locator: url='" + getUrl() + "'");
+            log.trace("VOMS Service Locator: url='" + getUrl() + "/services/VOMSAdmin'");
 //            System.setProperty("axis.socketSecureManager", "org.glite.security.trustmanager.axis.AXISSocketManager");
             VOMSAdminServiceLocator locator = new VOMSAdminServiceLocator();
-            URL vomsUrl = new URL( getUrl() );
+            URL vomsUrl = new URL( getUrl() + "/services/VOMSAdmin" );
             log.info("Connecting to VOMS admin at " + vomsUrl);
             return locator.getVOMSAdmin(vomsUrl);
         } catch (Throwable e) {
@@ -166,9 +166,9 @@ public class VOMSUserGroup extends UserGroup {
     
     public VOMSCompatibility getVOMSCompatibility() {
         try {
-            log.trace("VOMS Service Locator: url='" + getUrl() + "'");
+            log.trace("VOMS Service Locator: url='" + getUrl() + "/services/VOMSAdmin'");
             VOMSCompatibilityServiceLocator locator = new VOMSCompatibilityServiceLocator();
-            URL vomsUrl = new URL( getUrl() );
+            URL vomsUrl = new URL( getUrl() + "/services/VOMSCompatibility" );
             log.info("Connecting to VOMS Compatibility at " + vomsUrl);
             return locator.getVOMSCompatibility(vomsUrl);
         } catch (Throwable e) {
@@ -176,7 +176,6 @@ public class VOMSUserGroup extends UserGroup {
             throw new RuntimeException("Couldn't get VOMS Compatibility interface: " + e.getMessage(), e);
         }    	
     }
-    
     
     
     

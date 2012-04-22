@@ -287,6 +287,7 @@
 					</execution>
 				</executions>
 			</plugin>
+<!-- maven-release-plugin requires maven 2.0.9+
 			 <plugin>
             <artifactId>maven-release-plugin</artifactId>
                 <version>2.1</version>
@@ -294,25 +295,27 @@
                     <tagBase>
                     https://svn.usatlas.bnl.gov/svn/privilege/tags
                     </tagBase>
-                    <!-- 
+                    <!- 
                     <checkModificationExcludes>
                         <checkModificationExclude>${basedir}/src/main/java/org/apache/xml/xml_soap/MapItem.java</checkModificationExclude>
                         <checkModificationExclude>${basedir}/src/main/java/gov/bnl/gums/admin/AdminSoapBindingStub.java</checkModificationExclude>
                         <checkModificationExclude>${basedir}/src/main/java/gov/bnl/gums/admin/GUMSAPIService.java</checkModificationExclude>
                         <checkModificationExclude>${basedir}/src/main/java/gov/bnl/gums/admin/GUMSAPIServiceLocator.java</checkModificationExclude>
                     </checkModificationExcludes>
-                    -->
+                    ->
                 </configuration>
             </plugin>
+-->
 			
-			<plugin>
+        <!--
+commented out by drs - the rpm program is not available on all platforms and this might
+hide other problems. To build an rpm, type mvn rpm:rpm 
+
+However, it can only be run from the normal lifecycle, no via rpm:rpm, so it must stay. 
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>rpm-maven-plugin</artifactId>
-<!-- commented out by drs - the rpm program is not available on all platforms and this might
-     hide other problems. To build an rpm, type mvn rpm:rpm 
-     
-     However, it can only be run from the normal lifecycle, no via rpm:rpm, so it must stay. 
--->
+
 
                 <executions>
                     <execution>
@@ -378,7 +381,8 @@
                     </mappings>                    
                 </configuration>
             </plugin>
-		</plugins>
+        -->
+        </plugins>
     </build>
 	 
  	<dependencies> 

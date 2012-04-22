@@ -465,7 +465,7 @@ else if ("edit".equals(request.getParameter("command"))
 		    		i.e.
 			    </td>
 			    <td nowrap>
-			    	/atlas/services/VOMSCompatibility
+			    	/atlas  i.e. the VO name.
 			    </td>
 			</tr>
 			<tr>

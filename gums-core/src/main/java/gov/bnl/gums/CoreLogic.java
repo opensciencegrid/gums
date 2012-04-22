@@ -404,7 +404,6 @@ public class CoreLogic {
     }
 
     private String mapImpl(String hostname, GridUser user) throws Exception {
-System.out.println("drs - in mapImpl " + hostname + " " + user);
         Configuration conf = gums.getConfiguration();
         HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
         if (host2GroupMapper == null) {
@@ -412,27 +411,19 @@ System.out.println("drs - in mapImpl " + hostname + " " + user);
             gumsAdminLog.warn(message);
         	throw new RuntimeException(message);
         }
-System.out.println("drs - have a host2GroupMapper " + host2GroupMapper);
 
         Iterator g2AMappingsIt = host2GroupMapper.getGroupToAccountMappings().iterator();
         while (g2AMappingsIt.hasNext()) {
             GroupToAccountMapping g2AMapping = (GroupToAccountMapping) conf.getGroupToAccountMapping( (String)g2AMappingsIt.next() );
-System.out.println("drs - have a GroupToAccountMapping " + g2AMapping);
             Collection userGroups = g2AMapping.getUserGroups();
             Iterator userGroupsIt = userGroups.iterator();
             while (userGroupsIt.hasNext()) {
             	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupsIt.next() );
-System.out.println("drs have userGrouip " + userGroup);
-System.out.println("drs - see if " + user + " is in the userGroup");
                 if (userGroup.isInGroup(user)) {
-System.out.println("drs - it is!");
                 	Collection accountMappers = g2AMapping.getAccountMappers();
                     Iterator accountMappersIt = accountMappers.iterator();
-System.out.println("drs Iterate thru accountMappers");
                     while (accountMappersIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-System.out.println("drs have accountMapper " + accountMapper);
-System.out.println("drs call accountMapper.mapUser(" + user);
                         String localUser = accountMapper.mapUser(user, true);
                         if (localUser != null)
                             return localUser;

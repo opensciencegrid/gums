@@ -76,7 +76,6 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 	 */
 	public HibernatePersistenceFactory() {
     	log.trace("HibernatePersistenceFactory instanciated");
-	log.info("drs - HibernatePersistenceFactory - no arg constructor");
     	timer.scheduleAtFixedRate(closeExpiredSessions, new Date(new Date().getTime()+expireTime), expireTime);
     }
     
@@ -88,7 +87,6 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     public HibernatePersistenceFactory(Configuration configuration) {
     	super(configuration);
     	log.trace("HibernatePersistenceFactory instanciated");
-	log.info("drs - HibernatePersistenceFactory - constructor with configuration");
     	timer.scheduleAtFixedRate(closeExpiredSessions, new Date(new Date().getTime()+expireTime), expireTime);
     }    
 
@@ -101,12 +99,10 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     public HibernatePersistenceFactory(Configuration configuration, String name) {
     	super(configuration, name);
     	log.trace("HibernatePersistenceFactory instanciated");
-	log.info("drs - HibernatePersistenceFactory - constructed with configuration and name " + name);
     	timer.scheduleAtFixedRate(closeExpiredSessions, new Date(new Date().getTime()+60000), 60000);
     }
     
     public PersistenceFactory clone(Configuration configuration) {
-	log.info("drs - HibernatePersistenceFactory cloned");
     	HibernatePersistenceFactory persistenceFactory = new HibernatePersistenceFactory(configuration, new String(getName()));
     	persistenceFactory.setDescription(new String(getDescription()));
     	persistenceFactory.setStoreConfig(getStoreConfig());
@@ -167,7 +163,6 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 	}
 
 	public SessionFactory retrieveSessionFactory() throws Exception {
-		log.info("drs - in HibernatePersistenceFactory.retrieveSessionFactory");
 		if (sessionFactory == null) {
 			synchronized(propertyToPFSessionCreatorMap) {
 				// If there's a hibernate persistence factory with the same properties, use it, 
@@ -191,9 +186,6 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 	}
 	
     private SessionFactory buildSessionFactory() {
-		log.info("drs - in HibernatePersistenceFactory.buildSessionFactory");
-System.out.println("drs - In buildSessionFactory");
-System.out.println("drs - properties are " + getProperties());
 
         try {
             log.trace("Creating Hibernate Session Factory with the following properties: " + getProperties());
