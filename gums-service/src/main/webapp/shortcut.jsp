@@ -134,7 +134,7 @@ else {
 				VOMS URL:
             </td>
             <td>
-				<input maxlength="256" size="64" name="baseURL"/> (Leave blank if FQAN is cryptographically validated at the gatekeeper)
+				<input maxlength="256" size="64" name="baseURL"/>
             </td>
         </tr>
         <tr>
@@ -145,6 +145,62 @@ else {
                 https://lcg-voms.cern.ch:8443/voms/atlas/
             </td>
         </tr>
+        		<tr>
+			<td nowrap style="text-align: right;">
+				SSL Key:
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="sslKey"/>
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	/etc/grid-security/gumskey.pem
+		    </td>
+		</tr>	
+		<tr>
+			<td nowrap style="text-align: right;">
+				SSL Cert File:
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="sslCert"/>
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	/etc/grid-security/gumscert.pem
+		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				SSL Key Password:
+			</td>
+			<td>
+				<input type="password" maxlength="256" size="32" name="sslKeyPW"/> (leave blank if none)
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				SSL CA Files:
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="sslCA"/>
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		i.e.
+		    </td>
+		    <td nowrap>
+		    	/etc/grid-security/certificates/*.0
+		    </td>
+		</tr>
         <tr>
             <td nowrap style="text-align: right;">
 				Persistence Factory
