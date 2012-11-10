@@ -327,7 +327,8 @@ public class GUMS {
 	} // end GUMS() constructor
 
 	/**
-	 * Creates and initilializes a new instance of GUMS with a specified configuration store
+	 * Creates and initializes a new instance of GUMS with a specified 
+	 * configuration store.
 	 * 
 	 * @param confStore
 	 */
