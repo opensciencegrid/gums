@@ -49,6 +49,13 @@ public class GUMSAPIImpl implements GUMSAPI {
 	private Logger log = Logger.getLogger(GUMSAPI.class);
 	private Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
 	private Logger siteAdminLog = Logger.getLogger(GUMS.siteAdminLogName);
+	
+	/** 
+	 * isInWeb represents whether this object is currently instantiated within a
+	 * Servlet container, e.g. Tomcat. When false, it typically means the object
+	 * has been instantiated during unit tests or other dummy situations. 
+	 *
+	 */
 	private boolean isInWeb = false;
 
 	{
