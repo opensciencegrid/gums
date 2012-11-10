@@ -29,7 +29,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 /** Implements the logic to retrieve the configuration from the gums.config file
- * taken from the classpath. The file will be reloaded as soon as if it changes,
+ * taken from the classpath. The file will be reloaded as soon as it changes,
  * on demand (no polling).
  *
  * @author Gabriele Carcassi, Jay Packard
