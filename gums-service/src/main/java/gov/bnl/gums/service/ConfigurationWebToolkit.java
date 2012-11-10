@@ -225,7 +225,7 @@ public class ConfigurationWebToolkit implements Remote {
 				((VOMSUserGroup)userGroup).setRole( request.getParameter("role") );
 			// validate current state wrt matchFQAN and vogroup fields. 
 			// https://jira.opensciencegrid.org/browse/GUMS-1
-			if (request.getParameter("matchFQAN")!=null) && request.getParameter("matchFQAN").equals("vo"))
+			if (request.getParameter("matchFQAN")!=null && request.getParameter("matchFQAN").equals("vo"))
 			    if (request.getParameter("vogroup")!=null && request.getParameter("vogroup").equals(""))
 			    	throw new RuntimeException("If matchFQAN is 'vo' then 'vogroup' must be specified e.g., '/<voname>'.");
 			

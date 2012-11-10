@@ -125,10 +125,11 @@
 				</executions>
 			</plugin>
 			-->
-			 	
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
 				<configuration>
 					<compilerVersion>1.6</compilerVersion>
 					<source>1.5</source>
@@ -146,6 +147,7 @@
 			<plugin>
 		        <groupId>org.apache.maven.plugins</groupId>
 		        <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12.4</version>
 		        <configuration>
 			      <excludes>
 		            <exclude>**/.svn</exclude>
@@ -295,11 +297,14 @@
             <artifactId>privilege-xacml</artifactId>
             <version>2.2.4</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.opensaml</groupId>
             <artifactId>opensaml</artifactId>
             <version>1.0.1</version>
         </dependency>
+        -->
+        
         <dependency>
             <groupId>org.opensaml</groupId>
             <artifactId>opensaml</artifactId>
@@ -315,6 +320,14 @@
 		<artifactId>mail</artifactId>
 		<version>1.4.1</version>
 	</dependency>	
+     <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+     </dependency>
+	
+	
  	</dependencies>  
   
 </project>
