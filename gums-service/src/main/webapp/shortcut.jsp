@@ -131,7 +131,7 @@ else {
 		</tr>
 		<tr>
             <td nowrap style="text-align: right;">
-				VOMS URL:
+				VOMS Service URL:
             </td>
             <td>
 				<input maxlength="256" size="64" name="baseURL"/>
@@ -139,29 +139,13 @@ else {
         </tr>
         <tr>
             <td nowrap style="text-align: right;">
-                i.e.
+                e.g.
             </td>
             <td nowrap>
                 https://lcg-voms.cern.ch:8443/voms/atlas/
             </td>
         </tr>
-        		<tr>
-			<td nowrap style="text-align: right;">
-				SSL Key:
-			</td>
-			<td>
-				<input maxlength="256" size="32" name="sslKey"/>
-			</td>
-		</tr>
-	    <tr>
-    		<td nowrap style="text-align: right;">
-	    		i.e.
-		    </td>
-		    <td nowrap>
-		    	/etc/grid-security/gumskey.pem
-		    </td>
-		</tr>	
-		<tr>
+        <tr>
 			<td nowrap style="text-align: right;">
 				SSL Cert File:
 			</td>
@@ -171,12 +155,28 @@ else {
 		</tr>
 	    <tr>
     		<td nowrap style="text-align: right;">
-	    		i.e.
+	    		e.g.
 		    </td>
 		    <td nowrap>
 		    	/etc/grid-security/gumscert.pem
 		    </td>
 		</tr>
+        <tr>
+			<td nowrap style="text-align: right;">
+				SSL Key:
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="sslKey"/>
+			</td>
+		</tr>
+	    <tr>
+    		<td nowrap style="text-align: right;">
+	    		e.g.
+		    </td>
+		    <td nowrap>
+		    	/etc/grid-security/gumskey.pem
+		    </td>
+		</tr>	
 		<tr>
 			<td nowrap style="text-align: right;">
 				SSL Key Password:
