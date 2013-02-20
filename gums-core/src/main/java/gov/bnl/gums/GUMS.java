@@ -80,7 +80,7 @@ public class GUMS {
 
 						
 			if (updateMinutes != null ) {
-				if (updateMinutes > 0) {
+				if (updateMinutes.intValue() > 0) {
 					TimerTask updateTask = 
 						new TimerTask() {
 						public void run() {
@@ -109,7 +109,7 @@ public class GUMS {
 			} // end if updateMinutes not null
 			
 			if (updateBannedMinutes != null) {
-				if (updateBannedMinutes > 0) {
+				if (updateBannedMinutes.intValue() > 0) {
 					TimerTask updateBannedTask = new TimerTask() {
 						public void run() {
 							synchronized(this) {
@@ -138,7 +138,7 @@ public class GUMS {
 			}			
 
 			if (emailWarningHours != null) {
-				if (emailWarningHours > 0) {
+				if (emailWarningHours.intValue() > 0) {
 					TimerTask emailWarningTask = new TimerTask() {
 						public void run() {
 							synchronized(this) {
