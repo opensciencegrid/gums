@@ -296,8 +296,8 @@ public class GUMS {
 					gumsAdminLog.info("Starting automatic " + this.callMethod );
 					Class cl = this.gums.getCoreLogic().getClass();
 					//Method m = cl.getMethod(this.callMethod,  new Class[] {});
-					Method m = cl.getMethod(this.callMethod,  null);
-					m.invoke(cl);
+					Method m = cl.getMethod(this.callMethod, null);
+					m.invoke(cl, null);
 					gums.getCoreLogic().updateBannedGroups();
 					gumsAdminLog.info("Automatic updateBannedGroups ended");
 				} catch (Exception e) {
