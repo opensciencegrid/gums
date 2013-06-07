@@ -13,20 +13,26 @@ fi
 
 MYSQLPARAM="-u gums -p"
 ADMINDN=$1
+PASSWORD=$2
+MYSQLPARAM="-u gums -p"$PASSWORD
 
-echo WARNING: You must have created the database before running this script!
-echo
-echo Adding the following DN to the local database:
-echo Certificate DN for administrator: \"$ADMINDN\"
-echo
-echo "Is this correct? (Enter 'yes' to proceed)"
-
-read response
-if [ "$response" != "yes" ]
+if [ "$PASSWORD" == "" ]
 then
-  exit -1
-fi
 
+    echo WARNING: You must have created the database before running this script!
+    echo
+    echo Adding the following DN to the local database:
+    echo Certificate DN for administrator: \"$ADMINDN\"
+    echo
+    echo "Is this correct? (Enter 'yes' to proceed)"
+
+    read response
+    if [ "$response" != "yes" ]
+    then
+	exit -1
+    fi
+
+fi
 
 echo
 echo Adding the admin:
