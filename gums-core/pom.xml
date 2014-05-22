@@ -98,15 +98,15 @@
                     <mappings>
                         <mapping>
                             <namespace>http://glite.org/wsdl/services/org.glite.security.voms</namespace>
-                            <targetPackage>org.glite.security.voms</targetPackage>
+                            <targetPackage>org.glite.voms.generated</targetPackage>
                         </mapping>
                         <mapping>
                             <namespace>http://glite.org/wsdl/services/org.glite.security.voms.service.admin</namespace>
-                            <targetPackage>org.glite.security.voms</targetPackage>
+                            <targetPackage>org.glite.voms.generated</targetPackage>
                         </mapping>
                         <mapping>
                             <namespace>http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility</namespace>
-                            <targetPackage>org.glite.security.voms</targetPackage>
+                            <targetPackage>org.glite.voms.generated</targetPackage>
                         </mapping>
                     </mappings>
                     
@@ -291,15 +291,9 @@
             <version>1.8</version>
         </dependency>
         <dependency>
-            <groupId>org.glite</groupId>  
-            <artifactId>glite-security-trustmanager</artifactId>
-            <version>2.5.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.glite</groupId>
-            <artifactId>glite-security-util-java</artifactId>
-            <version>2.8.6</version>
+            <groupId>emi</groupId>  
+            <artifactId>emi-trustmanager</artifactId>
+            <version>3.0.3</version>
         </dependency>
         
         <dependency>

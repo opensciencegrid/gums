@@ -19,8 +19,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 
 import org.glite.security.trustmanager.ContextWrapper;
-import org.glite.security.voms.VOMSValidator;
-import org.glite.security.voms.BasicVOMSTrustStore;
 import org.glite.security.util.DirectoryList;
 
 /**
