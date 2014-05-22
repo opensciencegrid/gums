@@ -40,7 +40,7 @@ usage() {
 # Setup global variables
 #
 #-------------------------------------------
-TEMPLATE="/usr/lib/gums/gums.config.template"
+TEMPLATE="/usr/lib/gums/config/gums.config.template"
 OSGTEMPLATE=0
 USER=""
 SERVER=""
