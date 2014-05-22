@@ -23,29 +23,6 @@
    </distributionManagement>
 
   <repositories>
-    <repository>
-      <id>internal</id>
-      <name>Archiva Managed Internal Repository</name>
-      <url>http://dev.racf.bnl.gov/archiva/repository/internal/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    
-      <repository>
-      <id>snapshots</id>
-      <name>Archiva Managed Snapshot Repository</name>
-      <url>http://dev.racf.bnl.gov/archiva/repository/snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
     
   </repositories>
 
