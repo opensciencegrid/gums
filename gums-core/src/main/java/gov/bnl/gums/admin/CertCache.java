@@ -12,6 +12,8 @@ import java.security.cert.X509Certificate;
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 
+import org.glite.security.util.CertUtil;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -91,9 +93,14 @@ public class CertCache implements Filter {
 		setUserCertificate(null);
 		if (servletRequest
 				.getAttribute("javax.servlet.request.X509Certificate") != null) {
-			X509Certificate cert = ((X509Certificate[]) servletRequest
-					.getAttribute("javax.servlet.request.X509Certificate"))[0];
-			setUserCertificate(cert);
+			X509Certificate[] chain = ((X509Certificate[]) servletRequest
+					.getAttribute("javax.servlet.request.X509Certificate"));
+			int i = CertUtil.findClientCert(chain);
+			if (i < 0) {
+				log.warn("No client certificate found in the supplied certificate chain");
+			} else {
+				setUserCertificate(chain[i]);
+			}
 		}
 		filterChain.doFilter(servletRequest, servletResponse);
 	}
