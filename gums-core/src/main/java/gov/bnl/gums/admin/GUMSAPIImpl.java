@@ -779,8 +779,9 @@ public class GUMSAPIImpl implements GUMSAPI {
 	private GridUser currentUser() {
 		if (!isInWeb) return null;
 		String DN = CertCache.getUserDN();
+		String FQAN = CertCache.getUserFQAN();
 		if (DN != null) {
-			return new GridUser(DN, null);
+			return new GridUser(DN, FQAN);
 		} else {
 			return null;
 		}

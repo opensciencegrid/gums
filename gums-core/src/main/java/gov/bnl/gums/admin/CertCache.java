@@ -8,11 +8,17 @@ package gov.bnl.gums.admin;
 
 import gov.bnl.gums.CertToolkit;
 
+import java.util.Vector;
+import java.util.List;
+
 import java.security.cert.X509Certificate;
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 
 import org.glite.security.util.CertUtil;
+import org.glite.voms.VOMSValidator;
+import org.glite.voms.VOMSAttribute;
+import org.glite.voms.FQAN;
 
 import org.apache.log4j.Logger;
 
@@ -24,7 +30,12 @@ import org.apache.log4j.Logger;
 public class CertCache implements Filter {
 	static private Logger log = Logger.getLogger(CertCache.class);
 	static private ServletContext context;
+	// If you add a new variable here, make sure to add it to
+	// the reset method.
 	static private ThreadLocal certificate = new ThreadLocal();
+	static private ThreadLocal certificateChain = new ThreadLocal();
+	static private ThreadLocal dn = new ThreadLocal();
+	static private ThreadLocal fqan = new ThreadLocal();
 
 	/**
 	 * Get the directory path for the configuration files
@@ -70,18 +81,62 @@ public class CertCache implements Filter {
 	}
 
 	/**
+	 * Return the DN associated with the current client
+	 */
+	static public String getUserDN() {
+		return (String) dn.get();
+	}
+
+	/**
+	 * Return the FQAN associated with the current client
+	 */
+	static public String getUserFQAN() {
+		return (String) fqan.get();
+	}
+
+	/**
+	 * Set the certificate chain of the currently connected client
 	 * @param cert
 	 */
-    static public String getUserDN() {
-            return CertToolkit.getUserDN(getUserCertificate());
-    }
+	static public void setUserCertificateChain(X509Certificate[] chain) {
+		certificateChain.set(chain);
+		int i = CertUtil.findClientCert(chain);
+		X509Certificate cert = null;
+		if (i < 0) {
+			log.warn("No client certificate found in the supplied certificate chain");
+		} else {
+			cert = chain[i];
+			certificate.set(cert);
+		}
+		Vector voms_list = VOMSValidator.parse(chain);
+		if ((voms_list != null) && (voms_list.size() > 0)) {
+			VOMSAttribute attribute = (VOMSAttribute)voms_list.get(0);
+			if (attribute != null) {
+				List fqans = attribute.getListOfFQAN();
+				if ((fqans != null) && (fqans.size() > 0)) {
+					fqan.set(((FQAN)(fqans.get(0))).getFQAN());
+				}
+			}
+		}
+		if (cert != null) {
+			dn.set(CertToolkit.getUserDN(getUserCertificate()));
+		}
+	}
 
-  	/**
-  	 * @param cert
-  	 */
-  	static public void setUserCertificate(X509Certificate cert) {
-  		certificate.set(cert);
-  	}
+	/**
+	 * Returns the certificate chain of the currently connected client
+	 * @return X509Certificate[] object
+	 */
+	static public X509Certificate[] getUserCertificateChain() {
+		return (X509Certificate[]) certificateChain.get();
+	}
+
+	static public void reset() {
+		certificate.set(null);
+		certificateChain.set(null);
+		dn.set(null);
+		fqan.set(null);
+	}
 
 	public void destroy() {
 	}
@@ -90,17 +145,12 @@ public class CertCache implements Filter {
 			javax.servlet.ServletResponse servletResponse,
 			javax.servlet.FilterChain filterChain) throws java.io.IOException,
 			javax.servlet.ServletException {
-		setUserCertificate(null);
+		reset();
 		if (servletRequest
 				.getAttribute("javax.servlet.request.X509Certificate") != null) {
 			X509Certificate[] chain = ((X509Certificate[]) servletRequest
 					.getAttribute("javax.servlet.request.X509Certificate"));
-			int i = CertUtil.findClientCert(chain);
-			if (i < 0) {
-				log.warn("No client certificate found in the supplied certificate chain");
-			} else {
-				setUserCertificate(chain[i]);
-			}
+			setUserCertificateChain(chain);
 		}
 		filterChain.doFilter(servletRequest, servletResponse);
 	}
