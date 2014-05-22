@@ -1,3 +1,21 @@
 USE GUMS_1_3;
 
-INSERT INTO USERS SET DN="@ADMINDN@", GROUP_NAME="admins";
+DROP PROCEDURE IF EXISTS gumsAddMysqlAdminHelper;
+DELIMITER //
+CREATE PROCEDURE gumsAddMysqlAdminHelper(admindn varchar(255))
+BEGIN
+  DECLARE adminscount int;
+  SELECT COUNT(*) INTO adminscount FROM USERS WHERE DN=admindn AND GROUP_NAME="admins";
+  IF adminscount = 0 THEN
+    INSERT INTO USERS SET DN=admindn, GROUP_NAME="admins";
+  ELSE
+    # The following statement is not a no-op, it fixes the case of DN if it is
+    # different.
+    UPDATE USERS SET DN=admindn WHERE DN=admindn AND GROUP_NAME="admins";
+  END IF;
+END
+//
+DELIMITER ;
+CALL gumsAddMysqlAdminHelper("@ADMINDN@");
+DROP PROCEDURE IF EXISTS gumsAddMysqlAdminHelper;
+
