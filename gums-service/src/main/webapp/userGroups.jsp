@@ -64,6 +64,7 @@ if (request.getParameter("command")==null ||
 			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">User group has been saved.</div>";
 		}catch(Exception e){
+			e.printStackTrace();
 			message = "<div class=\"failure\">Error saving user group: " + e.getMessage() + "</div>";
 		}
 	}
@@ -186,6 +187,25 @@ if (request.getParameter("command")==null ||
 				Role: <%=((VOMSUserGroup)userGroup).getRole()%><br>
 <%
 			}
+		} else if (userGroup instanceof ArgusBannedUserGroup) {
+%>
+						Argus-based banned user group:
+						<a href="userGroups.jsp?command=edit&name=<%=userGroup.getName()%>">
+							<%=userGroup.getName()%>
+						</a><br>
+						Description: <%=userGroup.getDescription()%><br>
+						Persistence Factory:
+						<a href="persistenceFactories.jsp?command=edit&name=<%=((ArgusBannedUserGroup)userGroup).getPersistenceFactory()%>">
+							<%=((ArgusBannedUserGroup)userGroup).getPersistenceFactory()%>
+						</a><br>
+						Argus endpoint: <%=((ArgusBannedUserGroup)userGroup).getArgusEndpoint()%><br>
+<!--
+						SSL Key: <%=((ArgusBannedUserGroup)userGroup).getSslKey()%><br>
+						SSL Cert File: <%=((ArgusBannedUserGroup)userGroup).getSslCertfile()%><br>
+						SSL Key Password: <%=((ArgusBannedUserGroup)userGroup).getSslKeyPasswd()%><br>
+						SSL CA Files: <%=((ArgusBannedUserGroup)userGroup).getSslCAFiles()%><br>
+-->
+<%
 		}
 %>
 								GUMS Access: <%=userGroup.getAccess()%>
@@ -222,6 +242,7 @@ else if ("edit".equals(request.getParameter("command"))
 	userGroupTypes.add(LDAPUserGroup.getTypeStatic());
 	userGroupTypes.add(ManualUserGroup.getTypeStatic());
 	userGroupTypes.add(VOMSUserGroup.getTypeStatic());
+	userGroupTypes.add(ArgusBannedUserGroup.getTypeStatic());
 	
 	if ("edit".equals(request.getParameter("command"))) {
 		try {
@@ -260,7 +281,7 @@ else if ("edit".equals(request.getParameter("command"))
 %>
 		    	<input maxlength="256" size="32" name="name" value="<%=(userGroup.getName()!=null ? userGroup.getName() : "")%>"/>
 		    </td>
-		</tr
+		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
 	    		i.e.
@@ -523,6 +544,94 @@ else if ("edit".equals(request.getParameter("command"))
 			    	production
 			    </td>
 			</tr>
+<%
+	}
+	else if (userGroup instanceof ArgusBannedUserGroup) {
+%>
+			<tr>
+				<td nowrap style="text-align: right;">
+					Argus Endpoint:
+				</td>
+				<td>
+					<input maxlength="256" size="100" name="url" value="<%=((ArgusBannedUserGroup)userGroup).getArgusEndpoint()%>"/>
+				</td>
+			</tr>
+			<tr>
+				<td nowrap style="text-align: right;">
+					i.e.
+				</td>
+				<td>
+					https://argus.example.com:8150/pap/services/XACMLPolicyManagementService
+				</td>
+			</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				Persistence Factory:
+			</td>
+			<td>
+				<%=ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
+						configuration.getPersistenceFactories().values(), 
+						((ArgusBannedUserGroup)userGroup).getPersistenceFactory(),
+						null,
+						false)%> (for caching individual users)
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				SSL Key:
+			</td>
+			<td>
+				<input maxlength="256" size="64" name="sslKey" value="<%=((ArgusBannedUserGroup)userGroup).getSslKey()%>"/>
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				i.e.
+			</td>
+			<td nowrap>
+				/etc/grid-security/http/httpkey.pem
+			</td>
+		</tr>	
+		<tr>
+			<td nowrap style="text-align: right;">
+				SSL Cert File:
+			</td>
+			<td>
+				<input maxlength="256" size="64" name="sslCert" value="<%=((ArgusBannedUserGroup)userGroup).getSslCertfile()%>"/>
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				i.e.
+			</td>
+			<td nowrap>
+				/etc/grid-security/http/httpcert.pem
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				SSL Key Password:
+			</td>
+			<td>
+				<input type="password" maxlength="256" size="64" name="sslKeyPW" value="<%=((ArgusBannedUserGroup)userGroup).getSslKeyPasswd()%>"/> (leave blank if none)
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				SSL CA Files:
+			</td>
+			<td>
+				<input maxlength="256" size="64" name="sslCA" value="<%=((ArgusBannedUserGroup)userGroup).getSslCAFiles()%>"/>
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				i.e.
+			</td>
+			<td nowrap>
+				/etc/grid-security/certificates/*.0
+			</td>
+		</tr>
 <%
 	}
 %>
