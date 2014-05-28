@@ -150,6 +150,19 @@
 										<xs:attribute name="role" type="xs:string"/>
 									</xs:complexType>
 								</xs:element>	
+								<xs:element name="argusBannedUserGroup">
+									<xs:complexType>
+										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute name="description" type="xs:string"/>
+										<xs:attribute name="access" type="xs:string"/>
+										<xs:attribute name="argusEndpoint" type="xs:string" use="required"/>
+										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
+										<xs:attribute name="sslCertfile" type="xs:string"/>
+										<xs:attribute name="sslKey" type="xs:string"/>
+										<xs:attribute name="sslCAFiles" type="xs:string"/>
+										<xs:attribute name="sslKeyPasswd" type="xs:string"/>
+									</xs:complexType>
+								</xs:element>
 								<xs:element name="ldapUserGroup">
 									<xs:complexType>
 										<xs:attribute name="name" type="xs:string" use="required"/>
