@@ -115,6 +115,9 @@
 					<showWarnings>true</showWarnings>
 					<optimize>false</optimize>
 					<verbose>false</verbose>
+					<includes>
+						<include>**/*.*</include>
+					</includes>
 					<excludes>                            
 						<exclude>**/.svn</exclude>
 					</excludes>
@@ -167,7 +170,7 @@
 			           <filtering>false</filtering>
 			         </resource>
 			         <resource>
-			           <directory>src/main/classes</directory>
+			           <directory>target/classes</directory>
 			           <targetPath>WEB-INF/classes</targetPath>
 			           <filtering>true</filtering>
 			           <includes>
