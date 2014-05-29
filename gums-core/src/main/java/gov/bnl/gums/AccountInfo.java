@@ -89,9 +89,9 @@ public class AccountInfo {
      */
     public String toString() {
         if (group == null) {
-            return "AccountInfo[user=" + user + "]";
+            return "Account[user=" + user + "]";
         }
-        return "AccountInfo[user=" + user + ", group=" + group + "]";
+        return "Account[user=" + user + ", group=" + group + "]";
     }
 
 }
