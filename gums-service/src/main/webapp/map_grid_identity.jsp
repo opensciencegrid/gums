@@ -22,7 +22,7 @@
 <%@include file="sideNav.jspf"%>
 <div id="body">
 <% 
-	String account = null;
+	AccountInfo account = null;
 	try {
 		account = gums.mapUser(hostname, DN, FQAN);
 %>
@@ -33,7 +33,7 @@
       <tr>
         <td>
 <% 
-			out.println(account);
+			out.println(account == null ? "null" : account.getUser());
 %>
         </td>
       </tr>

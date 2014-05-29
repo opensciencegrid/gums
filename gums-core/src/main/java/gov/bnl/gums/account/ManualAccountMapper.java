@@ -23,13 +23,15 @@ import gov.bnl.gums.db.ManualAccountMapperDB;
  *
  * @author Gabriele Carcassi, Jay Packard
  */
-public class ManualAccountMapper extends AccountMapper {
+public final class ManualAccountMapper extends AccountMapper {
     static public String getTypeStatic() {
 		return "manual";
 	}
     
     private ManualAccountMapperDB db;
-	private String persistenceFactory = "";
+    private String persistenceFactory = "";
+    private String accountPool = "";
+    private String groupName = "";
     
     public ManualAccountMapper() {
     	super();
@@ -51,6 +53,8 @@ public class ManualAccountMapper extends AccountMapper {
     	ManualAccountMapper accountMapper = new ManualAccountMapper(configuration, new String(getName()));
     	accountMapper.setDescription(new String(getDescription()));
     	accountMapper.setPersistenceFactory(new String(persistenceFactory));
+        accountMapper.setGroupName(new String(groupName));
+        accountMapper.setAccountPool(new String(accountPool));
     	return accountMapper;
     }
     
@@ -60,7 +64,7 @@ public class ManualAccountMapper extends AccountMapper {
     
     public ManualAccountMapperDB getDB() {
     	if (db==null)
-    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualAccountMapperDB( getName() );
+    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveManualAccountMapperDB( getAccountPool() );
     	return db;
     }
     
@@ -75,13 +79,23 @@ public class ManualAccountMapper extends AccountMapper {
     public String getPersistenceFactory() {
         return persistenceFactory;
     }
-    
+
+    public String getAccountPool() {
+	if (accountPool == null || accountPool.equals("")) return getName();
+        return accountPool;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
     public String getType() {
 		return "manual";
 	}
 
     @Override 
     public AccountInfo mapUser(GridUser user, boolean createIfDoesNotExist) {
+        if (groupName != null && !groupName.equals("")) { return new AccountInfo(getDB().retrieveMapping(user.getCertificateDN()), groupName); }
         return new AccountInfo(getDB().retrieveMapping(user.getCertificateDN()));
     }
     
@@ -93,14 +107,32 @@ public class ManualAccountMapper extends AccountMapper {
         this.persistenceFactory = persistanceFactory;
     }
 
+    public void setAccountPool(String accountPool) {
+        this.accountPool = accountPool;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
     public String toString(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?command=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">&nbsp;</td>";
     }      
     
     public String toXML() {
-    	return "\t\t<manualAccountMapper\n"+
+    	String retStr = "\t\t<manualAccountMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tdescription='"+getDescription()+"'\n"+
-			"\t\t\tpersistenceFactory='"+persistenceFactory+"'/>\n\n";
+			"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n";
+        if (groupName != null && !groupName.equals(""))
+            retStr += "\t\t\tgroupName='"+groupName+"'\n";
+        if (accountPool != null && !accountPool.equals(""))
+            retStr += "\t\t\taccountPool='"+accountPool+"'\n";
+
+        if (retStr.charAt(retStr.length()-1)=='\n') {
+            retStr = retStr.substring(0, retStr.length()-1);
+        }
+        retStr += "/>\n\n";
+        return retStr;
     }
 }

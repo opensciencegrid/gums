@@ -145,7 +145,22 @@ if (request.getParameter("command")==null ||
 				    		Persistence factory:
 				    		<a href="persistenceFactories.jsp?command=edit&name=<%=((ManualAccountMapper)accountMapper).getPersistenceFactory()%>">
 				    			<%=((ManualAccountMapper)accountMapper).getPersistenceFactory()%>
-				    		</a><br>	
+				    		</a><br>
+<%
+                        ManualAccountMapper aMapper = (ManualAccountMapper)accountMapper;
+                        if (aMapper.getGroupName() != null && !aMapper.getGroupName().equals("")) {
+%>
+                                                Group: <%=aMapper.getGroupName()%><br>
+<%
+                        }
+%>
+<%
+                        if (aMapper.getAccountPool() != null && !aMapper.getAccountPool().equals("")) {
+%>
+                                                Manual Account Pool: <%=aMapper.getAccountPool()%><br>
+<%
+                        }
+%>
 <%
 		} else if (accountMapper instanceof AccountPoolMapper) {
 %>
@@ -371,6 +386,38 @@ else if ("edit".equals(request.getParameter("command"))
 					false)%> (where to search for individual mappings)
 			</td>
 		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				Group:
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="groupName" value="<%=((ManualAccountMapper)accountMapper).getGroupName()%>"/> (the primary Unix group to map to)
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				i.e.
+			</td>
+			<td nowrap>
+				myUnixGroup
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				Account pool name:
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="accountPool" value="<%=((ManualAccountMapper)accountMapper).getAccountPool()%>"/> (the name of the persisted set of accounts)
+			</td>
+		</tr>
+                <tr>
+                        <td nowrap style="text-align: right;">
+                                i.e.
+                        </td>
+                        <td nowrap>
+                                myManualAccounts
+                        </td>
+                </tr>
 <%
 	} else if (accountMapper instanceof AccountPoolMapper) {
 %>

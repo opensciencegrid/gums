@@ -112,6 +112,10 @@ public class ConfigurationWebToolkit implements Remote {
 				accountMapper.setDescription( request.getParameter("description").trim() );
 			if (request.getParameter("persistenceFactory")!=null)
 				((ManualAccountMapper)accountMapper).setPersistenceFactory( request.getParameter("persistenceFactory").trim() );
+			if (request.getParameter("groupName")!=null)
+				((ManualAccountMapper)accountMapper).setGroupName( request.getParameter("groupName").trim() );
+			if (request.getParameter("accountPool")!=null)
+				((ManualAccountMapper)accountMapper).setAccountPool( request.getParameter("accountPool").trim() );
 		}
 		else if (type.equals(AccountPoolMapper.getTypeStatic())) {
 			accountMapper = new AccountPoolMapper();
