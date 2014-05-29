@@ -82,6 +82,8 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 
 		// Attribute Assignment, decision, and status code
 		AttributeAssignmentType attributeAssignment = null;
+		AttributeAssignmentType attributeAssignmentGid = null;
+		boolean hasGid = false;
 		DecisionTypeImplBuilder decisionBuilder = (DecisionTypeImplBuilder)builderFactory.getBuilder(DecisionType.DEFAULT_ELEMENT_NAME);
 		DecisionType decision = decisionBuilder.buildObject();
 		StatusCodeTypeImplBuilder statusCodeBuilder = (StatusCodeTypeImplBuilder)builderFactory.getBuilder(StatusCodeType.DEFAULT_ELEMENT_NAME);
@@ -101,6 +103,14 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 				attributeAssignment.setAttributeId(XACMLConstants.ATTRIBUTE_USERNAME_ID);
 				attributeAssignment.setDataType(XACMLConstants.STRING_DATATYPE);
 				attributeAssignment.setValue(account.getUser());
+
+				if (account.getGroup() != null && !account.getGroup().equals("")) {
+					hasGid = true;
+					attributeAssignmentGid = attributeAssignmentBuilder.buildObject();
+					attributeAssignmentGid.setAttributeId(XACMLConstants.ATTRIBUTE_POSIX_GID_ID);
+					attributeAssignment.setDataType(XACMLConstants.INTEGER_DATATYPE);
+					attributeAssignment.setValue(account.getGroup());
+				}
 
 				decision.setDecision(DecisionType.DECISION.Permit);
 				
@@ -125,10 +135,18 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			obligation.setObligationId(XACMLConstants.OBLIGATION_USERNAME);
 			if (attributeAssignment != null)
 				obligation.getAttributeAssignments().add(attributeAssignment);
-	
+
 			// Obligations
 			ObligationsTypeImplBuilder obligationsBuilder = (ObligationsTypeImplBuilder)builderFactory.getBuilder(ObligationsType.DEFAULT_ELEMENT_QNAME);
 			ObligationsType obligations = obligationsBuilder.buildObject();
+
+			if (hasGid) {
+				ObligationType obligationgid = obligationBuilder.buildObject();
+				obligationgid.setFulfillOn(EffectType.Permit);
+				obligationgid.setObligationId(XACMLConstants.OBLIGATION_UIDGID);
+				obligationgid.getAttributeAssignments().add(attributeAssignmentGid);
+				obligations.getObligations().add(obligationgid);
+			}
 			obligations.getObligations().add(obligation);
 	
 			// Result
