@@ -1,3 +1,4 @@
 gums-core/target
 gums-client/target
 gums-service/target
+*.tar.gz
