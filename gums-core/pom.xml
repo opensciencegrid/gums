@@ -4,7 +4,7 @@
     <groupId>gov.bnl.racf.gums</groupId>
     <artifactId>gums-core</artifactId>
     <name>gums-core</name>
-    <version>1.4.0.pre1</version>
+    <version>1.4.0.pre2</version>
     <description>GUMS Core provides the core functionality used by other GUMS components</description>
 
   <distributionManagement>
@@ -41,9 +41,9 @@
 	</pluginRepositories>
 
     <scm>
-        <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.0.pre1/gums-core</connection>
-        <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.0.pre1/gums-core</developerConnection>
-        <url>http://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.0.pre1/gums-core</url>
+        <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.0.pre2/gums-core</connection>
+        <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.0.pre2/gums-core</developerConnection>
+        <url>http://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.0.pre2/gums-core</url>
     </scm>
 
     <build>
