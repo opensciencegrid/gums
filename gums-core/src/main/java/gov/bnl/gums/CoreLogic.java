@@ -421,7 +421,8 @@ public class CoreLogic {
             while (userGroupsIt.hasNext()) {
             	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupsIt.next() );
                 if (userGroup.isInGroup(user)) {
-                	Collection accountMappers = g2AMapping.getAccountMappers();
+                    if (gumsAdminLog.isDebugEnabled()) { gumsAdminLog.debug("User " + user + " is in group " + userGroup); }
+                    Collection accountMappers = g2AMapping.getAccountMappers();
                     Iterator accountMappersIt = accountMappers.iterator();
                     while (accountMappersIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
@@ -429,6 +430,8 @@ public class CoreLogic {
                         if (localUser != null)
                             return localUser;
                     }
+                } else if (gumsAdminLog.isDebugEnabled()) {
+                    gumsAdminLog.debug("User " + user + " is not in group " + userGroup);
                 }
             }
         }
