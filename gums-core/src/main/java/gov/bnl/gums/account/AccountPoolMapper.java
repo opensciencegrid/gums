@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import gov.bnl.gums.GUMS;
 import gov.bnl.gums.GridUser;
+import gov.bnl.gums.AccountInfo;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 
@@ -149,10 +150,11 @@ public class AccountPoolMapper extends AccountMapper {
     public String getType() {
 		return "pool";
 	}
-    
-    public String mapUser(GridUser user, boolean createIfDoesNotExist) {
+
+    @Override
+    public AccountInfo mapUser(GridUser user, boolean createIfDoesNotExist) {
         String account = getDB().retrieveAccount(user);
-        if (account != null) return account;
+        if (account != null) return new AccountInfo(account);
         if (createIfDoesNotExist) {
         	String newAccount = getDB().assignAccount(user);
         	if (newAccount==null) {
@@ -160,7 +162,7 @@ public class AccountPoolMapper extends AccountMapper {
         		gumsAdminLog.warn(message);
         		GUMS.gumsAdminEmailLog.put("noPoolAccounts", message, false);
         	}
-        	return newAccount;
+        	return new AccountInfo(newAccount);
         }
         else
         	return null;

@@ -9,6 +9,7 @@ package gov.bnl.gums.account;
 import java.lang.ref.SoftReference;
 
 import gov.bnl.gums.configuration.Configuration;
+import gov.bnl.gums.AccountInfo;
 import gov.bnl.gums.GridUser;
 
 /** 
@@ -98,11 +99,11 @@ public abstract class AccountMapper {
 	/**
      * Maps a grid identity to a local account name.
      * @param userDN the certificate DN (i.e. '/DC=org/DC=doegrids/OU=People/CN=John Smith').
-     * @return a user account (i.e. 'atlas').
+     * @return a user account (i.e. 'AccountInfo[user=atlas, group=atlas]').
      */
-    public abstract String mapUser(GridUser user, boolean createNew);
+    public abstract AccountInfo mapUser(GridUser user, boolean createNew);
     
-    public String mapUser(String userDN, boolean createNew) {
+    public AccountInfo mapUser(String userDN, boolean createNew) {
     	GridUser user = new GridUser();
     	user.setCertificateDN(userDN);
     	return mapUser(user, createNew);

@@ -6,7 +6,9 @@
 
 package gov.bnl.gums;
 
-import gov.bnl.gums.account.*;
+import gov.bnl.gums.account.AccountMapper;
+import gov.bnl.gums.account.GroupAccountMapper;
+import gov.bnl.gums.account.AccountPoolMapper;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.groupToAccount.GroupToAccountMapping;
 import gov.bnl.gums.hostToGroup.HostToGroupMapping;
@@ -100,13 +102,13 @@ public class CoreLogic {
 	                    Iterator accountMapperIt = accountMappers.iterator();
 	                    while (accountMapperIt.hasNext()) {
 	                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
-			                String account = accountMapper.mapUser(user, false);
-			                if ((account != null) && !accountsInMap.contains(account)) {
-			                	osgMapBuffer.append(account);
+			                AccountInfo account = accountMapper.mapUser(user, false);
+			                if ((account != null && account.getUser() != null) && !accountsInMap.contains(account.getUser())) {
+			                	osgMapBuffer.append(account.getUser());
 			                	osgMapBuffer.append(' ');
 			                	osgMapBuffer.append(gMap.getAccountingVoSubgroup());
 			                	osgMapBuffer.append("\n");
-			                    accountsInMap.add(account);
+			                    accountsInMap.add(account.getUser());
 			                }
 	                    }
 		            }
@@ -151,11 +153,10 @@ public class CoreLogic {
      * @param user
      * @return
      */
-    public String map(String hostname, GridUser user, boolean checkBannedList) throws Exception {
+    public AccountInfo map(String hostname, GridUser user, boolean checkBannedList) throws Exception {
         if (checkBannedList && gums.isUserBanned(user))
         	return null;
-        String account = mapImpl(hostname, user);
-        return account;
+        return mapImpl(hostname, user);
     }
     
     /**
@@ -304,8 +305,8 @@ public class CoreLogic {
 		                    Iterator accountMappersIt = accountMappers.iterator();
 		                    while (accountMappersIt.hasNext()) {
 		                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-			                	String account = accountMapper.mapUser(user, true);
-			                	if (account != null) {
+			                	AccountInfo account = accountMapper.mapUser(user, true);
+			                	if (account != null && account.getUser() != null) {
 			                        gridMapfileBuffer.append('"');
 			                        gridMapfileBuffer.append( user.getCertificateDN() );
 			                        gridMapfileBuffer.append('"' );
@@ -313,7 +314,7 @@ public class CoreLogic {
 			                        gridMapfileBuffer.append( fqan );
 			                        gridMapfileBuffer.append('"');         	
 			                        gridMapfileBuffer.append(' ');
-			                        gridMapfileBuffer.append( account );
+			                        gridMapfileBuffer.append( account.getUser() );
 			                        if (includeEmail) {
 				                        gridMapfileBuffer.append(' ');
 				                        gridMapfileBuffer.append( email );
@@ -339,13 +340,13 @@ public class CoreLogic {
 		                    Iterator accountMappersIt = accountMappers.iterator();
 		                    while (accountMappersIt.hasNext()) {
 		                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-			                	String account = accountMapper.mapUser(user, true);
-			                    if (account != null) {
+			                	AccountInfo account = accountMapper.mapUser(user, true);
+			                    if (account != null && account.getUser() != null) {
 			                        gridMapfileBuffer.append('"');
 			                        gridMapfileBuffer.append( user.getCertificateDN() );
 			                        gridMapfileBuffer.append('"' );
 			                        gridMapfileBuffer.append(' ');
-			                        gridMapfileBuffer.append( account );
+			                        gridMapfileBuffer.append( account.getUser() );
 			                        if (includeEmail && email!=null) {
 				                        gridMapfileBuffer.append(' ');
 				                        gridMapfileBuffer.append( email );
@@ -403,7 +404,7 @@ public class CoreLogic {
         return null;
     }
 
-    private String mapImpl(String hostname, GridUser user) throws Exception {
+    private AccountInfo mapImpl(String hostname, GridUser user) throws Exception {
         Configuration conf = gums.getConfiguration();
         HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
         if (host2GroupMapper == null) {
@@ -424,7 +425,7 @@ public class CoreLogic {
                     Iterator accountMappersIt = accountMappers.iterator();
                     while (accountMappersIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-                        String localUser = accountMapper.mapUser(user, true);
+                        AccountInfo localUser = accountMapper.mapUser(user, true);
                         if (localUser != null)
                             return localUser;
                     }

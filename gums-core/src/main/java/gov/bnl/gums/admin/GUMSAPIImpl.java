@@ -6,7 +6,9 @@
 
 package gov.bnl.gums.admin;
 
-import gov.bnl.gums.*;
+import gov.bnl.gums.GridUser;
+import gov.bnl.gums.AccountInfo;
+import gov.bnl.gums.GUMS;
 import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.account.AccountPoolMapper;
 import gov.bnl.gums.account.ManualAccountMapper;
@@ -464,11 +466,11 @@ public class GUMSAPIImpl implements GUMSAPI {
 		}
 	}
 
-	public String mapUser(String hostname, String userDN, String fqan) {
+	public AccountInfo mapUser(String hostname, String userDN, String fqan) {
 		try {
 			if ( (hasReadSelfAccess(currentUser()) && currentUser().compareDn(userDN)==0) || hasReadAllAccess(currentUser(), hostname)) {
 				GridUser user = new GridUser(userDN, fqan);
-				String account = null;
+				AccountInfo account = null;
 				boolean isUserBanned = gums().isUserBanned(user);
 				if (!isUserBanned)
 					account = gums().getCoreLogic().map(hostname, user, false);

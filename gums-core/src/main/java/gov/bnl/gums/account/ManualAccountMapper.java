@@ -9,6 +9,7 @@ package gov.bnl.gums.account;
 import java.util.Map;
 
 import gov.bnl.gums.GridUser;
+import gov.bnl.gums.AccountInfo;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.db.ManualAccountMapperDB;
 
@@ -78,9 +79,10 @@ public class ManualAccountMapper extends AccountMapper {
     public String getType() {
 		return "manual";
 	}
-    
-    public String mapUser(GridUser user, boolean createIfDoesNotExist) {
-        return getDB().retrieveMapping(user.getCertificateDN());
+
+    @Override 
+    public AccountInfo mapUser(GridUser user, boolean createIfDoesNotExist) {
+        return new AccountInfo(getDB().retrieveMapping(user.getCertificateDN()));
     }
     
     public boolean removeMapping(String userDN) {

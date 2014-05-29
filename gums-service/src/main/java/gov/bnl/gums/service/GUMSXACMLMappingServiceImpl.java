@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import gov.bnl.gums.AccountInfo;
 import gov.bnl.gums.admin.GUMSAPI;
 import gov.bnl.gums.admin.GUMSAPIImpl;
 
@@ -88,8 +89,8 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 		statusCode.setValue(OK);
 		try {
 			log.debug("Checking access on '" + hostDn + "' for '" + userDn + "' with fqan '" + userFqan + "'");
-			String account = gums.mapUser(hostDn, userDn, userFqan);
-			if (account == null) {
+			AccountInfo account = gums.mapUser(hostDn, userDn, userFqan);
+			if (account == null || account.getUser() == null) {
 				decision.setDecision(DecisionType.DECISION.Deny);
 				
 				log.debug("Denied access on '" + hostDn + "' for '" + userDn + "' with fqan '" + userFqan + "'");
@@ -99,7 +100,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 				attributeAssignment = attributeAssignmentBuilder.buildObject();
 				attributeAssignment.setAttributeId(XACMLConstants.ATTRIBUTE_USERNAME_ID);
 				attributeAssignment.setDataType(XACMLConstants.STRING_DATATYPE);
-				attributeAssignment.setValue(account);
+				attributeAssignment.setValue(account.getUser());
 
 				decision.setDecision(DecisionType.DECISION.Permit);
 				

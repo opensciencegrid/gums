@@ -9,6 +9,7 @@ package gov.bnl.gums.admin;
 import java.rmi.Remote;
 import java.util.Collection;
 
+import gov.bnl.gums.AccountInfo;
 import gov.bnl.gums.configuration.Configuration;
 
 /** 
@@ -193,9 +194,9 @@ public interface GUMSAPI extends Remote {
      * @param hostname
      * @param userDN
      * @param fqan
-     * @return
+     * @return The resulting account information
      */
-    String mapUser(String hostname, String userDN, String fqan);
+    AccountInfo mapUser(String hostname, String userDN, String fqan);
     
     /**
      * Merge configuration into current configuration
