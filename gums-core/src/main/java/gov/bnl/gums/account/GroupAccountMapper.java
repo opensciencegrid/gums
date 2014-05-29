@@ -7,6 +7,7 @@
 package gov.bnl.gums.account;
 
 import gov.bnl.gums.GridUser;
+import gov.bnl.gums.AccountInfo;
 import gov.bnl.gums.configuration.Configuration;
 
 import org.apache.log4j.Logger;
@@ -19,7 +20,7 @@ import org.apache.log4j.Logger;
  *
  * @author Gabriele Carcassi, Jay Packard
  */
-public class GroupAccountMapper extends AccountMapper {
+public final class GroupAccountMapper extends AccountMapper {
     static public String getTypeStatic() {
 		return "group";
 	}
@@ -53,14 +54,15 @@ public class GroupAccountMapper extends AccountMapper {
     public String getType() {
 		return "group";
 	}
-    
-    public String mapUser(GridUser user, boolean createIfDoesNotExist) {
+
+    @Override
+    public AccountInfo mapUser(GridUser user, boolean createIfDoesNotExist) {
         
         if (log.isDebugEnabled()) {
             log.debug("User " + user.getCertificateDN() + " mapped to account " + accountName);
         }
         
-        return accountName;
+        return new AccountInfo(accountName);
     }
 
     public void setAccountName(String accountName) {
