@@ -26,7 +26,8 @@ public final class GroupAccountMapper extends AccountMapper {
 	}
     
     private Logger log = Logger.getLogger(GroupAccountMapper.class);
-	private String accountName = "";
+    private String accountName = "";
+    private String groupName = "";
     
     public GroupAccountMapper() {
     	super();
@@ -44,16 +45,21 @@ public final class GroupAccountMapper extends AccountMapper {
     	GroupAccountMapper accountMapper = new GroupAccountMapper(configuration, new String(getName()));
     	accountMapper.setDescription(new String(getDescription()));
     	accountMapper.setAccountName(new String(accountName));
+        accountMapper.setGroupName(new String(groupName));
     	return accountMapper;
     }
-	
-	public String getAccountName() {
-		return accountName;
-	}    
-	
+
+    public String getAccountName() {
+        return accountName;
+    }    
+
+    public String getGroupName() {
+        return groupName;
+    }
+
     public String getType() {
-		return "group";
-	}
+        return "group";
+    }
 
     @Override
     public AccountInfo mapUser(GridUser user, boolean createIfDoesNotExist) {
@@ -61,24 +67,36 @@ public final class GroupAccountMapper extends AccountMapper {
         if (log.isDebugEnabled()) {
             log.debug("User " + user.getCertificateDN() + " mapped to account " + accountName);
         }
-        
+        if (groupName != null && !groupName.equals("")) return new AccountInfo(accountName, groupName);
         return new AccountInfo(accountName);
     }
 
     public void setAccountName(String accountName) {
-    	if (this.accountName.length()>0)
-    		log.debug("account name changed from  " + this.accountName + " to " + accountName);
-		this.accountName = accountName;
-	}
+        if (this.accountName.length()>0)
+            log.debug("Account name changed from  " + this.accountName + " to " + accountName);
+        this.accountName = accountName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
     
     public String toString(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?command=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">" + accountName + "</td>";
     }      
     
     public String toXML() {
-    	return "\t\t<groupAccountMapper\n"+
+    	String retStr = "\t\t<groupAccountMapper\n"+
 			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tdescription='"+getDescription()+"'\n"+
-			"\t\t\taccountName='"+accountName+"'/>\n\n";
+			"\t\t\taccountName='"+accountName+"'\n";
+        if (groupName != null && !groupName.equals(""))
+            retStr += "\t\t\tgroupName='"+groupName+"'\n";
+
+        if (retStr.charAt(retStr.length()-1)=='\n') {
+            retStr = retStr.substring(0, retStr.length()-1);
+        }
+        retStr += "/>\n\n";
+        return retStr;
     }
 }

@@ -127,6 +127,14 @@ if (request.getParameter("command")==null ||
 				    		Description: <%=accountMapper.getDescription()%><br>	
 				    		Account: <%=((GroupAccountMapper)accountMapper).getAccountName()%><br>	
 <%
+                        GroupAccountMapper gMapper = (GroupAccountMapper)accountMapper;
+			if (gMapper.getGroupName() != null && !gMapper.getGroupName().equals("")) {
+%>
+				    		Group: <%=gMapper.getGroupName()%><br>
+<%
+			}
+%>	
+<%
 		} else if (accountMapper instanceof ManualAccountMapper) {
 %>
 				    		Manual Account Mapper:
@@ -331,6 +339,22 @@ else if ("edit".equals(request.getParameter("command"))
 		    <td nowrap>
 				myAccount
 		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				Group:
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="groupName" value="<%=((GroupAccountMapper)accountMapper).getGroupName()%>"/> (the primary Unix group to map to)
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				i.e.
+			</td>
+			<td nowrap>
+				myUnixGroup
+			</td>
 		</tr>
 <%
 	} else if (accountMapper instanceof ManualAccountMapper) {
