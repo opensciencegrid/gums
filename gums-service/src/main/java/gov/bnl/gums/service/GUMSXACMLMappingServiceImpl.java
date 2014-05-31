@@ -108,8 +108,8 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 					hasGid = true;
 					attributeAssignmentGid = attributeAssignmentBuilder.buildObject();
 					attributeAssignmentGid.setAttributeId(XACMLConstants.ATTRIBUTE_POSIX_GID_ID);
-					attributeAssignment.setDataType(XACMLConstants.INTEGER_DATATYPE);
-					attributeAssignment.setValue(account.getGroup());
+					attributeAssignmentGid.setDataType(XACMLConstants.STRING_DATATYPE);
+					attributeAssignmentGid.setValue(account.getGroup());
 				}
 
 				decision.setDecision(DecisionType.DECISION.Permit);
