@@ -43,7 +43,6 @@ import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathConstants;;
-import org.opensaml.xacml.policy.PolicyList;
 import org.glite.security.util.DN;
 import org.glite.security.util.DNImpl;
 

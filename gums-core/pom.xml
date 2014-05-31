@@ -112,6 +112,10 @@
                             <namespace>http://org.glite.authz/wsdl/pap/services/xacml_policy_management</namespace>
                             <targetPackage>org.glite.pap.generated</targetPackage>
                         </mapping>
+                        <mapping>
+                            <namespace>urn:policy:xacml:opensaml:org</namespace>
+                            <targetPackage>org.opensaml.xacml.policy.generated</targetPackage>
+                        </mapping>
                     </mappings>
                     
                     <wsdlFiles>
