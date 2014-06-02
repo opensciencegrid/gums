@@ -14,6 +14,7 @@ import gov.bnl.gums.configuration.FileConfigurationStore;
 import gov.bnl.gums.configuration.Version;
 import gov.bnl.gums.persistence.PersistenceFactory;
 import gov.bnl.gums.userGroup.UserGroup;
+import gov.bnl.gums.userGroup.BannedUserGroup;
 
 import java.lang.reflect.*;
 import java.util.Date;
@@ -461,7 +462,12 @@ public class GUMS {
 		Iterator it = bannedUserGroups.iterator();
 		while (it.hasNext()) {
 			UserGroup userGroup = config.getUserGroup((String)it.next());
-			return userGroup.isInGroup(user);
+			if (userGroup.isDNInGroup(user)) { return true; }
+		}
+		for (UserGroup group : config.getUserGroups().values()) {
+			if (group instanceof BannedUserGroup) {
+				if (group.isDNInGroup(user)) { return true; }
+			}
 		}
 		return false;
 	} // end isUserBanned()

@@ -48,7 +48,8 @@ public class ManualUserGroup extends UserGroup {
 	private String persistenceFactory = "";
 	private String membersUri = "";
 	private String nonMembersUri = "";
-	private List patternList = new ArrayList();
+	private List<Pattern> patternList = new ArrayList();
+	private List<Pattern> dnPatternList = new ArrayList();
 	private boolean needsRefresh = true;
 	private RWLock rWLock = new RWLock();
 	protected Date patternListLastUpdated;
@@ -143,42 +144,50 @@ public class ManualUserGroup extends UserGroup {
     public String getType() {
 		return "manual";
 	}
-    
+
+    @Override
+    public boolean isDNInGroup(GridUser user) {
+        return isInGroupImpl(user, true);
+    }
+
+    @Override
     public boolean isInGroup(GridUser user) {
+        return isInGroupImpl(user, false);
+    }
+
+    public boolean isInGroupImpl(GridUser user, boolean dnOnly) {
     	boolean returnVal = false;
 		
     	try {
-    		rWLock.getReadLock();
-    		Calendar cal = Calendar.getInstance();
+    	    rWLock.getReadLock();
+    	    Calendar cal = Calendar.getInstance();
             cal.add(Calendar.SECOND, accessIndex==0 ? -adminSecondsBetweenPatternRefresh : -secondsBetweenPatternRefresh);
-        	if (needsRefresh || patternListLastUpdated.before(cal.getTime())) {
-        		rWLock.releaseLock();
-        		refreshPatternList();
+            if (needsRefresh || patternListLastUpdated.before(cal.getTime())) {
+                rWLock.releaseLock();
+                refreshPatternList();
             	rWLock.getReadLock();
-        	}
-        	
-    		Iterator it = patternList.iterator();
-	    	while (it.hasNext()) {
-	    		Pattern p = (Pattern)it.next();
-	    		Matcher m = p.matcher(concatDNFqan(user));
-	    		if (log.isTraceEnabled())
-	    			log.trace("trying to match user "+concatDNFqan(user)+" against "+m.toString());
-	    		if (m.matches()) {
-	    			returnVal = true;
-	    			break;
-	    		}
-	    	}
-		}
-		catch(Exception e) {
-			log.error(e);
-		}
-		finally {
-			rWLock.releaseLock();
-		}
+            }
+
+            List<Pattern> patterns = dnOnly ? dnPatternList : patternList;
+            for (Pattern p : patterns) {
+                Matcher m = p.matcher(concatDNFqan(user));
+                if (log.isTraceEnabled()) { log.trace("trying to match user "+concatDNFqan(user)+" against "+m.toString()); }
+                if (m.matches()) {
+                    returnVal = true;
+                    break;
+                }
+	    }
+        }
+	catch(Exception e) {
+	    log.error(e);
+	}
+	finally {
+	    rWLock.releaseLock();
+	}
     	
         return returnVal;
     }
-    
+
     public boolean removeMember(GridUser user) {
     	rWLock.getReadLock();
     	boolean value = false;
@@ -337,6 +346,7 @@ public class ManualUserGroup extends UserGroup {
     	try {
     		log.trace("refreshed pattern list for usergroup "+getName());
 	 		patternList.clear();
+			dnPatternList.clear();
 	 		List members = getDB().retrieveMembers();
 	 		Iterator it = members.iterator();
 	 		while (it.hasNext()) 
@@ -344,6 +354,9 @@ public class ManualUserGroup extends UserGroup {
 	 			GridUser itUser = (GridUser)it.next();
 	 			Pattern p = Pattern.compile(concatDNFqan(itUser));
 				patternList.add(p);
+				GridUser dnUser = new GridUser(itUser.getCertificateDN(), null);
+				Pattern p2 = Pattern.compile(concatDNFqan(itUser));
+				dnPatternList.add(p);
 	 		}
 			needsRefresh = false;
 			patternListLastUpdated = Calendar.getInstance().getTime();

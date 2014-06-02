@@ -185,8 +185,14 @@ public class LDAPUserGroup extends UserGroup {
 		 return new String(peopleTree + " " + groupTree).hashCode();
 	 }
 
+	 @Override
 	 public boolean isInGroup(GridUser user) {
 		 return getDB().isMemberInGroup(user);
+	 }
+
+	 @Override
+	 public boolean isDNInGroup(GridUser user) {
+		return getDB().isDNInGroup(user);
 	 }
 
 	 /**

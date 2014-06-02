@@ -161,6 +161,7 @@ public class BannedUserGroup extends UserGroup {
     }
 
 
+    @Override
     public boolean isInGroup(GridUser user) {
         if (getUserDB()!=null) {
             return getUserDB().isMemberInGroup(new GridUser(user.getCertificateDN(), null));
@@ -170,17 +171,25 @@ public class BannedUserGroup extends UserGroup {
     }
 
 
+    @Override
+    public boolean isDNInGroup(GridUser user) {
+        return isInGroup(user);
+    }
+
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }
 
+
     public String toString() {
         return "BannedUserGroup: endpoint='" + endpoint + "'";
     }
+
     
     public String toString(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\"><a href=\"userGroups.jsp?command=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">&nbsp;</td><td bgcolor=\""+bgColor+"\">&nbsp;</td><td bgcolor=\""+bgColor+"\">&nbsp;</td><td bgcolor=\""+bgColor+"\">&nbsp;</td>";
     }
+
 
     public String toXML() {
     	String retStr = "\t\t<bannedUserGroup\n"+

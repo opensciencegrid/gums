@@ -32,6 +32,12 @@ public interface UserGroupDB {
      * @return True if the credential was in the list of members
      */
     boolean isMemberInGroup(GridUser user);
+    /**
+     * Determines whether a DN is in the group.  See use case explained in UserGroup.java
+     * @param user A grid user
+     * @return True if the user's DN was in the list of members
+     */
+    boolean isDNInGroup(GridUser user);
     /** 
      * Sets the list of members as the one given. The method should change what
      * was stored to the content of the list. It should also perform a diff,

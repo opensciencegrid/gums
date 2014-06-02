@@ -354,7 +354,7 @@ public class Configuration {
     /**
      * @return
      */
-    public Map getUserGroups() {
+    public Map<String,UserGroup> getUserGroups() {
         return Collections.unmodifiableMap(userGroups);
     }
  

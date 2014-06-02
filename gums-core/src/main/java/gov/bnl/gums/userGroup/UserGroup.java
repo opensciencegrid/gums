@@ -153,11 +153,21 @@ public abstract class UserGroup {
 	
     /**
      * Determines whether the given user identity is part of the group.
-     * @param userDN the certificate DN.
+     * @param user the grid user.
      * @return true if it's in the group
      */
     public abstract boolean isInGroup(GridUser user);
-    
+
+    /**
+     * Determines whether the given user DN is part of the group.
+     * This should only match on DNs and ignore FQANs; the example
+     * use case is banning: you want to ban the certificate, not
+     * the certificate + FQAN.
+     * @param user The grid user.
+     * @return true if the user's DN is in the group.
+     */
+    public abstract boolean isDNInGroup(GridUser user);
+
     /**
      * Setter for property access
      * 

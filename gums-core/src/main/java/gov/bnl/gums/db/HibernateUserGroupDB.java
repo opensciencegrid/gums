@@ -81,8 +81,18 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             }
         }
     }
-    
+
+    @Override
     public boolean isMemberInGroup(GridUser user) {
+        return isMemberInGroupImpl(user, false);
+    }
+
+    @Override
+    public boolean isDNInGroup(GridUser user) {
+        return isMemberInGroupImpl(user, true);
+    }
+
+    public boolean isMemberInGroupImpl(GridUser user, boolean dnOnly) {
         Session session = null;
         Transaction tx = null;
         try {
@@ -90,7 +100,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             // Checks whether the value is present in the database
             session = persistenceFactory.retrieveSessionFactory().openSession();
             tx = session.beginTransaction();
-            boolean result = isMemberInGroup(session, tx, user);
+            boolean result = isMemberInGroup(session, tx, user, dnOnly);
             tx.commit();
             return result;
         // Handles when transaction goes wrong...
@@ -286,9 +296,11 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         session.save(hUser);
     }
     
-    private boolean isMemberInGroup(Session session, Transaction tx, GridUser user) throws Exception {
+    private boolean isMemberInGroup(Session session, Transaction tx, GridUser user, boolean dnOnly) throws Exception {
         Query q;
-        if (user.getVoFQAN() == null) {
+        if (dnOnly) {
+            q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ?");
+        } else if (user.getVoFQAN() == null) {
             q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan is null");
         } else {
             q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan = ?");

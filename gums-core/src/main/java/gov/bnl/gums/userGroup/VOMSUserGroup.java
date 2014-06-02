@@ -71,13 +71,13 @@ public class VOMSUserGroup extends UserGroup {
     	super();
     }    
  
-	public VOMSUserGroup(Configuration configuration) {
-		super(configuration);
-	}
+    public VOMSUserGroup(Configuration configuration) {
+        super(configuration);
+    }
     
-	public VOMSUserGroup(Configuration configuration, String name) {
-		super(configuration, name);
-	}
+    public VOMSUserGroup(Configuration configuration, String name) {
+        super(configuration, name);
+    }
     
     public UserGroup clone(Configuration configuration) {
     	VOMSUserGroup userGroup = new VOMSUserGroup(configuration, new String(getName()));
@@ -203,7 +203,8 @@ public class VOMSUserGroup extends UserGroup {
    public boolean isIgnoreFQAN() {
         return "ignore".equals(matchFQAN);
     }
-    
+
+    @Override
     public boolean isInGroup(GridUser user) {
     	if (user.getVoFQAN() == null) {
             // If the user comes in without FQAN and we don't accept proxies without fqan,
@@ -261,6 +262,15 @@ public class VOMSUserGroup extends UserGroup {
 			return getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan));
 		else
 			return true;
+    }
+
+    @Override
+    public boolean isDNInGroup(GridUser user) {
+        if (getVoDB() != null) {
+            return getVoDB().isDNInGroup(user);
+        } else {
+            return true;
+        }
     }
 
     /**

@@ -44,11 +44,11 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         log.trace("LDAPUserGroupDB object create: group '" + group + "' factory " + factory);
     }
     
-    public void addMember(gov.bnl.gums.GridUser user) {
+    public void addMember(GridUser user) {
         factory.addUserGroupEntry(gridID(user), group, groupDN);
     }
     
-    public boolean isMemberInGroup(gov.bnl.gums.GridUser user) {
+    public boolean isMemberInGroup(GridUser user) {
         DirContext context = factory.retrieveGumsDirContext();
         try {
             SearchControls ctrls = new SearchControls();
@@ -62,6 +62,10 @@ public class LDAPUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         } finally {
             factory.releaseContext(context);
         }
+    }
+
+    public boolean isDNInGroup(gov.bnl.gums.GridUser user) {
+        return isMemberInGroup(new GridUser(user.getCertificateDN()+"*", null));
     }
 
     public void loadUpdatedList(java.util.List members) {
