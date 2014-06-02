@@ -192,8 +192,8 @@
 							<tasks>
 								<mkdir dir="target/lib" />
 								<copy filtering="on" todir="target/lib/endorsed">
-   								     <fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xercesImpl/2.9.1" />
-                                     <fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xml-apis/2.9.1" />
+   								     <fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xercesImpl/2.10.0" />
+                                     <fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xml-apis/2.10.0" />
 							    </copy>
 								<copy filtering="on" todir="target/lib">
 									<fileset includes="*.jar" dir="target" />
@@ -401,9 +401,9 @@ However, it can only be run from the normal lifecycle, no via rpm:rpm, so it mus
             <version>2.2.4</version>
         </dependency>
 		<dependency>
-			<groupId>xerces</groupId>
+			<groupId>org.apache.xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-			<version>2.9.1</version>
+			<version>2.10.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.santuario</groupId>
