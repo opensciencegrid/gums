@@ -478,13 +478,13 @@ public class CoreLogic {
     }
     
     private void updateBannedGroupsImpl() throws Exception {
-        Collection groups = gums.getConfiguration().getBannedUserGroupList();
+        Collection<String> groups = gums.getConfiguration().getBannedUserGroupList();
         if (groups.size()>0) {
 	        gumsAdminLog.info("Updating user group users for all " + groups.size() + " banned user groups");
 	        StringBuffer failedGroups = null;
-	        Iterator iter = groups.iterator();
-	        while (iter.hasNext()) {
-	            UserGroup group = (UserGroup) iter.next();
+	        for (String groupName : groups) {
+	            UserGroup group = gums.getConfiguration().getUserGroup(groupName);
+		    if (group == null) { continue; }
 	            try {
 	                group.updateMembers();
 	                gumsAdminLog.info("User group update for " + group.getName() + " (" + group.getMemberList().size() + " users).");
