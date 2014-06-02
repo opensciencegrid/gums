@@ -438,6 +438,7 @@ public class ConfigurationToolkit {
 			digester.push(configuration);
 			digester.parse(new ByteArrayInputStream(configText.getBytes()));
 		}
+		insertBannedGroup(configuration);
 
 		// Make sure storeConfig is set in only one persistence factory
 		Iterator it = configuration.getPersistenceFactories().values().iterator();
@@ -618,6 +619,38 @@ public class ConfigurationToolkit {
 			adminLog.error(message);
 			throw new RuntimeException(message);	    	 
 		} 
+	}
+
+	static public void insertBannedGroup(Configuration configuration) {
+		try {
+			PersistenceFactory persistenceFactory = configuration.getPersistenceFactory("mysql");
+			if (persistenceFactory==null && configuration.getPersistenceFactories().size()>0)
+				persistenceFactory = (PersistenceFactory)configuration.getPersistenceFactories().values().iterator().next();
+			if (persistenceFactory == null) { return; }
+
+			UserGroup userGroup = configuration.getUserGroup("gums-banned");
+			if (userGroup==null || !(userGroup instanceof ManualUserGroup)) {
+				int index = 1;
+				while (configuration.getUserGroup("gums-banned"+(index==1?"":Integer.toString(index)))!=null) { index += 1; }
+				String name = "gums-banned"+(index==1?"":Integer.toString(index));
+				userGroup = new ManualUserGroup(configuration, name);
+				userGroup.setDescription("Default group for banned users");
+				((ManualUserGroup)userGroup).setPersistenceFactory(persistenceFactory.getName());
+				configuration.addUserGroup(userGroup);
+				List<String> bannedGroups = configuration.getBannedUserGroupList();
+				StringBuilder sb = new StringBuilder();
+				sb.append(name);
+				for(String group : bannedGroups) {
+					sb.append(",");
+					sb.append(group);
+				}
+				configuration.setBannedUserGroups(sb.toString());
+			}
+		} catch (Exception e) {
+			String message = "Could not insert default banned group 'gums-banned'";
+			log.warn(message, e);
+			adminLog.warn(message);
+		}
 	}
 
 	static public void insertGipProbe(Configuration configuration) {

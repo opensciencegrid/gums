@@ -246,7 +246,7 @@ public class Configuration {
 		return allowGridmapFiles;
 	}    
     
-    public List getBannedUserGroupList() {
+    public List<String> getBannedUserGroupList() {
     	return Collections.unmodifiableList(bannedUserGroupList);
     }
     
@@ -457,6 +457,21 @@ public class Configuration {
 		else
 			this.bannedUserGroupList = Collections.synchronizedList(new ArrayList());
 	}
+
+    public synchronized ManualUserGroup getDefaultBannedGroup() {
+        int index = 1;
+        String name = "gums-banned";
+        UserGroup group = getUserGroup(name);
+        while (group == null || !(group instanceof ManualUserGroup)) {
+            index += 1;
+            name = "gums-banned" + Integer.toString(index);
+            if (index == 100) {
+                throw new RuntimeException("Unable to find built-in banned group 'gums-banned'");
+            }
+            group = getUserGroup(name);
+        }
+        return (ManualUserGroup)group;
+    }
 	
 	/**
      * @return
