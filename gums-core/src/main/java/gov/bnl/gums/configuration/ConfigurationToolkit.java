@@ -28,7 +28,7 @@ import gov.bnl.gums.userGroup.LDAPUserGroup;
 import gov.bnl.gums.userGroup.ManualUserGroup;
 import gov.bnl.gums.userGroup.UserGroup;
 import gov.bnl.gums.userGroup.VOMSUserGroup;
-import gov.bnl.gums.userGroup.ArgusBannedUserGroup;
+import gov.bnl.gums.userGroup.BannedUserGroup;
 import gov.bnl.gums.userGroup.VomsServer;
 
 import java.io.ByteArrayInputStream;
@@ -327,11 +327,11 @@ public class ConfigurationToolkit {
 		digester.addRule("gums/userGroups/vomsUserGroup", new VomsServerRule());
 		digester.addSetNext("gums/userGroups/vomsUserGroup", "addUserGroup", "gov.bnl.gums.userGroup.UserGroup");
 
-		digester.addObjectCreate("gums/userGroups/argusBannedUserGroup", ArgusBannedUserGroup.class);
-		digester.addRule("gums/userGroups/argusBannedUserGroup", new PassRule(new String[] {"className", "persistenceFactory", "vomsServer"}));
-		digester.addRule("gums/userGroups/argusBannedUserGroup", new PersistenceFactoryRule());
-		digester.addRule("gums/userGroups/argusBannedUserGroup", new VomsServerRule());
-		digester.addSetNext("gums/userGroups/argusBannedUserGroup", "addUserGroup", "gov.bnl.gums.userGroup.UserGroup");
+		digester.addObjectCreate("gums/userGroups/bannedUserGroup", BannedUserGroup.class);
+		digester.addRule("gums/userGroups/bannedUserGroup", new PassRule(new String[] {"className", "persistenceFactory", "vomsServer"}));
+		digester.addRule("gums/userGroups/bannedUserGroup", new PersistenceFactoryRule());
+		digester.addRule("gums/userGroups/bannedUserGroup", new VomsServerRule());
+		digester.addSetNext("gums/userGroups/bannedUserGroup", "addUserGroup", "gov.bnl.gums.userGroup.UserGroup");
 
 		digester.addObjectCreate("gums/accountMappers/accountPoolMapper", AccountPoolMapper.class);
 		digester.addSetProperties("gums/accountMappers/accountPoolMapper");

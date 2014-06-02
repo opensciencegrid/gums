@@ -46,7 +46,7 @@ import javax.xml.xpath.XPathConstants;;
 import org.glite.security.util.DN;
 import org.glite.security.util.DNImpl;
 
-/** A group of users residing on an Argus server. This class is able to 
+/** A group of users residing on an Argus or VOMS server. This class is able to 
  * import a list of users from Argus that are banned. It will store to a local
  * medium through the UserGroupDB interface. It also manages the caching from
  * the local database.
@@ -55,41 +55,41 @@ import org.glite.security.util.DNImpl;
  *
  * @author Brian Bockelman
  */
-public class ArgusBannedUserGroup extends UserGroup {
+public class BannedUserGroup extends UserGroup {
 
     static public String getTypeStatic() {
-        return "argus";
+        return "banned";
     }
 
 
-    private Logger log = Logger.getLogger(ArgusBannedUserGroup.class);
-    private String argusEndpoint = "";
+    private Logger log = Logger.getLogger(BannedUserGroup.class);
+    private String endpoint = "";
     private String sslCertfile = null;
     private String sslKey = null;
     private String sslKeyPasswd = null;
     private String sslCAFiles = null;
     private String persistenceFactory = null;
 
-    public ArgusBannedUserGroup() {
+    public BannedUserGroup() {
     	super();
     }    
 
 
-    public ArgusBannedUserGroup(Configuration configuration) {
+    public BannedUserGroup(Configuration configuration) {
         super(configuration);
     }
 
 
-    public ArgusBannedUserGroup(Configuration configuration, String name) {
+    public BannedUserGroup(Configuration configuration, String name) {
         super(configuration, name);
     }
 
 
     public UserGroup clone(Configuration configuration) {
-    	ArgusBannedUserGroup userGroup = new ArgusBannedUserGroup(configuration, new String(getName()));
+    	BannedUserGroup userGroup = new BannedUserGroup(configuration, new String(getName()));
     	userGroup.setDescription(new String(getDescription()));
     	userGroup.setAccess(new String(getAccess()));
-    	userGroup.setArgusEndpoint(new String(getArgusEndpoint()));
+    	userGroup.setEndpoint(new String(getEndpoint()));
         if (sslCertfile != null) { userGroup.setSslCertfile(new String(sslCertfile)); }
         if (sslKey != null) { userGroup.setSslKey(new String(sslKey)); }
         if (sslKeyPasswd != null) { userGroup.setSslKeyPasswd(new String(sslKeyPasswd)); }
@@ -128,8 +128,8 @@ public class ArgusBannedUserGroup extends UserGroup {
         return persistenceFactory;
     }
 
-    public String getArgusEndpoint() {
-        return argusEndpoint;
+    public String getEndpoint() {
+        return endpoint;
     }
 
 
@@ -143,15 +143,15 @@ public class ArgusBannedUserGroup extends UserGroup {
 
 
     public String getType() {
-        return "argus";
+        return "banned";
     }
 
 
     public XACMLPolicyManagement getXACMLPolicyManagement() {
         try {
-            log.trace("Argus Service Locator: url='" + getArgusEndpoint() + "'");
+            log.trace("Service Locator: url='" + getEndpoint() + "'");
             XACMLPolicyManagementServiceLocator locator = new XACMLPolicyManagementServiceLocator();
-            URL argusUrl = new URL( getArgusEndpoint() );
+            URL argusUrl = new URL( getEndpoint() );
             log.info("Connecting to Argus at " + argusUrl);
             return locator.getXACMLPolicyManagementService(argusUrl);
         } catch (Throwable e) {
@@ -170,12 +170,12 @@ public class ArgusBannedUserGroup extends UserGroup {
     }
 
 
-    public void setArgusEndpoint(String endpoint) {
-    	this.argusEndpoint = endpoint;
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
     }
 
     public String toString() {
-        return "ArgusBannedUserGroup: argusEndpoint='" + argusEndpoint + "'";
+        return "BannedUserGroup: endpoint='" + endpoint + "'";
     }
     
     public String toString(String bgColor) {
@@ -183,11 +183,11 @@ public class ArgusBannedUserGroup extends UserGroup {
     }
 
     public String toXML() {
-    	String retStr = "\t\t<argusBannedUserGroup\n"+
+    	String retStr = "\t\t<bannedUserGroup\n"+
             "\t\t\tname='"+getName()+"'\n"+
             "\t\t\taccess='"+accessTypes[accessIndex]+"'\n" +
             "\t\t\tdescription='"+getDescription()+"'\n"+
-            "\t\t\targusEndpoint='"+argusEndpoint+"'\n"+
+            "\t\t\tendpoint='"+endpoint+"'\n"+
             "\t\t\tpersistenceFactory='"+getPersistenceFactory()+"'\n";
         if (sslKey != null && !sslKey.equals(""))
             retStr += "\t\t\tsslKey='"+sslKey+"'\n";
@@ -209,7 +209,7 @@ public class ArgusBannedUserGroup extends UserGroup {
         if (getUserDB()!=null) {
             getUserDB().loadUpdatedList(retrieveMembers());
         } else {
-            throw new RuntimeException("Could not updateMembers for " + argusEndpoint + "; getUserDB returned null");
+            throw new RuntimeException("Could not updateMembers for " + endpoint + "; getUserDB returned null");
         }
     }
 
@@ -220,7 +220,7 @@ public class ArgusBannedUserGroup extends UserGroup {
 
 
     /**
-    * Retrieves the list of members for this ArgusUsersGroup
+    * Retrieves the list of members for this BannedUsersGroup
     */
     private List retrieveMembers() {
         Properties p = System.getProperties();

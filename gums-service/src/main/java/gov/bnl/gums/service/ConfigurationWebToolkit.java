@@ -229,25 +229,25 @@ public class ConfigurationWebToolkit implements Remote {
 				((VOMSUserGroup)userGroup).setVoGroup( request.getParameter("vogroup") );
 			if (request.getParameter("role")!=null)
 				((VOMSUserGroup)userGroup).setRole( request.getParameter("role") );
-		} else if (type.equals(ArgusBannedUserGroup.getTypeStatic())) {
-			userGroup = new ArgusBannedUserGroup();
+		} else if (type.equals(BannedUserGroup.getTypeStatic())) {
+			userGroup = new BannedUserGroup();
 			userGroup.setName( request.getParameter("name").trim() );
 			if (request.getParameter("description")!=null)
 				userGroup.setDescription( request.getParameter("description").trim() );
 			if (request.getParameter("access")!=null)
 				userGroup.setAccess( request.getParameter("access").trim() );
 			if (request.getParameter("url")!=null)
-				((ArgusBannedUserGroup)userGroup).setArgusEndpoint( request.getParameter("url").trim() );
+				((BannedUserGroup)userGroup).setEndpoint( request.getParameter("url").trim() );
 			if (request.getParameter("persistenceFactory")!=null)
-				((ArgusBannedUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory").trim() );
+				((BannedUserGroup)userGroup).setPersistenceFactory( request.getParameter("persistenceFactory").trim() );
 			if (request.getParameter("sslKey")!=null)
-				((ArgusBannedUserGroup)userGroup).setSslKey( request.getParameter("sslKey").trim() );
+				((BannedUserGroup)userGroup).setSslKey( request.getParameter("sslKey").trim() );
 			if (request.getParameter("sslCert")!=null)
-				((ArgusBannedUserGroup)userGroup).setSslCertfile( request.getParameter("sslCert").trim() );
+				((BannedUserGroup)userGroup).setSslCertfile( request.getParameter("sslCert").trim() );
 			if (request.getParameter("sslCA")!=null)
-				((ArgusBannedUserGroup)userGroup).setSslCAFiles( request.getParameter("sslCA").trim() );
+				((BannedUserGroup)userGroup).setSslCAFiles( request.getParameter("sslCA").trim() );
 			if (request.getParameter("sslKeyPW")!=null)
-				((ArgusBannedUserGroup)userGroup).setSslKeyPasswd( request.getParameter("sslKeyPW").trim() );
+				((BannedUserGroup)userGroup).setSslKeyPasswd( request.getParameter("sslKeyPW").trim() );
 
 		}
 

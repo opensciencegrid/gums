@@ -187,23 +187,23 @@ if (request.getParameter("command")==null ||
 				Role: <%=((VOMSUserGroup)userGroup).getRole()%><br>
 <%
 			}
-		} else if (userGroup instanceof ArgusBannedUserGroup) {
+		} else if (userGroup instanceof BannedUserGroup) {
 %>
-						Argus-based banned user group:
+						Banned user group:
 						<a href="userGroups.jsp?command=edit&name=<%=userGroup.getName()%>">
 							<%=userGroup.getName()%>
 						</a><br>
 						Description: <%=userGroup.getDescription()%><br>
 						Persistence Factory:
-						<a href="persistenceFactories.jsp?command=edit&name=<%=((ArgusBannedUserGroup)userGroup).getPersistenceFactory()%>">
-							<%=((ArgusBannedUserGroup)userGroup).getPersistenceFactory()%>
+						<a href="persistenceFactories.jsp?command=edit&name=<%=((BannedUserGroup)userGroup).getPersistenceFactory()%>">
+							<%=((BannedUserGroup)userGroup).getPersistenceFactory()%>
 						</a><br>
-						Argus endpoint: <%=((ArgusBannedUserGroup)userGroup).getArgusEndpoint()%><br>
+						Endpoint: <%=((BannedUserGroup)userGroup).getEndpoint()%><br>
 <!--
-						SSL Key: <%=((ArgusBannedUserGroup)userGroup).getSslKey()%><br>
-						SSL Cert File: <%=((ArgusBannedUserGroup)userGroup).getSslCertfile()%><br>
-						SSL Key Password: <%=((ArgusBannedUserGroup)userGroup).getSslKeyPasswd()%><br>
-						SSL CA Files: <%=((ArgusBannedUserGroup)userGroup).getSslCAFiles()%><br>
+						SSL Key: <%=((BannedUserGroup)userGroup).getSslKey()%><br>
+						SSL Cert File: <%=((BannedUserGroup)userGroup).getSslCertfile()%><br>
+						SSL Key Password: <%=((BannedUserGroup)userGroup).getSslKeyPasswd()%><br>
+						SSL CA Files: <%=((BannedUserGroup)userGroup).getSslCAFiles()%><br>
 -->
 <%
 		}
@@ -242,7 +242,7 @@ else if ("edit".equals(request.getParameter("command"))
 	userGroupTypes.add(LDAPUserGroup.getTypeStatic());
 	userGroupTypes.add(ManualUserGroup.getTypeStatic());
 	userGroupTypes.add(VOMSUserGroup.getTypeStatic());
-	userGroupTypes.add(ArgusBannedUserGroup.getTypeStatic());
+	userGroupTypes.add(BannedUserGroup.getTypeStatic());
 	
 	if ("edit".equals(request.getParameter("command"))) {
 		try {
@@ -546,14 +546,14 @@ else if ("edit".equals(request.getParameter("command"))
 			</tr>
 <%
 	}
-	else if (userGroup instanceof ArgusBannedUserGroup) {
+	else if (userGroup instanceof BannedUserGroup) {
 %>
 			<tr>
 				<td nowrap style="text-align: right;">
-					Argus Endpoint:
+					Endpoint:
 				</td>
 				<td>
-					<input maxlength="256" size="100" name="url" value="<%=((ArgusBannedUserGroup)userGroup).getArgusEndpoint()%>"/>
+					<input maxlength="256" size="100" name="url" value="<%=((BannedUserGroup)userGroup).getEndpoint()%>"/>
 				</td>
 			</tr>
 			<tr>
@@ -571,7 +571,7 @@ else if ("edit".equals(request.getParameter("command"))
 			<td>
 				<%=ConfigurationWebToolkit.createSelectBox("persistenceFactory", 
 						configuration.getPersistenceFactories().values(), 
-						((ArgusBannedUserGroup)userGroup).getPersistenceFactory(),
+						((BannedUserGroup)userGroup).getPersistenceFactory(),
 						null,
 						false)%> (for caching individual users)
 			</td>
@@ -581,7 +581,7 @@ else if ("edit".equals(request.getParameter("command"))
 				SSL Key:
 			</td>
 			<td>
-				<input maxlength="256" size="64" name="sslKey" value="<%=((ArgusBannedUserGroup)userGroup).getSslKey()%>"/>
+				<input maxlength="256" size="64" name="sslKey" value="<%=((BannedUserGroup)userGroup).getSslKey()%>"/>
 			</td>
 		</tr>
 		<tr>
@@ -597,7 +597,7 @@ else if ("edit".equals(request.getParameter("command"))
 				SSL Cert File:
 			</td>
 			<td>
-				<input maxlength="256" size="64" name="sslCert" value="<%=((ArgusBannedUserGroup)userGroup).getSslCertfile()%>"/>
+				<input maxlength="256" size="64" name="sslCert" value="<%=((BannedUserGroup)userGroup).getSslCertfile()%>"/>
 			</td>
 		</tr>
 		<tr>
@@ -613,7 +613,7 @@ else if ("edit".equals(request.getParameter("command"))
 				SSL Key Password:
 			</td>
 			<td>
-				<input type="password" maxlength="256" size="64" name="sslKeyPW" value="<%=((ArgusBannedUserGroup)userGroup).getSslKeyPasswd()%>"/> (leave blank if none)
+				<input type="password" maxlength="256" size="64" name="sslKeyPW" value="<%=((BannedUserGroup)userGroup).getSslKeyPasswd()%>"/> (leave blank if none)
 			</td>
 		</tr>
 		<tr>
@@ -621,7 +621,7 @@ else if ("edit".equals(request.getParameter("command"))
 				SSL CA Files:
 			</td>
 			<td>
-				<input maxlength="256" size="64" name="sslCA" value="<%=((ArgusBannedUserGroup)userGroup).getSslCAFiles()%>"/>
+				<input maxlength="256" size="64" name="sslCA" value="<%=((BannedUserGroup)userGroup).getSslCAFiles()%>"/>
 			</td>
 		</tr>
 		<tr>
