@@ -192,9 +192,9 @@
 							<tasks>
 								<mkdir dir="target/lib" />
 								<copy filtering="on" todir="target/lib/endorsed">
-   								     <fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xercesImpl/2.10.0" />
-                                     <fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xml-apis/2.10.0" />
-							    </copy>
+									<fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xercesImpl/2.10.0" />
+									<!--<fileset includes="*.jar" dir="${settings.localRepository}/org/apache/xerces/xml-apis/2.10.0" />-->
+								</copy>
 								<copy filtering="on" todir="target/lib">
 									<fileset includes="*.jar" dir="target" />
 								</copy>
