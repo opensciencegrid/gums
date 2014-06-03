@@ -110,7 +110,7 @@ public abstract class UserGroup {
      * allow direct user to account mapping through a call-out.
      * @return a List of GridUser objects representing the user certificate DN.
      */
-    public abstract List getMemberList();
+    public abstract List<GridUser> getMemberList();
 
 	/**
 	 * Getter for property name.

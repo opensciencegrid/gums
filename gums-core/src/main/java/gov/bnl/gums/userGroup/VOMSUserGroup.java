@@ -110,11 +110,11 @@ public class VOMSUserGroup extends UserGroup {
    		return matchFQAN;
     }
     
-    public java.util.List getMemberList() {
+    public List<GridUser> getMemberList() {
 		if (getVoDB()!=null)
 			return getVoDB().retrieveMembers();
 		else
-			return new ArrayList();
+			return new ArrayList<GridUser>();
     }
     
     public String getRemainderUrl() {
