@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.naming.Context;
@@ -91,7 +93,7 @@ public class GUMS {
 									gums.getCoreLogic().updateGroups();
 									gumsAdminLog.info("Automatic updateGroups ended");
 								} catch (Exception e) {
-									gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage());
+									gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage(), e);
 									gumsAdminEmailLog.put("updateUserGroup", e.getMessage(), false);
 								}
 							}
@@ -119,7 +121,7 @@ public class GUMS {
 									gums.getCoreLogic().updateBannedGroups();
 									gumsAdminLog.info("Automatic updateBannedGroups ended");
 								} catch (Exception e) {
-									gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage());
+									gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage(), e);
 									gumsAdminEmailLog.put("updateBannedGroups", e.getMessage(), false);
 								}
 							}
@@ -213,7 +215,7 @@ public class GUMS {
 								gums.getCoreLogic().updateGroups();
 								gumsAdminLog.info("Automatic updateGroups ended");
 							} catch (Exception e) {
-								gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage());
+								gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage(), e);
 								gumsAdminEmailLog.put("updateUserGroup", e.getMessage(), false);
 							}
 						}
@@ -236,7 +238,7 @@ public class GUMS {
 								gums.getCoreLogic().updateBannedGroups();
 								gumsAdminLog.info("Automatic updateBannedGroups ended");
 							} catch (Exception e) {
-								gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage());
+								gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage(), e);
 								gumsAdminEmailLog.put("updateBannedGroups", e.getMessage(), false);
 							}
 						}
@@ -302,7 +304,7 @@ public class GUMS {
 					gums.getCoreLogic().updateBannedGroups();
 					gumsAdminLog.info("Automatic updateBannedGroups ended");
 				} catch (Exception e) {
-					gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage());
+					gumsAdminLog.warn("Automatic banned group update had failures - " + e.getMessage(), e);
 					gumsAdminEmailLog.put("updateBannedGroups", e.getMessage(), false);
 				}
 			}
@@ -458,16 +460,19 @@ public class GUMS {
 
 	public boolean isUserBanned(GridUser user) throws Exception {
 		Configuration config = getConfiguration();
-		List bannedUserGroups = config.getBannedUserGroupList();
-		Iterator it = bannedUserGroups.iterator();
-		while (it.hasNext()) {
-			UserGroup userGroup = config.getUserGroup((String)it.next());
-			if (userGroup.isDNInGroup(user)) { return true; }
+		Set<UserGroup> bannedUserGroups = new HashSet<UserGroup>();
+		bannedUserGroups.add(config.getDefaultBannedGroup());
+		for (String groupName : config.getBannedUserGroupList()) {
+			UserGroup group = config.getUserGroup(groupName);
+			if (group != null) { bannedUserGroups.add(group); }
 		}
 		for (UserGroup group : config.getUserGroups().values()) {
 			if (group instanceof BannedUserGroup) {
-				if (group.isDNInGroup(user)) { return true; }
+				bannedUserGroups.add(group);
 			}
+		}
+		for (UserGroup group : bannedUserGroups) {
+			if (group != null && group.isDNInGroup(user)) { return true; }
 		}
 		return false;
 	} // end isUserBanned()
