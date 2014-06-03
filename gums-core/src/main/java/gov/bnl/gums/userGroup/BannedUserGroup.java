@@ -46,6 +46,9 @@ import javax.xml.xpath.XPathConstants;;
 import org.glite.security.util.DN;
 import org.glite.security.util.DNImpl;
 
+import org.glite.voms.generated.VOMSCompatibility;
+import org.glite.voms.generated.VOMSCompatibilityServiceLocator;
+
 /** A group of users residing on an Argus or VOMS server. This class is able to 
  * import a list of users from Argus that are banned. It will store to a local
  * medium through the UserGroupDB interface. It also manages the caching from
@@ -142,12 +145,13 @@ public class BannedUserGroup extends UserGroup {
     }
 
 
+    @Override
     public String getType() {
         return "banned";
     }
 
 
-    public XACMLPolicyManagement getXACMLPolicyManagement() {
+    private XACMLPolicyManagement getXACMLPolicyManagement() {
         try {
             log.trace("Service Locator: url='" + getEndpoint() + "'");
             XACMLPolicyManagementServiceLocator locator = new XACMLPolicyManagementServiceLocator();
@@ -157,6 +161,20 @@ public class BannedUserGroup extends UserGroup {
         } catch (Throwable e) {
             log.error("Couldn't get Argus endpoint: ", e);
             throw new RuntimeException("Couldn't get Argus endpoint: " + e.getMessage(), e);
+        }
+    }
+
+
+    private VOMSCompatibility getVOMSCompatibility() {
+        try {
+            log.trace("VOMS Service Locator: url='" + getEndpoint());
+            VOMSCompatibilityServiceLocator locator = new VOMSCompatibilityServiceLocator();
+            URL vomsUrl = new URL(getEndpoint());
+            log.info("Connecting to VOMS Compatibility at " + vomsUrl);
+            return locator.getVOMSCompatibility(vomsUrl);
+        } catch (Throwable e) {
+            log.error("Couldn't get VOMS Compatiblity interface at " + getEndpoint() + ": ", e);
+            throw new RuntimeException("Couldn't get VOMS Compatibility interface at " + getEndpoint() + ": " + e.getMessage(), e);
         }
     }
 
@@ -231,7 +249,15 @@ public class BannedUserGroup extends UserGroup {
     /**
     * Retrieves the list of members for this BannedUsersGroup
     */
-    private List retrieveMembers() {
+    public List<GridUser> retrieveMembers() {
+        if (getEndpoint().endsWith("/VOMSCompatibility")) {
+            return retrieveMembersVOMS();
+        } else {
+            return retrieveMembersArgus();
+        }
+    }
+
+    private List<GridUser> retrieveMembersArgus() {
         Properties p = System.getProperties();
         try {
             setProperties();
@@ -248,7 +274,7 @@ public class BannedUserGroup extends UserGroup {
             MessageElement [] elements = policyMgmt.listPolicies("default").get_any();
 
             System.setProperties(p);
-            ArrayList entries = new ArrayList();
+            List<GridUser> entries = new ArrayList<GridUser>();
 
             if (elements.length == 0) { throw new RuntimeException("Argus failed to return a valid policy!"); }
             InputStream is = new ByteArrayInputStream(elements[0].toString().getBytes());
@@ -278,6 +304,51 @@ public class BannedUserGroup extends UserGroup {
             log.error(message, e);
             e.printStackTrace();
             throw new RuntimeException(message + e.getMessage());
+        }
+    }
+
+
+    private List<GridUser> retrieveMembersVOMS() {
+        Properties p = System.getProperties();
+        try {
+            setProperties();
+            log.debug("SSL properties read: " +
+            "sslCertfile='" + System.getProperty("sslCertfile") +
+            "' sslKey='" + System.getProperty("sslKey") +
+            "' sslKeyPasswd set:" + (System.getProperty("sslKeyPasswd")!=null) +
+            " sslCAFiles='" + System.getProperty("sslCAFiles") + "'" );
+            System.setProperty("axis.socketSecureFactory", "org.glite.security.trustmanager.axis.AXISSocketFactory");
+
+            VOMSCompatibility vomscompat = getVOMSCompatibility();
+
+            URL tempURL = new URL(getEndpoint());
+            String container = "/";
+            String [] path = tempURL.getPath().split("/");
+            if (path.length >= 3) {
+                container += path[path.length-3];
+            }
+
+            String[] users = vomscompat.getGridmapUsers(container);
+
+            if (users.length > 0) {
+                log.info("Retrieved " + users.length + " users.");
+                log.info("First user is: '" + users[0] + "'");
+                log.info("Last user is: '" + users[users.length - 1 ] + "'");
+            } else {
+                log.info("Retrieved no users.");
+            }
+
+            List<GridUser> entries = new ArrayList<GridUser>();
+            for (int n=0; n < users.length; n++) {
+                GridUser gridUser = new GridUser(users[n], null);
+                entries.add(gridUser);
+            }
+            return entries;
+        } catch (Throwable e) {
+            String message = "Couldn't retrieve users: ";
+            log.error(message, e);
+            e.printStackTrace();
+            throw new RuntimeException(message + e.getMessage(), e);
         }
     }
 
