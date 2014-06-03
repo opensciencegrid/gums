@@ -16,6 +16,7 @@
   <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="shortcut.jsp">Shortcut</a></li>
   <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="mergeConfiguration.jsp">Merge Configuration</a></li>
   <li>User Management</li>
+   <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="banning.jsp" style="color:red">BAN USERS</a></li>
   <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="updateMembers_form.jsp">Update VO Members</a></li>
   <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="manualUserGroups.jsp">Manual User Group Members</a></li>
   <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="manualAccounts.jsp">Manual Account Mappings</a></li>
