@@ -170,8 +170,9 @@ public class ManualUserGroup extends UserGroup {
 
             List<Pattern> patterns = dnOnly ? dnPatternList : patternList;
             for (Pattern p : patterns) {
-                Matcher m = p.matcher(concatDNFqan(user));
-                if (log.isTraceEnabled()) { log.trace("trying to match user "+concatDNFqan(user)+" against "+m.toString()); }
+                String userString = dnOnly ? user.getCertificateDN() : concatDNFqan(user);
+                Matcher m = p.matcher(userString);
+                if (log.isTraceEnabled()) { log.trace("trying to match user "+userString+" against "+m.toString()); }
                 if (m.matches()) {
                     returnVal = true;
                     break;
@@ -352,11 +353,10 @@ public class ManualUserGroup extends UserGroup {
 	 		while (it.hasNext()) 
 	 		{
 	 			GridUser itUser = (GridUser)it.next();
-	 			Pattern p = Pattern.compile(concatDNFqan(itUser));
+	 			Pattern p = Pattern.compile(Pattern.quote(concatDNFqan(itUser)));
 				patternList.add(p);
-				GridUser dnUser = new GridUser(itUser.getCertificateDN(), null);
-				Pattern p2 = Pattern.compile(concatDNFqan(itUser));
-				dnPatternList.add(p);
+				Pattern p2 = Pattern.compile(Pattern.quote(itUser.getCertificateDN()));
+				dnPatternList.add(p2);
 	 		}
 			needsRefresh = false;
 			patternListLastUpdated = Calendar.getInstance().getTime();
