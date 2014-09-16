@@ -116,10 +116,17 @@ if (request.getParameter("command")==null ||
 %>
 			<tr>
 				<td width="1" valign="top">
-					<form action="banning.jsp" method="get">
-						<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this user from the banned list?'))return false;">
-						<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>">
-					</form>
+<%
+					if (group.getName().equals(UserGroup.getDefaultBannedGroupName()))
+					{
+%>
+						<form action="banning.jsp" method="get">
+							<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this user from the banned list?'))return false;">
+							<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>">
+						</form>
+<%
+					}
+%>
 				</td>
 				<td align="left">
 					<table class="configElement" width="100%">

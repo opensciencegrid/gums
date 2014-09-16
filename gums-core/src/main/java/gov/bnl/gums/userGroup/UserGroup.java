@@ -26,6 +26,9 @@ public abstract class UserGroup {
     static public String getTypeStatic() {
 		return "abstract";
 	}
+
+	private static final String DEFAULT_BANNED_GROUP = "gums-banned";
+	public static String getDefaultBannedGroupName() {return DEFAULT_BANNED_GROUP;}
 	
 	private String name = "";
 	private String description = "";

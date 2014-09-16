@@ -353,7 +353,7 @@ public class ManualUserGroup extends UserGroup {
 	 		while (it.hasNext()) 
 	 		{
 	 			GridUser itUser = (GridUser)it.next();
-	 			Pattern p = Pattern.compile(Pattern.quote(concatDNFqan(itUser)));
+	 			Pattern p = Pattern.compile(concatDNFqan(itUser));
 				patternList.add(p);
 				Pattern p2 = Pattern.compile(Pattern.quote(itUser.getCertificateDN()));
 				dnPatternList.add(p2);

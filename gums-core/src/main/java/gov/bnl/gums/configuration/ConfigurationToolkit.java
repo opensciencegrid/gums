@@ -628,11 +628,11 @@ public class ConfigurationToolkit {
 				persistenceFactory = (PersistenceFactory)configuration.getPersistenceFactories().values().iterator().next();
 			if (persistenceFactory == null) { return; }
 
-			UserGroup userGroup = configuration.getUserGroup("gums-banned");
+			UserGroup userGroup = configuration.getUserGroup(UserGroup.getDefaultBannedGroupName());
 			if (userGroup==null || !(userGroup instanceof ManualUserGroup)) {
 				int index = 1;
-				while (configuration.getUserGroup("gums-banned"+(index==1?"":Integer.toString(index)))!=null) { index += 1; }
-				String name = "gums-banned"+(index==1?"":Integer.toString(index));
+				while (configuration.getUserGroup(UserGroup.getDefaultBannedGroupName()+(index==1?"":Integer.toString(index)))!=null) { index += 1; }
+				String name = UserGroup.getDefaultBannedGroupName()+(index==1?"":Integer.toString(index));
 				userGroup = new ManualUserGroup(configuration, name);
 				userGroup.setDescription("Default group for banned users");
 				((ManualUserGroup)userGroup).setPersistenceFactory(persistenceFactory.getName());
@@ -647,7 +647,7 @@ public class ConfigurationToolkit {
 				configuration.setBannedUserGroups(sb.toString());
 			}
 		} catch (Exception e) {
-			String message = "Could not insert default banned group 'gums-banned'";
+			String message = "Could not insert default banned group '" + UserGroup.getDefaultBannedGroupName() + "'";
 			log.warn(message, e);
 			adminLog.warn(message);
 		}

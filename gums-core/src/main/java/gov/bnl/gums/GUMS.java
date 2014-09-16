@@ -472,7 +472,10 @@ public class GUMS {
 			}
 		}
 		for (UserGroup group : bannedUserGroups) {
-			if (group != null && group.isDNInGroup(user)) { return true; }
+			//gumsAdminLog.warn("Checking if user " + user + " is in banned group " + group.getName());
+			if (group == null) {continue;}
+			else if (group.getName().equals(UserGroup.getDefaultBannedGroupName()) && group.isDNInGroup(user)) { return true; }
+			else if (group.isInGroup(user)) { gumsAdminLog.warn("User is in group"); return true; }
 		}
 		return false;
 	} // end isUserBanned()

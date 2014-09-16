@@ -460,13 +460,13 @@ public class Configuration {
 
     public synchronized ManualUserGroup getDefaultBannedGroup() {
         int index = 1;
-        String name = "gums-banned";
+        String name = UserGroup.getDefaultBannedGroupName();
         UserGroup group = getUserGroup(name);
         while (group == null || !(group instanceof ManualUserGroup)) {
             index += 1;
-            name = "gums-banned" + Integer.toString(index);
+            name = UserGroup.getDefaultBannedGroupName() + Integer.toString(index);
             if (index == 100) {
-                throw new RuntimeException("Unable to find built-in banned group 'gums-banned'");
+                throw new RuntimeException("Unable to find built-in banned group '" + UserGroup.getDefaultBannedGroupName() + "'");
             }
             group = getUserGroup(name);
         }
