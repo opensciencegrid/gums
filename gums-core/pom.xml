@@ -4,7 +4,7 @@
     <groupId>gov.bnl.racf.gums</groupId>
     <artifactId>gums-core</artifactId>
     <name>gums-core</name>
-    <version>1.4.0</version>
+    <version>1.4.1.pre1</version>
     <description>GUMS Core provides the core functionality used by other GUMS components</description>
 
   <distributionManagement>
@@ -41,9 +41,9 @@
 	</pluginRepositories>
 
     <scm>
-        <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.0/gums-core</connection>
-        <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.0/gums-core</developerConnection>
-        <url>http://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.0/gums-core</url>
+        <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre1/gums-core</connection>
+        <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre1/gums-core</developerConnection>
+        <url>http://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre1/gums-core</url>
     </scm>
 
     <build>
@@ -306,9 +306,24 @@
         </dependency>
         
         <dependency>
-            <groupId>hibernate</groupId>
-            <artifactId>hibernate</artifactId>
-            <version>3.0.3</version>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>3.6.10.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-c3p0</artifactId>
+            <version>3.6.10.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-ehcache</artifactId>
+            <version>3.6.10.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.12.1.GA</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -381,16 +396,18 @@
 
 
         <!--runtime scope-->
+<!--
         <dependency>
             <groupId>c3p0</groupId>
             <artifactId>c3p0</artifactId>
             <version>0.9.1.2</version>
             <scope>runtime</scope>
         </dependency>
+        -->
         <dependency>
             <groupId>cglib</groupId>
-            <artifactId>cglib-full</artifactId>
-            <version>2.0.2</version>
+            <artifactId>cglib</artifactId>
+            <version>2.2</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
