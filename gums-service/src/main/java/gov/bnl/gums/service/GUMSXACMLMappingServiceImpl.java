@@ -60,6 +60,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 
 		// Get information from request
 		RequestType request = xacmlQuery.getRequest();
+		boolean supportsAccount = getEnvironmentSupportsObligation(request, XACMLConstants.OBLIGATION_ACCOUNT);
 		String userDn = getSubjectAttributeValue(request, XACMLConstants.SUBJECT_X509_ID);
 		String userFqan = getSubjectAttributeValue(request, XACMLConstants.SUBJECT_VOMS_PRIMARY_FQAN_ID);
 		
@@ -83,7 +84,9 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 		// Attribute Assignment, decision, and status code
 		AttributeAssignmentType attributeAssignment = null;
 		AttributeAssignmentType attributeAssignmentGid = null;
+		AttributeAssignmentType attributeAssignmentGroup = null;
 		boolean hasGid = false;
+		boolean hasGroup = false;
 		DecisionTypeImplBuilder decisionBuilder = (DecisionTypeImplBuilder)builderFactory.getBuilder(DecisionType.DEFAULT_ELEMENT_NAME);
 		DecisionType decision = decisionBuilder.buildObject();
 		StatusCodeTypeImplBuilder statusCodeBuilder = (StatusCodeTypeImplBuilder)builderFactory.getBuilder(StatusCodeType.DEFAULT_ELEMENT_NAME);
@@ -105,16 +108,33 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 				attributeAssignment.setValue(account.getUser());
 
 				if (account.getGroup() != null && !account.getGroup().equals("")) {
-					hasGid = true;
-					attributeAssignmentGid = attributeAssignmentBuilder.buildObject();
-					attributeAssignmentGid.setAttributeId(XACMLConstants.ATTRIBUTE_POSIX_GID_ID);
-					attributeAssignmentGid.setDataType(XACMLConstants.STRING_DATATYPE);
-					attributeAssignmentGid.setValue(account.getGroup());
+					try {
+						Integer.parseInt(account.getGroup());
+						hasGid = true;
+						attributeAssignmentGid = attributeAssignmentBuilder.buildObject();
+						attributeAssignmentGid.setAttributeId(XACMLConstants.ATTRIBUTE_POSIX_GID_ID);
+						attributeAssignmentGid.setDataType(XACMLConstants.STRING_DATATYPE);
+						attributeAssignmentGid.setValue(account.getGroup());
+					} catch (NumberFormatException e1) {
+						hasGroup = true;
+						attributeAssignmentGroup = attributeAssignmentBuilder.buildObject();
+						attributeAssignmentGroup.setAttributeId(XACMLConstants.ATTRIBUTE_PRIMARY_GROUPNAME_ID);
+						attributeAssignmentGroup.setDataType(XACMLConstants.STRING_DATATYPE);
+						attributeAssignmentGroup.setValue(account.getGroup());
+					}
 				}
-
-				decision.setDecision(DecisionType.DECISION.Permit);
-				
-				log.debug("Credentials mapped on '" + hostDn + "' for '" + userDn + "' with fqan '" + userFqan + "' to '" + account + "'");
+				log.debug("Has group " + hasGroup + ", supports account " + supportsAccount);
+				if (hasGroup && !supportsAccount)
+				{
+					decision.setDecision(DecisionType.DECISION.Indeterminate);
+					statusCode.setValue(ERROR);
+					log.warn("Credentials mapped on '" + hostDn + "' for '" + userDn + "' with fqan '" + userFqan + "' to '" + account + "'.  However, the client cannot understand our response; will return an indeterminate response.");
+				}
+				else
+				{
+					decision.setDecision(DecisionType.DECISION.Permit);
+					log.debug("Credentials mapped on '" + hostDn + "' for '" + userDn + "' with fqan '" + userFqan + "' to '" + account + "'");
+				}
 			}
 		} catch (Exception e1) {
 			statusCode.setValue(ERROR);
@@ -147,7 +167,19 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 				obligationgid.getAttributeAssignments().add(attributeAssignmentGid);
 				obligations.getObligations().add(obligationgid);
 			}
-			obligations.getObligations().add(obligation);
+			if (supportsAccount)
+			{
+				ObligationType obligationAccount = obligationBuilder.buildObject();
+				obligationAccount.setFulfillOn(EffectType.Permit);
+				obligationAccount.setObligationId(XACMLConstants.OBLIGATION_ACCOUNT);
+				if (attributeAssignment != null) {obligationAccount.getAttributeAssignments().add(attributeAssignment);}
+				if (hasGroup) {obligationAccount.getAttributeAssignments().add(attributeAssignmentGroup);}
+				obligations.getObligations().add(obligationAccount);
+			}
+			else
+			{
+				obligations.getObligations().add(obligation);
+			}
 	
 			// Result
 			ResultTypeImplBuilder resultBuilder = (ResultTypeImplBuilder)builderFactory.getBuilder(ResultType.DEFAULT_ELEMENT_NAME);
@@ -194,6 +226,23 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			}
 		}  
 		return null;
+	}
+
+	private boolean getEnvironmentSupportsObligation(RequestType request, String obligation) {
+		List<AttributeType> attributeList = request.getEnvironment().getAttributes();
+		for (AttributeType attribute : attributeList) {
+			String curAttributeId = attribute.getAttributeID();
+			if (curAttributeId.equals(XACMLConstants.SUPPORTED_OBLIGATIONS)) {
+				List<AttributeValueType> attributeValueList = attribute.getAttributeValues();
+				for (AttributeValueType attributeValue : attributeValueList) {
+					if (((AttributeValueTypeImpl)attributeValue).getValue().equals(obligation))
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	private String getResourceAttributeValue(RequestType request, String attributeId) {
