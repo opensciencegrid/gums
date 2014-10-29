@@ -101,6 +101,24 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
     	log.trace("HibernatePersistenceFactory instanciated");
     	timer.scheduleAtFixedRate(closeExpiredSessions, new Date(new Date().getTime()+60000), 60000);
     }
+
+    public Properties getProperties() {
+        Properties props = super.getProperties();
+        if (props == null) {props = new Properties();}
+        if (!props.containsKey("hibernate.cache.region.factory_class") || "org.hibernate.cache.impl.NoCachingRegionFactory".equals(props.getProperty("hibernate.cache.region.factory_class")))
+        {
+            props.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.EhCacheRegionFactory");
+        }
+        if (!props.containsKey("hibernate.cache.use_query_cache"))
+        {
+            props.setProperty("hibernate.cache.use_query_cache", "true");
+        }
+        if (!props.containsKey("hibernate.cache.use_second_level_cache"))
+        {
+            props.setProperty("hibernate.cache.use_second_level_cache", "true");
+        }
+        return props;
+    }
     
     public PersistenceFactory clone(Configuration configuration) {
     	HibernatePersistenceFactory persistenceFactory = new HibernatePersistenceFactory(configuration, new String(getName()));

@@ -171,10 +171,6 @@ public abstract class PersistenceFactory {
      * @param properties.
      */
 	public void setProperties(Properties properties) {
-		if (properties!=null && "net.sf.hibernate.dialect.MySQLDialect".equals(properties.get("mysql.hibernate.dialect")))
-			properties.setProperty("mysql.hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-		if (properties!=null && "net.sf.hibernate.dialect.MySQLDialect".equals(properties.get("hibernate.dialect")))
-			properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 		this.properties = properties;
 	}
 
