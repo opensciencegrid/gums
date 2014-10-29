@@ -173,7 +173,8 @@ public class FileConfigurationStore extends ConfigurationStore {
 			}
 		} catch (Exception e) {
 			System.out.println("Excpetion thrown");
-			throw new RuntimeException(e.getMessage());
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage(), e);
 		}
 		return conf;
 	}
@@ -243,7 +244,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 				this.conf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
 				curModification = new Date(new File(configPath).lastModified());
 			} catch (Exception e) {
-				throw new RuntimeException(e.getMessage());
+				throw new RuntimeException(e.getMessage(), e);
 			} finally {
 				fileInputStream.close();
 			}
@@ -251,7 +252,7 @@ public class FileConfigurationStore extends ConfigurationStore {
 			fileInputStream.close();
 		} catch (Exception e) {
 			log.error("The configuration wasn't read correctly.", e);
-			throw new RuntimeException("The configuration wasn't read correctly: " + e.getMessage());
+			throw new RuntimeException("The configuration wasn't read correctly: " + e.getMessage(), e);
 		}
 	}
 
