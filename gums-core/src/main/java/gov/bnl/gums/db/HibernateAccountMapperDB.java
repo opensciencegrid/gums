@@ -260,6 +260,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             q.setMaxResults(1);
             q.setString(0, map);
             q.setString(1, userDN);
+            q.setCacheable(true).setCacheRegion("gumsmapper");
             HibernateMapping mapping = (HibernateMapping) q.uniqueResult();
             tx.commit();
             if (mapping == null) 
@@ -299,6 +300,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             Query q;
             q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn is not null");
             q.setString(0, map);
+            q.setCacheable(true).setCacheRegion("gumsmapper");
             List mappings = (List) q.list();
             Iterator iter = mappings.iterator();
             Map map = new Hashtable();
@@ -377,6 +379,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             tx = session.beginTransaction();
             Query q;
             q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.account is not null");
+            q.setCacheable(true).setCacheRegion("gumsmapper");
             q.setString(0, map);
             List mappings = (List) q.list();
             Iterator iter = mappings.iterator();
@@ -531,6 +534,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
         q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn = ?");
         q.setString(0, map);
         q.setString(1, userDN);
+        q.setCacheable(true).setCacheRegion("gumsmapper");
         return (HibernateMapping) q.uniqueResult();
     }
     
@@ -541,16 +545,23 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
 	        q.setString(0, map);
 	        q.setString(1, userDN);
 	        q.setString(2, account);
+                q.setCacheable(true).setCacheRegion("gumsmapper");
         }
         else {
 	        q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.dn is null AND m.account = ? ");
 	        q.setString(0, map);
 	        q.setString(1, account);
+                q.setCacheable(true).setCacheRegion("gumsmapper");
         }
         return (HibernateMapping) q.uniqueResult();
     }
     
     private void setNeedsCacheRefresh(boolean value) {
+        try {
+            persistenceFactory.retrieveSessionFactory().getCache().evictEntityRegion("gumsmapper");
+        } catch (Exception e) {
+            log.error("Failed to clear manual user mapping cache.", e);
+        }
     	needsCacheRefresh.put(map, new Boolean(value));
     }
     

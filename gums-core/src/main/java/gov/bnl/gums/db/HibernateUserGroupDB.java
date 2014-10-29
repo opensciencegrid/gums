@@ -58,6 +58,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             }
             addMember(session, tx, user);
             tx.commit();
+            persistenceFactory.retrieveSessionFactory().getCache().evictEntityRegion("gumsuser");
         // Handles when transaction goes wrong...
         } catch (Exception e) {
             log.error("Couldn't add member to '" + group + "'", e);
@@ -172,6 +173,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             }
             
             tx.commit();
+            persistenceFactory.retrieveSessionFactory().getCache().evictEntityRegion("gumsuser");
             
             addedMembers = newMembers;
             removedMembers = oldMembers;
@@ -217,6 +219,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             tx = session.beginTransaction();
             boolean result = removeMember(session, tx, user);
             tx.commit();
+            persistenceFactory.retrieveSessionFactory().getCache().evictEntityRegion("gumsuser");
             return result;
         // Handles when transaction goes wrong...
         } catch (Exception e) {
@@ -306,6 +309,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             q = session.createQuery("FROM HibernateUser u WHERE u.group = ? AND u.dn = ? AND u.fqan = ?");
             q.setString(2, user.getVoFQAN().toString());
         }
+        q.setCacheable(true).setCacheRegion("gumsuser");
         q.setString(0, group);
         q.setString(1, user.getCertificateDN());
         List result = q.list();
@@ -329,6 +333,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
         Query q;
         q = session.createQuery("FROM HibernateUser u WHERE u.group = ?");
         q.setString(0, group);
+        q.setCacheable(true).setCacheRegion("gumsuser");
         List hibernateUsers = q.list();
         List members = new ArrayList(hibernateUsers.size());
         Iterator iter = hibernateUsers.iterator();
