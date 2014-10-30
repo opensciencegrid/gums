@@ -5,7 +5,7 @@
 	<artifactId>gums-service</artifactId>
 	<packaging>war</packaging>
 	<name>gums-service</name>
-	<version>1.4.1.pre1</version>
+	<version>1.4.1.pre2</version>
 	<description>GUMS Service provides web services used by the client tool and a 
 		web interface for administering GUMS</description>
     
@@ -40,9 +40,9 @@
 
 
 	<scm>
-		<connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre1/gums-service</connection>
-		<developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre1/gums-service</developerConnection>
-		   <url>https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre1/gums-service</url>
+		<connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre2/gums-service</connection>
+		<developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre2/gums-service</developerConnection>
+		   <url>https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre2/gums-service</url>
 	</scm>
 
   	<build>
@@ -251,7 +251,7 @@
         <dependency>
             <groupId>gov.bnl.racf.gums</groupId>
             <artifactId>gums-core</artifactId>
-            <version>1.4.1.pre1</version>
+            <version>1.4.1.pre2</version>
         </dependency>
 		<dependency>
             <groupId>log4j</groupId>
