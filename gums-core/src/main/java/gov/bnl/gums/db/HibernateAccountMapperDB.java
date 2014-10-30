@@ -558,7 +558,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
     
     private void setNeedsCacheRefresh(boolean value) {
         try {
-            persistenceFactory.retrieveSessionFactory().getCache().evictEntityRegion("gumsmapper");
+            persistenceFactory.retrieveSessionFactory().getCache().evictQueryRegion("gumsmapper");
         } catch (Exception e) {
             log.error("Failed to clear manual user mapping cache.", e);
         }

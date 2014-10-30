@@ -58,7 +58,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             }
             addMember(session, tx, user);
             tx.commit();
-            persistenceFactory.retrieveSessionFactory().getCache().evictEntityRegion("gumsuser");
+            persistenceFactory.retrieveSessionFactory().getCache().evictQueryRegion("gumsuser");
         // Handles when transaction goes wrong...
         } catch (Exception e) {
             log.error("Couldn't add member to '" + group + "'", e);
@@ -173,7 +173,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             }
             
             tx.commit();
-            persistenceFactory.retrieveSessionFactory().getCache().evictEntityRegion("gumsuser");
+            persistenceFactory.retrieveSessionFactory().getCache().evictQueryRegion("gumsuser");
             
             addedMembers = newMembers;
             removedMembers = oldMembers;
@@ -219,7 +219,7 @@ public class HibernateUserGroupDB implements UserGroupDB, ManualUserGroupDB {
             tx = session.beginTransaction();
             boolean result = removeMember(session, tx, user);
             tx.commit();
-            persistenceFactory.retrieveSessionFactory().getCache().evictEntityRegion("gumsuser");
+            persistenceFactory.retrieveSessionFactory().getCache().evictQueryRegion("gumsuser");
             return result;
         // Handles when transaction goes wrong...
         } catch (Exception e) {
