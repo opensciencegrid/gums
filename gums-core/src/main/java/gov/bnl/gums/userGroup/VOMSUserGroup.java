@@ -400,51 +400,8 @@ public class VOMSUserGroup extends UserGroup {
         }
     }
     
-    private List retrieveMembersOriginal() {
-		if (getVoObject()==null)
-			return null;
-        Properties p = System.getProperties();
-        try {
-            setProperties();
-            log.debug("SSL properties read: " + 
-            "sslCertfile='" + System.getProperty("sslCertfile") +
-            "' sslKey='" + System.getProperty("sslKey") +
-            "' sslKeyPasswd set:" + (System.getProperty("sslKeyPasswd")!=null) +
-            " sslCAFiles='" + System.getProperty("sslCAFiles") + "'" ); 
-            System.setProperty("axis.socketSecureFactory", "org.glite.security.trustmanager.axis.AXISSocketFactory");
-            VOMSAdmin voms = getVOMSAdmin();
-        	org.glite.voms.generated.User[] users = null;
-            if (role.equals("")) {
-                users = voms.listMembers( !getVoGroup().equals("")?getVoGroup():null );
-            } else if(!getVoGroup().equals("")) {
-                users = voms.listUsersWithRole( getVoGroup(), "Role=" + getRole());
-            }        	
-            if (users.length > 0) {
-                log.info("Retrieved " + users.length + " users.");
-                log.info("First user is: '" + users[0].getDN() + "'");
-                log.info("Last user is: '" + users[users.length - 1 ].getDN() + "'");
-            } else {
-                log.info("Retrieved no users.");
-            }
-            System.setProperties(p);
-            List entries = new ArrayList();
-            for (int n=0; n < users.length; n++) {
-            	GridUser gridUser = new GridUser(users[n].getDN(), fqan, users[n].getMail());
-                entries.add(gridUser);
-            }
-            return entries;
-        } catch (Throwable e) {
-        	String message = "Couldn't retrieve users: ";
-            log.error(message, e);
-            e.printStackTrace();
-            throw new RuntimeException(message + e.getMessage());
-        }
-    }
-    
     /**
     * Retrieves the list of members for this VOMSUserGroup
-    * 
-    * 
     * 
     */
     private List retrieveMembers() {
@@ -493,7 +450,7 @@ public class VOMSUserGroup extends UserGroup {
         	String message = "Couldn't retrieve users: ";
             log.error(message, e);
             e.printStackTrace();
-            throw new RuntimeException(message + e.getMessage());
+            throw new RuntimeException(message + e.getMessage(), e);
         }
     }
         

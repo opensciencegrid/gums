@@ -462,6 +462,7 @@ public class CoreLogic {
 	                gumsAdminLog.info("User group update for " + group.getName() + " (" + group.getMemberList().size() + " users).");
 	            } catch (Exception e) {
 	                gumsAdminLog.warn("User group update for " + group.getName() + " failed: " + e.getMessage());
+			gumsAdminLog.debug("Failure exception", e);
 	            	if (failedGroups == null)
 	            		failedGroups = new StringBuffer("Some user groups weren't updated correctly:\n");
 	            	failedGroups.append( group.getName() + " - " + e.getMessage() + "\n" );

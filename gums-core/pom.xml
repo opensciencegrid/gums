@@ -367,11 +367,13 @@
             <artifactId>voms-api-java</artifactId>
             <version>[2.0.8,2.9.9)</version>
         </dependency>
+
         <dependency>
-            <groupId>bouncycastle</groupId>
-            <artifactId>bcprov-jdk15</artifactId>
-            <version>140</version>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.46</version>
         </dependency>
+
 
         <!--provided-->
         <dependency>
@@ -418,10 +420,10 @@
         </dependency>
         
         <dependency>
-			<groupId>bouncycastle</groupId>
-			<artifactId>bcprov-jdk15</artifactId>
-			<version>140</version>
-		</dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.46</version>
+        </dependency>
         
 <!--
         <dependency>
