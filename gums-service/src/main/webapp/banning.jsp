@@ -18,7 +18,7 @@
 <%@include file="topNav.jspf"%>
 <div id="title">
 <h1><span>GUMS <%=gums.getVersion()%></span></h1>
-<h3><span>GRID User Management System</h3>
+<h3><span>GRID User Management System</span></h3>
 <h2><span>Ban Users</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
@@ -144,8 +144,7 @@ if (request.getParameter("command")==null ||
 		}
 	}
 %>
-	 </table>
-</form>
+</table>
 <%
 }
 %>
