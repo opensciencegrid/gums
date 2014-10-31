@@ -94,7 +94,7 @@ if (request.getParameter("command")==null ||
 	}
 
 %>
-<table id="form" cellpadding="2" cellspacing="2">
+<table class="form" cellpadding="2" cellspacing="2">
 <%
 
 	if (message != null) {
@@ -149,7 +149,7 @@ if (request.getParameter("command")==null ||
 %>
 </table>
 
-<table id="form2" cellpadding="2" cellspacing="2">
+<table class="form" cellpadding="2" cellspacing="2">
 <%
 	for (UserGroup group : manualUserGroups) {
 		for (GridUser user : group.getMemberList()) {
@@ -158,6 +158,7 @@ if (request.getParameter("command")==null ||
 				<td width="1" valign="top">
 					<form action="userGroups.jsp" method="get">
 						<input type="submit" style="width:80px" name="command" value="edit">
+						<input type="hidden" name="name" value="<%=group.getName()%>">
 					</form>
 				</td>
 				<td align="left">
@@ -178,7 +179,7 @@ if (request.getParameter("command")==null ||
 %>
 </table>
 
-<table id="form3" cellpadding="2" cellspacing="2">
+<table class="form" cellpadding="2" cellspacing="2">
 <%
 	for (UserGroup group : bannedUserGroups) {
 		for (GridUser user : group.getMemberList()) {
@@ -187,6 +188,7 @@ if (request.getParameter("command")==null ||
 				<td width="1" valign="top">
 					<form action="userGroups.jsp" method="get">
 						<input type="submit" style="width:80px" name="command" value="edit">
+						<input type="hidden" name="name" value="<%=group.getName()%>">
 					</form>
 				</td>
 				<td align="left">
