@@ -11,8 +11,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
- 	<title>GUMS</title>
- 	<link href="gums.css" type="text/css" rel="stylesheet"/>
+	<title>GUMS</title>
+	<link href="gums.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
 <%@include file="topNav.jspf"%>
@@ -146,6 +146,11 @@ if (request.getParameter("command")==null ||
 		}
 	}
 
+%>
+</table>
+
+<table id="form2" cellpadding="2" cellspacing="2">
+<%
 	for (UserGroup group : manualUserGroups) {
 		for (GridUser user : group.getMemberList()) {
 %>
@@ -170,7 +175,11 @@ if (request.getParameter("command")==null ||
 <%
 		}
 	}
+%>
+</table>
 
+<table id="form3" cellpadding="2" cellspacing="2">
+<%
 	for (UserGroup group : bannedUserGroups) {
 		for (GridUser user : group.getMemberList()) {
 %>
