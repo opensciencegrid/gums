@@ -29,9 +29,15 @@ import java.io.InputStreamReader;
 import java.io.StringBufferInputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.LoadingCache;
 
 import org.apache.log4j.Logger;
 
@@ -52,6 +58,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 	private Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
 	private Logger siteAdminLog = Logger.getLogger(GUMS.siteAdminLogName);
 	private boolean isInWeb = false;
+	private LoadingCache<MappingInput, AccountInfo> mappingCache;
 
 	{
 		try {
@@ -60,6 +67,17 @@ public class GUMSAPIImpl implements GUMSAPI {
 		} catch (ClassNotFoundException e) {
 			isInWeb = false;
 		}
+
+		mappingCache = CacheBuilder.newBuilder()
+			.maximumSize(1000)
+			.expireAfterWrite(5, TimeUnit.SECONDS)
+			.build(
+				new CacheLoader<MappingInput, AccountInfo>() {
+					public AccountInfo load(MappingInput input) {
+						return mapUserNonCached(input.getHostname(), input.getUserDN(), input.getFQAN());
+					}
+				}
+			);
 	}
 
 	public void addAccountRange2(String accountPoolMapperName, String range) {
@@ -467,6 +485,15 @@ public class GUMSAPIImpl implements GUMSAPI {
 	}
 
 	public AccountInfo mapUser(String hostname, String userDN, String fqan) {
+		MappingInput input = new MappingInput(currentUser(), hostname, userDN, fqan);
+		try {
+			return mappingCache.get(input);
+		} catch (ExecutionException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
+	private AccountInfo mapUserNonCached(String hostname, String userDN, String fqan) {
 		try {
 			if ( (hasReadSelfAccess(currentUser()) && currentUser().compareDn(userDN)==0) || hasReadAllAccess(currentUser(), hostname)) {
 				GridUser user = new GridUser(userDN, fqan);
@@ -489,7 +516,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 

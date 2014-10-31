@@ -138,7 +138,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			}
 		} catch (Exception e1) {
 			statusCode.setValue(ERROR);
-			log.debug(e1.getMessage());
+			log.debug(e1.getMessage(), e1);
 			throw e1;
 		}
 
