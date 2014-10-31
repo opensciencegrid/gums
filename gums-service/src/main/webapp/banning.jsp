@@ -76,16 +76,20 @@ if (request.getParameter("command")==null ||
 	}
 
 	Set<UserGroup> bannedGroups = new HashSet<UserGroup>();
+	Set<UserGroup> manualUserGroups = new HashSet<UserGroup>();
+	Set<UserGroup> bannedUserGroups = new HashSet<UserGroup>();
 	List<String> groups = configuration.getBannedUserGroupList();
 	for (String groupName : groups) {
 		UserGroup group = configuration.getUserGroup(groupName);
 		if (group != null) {
 			bannedGroups.add(group);
+			manualUserGroups.add(group);
 		}
 	}
 	for (UserGroup group : configuration.getUserGroups().values()) {
 		if (group instanceof BannedUserGroup) {
 			bannedGroups.add(group);
+			bannedUserGroups.add(group);
 		}
 	}
 
@@ -113,20 +117,63 @@ if (request.getParameter("command")==null ||
 <%
 	for (UserGroup group : bannedGroups) {
 		for (GridUser user : group.getMemberList()) {
+			if (group.getName().equals(UserGroup.getDefaultBannedGroupName()))
+			{
+%>
+				<tr>
+					<td width="1" valign="top">
+						<form action="banning.jsp" method="get">
+							<input type="submit" style="width:80px" name="command" value="delete"
+							 onclick="if(!confirm('Are you sure you want to delete this user from the banned list?'))return false;">
+							<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>">
+						</form>
+					</td>
+					<td align="left">
+						<table class="configElement" width="100%">
+							<tr>
+								<td>
+									User: <%=user.getCertificateDN()%><br>
+									Group: <%=group.getName()%><br/>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td width="10"></td>
+				</tr>
+<%
+			}
+		}
+	}
+
+	for (UserGroup group : manualUserGroups) {
+		for (GridUser user : group.getMemberList()) {
 %>
 			<tr>
 				<td width="1" valign="top">
+					XXX: Something else here...
+				</td>
+				<td align="left">
+					<table class="configElement" width="100%">
+						<tr>
+							<td>
+								User: <%=user.getCertificateDN()%><br>
+								Group: <%=group.getName()%><br/>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td width="10"></td>
+			</tr>
 <%
-					if (group.getName().equals(UserGroup.getDefaultBannedGroupName()))
-					{
+		}
+	}
+
+	for (UserGroup group : bannedUserGroups) {
+		for (GridUser user : group.getMemberList()) {
 %>
-						<form action="banning.jsp" method="get">
-							<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this user from the banned list?'))return false;">
-							<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>">
-						</form>
-<%
-					}
-%>
+			<tr>
+				<td width="1" valign="top">
+					XXX: Something else here...
 				</td>
 				<td align="left">
 					<table class="configElement" width="100%">
