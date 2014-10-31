@@ -93,8 +93,9 @@ if (request.getParameter("command")==null ||
 		}
 	}
 
-	out.write(
-"<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
+%>
+<table id="form" cellpadding="2" cellspacing="2">
+<%
 
 	if (message != null) {
 		out.write( "<tr><td colspan=\"2\">" + message + "</td></tr>" );
@@ -104,10 +105,10 @@ if (request.getParameter("command")==null ||
 	<tr>
 		<form action="banning.jsp" method="get">
 			<td>
-				<div style="text-align: center;"><input style="width:80px" type="submit" name="command" value="save" ></div>
+				<div style="text-align: center;"><input style="width:80px" type="submit" name="command" value="save" /></div>
 			</td>
 			<td align="left">
-				Add a new DN to the banned user list here:<br>
+				Add a new DN to the banned user list here:<br/>
 				<input maxlength="256" size="100" name="dn"/>
 			</td>
 			<td width="10"></td>
@@ -124,15 +125,15 @@ if (request.getParameter("command")==null ||
 					<td width="1" valign="top">
 						<form action="banning.jsp" method="get">
 							<input type="submit" style="width:80px" name="command" value="delete"
-							 onclick="if(!confirm('Are you sure you want to delete this user from the banned list?'))return false;">
-							<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>">
+							 onclick="if(!confirm('Are you sure you want to delete this user from the banned list?'))return false;"/>
+							<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>"/>
 						</form>
 					</td>
 					<td align="left">
 						<table class="configElement" width="100%">
 							<tr>
 								<td>
-									User: <%=user.getCertificateDN()%><br>
+									User: <%=user.getCertificateDN()%><br/>
 									Group: <%=group.getName()%><br/>
 								</td>
 							</tr>
@@ -150,13 +151,15 @@ if (request.getParameter("command")==null ||
 %>
 			<tr>
 				<td width="1" valign="top">
-					XXX: Something else here...
+					<form action="userGroups.jsp" method="get">
+						<input type="submit" style="width:80px" name="command" value="edit">
+					</form>
 				</td>
 				<td align="left">
 					<table class="configElement" width="100%">
 						<tr>
 							<td>
-								User: <%=user.getCertificateDN()%><br>
+								User: <%=user.getCertificateDN()%><br/>
 								Group: <%=group.getName()%><br/>
 							</td>
 						</tr>
@@ -173,13 +176,15 @@ if (request.getParameter("command")==null ||
 %>
 			<tr>
 				<td width="1" valign="top">
-					XXX: Something else here...
+					<form action="userGroups.jsp" method="get">
+						<input type="submit" style="width:80px" name="command" value="edit">
+					</form>
 				</td>
 				<td align="left">
 					<table class="configElement" width="100%">
 						<tr>
 							<td>
-								User: <%=user.getCertificateDN()%><br>
+								User: <%=user.getCertificateDN()%><br/>
 								Group: <%=group.getName()%><br/>
 							</td>
 						</tr>
