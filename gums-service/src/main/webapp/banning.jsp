@@ -94,6 +94,9 @@ if (request.getParameter("command")==null ||
 	}
 
 %>
+<p>
+Add or Remove Banned Users:
+</p>
 <table class="form" cellpadding="2" cellspacing="2">
 <%
 
@@ -149,6 +152,9 @@ if (request.getParameter("command")==null ||
 %>
 </table>
 
+<p>
+Manual User Groups:
+</p>
 <table class="form" cellpadding="2" cellspacing="2">
 <%
 	for (UserGroup group : manualUserGroups) {
@@ -179,6 +185,9 @@ if (request.getParameter("command")==null ||
 %>
 </table>
 
+<p>
+Banned User Groups:
+</p>
 <table class="form" cellpadding="2" cellspacing="2">
 <%
 	for (UserGroup group : bannedUserGroups) {
