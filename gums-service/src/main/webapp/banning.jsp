@@ -151,14 +151,17 @@ Add or Remove Banned Users:
 
 %>
 </table>
-
-<p>
-Manual User Groups:
-</p>
-<table class="form" cellpadding="2" cellspacing="2">
 <%
-	for (UserGroup group : manualUserGroups) {
-		for (GridUser user : group.getMemberList()) {
+	if (!manualUserGroups.isEmpty())
+	{
+%>
+	<p>
+	Manual User Groups in the <a href="/gums/globalConfiguration.jsp">Banned List</a>:
+	</p>
+	<table class="form" cellpadding="2" cellspacing="2">
+<%
+		for (UserGroup group : manualUserGroups) {
+			for (GridUser user : group.getMemberList()) {
 %>
 			<tr>
 				<td width="1" valign="top">
@@ -180,18 +183,25 @@ Manual User Groups:
 				<td width="10"></td>
 			</tr>
 <%
+			}
 		}
+%>
+	</table>
+<%
 	}
 %>
-</table>
 
-<p>
-Banned User Groups:
-</p>
-<table class="form" cellpadding="2" cellspacing="2">
 <%
-	for (UserGroup group : bannedUserGroups) {
-		for (GridUser user : group.getMemberList()) {
+	if (!bannedUserGroups.isEmpty())
+	{
+%>
+	<p>
+	User Groups of Type Banned:
+	</p>
+	<table class="form" cellpadding="2" cellspacing="2">
+<%
+		for (UserGroup group : bannedUserGroups) {
+			for (GridUser user : group.getMemberList()) {
 %>
 			<tr>
 				<td width="1" valign="top">
@@ -213,11 +223,12 @@ Banned User Groups:
 				<td width="10"></td>
 			</tr>
 <%
+			}
 		}
-	}
 %>
-</table>
+	</table>
 <%
+	}
 }
 %>
 
