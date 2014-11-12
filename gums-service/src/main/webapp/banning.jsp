@@ -136,8 +136,7 @@ Add or Remove Banned Users:
 						<table class="configElement" width="100%">
 							<tr>
 								<td>
-									User: <%=user.getCertificateDN()%><br/>
-									Group: <%=group.getName()%><br/>
+									User: <%=user.getCertificateDN()%>
 								</td>
 							</tr>
 						</table>
@@ -161,6 +160,7 @@ Add or Remove Banned Users:
 	<table class="form" cellpadding="2" cellspacing="2">
 <%
 		for (UserGroup group : manualUserGroups) {
+			List<GridUser> members = group.getMemberList();
 %>
 			<tr>
 				<td width="1" valign="top">
@@ -174,6 +174,13 @@ Add or Remove Banned Users:
 						<tr>
 							<td>
 								Group: <%=group.getName()%>
+<%
+								if (members.isEmpty()) {
+%>
+									(no users in group)
+<%
+								}
+%>
 							</td>
 						</tr>
 					</table>
@@ -181,6 +188,23 @@ Add or Remove Banned Users:
 				<td width="10"></td>
 			</tr>
 <%
+			for (GridUser user : members) {
+%>
+			<tr>
+				<td width="1" valign="top"> </td>
+				<td align="left">
+					<table class="configElement" width="100%">
+						<tr>
+							<td>
+								User: <%=user.getCertificateDN()%>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td width="10"></td>
+			</tr>
+<%
+			}
 		}
 %>
 	</table>
@@ -198,6 +222,7 @@ Add or Remove Banned Users:
 	<table class="form" cellpadding="2" cellspacing="2">
 <%
 		for (UserGroup group : bannedUserGroups) {
+			List<GridUser> members = group.getMemberList();
 %>
 			<tr>
 				<td width="1" valign="top">
@@ -211,6 +236,13 @@ Add or Remove Banned Users:
 						<tr>
 							<td>
 								Group: <%=group.getName()%>
+<%
+								if (members.isEmpty()) {
+%>
+									(no users in group)
+<%
+								}
+%>
 							</td>
 						</tr>
 					</table>
@@ -218,6 +250,23 @@ Add or Remove Banned Users:
 				<td width="10"></td>
 			</tr>
 <%
+			for (GridUser user : members) {
+%>
+			<tr>
+				<td width="1" valign="top"> </td>
+				<td align="left">
+					<table class="configElement" width="100%">
+						<tr>
+							<td>
+								User: <%=user.getCertificateDN()%>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td width="10"></td>
+			</tr>
+<%
+			}
 		}
 %>
 	</table>
