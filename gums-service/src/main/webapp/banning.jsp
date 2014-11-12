@@ -161,7 +161,6 @@ Add or Remove Banned Users:
 	<table class="form" cellpadding="2" cellspacing="2">
 <%
 		for (UserGroup group : manualUserGroups) {
-			for (GridUser user : group.getMemberList()) {
 %>
 			<tr>
 				<td width="1" valign="top">
@@ -174,8 +173,7 @@ Add or Remove Banned Users:
 					<table class="configElement" width="100%">
 						<tr>
 							<td>
-								User: <%=user.getCertificateDN()%><br/>
-								Group: <%=group.getName()%><br/>
+								Group: <%=group.getName()%>
 							</td>
 						</tr>
 					</table>
@@ -183,7 +181,6 @@ Add or Remove Banned Users:
 				<td width="10"></td>
 			</tr>
 <%
-			}
 		}
 %>
 	</table>
@@ -201,7 +198,6 @@ Add or Remove Banned Users:
 	<table class="form" cellpadding="2" cellspacing="2">
 <%
 		for (UserGroup group : bannedUserGroups) {
-			for (GridUser user : group.getMemberList()) {
 %>
 			<tr>
 				<td width="1" valign="top">
@@ -214,8 +210,7 @@ Add or Remove Banned Users:
 					<table class="configElement" width="100%">
 						<tr>
 							<td>
-								User: <%=user.getCertificateDN()%><br/>
-								Group: <%=group.getName()%><br/>
+								Group: <%=group.getName()%>
 							</td>
 						</tr>
 					</table>
@@ -223,7 +218,6 @@ Add or Remove Banned Users:
 				<td width="10"></td>
 			</tr>
 <%
-			}
 		}
 %>
 	</table>
