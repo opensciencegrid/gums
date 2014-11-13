@@ -11,14 +11,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
- 	<title>GUMS</title>
- 	<link href="gums.css" type="text/css" rel="stylesheet"/>
+	<title>GUMS</title>
+	<link href="gums.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
 <%@include file="topNav.jspf"%>
 <div id="title">
 <h1><span>GUMS <%=gums.getVersion()%></span></h1>
-<h3><span>GRID User Management System</h3>
+<h3><span>GRID User Management System</span></h3>
 <h2><span>Ban Users</span></h2>
 </div>
 <%@include file="sideNav.jspf"%>
@@ -76,21 +76,29 @@ if (request.getParameter("command")==null ||
 	}
 
 	Set<UserGroup> bannedGroups = new HashSet<UserGroup>();
+	Set<UserGroup> manualUserGroups = new HashSet<UserGroup>();
+	Set<UserGroup> bannedUserGroups = new HashSet<UserGroup>();
 	List<String> groups = configuration.getBannedUserGroupList();
 	for (String groupName : groups) {
 		UserGroup group = configuration.getUserGroup(groupName);
 		if (group != null) {
 			bannedGroups.add(group);
+			manualUserGroups.add(group);
 		}
 	}
 	for (UserGroup group : configuration.getUserGroups().values()) {
 		if (group instanceof BannedUserGroup) {
 			bannedGroups.add(group);
+			bannedUserGroups.add(group);
 		}
 	}
 
-	out.write(
-"<table id=\"form\" cellpadding=\"2\" cellspacing=\"2\">");
+%>
+<p>
+Add or Remove Banned Users:
+</p>
+<table class="form" cellpadding="2" cellspacing="2">
+<%
 
 	if (message != null) {
 		out.write( "<tr><td colspan=\"2\">" + message + "</td></tr>" );
@@ -100,10 +108,10 @@ if (request.getParameter("command")==null ||
 	<tr>
 		<form action="banning.jsp" method="get">
 			<td>
-				<div style="text-align: center;"><input style="width:80px" type="submit" name="command" value="save" ></div>
+				<div style="text-align: center;"><input style="width:80px" type="submit" name="command" value="save" /></div>
 			</td>
 			<td align="left">
-				Add a new DN to the banned user list here:<br>
+				Add a new DN to the banned user list here:<br/>
 				<input maxlength="256" size="100" name="dn"/>
 			</td>
 			<td width="10"></td>
@@ -113,27 +121,66 @@ if (request.getParameter("command")==null ||
 <%
 	for (UserGroup group : bannedGroups) {
 		for (GridUser user : group.getMemberList()) {
+			if (group.getName().equals(UserGroup.getDefaultBannedGroupName()))
+			{
+%>
+				<tr>
+					<td width="1" valign="top">
+						<form action="banning.jsp" method="get">
+							<input type="submit" style="width:80px" name="command" value="delete"
+							 onclick="if(!confirm('Are you sure you want to delete this user from the banned list?'))return false;"/>
+							<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>"/>
+						</form>
+					</td>
+					<td align="left">
+						<table class="configElement" width="100%">
+							<tr>
+								<td>
+									User: <%=user.getCertificateDN()%>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td width="10"></td>
+				</tr>
+<%
+			}
+		}
+	}
+
+%>
+</table>
+<%
+	if (!manualUserGroups.isEmpty())
+	{
+%>
+	<p>
+	Manual User Groups in the <a href="/gums/globalConfiguration.jsp">Banned List</a>:
+	</p>
+	<table class="form" cellpadding="2" cellspacing="2">
+<%
+		for (UserGroup group : manualUserGroups) {
+			List<GridUser> members = group.getMemberList();
 %>
 			<tr>
 				<td width="1" valign="top">
-<%
-					if (group.getName().equals(UserGroup.getDefaultBannedGroupName()))
-					{
-%>
-						<form action="banning.jsp" method="get">
-							<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this user from the banned list?'))return false;">
-							<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>">
-						</form>
-<%
-					}
-%>
+					<form action="userGroups.jsp" method="get">
+						<input type="submit" style="width:80px" name="command" value="edit">
+						<input type="hidden" name="name" value="<%=group.getName()%>">
+					</form>
 				</td>
 				<td align="left">
 					<table class="configElement" width="100%">
 						<tr>
 							<td>
-								User: <%=user.getCertificateDN()%><br>
-								Group: <%=group.getName()%><br/>
+								Group: <%=group.getName()%>
+<%
+								if (members.isEmpty()) {
+%>
+									(no users in group)
+<%
+								}
+%>
 							</td>
 						</tr>
 					</table>
@@ -141,12 +188,90 @@ if (request.getParameter("command")==null ||
 				<td width="10"></td>
 			</tr>
 <%
+			for (GridUser user : members) {
+%>
+			<tr>
+				<td width="1" valign="top"> </td>
+				<td align="left">
+					<table class="configElement" width="100%">
+						<tr>
+							<td>
+								User: <%=user.getCertificateDN()%>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td width="10"></td>
+			</tr>
+<%
+			}
 		}
+%>
+	</table>
+<%
 	}
 %>
-	 </table>
-</form>
+
 <%
+	if (!bannedUserGroups.isEmpty())
+	{
+%>
+	<p>
+	User Groups of Type Banned:
+	</p>
+	<table class="form" cellpadding="2" cellspacing="2">
+<%
+		for (UserGroup group : bannedUserGroups) {
+			List<GridUser> members = group.getMemberList();
+%>
+			<tr>
+				<td width="1" valign="top">
+					<form action="userGroups.jsp" method="get">
+						<input type="submit" style="width:80px" name="command" value="edit">
+						<input type="hidden" name="name" value="<%=group.getName()%>">
+					</form>
+				</td>
+				<td align="left">
+					<table class="configElement" width="100%">
+						<tr>
+							<td>
+								Group: <%=group.getName()%>
+<%
+								if (members.isEmpty()) {
+%>
+									(no users in group)
+<%
+								}
+%>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td width="10"></td>
+			</tr>
+<%
+			for (GridUser user : members) {
+%>
+			<tr>
+				<td width="1" valign="top"> </td>
+				<td align="left">
+					<table class="configElement" width="100%">
+						<tr>
+							<td>
+								User: <%=user.getCertificateDN()%>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td width="10"></td>
+			</tr>
+<%
+			}
+		}
+%>
+	</table>
+<%
+	}
 }
 %>
 
