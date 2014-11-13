@@ -151,8 +151,15 @@ public class CertCache implements Filter {
 			X509Certificate[] chain = ((X509Certificate[]) servletRequest
 					.getAttribute("javax.servlet.request.X509Certificate"));
 			setUserCertificateChain(chain);
+		} else {
+			log.info("Missing client certificate from request.");
 		}
-		filterChain.doFilter(servletRequest, servletResponse);
+		try {
+			filterChain.doFilter(servletRequest, servletResponse);
+		} catch (Exception e) {
+			log.error("Unhandled failure in servlet processing.", e);
+			throw new javax.servlet.ServletException("Unhandled failure in servlet processing.", e);
+		}
 	}
 
 	public void init(javax.servlet.FilterConfig filterConfig)
