@@ -14,6 +14,8 @@ import java.util.List;
 import java.security.cert.X509Certificate;
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.glite.security.util.CertUtil;
 import org.glite.voms.VOMSValidator;
@@ -146,13 +148,79 @@ public class CertCache implements Filter {
 			javax.servlet.FilterChain filterChain) throws java.io.IOException,
 			javax.servlet.ServletException {
 		reset();
+		Object sslIdObj = servletRequest.getAttribute("javax.servlet.request.ssl_session");
+		/**
+		 * This merits some explaining.
+		 *
+		 * If you use the Http11AprProtocol Connector, then OpenSSL is used for the SSL layer.
+		 * The OpenSSL server - unlike Java native support - will use SSL session reuse with
+		 * browsers such as Chrome.  When the SSL session is reused, *then* the container doesn't
+		 * have access to the client X509 certificate.  Hence, for browsers (as no known CLI
+		 * performs reuse), we create a session with the saved X509 certificate chain.  Further,
+		 * as we can't disable SSLv3 right now (which can expose session cookies), we record the
+		 * SSL session ID and only reuse the X509 certificate chain if the SSL session ID was not
+		 * reused.
+		 *
+		 * Note we work around an apparent bug in the native connector where ssl_session is not set
+		 * for the initial session, but only on reuse.  As POODLE requires multiple requests (and
+		 * we record the SSL ID on the second request), this should be acceptable.
+		 *
+		 * If we disable SSLv3, we can just use the session cookie again to persist the credentials
+		 * (what we do right now is technically invalid as a browser might use a pool of SSL connections
+		 * for the same session).
+		 *
+		 * The session cookie should create more overhead than "normal" certificate processing, which
+		 * is why we limit its use to browsers.
+		 *
+		 * NOTE: This code is all specific to APR users; the default GUMS deploy (using EMI trustmanager)
+		 * will never trigger any of this.
+		 */
 		if (servletRequest
 				.getAttribute("javax.servlet.request.X509Certificate") != null) {
 			X509Certificate[] chain = ((X509Certificate[]) servletRequest
 					.getAttribute("javax.servlet.request.X509Certificate"));
 			setUserCertificateChain(chain);
-		} else {
-			log.info("Missing client certificate from request.");
+			if (servletRequest instanceof HttpServletRequest)
+			{
+				HttpServletRequest httpRequest = (HttpServletRequest)servletRequest;
+				String agent = httpRequest.getHeader("User-Agent");
+				String sslId = (String)sslIdObj;
+				if ((agent != null) && agent.startsWith("Mozilla"))
+				{
+					HttpSession session = httpRequest.getSession();
+						// Note that, in tomcat6 / APR, SSL ID is null!
+					session.setAttribute("javax.servlet.request.ssl_session", sslId);
+					session.setAttribute("javax.servlet.request.X509Certificate", chain);
+				}
+			}
+		}
+		else if (servletRequest instanceof HttpServletRequest)
+		{
+			HttpServletRequest httpRequest = (HttpServletRequest)servletRequest;
+			HttpSession session = httpRequest.getSession(false);
+			String sslId = (String)sslIdObj;
+			if (session != null)
+			{
+				X509Certificate[] chain = ((X509Certificate[]) session.getAttribute("javax.servlet.request.X509Certificate"));
+				String sslIdSaved = (String)session.getAttribute("javax.servlet.request.ssl_session");
+				if (sslIdSaved == null)
+				{
+					sslIdSaved = sslId;
+					session.setAttribute("javax.servlet.request.ssl_session", sslId);
+				}
+				if ((chain != null) && sslId.equals(sslIdSaved))
+				{
+					setUserCertificateChain(chain);
+				}
+				else if (!sslId.equals(sslIdSaved))
+				{
+					log.warn("Remote user attempted to reuse a session cookie for a different SSL ID!  Rejecting; this should not happen during regular non-malicious use.");
+				}
+			}
+		}
+		if (certificate.get() == null) {
+			// TODO: Improve log to include client information.
+			log.warn("Missing client certificate from request.");
 		}
 		try {
 			filterChain.doFilter(servletRequest, servletResponse);
