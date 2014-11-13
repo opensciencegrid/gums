@@ -63,6 +63,8 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 		boolean supportsAccount = getEnvironmentSupportsObligation(request, XACMLConstants.OBLIGATION_ACCOUNT);
 		String userDn = getSubjectAttributeValue(request, XACMLConstants.SUBJECT_X509_ID);
 		String userFqan = getSubjectAttributeValue(request, XACMLConstants.SUBJECT_VOMS_PRIMARY_FQAN_ID);
+
+		//String fqanIssuer = getSubjectAttributeIssuerValue(request, XACMLConstants.SUBJECT_VOMS_PRIMARY_FQAN_ID);
 		
 		String hostDn = getResourceAttributeValue(request, XACMLConstants.RESOURCE_X509_ID);
 		if (hostDn==null || hostDn.length()==0) {
@@ -224,6 +226,20 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 				}
 			}
 		}  
+		return null;
+	}
+
+	private String getSubjectAttributeIssuerValue(RequestType request, String attributeId) {
+		List<SubjectType> subjectList = request.getSubjects();
+		for(SubjectType subject : subjectList) {
+			List<AttributeType> attributeList = subject.getAttributes();
+			for(AttributeType attribute : attributeList) {
+				String curAttributeId = attribute.getAttributeID();
+				if (attributeId.equals(curAttributeId)) {
+					return attribute.getIssuer();
+				}
+			}
+		}
 		return null;
 	}
 
