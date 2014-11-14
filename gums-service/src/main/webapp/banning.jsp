@@ -76,14 +76,14 @@ if (request.getParameter("command")==null ||
 	}
 
 	Set<UserGroup> bannedGroups = new HashSet<UserGroup>();
-	Set<UserGroup> manualUserGroups = new HashSet<UserGroup>();
+	Set<UserGroup> userGroupsInBanned = new HashSet<UserGroup>();
 	Set<UserGroup> bannedUserGroups = new HashSet<UserGroup>();
 	List<String> groups = configuration.getBannedUserGroupList();
 	for (String groupName : groups) {
 		UserGroup group = configuration.getUserGroup(groupName);
-		if (group != null) {
+		if ((group != null) && !(group instanceof BannedUserGroup)) {
 			bannedGroups.add(group);
-			manualUserGroups.add(group);
+			userGroupsInBanned.add(group);
 		}
 	}
 	for (UserGroup group : configuration.getUserGroups().values()) {
@@ -126,11 +126,13 @@ Add or Remove Banned Users:
 %>
 				<tr>
 					<td width="1" valign="top">
+					<table><tr><td>
 						<form action="banning.jsp" method="get">
 							<input type="submit" style="width:80px" name="command" value="delete"
 							 onclick="if(!confirm('Are you sure you want to delete this user from the banned list?'))return false;"/>
 							<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>"/>
 						</form>
+					</td></tr></table>
 					</td>
 					<td align="left">
 						<table class="configElement" width="100%">
@@ -151,34 +153,55 @@ Add or Remove Banned Users:
 %>
 </table>
 <%
-	if (!manualUserGroups.isEmpty())
+	if (!userGroupsInBanned.isEmpty())
 	{
 %>
 	<p>
-	Manual User Groups in the <a href="/gums/globalConfiguration.jsp">Banned List</a>:
+	User Groups in the <a href="/gums/globalConfiguration.jsp">Banned List</a>:
 	</p>
 	<table id="form" cellpadding="2" cellspacing="2">
 <%
-		for (UserGroup group : manualUserGroups) {
+		for (UserGroup group : userGroupsInBanned) {
 			List<GridUser> members = group.getMemberList();
 			if (group.getName().equals("gums-banned")) {continue;}
 %>
 			<tr>
 				<td width="1" valign="top">
+				<table><tr><td>
 					<form action="userGroups.jsp" method="get">
-						<input type="submit" style="width:80px" name="command" value="edit">
+						<input type="submit" style="width:80px" value="edit group">
+						<input type="hidden" name="command" value="edit">
 						<input type="hidden" name="name" value="<%=group.getName()%>">
 					</form>
+				</td></tr></table>
 				</td>
 				<td align="left">
 					<table class="configElement" width="100%">
 						<tr>
 							<td>
+<%
+								if (group instanceof ManualUserGroup && (((ManualUserGroup)group).getNonMembersUri().length() == 0)) {
+%>
+									<form action="manualUserGroups.jsp" method="get">
+<%
+								}
+%>
 								Group: <%=group.getName()%>
 <%
 								if (members.isEmpty()) {
 %>
 									(no users in group)
+<%
+								}
+%>
+<%
+								if (group instanceof ManualUserGroup && (((ManualUserGroup)group).getNonMembersUri().length() == 0)) {
+%>
+										&nbsp;
+										<input type="submit" style="width:80px" value="add user">
+										<input type="hidden" name="command" value="add">
+										<input type="hidden" name="name" value="<%=group.getName()%>">
+									</form>
 <%
 								}
 %>
@@ -227,10 +250,13 @@ Add or Remove Banned Users:
 %>
 			<tr>
 				<td width="1" valign="top">
+				<table><tr><td>
 					<form action="userGroups.jsp" method="get">
-						<input type="submit" style="width:80px" name="command" value="edit">
+						<input type="submit" style="width:80px" value="edit group">
+						<input type="hidden" name="command" value="edit">
 						<input type="hidden" name="name" value="<%=group.getName()%>">
 					</form>
+				</td></tr></table>
 				</td>
 				<td align="left">
 					<table class="configElement" width="100%">

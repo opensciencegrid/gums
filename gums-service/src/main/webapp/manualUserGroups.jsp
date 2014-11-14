@@ -85,7 +85,7 @@ if (request.getParameter("command")==null ||
 	Iterator userGroupsIt = userGroups.values().iterator();
 	while(userGroupsIt.hasNext()) {
 		UserGroup userGroup = (UserGroup)userGroupsIt.next();
-		if (userGroup instanceof ManualUserGroup) {
+		if ((userGroup instanceof ManualUserGroup) && !userGroup.getName().equals(UserGroup.getDefaultBannedGroupName())) {
 			ManualUserGroup manualUserGroup = (ManualUserGroup)userGroup;
 			
 			List users = manualUserGroup.getMemberList();
@@ -160,7 +160,7 @@ else if ("add".equals(request.getParameter("command"))) {
 				User group:
 			</td>
 			<td>
-				<%=ConfigurationWebToolkit.createSelectBox("userGroup", manualUserGroups, null, null, manualUserGroups.size()>1)%> (required)
+				<%=ConfigurationWebToolkit.createSelectBox("userGroup", manualUserGroups, request.getParameter("name"), null, manualUserGroups.size()>1)%> (required)
 			</td>
 		</tr>
 		<tr>
