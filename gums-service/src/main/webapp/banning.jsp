@@ -97,7 +97,7 @@ if (request.getParameter("command")==null ||
 <p>
 Add or Remove Banned Users:
 </p>
-<table class="form" cellpadding="2" cellspacing="2">
+<table id="form" cellpadding="2" cellspacing="2">
 <%
 
 	if (message != null) {
@@ -157,10 +157,11 @@ Add or Remove Banned Users:
 	<p>
 	Manual User Groups in the <a href="/gums/globalConfiguration.jsp">Banned List</a>:
 	</p>
-	<table class="form" cellpadding="2" cellspacing="2">
+	<table id="form" cellpadding="2" cellspacing="2">
 <%
 		for (UserGroup group : manualUserGroups) {
 			List<GridUser> members = group.getMemberList();
+			if (group.getName().equals("gums-banned")) {continue;}
 %>
 			<tr>
 				<td width="1" valign="top">
@@ -219,7 +220,7 @@ Add or Remove Banned Users:
 	<p>
 	User Groups of Type Banned:
 	</p>
-	<table class="form" cellpadding="2" cellspacing="2">
+	<table id="form" cellpadding="2" cellspacing="2">
 <%
 		for (UserGroup group : bannedUserGroups) {
 			List<GridUser> members = group.getMemberList();
