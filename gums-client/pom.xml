@@ -5,7 +5,7 @@
 	<artifactId>gums-client</artifactId>
 	<name>gums-client</name>
 	<packaging>jar</packaging>
-	<version>1.4.1.pre4</version>
+	<version>1.4.1</version>
 	<description>GUMS Client provides the administrative command line tools to administer GUMS.
     It allows querying and changing the state of the GUMS server.</description>
 
@@ -50,9 +50,9 @@
     </pluginRepositories>
  
    	<scm>
-	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-client</connection>
-	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-client</developerConnection>
-    	<url>http://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1.pre4/gums-client</url>
+	    <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-client</connection>
+	    <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-client</developerConnection>
+    	<url>http://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-client</url>
 	</scm>
 	
     <build>
@@ -366,7 +366,7 @@ However, it can only be run from the normal lifecycle, no via rpm:rpm, so it mus
         <dependency>
             <groupId>gov.bnl.racf.gums</groupId>
             <artifactId>gums-core</artifactId>
-            <version>1.4.1.pre4</version>
+            <version>1.4.1</version>
         </dependency>
 		<dependency>	
 			<groupId>log4j</groupId>
