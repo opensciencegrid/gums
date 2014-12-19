@@ -498,7 +498,7 @@ public class Configuration {
 
 		out.write("<gums version='"+version+"' "
 				+"allowGridmapFiles='"+(getAllowGridmapFiles()?"true":"false")+"' "
-				+"bannedUserGroups='"+getBannedUserGroups()+"'"
+				+"bannedUserGroups='"+getBannedUserGroups()+"' "
 				+"simpleHostToGroup='"+getSimpleHostToGroup()+"'"
 				+">\n\n");
 
