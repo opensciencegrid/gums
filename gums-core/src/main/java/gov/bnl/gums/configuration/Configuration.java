@@ -49,7 +49,7 @@ public class Configuration {
     private List bannedUserGroupList = new ArrayList();
     private String bannedUserGroups = "";
     private boolean allowGridmapFiles = true;
-    private boolean simpleHostToGroup = true;
+    private boolean simpleHostMatching = true;
     private boolean transformingFromOld11Version = false;
 	private Date created = new Date();
 
@@ -200,7 +200,7 @@ public class Configuration {
     	
     	newConf.setAllowGridmapFiles(getAllowGridmapFiles());
     	newConf.setBannedUserGroups(new String(getBannedUserGroups()));
-    	newConf.setSimpleHostToGroup(getSimpleHostToGroup());
+    	newConf.setSimpleHostMatching(getSimpleHostMatching());
     	
     	Iterator it = persistenceFactories.values().iterator();
     	while (it.hasNext() )
@@ -256,8 +256,8 @@ public class Configuration {
     	return bannedUserGroups;
     }
 
-    public boolean getSimpleHostToGroup() {
-    	return simpleHostToGroup;
+    public boolean getSimpleHostMatching() {
+    	return simpleHostMatching;
     }
 
 	public Date getCreated() {
@@ -464,8 +464,8 @@ public class Configuration {
 			this.bannedUserGroupList = Collections.synchronizedList(new ArrayList());
 	}
 
-	public synchronized void setSimpleHostToGroup(boolean simpleHostToGroup) {
-		this.simpleHostToGroup = simpleHostToGroup;
+	public synchronized void setSimpleHostMatching(boolean simpleHostMatching) {
+		this.simpleHostMatching = simpleHostMatching;
 	}
 
     public synchronized ManualUserGroup getDefaultBannedGroup() {
@@ -499,7 +499,7 @@ public class Configuration {
 		out.write("<gums version='"+version+"' "
 				+"allowGridmapFiles='"+(getAllowGridmapFiles()?"true":"false")+"' "
 				+"bannedUserGroups='"+getBannedUserGroups()+"' "
-				+"simpleHostToGroup='"+getSimpleHostToGroup()+"'"
+				+"simpleHostMatching='"+getSimpleHostMatching()+"'"
 				+">\n\n");
 
 		// Write persistence factories

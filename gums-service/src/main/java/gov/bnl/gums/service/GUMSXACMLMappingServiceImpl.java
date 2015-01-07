@@ -74,7 +74,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 				throw new Exception("missing attribute: "+XACMLConstants.RESOURCE_X509_ID + " or " + XACMLConstants.RESOURCE_DNS_HOST_NAME_ID);
 			}
 			// upgrade to fake dn; /cn=hostname
-			if (gums.getConfiguration().getSimpleHostToGroup()) {
+			if (gums.getConfiguration().getSimpleHostMatching()) {
 				hostDn = "/CN=" + hostDn;
 			}
 		}
