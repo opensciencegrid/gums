@@ -38,6 +38,8 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class Configuration {
+    public enum TriState {False, True, Default};
+
     private Logger log = Logger.getLogger(Configuration.class);
     private Logger adminLog = Logger.getLogger(GUMS.gumsAdminLogName);
     private List hostToGroupMappings = new ArrayList();
@@ -49,7 +51,7 @@ public class Configuration {
     private List bannedUserGroupList = new ArrayList();
     private String bannedUserGroups = "";
     private boolean allowGridmapFiles = true;
-    private boolean simpleHostMatching = true;
+    private TriState simpleHostMatching = TriState.Default;
     private boolean transformingFromOld11Version = false;
 	private Date created = new Date();
 
@@ -256,7 +258,7 @@ public class Configuration {
     	return bannedUserGroups;
     }
 
-    public boolean getSimpleHostMatching() {
+    public TriState getSimpleHostMatching() {
     	return simpleHostMatching;
     }
 
@@ -464,7 +466,7 @@ public class Configuration {
 			this.bannedUserGroupList = Collections.synchronizedList(new ArrayList());
 	}
 
-	public synchronized void setSimpleHostMatching(boolean simpleHostMatching) {
+	public synchronized void setSimpleHostMatching(TriState simpleHostMatching) {
 		this.simpleHostMatching = simpleHostMatching;
 	}
 
@@ -498,7 +500,9 @@ public class Configuration {
 
 		out.write("<gums version='"+version+"' "
 				+"allowGridmapFiles='"+(getAllowGridmapFiles()?"true":"false")+"' "
-				+"bannedUserGroups='"+getBannedUserGroups()+"' "
+				+"bannedUserGroups='"+getBannedUserGroups()+"'"
+				+(getSimpleHostMatching() == TriState.Default ? "" : " simpleHostMatching='"
+					+(getSimpleHostMatching() == TriState.True ? "true" : "false") + "'")
 				+"simpleHostMatching='"+getSimpleHostMatching()+"'"
 				+">\n\n");
 
