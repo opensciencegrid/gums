@@ -466,6 +466,10 @@ public class Configuration {
 			this.bannedUserGroupList = Collections.synchronizedList(new ArrayList());
 	}
 
+	public synchronized void setSimpleHostMatching(boolean simpleHostMatching) {
+		this.simpleHostMatching = simpleHostMatching ? TriState.True : TriState.False;
+	}
+
 	public synchronized void setSimpleHostMatching(TriState simpleHostMatching) {
 		this.simpleHostMatching = simpleHostMatching;
 	}
