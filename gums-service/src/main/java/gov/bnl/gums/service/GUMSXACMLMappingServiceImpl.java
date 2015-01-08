@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import gov.bnl.gums.AccountInfo;
 import gov.bnl.gums.admin.GUMSAPI;
 import gov.bnl.gums.admin.GUMSAPIImpl;
-import gov.bnl.gums.configuration.Configuration;
 
 import org.opensaml.saml2.core.Statement;
 import org.opensaml.saml2.core.impl.SubjectBuilder;
@@ -75,7 +74,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 				throw new Exception("missing attribute: "+XACMLConstants.RESOURCE_X509_ID + " or " + XACMLConstants.RESOURCE_DNS_HOST_NAME_ID);
 			}
 			// upgrade to fake dn; /cn=hostname
-			if (gums.getConfiguration().getSimpleHostMatching() != Configuration.TriState.False) {
+			if (gums.getConfiguration().getSimpleHostMatchingEnabled()) {
 				hostDn = "/CN=" + hostDn;
 			}
 		}

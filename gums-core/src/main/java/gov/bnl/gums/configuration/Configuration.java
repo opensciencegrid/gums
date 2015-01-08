@@ -262,6 +262,10 @@ public class Configuration {
     	return simpleHostMatching;
     }
 
+    public boolean getSimpleHostMatchingEnabled() {
+    	return simpleHostMatching == TriState.False ? false : true;
+    }
+
 	public Date getCreated() {
 		return created;
 	}
