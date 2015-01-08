@@ -167,7 +167,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 				obligationgid.getAttributeAssignments().add(attributeAssignmentGid);
 				obligations.getObligations().add(obligationgid);
 			}
-			if (supportsAccount)
+			if (supportsAccount && hasGroup)
 			{
 				ObligationType obligationAccount = obligationBuilder.buildObject();
 				obligationAccount.setFulfillOn(EffectType.Permit);
