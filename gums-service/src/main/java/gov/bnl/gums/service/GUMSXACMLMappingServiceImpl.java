@@ -152,9 +152,6 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 	
 			// Obligation
 			ObligationTypeImplBuilder obligationBuilder = (ObligationTypeImplBuilder)builderFactory.getBuilder(ObligationType.DEFAULT_ELEMENT_QNAME);
-			ObligationType obligation = obligationBuilder.buildObject();
-			obligation.setFulfillOn(EffectType.Permit);
-			obligation.setObligationId(XACMLConstants.OBLIGATION_USERNAME);
 
 			// Obligations
 			ObligationsTypeImplBuilder obligationsBuilder = (ObligationsTypeImplBuilder)builderFactory.getBuilder(ObligationsType.DEFAULT_ELEMENT_QNAME);
@@ -178,6 +175,9 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			}
 			else
 			{
+				ObligationType obligation = obligationBuilder.buildObject();
+				obligation.setFulfillOn(EffectType.Permit);
+				obligation.setObligationId(XACMLConstants.OBLIGATION_USERNAME);
 				if (attributeAssignment != null) {obligation.getAttributeAssignments().add(attributeAssignment);}
 				obligations.getObligations().add(obligation);
 			}
