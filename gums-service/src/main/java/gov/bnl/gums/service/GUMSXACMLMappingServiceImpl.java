@@ -170,7 +170,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 				obligationAccount.setFulfillOn(EffectType.Permit);
 				obligationAccount.setObligationId(XACMLConstants.OBLIGATION_ACCOUNT);
 				if (attributeAssignment != null) {obligationAccount.getAttributeAssignments().add(attributeAssignment);}
-				if (hasGroup) {obligationAccount.getAttributeAssignments().add(attributeAssignmentGroup);}
+				obligationAccount.getAttributeAssignments().add(attributeAssignmentGroup);
 				obligations.getObligations().add(obligationAccount);
 			}
 			else
