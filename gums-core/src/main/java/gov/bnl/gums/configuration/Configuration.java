@@ -38,6 +38,8 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class Configuration {
+    public enum TriState {False, True, Default};
+
     private Logger log = Logger.getLogger(Configuration.class);
     private Logger adminLog = Logger.getLogger(GUMS.gumsAdminLogName);
     private List hostToGroupMappings = new ArrayList();
@@ -49,6 +51,7 @@ public class Configuration {
     private List bannedUserGroupList = new ArrayList();
     private String bannedUserGroups = "";
     private boolean allowGridmapFiles = true;
+    private TriState simpleHostMatching = TriState.Default;
     private boolean transformingFromOld11Version = false;
 	private Date created = new Date();
 
@@ -199,6 +202,7 @@ public class Configuration {
     	
     	newConf.setAllowGridmapFiles(getAllowGridmapFiles());
     	newConf.setBannedUserGroups(new String(getBannedUserGroups()));
+    	newConf.setSimpleHostMatching(getSimpleHostMatching());
     	
     	Iterator it = persistenceFactories.values().iterator();
     	while (it.hasNext() )
@@ -252,6 +256,14 @@ public class Configuration {
     
     public String getBannedUserGroups() {
     	return bannedUserGroups;
+    }
+
+    public TriState getSimpleHostMatching() {
+    	return simpleHostMatching;
+    }
+
+    public boolean getSimpleHostMatchingEnabled() {
+    	return simpleHostMatching == TriState.False ? false : true;
     }
 
 	public Date getCreated() {
@@ -458,6 +470,14 @@ public class Configuration {
 			this.bannedUserGroupList = Collections.synchronizedList(new ArrayList());
 	}
 
+	public synchronized void setSimpleHostMatching(boolean simpleHostMatching) {
+		this.simpleHostMatching = simpleHostMatching ? TriState.True : TriState.False;
+	}
+
+	public synchronized void setSimpleHostMatching(TriState simpleHostMatching) {
+		this.simpleHostMatching = simpleHostMatching;
+	}
+
     public synchronized ManualUserGroup getDefaultBannedGroup() {
         int index = 1;
         String name = UserGroup.getDefaultBannedGroupName();
@@ -489,6 +509,8 @@ public class Configuration {
 		out.write("<gums version='"+version+"' "
 				+"allowGridmapFiles='"+(getAllowGridmapFiles()?"true":"false")+"' "
 				+"bannedUserGroups='"+getBannedUserGroups()+"'"
+				+(getSimpleHostMatching() == TriState.Default ? "" : " simpleHostMatching='"
+					+(getSimpleHostMatching() == TriState.True ? "true" : "false") + "'")
 				+">\n\n");
 
 		// Write persistence factories

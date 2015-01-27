@@ -73,6 +73,10 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 				log.debug("missing attributes: "+XACMLConstants.RESOURCE_X509_ID + " or " + XACMLConstants.RESOURCE_DNS_HOST_NAME_ID);
 				throw new Exception("missing attribute: "+XACMLConstants.RESOURCE_X509_ID + " or " + XACMLConstants.RESOURCE_DNS_HOST_NAME_ID);
 			}
+			// upgrade to fake dn; /cn=hostname
+			if (gums.getConfiguration().getSimpleHostMatchingEnabled()) {
+				hostDn = "/CN=" + hostDn;
+			}
 		}
 		if (userDn==null || userDn.length()==0) {
 			log.debug("missing attribute: "+XACMLConstants.SUBJECT_X509_ID);
