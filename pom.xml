@@ -19,9 +19,9 @@
     </ciManagement>
   
     <scm>
-  	     <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1</connection>
-  	     <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1</developerConnection>
-  	     <url>http://svn.usatlas.bnl.gov/svn/privilege/gums/tags/gums-1.4.1</url>
+  	     <connection>scm:git:https://github.com/opensciencegrid/gums</connection>
+  	     <developerConnection>scm:git:https://github.com/opensciencegrid/gums</developerConnection>
+  	     <url>https://github.com/opensciencegrid/gums</url>
     </scm>
   
     <organization>

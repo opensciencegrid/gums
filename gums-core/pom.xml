@@ -41,9 +41,9 @@
 	</pluginRepositories>
 
     <scm>
-        <connection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-core</connection>
-        <developerConnection>scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-core</developerConnection>
-        <url>http://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-core</url>
+        <connection>scm:git:https://github.com/opensciencegrid/gums</connection>
+        <developerConnection>scm:git:https://github.com/opensciencegrid/gums</developerConnection>
+        <url>https://github.com/opensciencegrid/gums</url>
     </scm>
 
     <build>

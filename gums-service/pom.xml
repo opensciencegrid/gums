@@ -38,11 +38,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
   </pluginRepositories>
   <scm>
     <connection>
-    scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-service</connection>
+    scm:git:https://github.com/opensciencegrid/gums</connection>
     <developerConnection>
-    scm:svn:https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-service</developerConnection>
+    scm:git:https://github.com/opensciencegrid/gums</developerConnection>
     <url>
-    https://svn.usatlas.bnl.gov/svn/privilege/tags/gums-1.4.1/gums-service</url>
+    https://github.com/opensciencegrid/gums</url>
   </scm>
   <build>
     <finalName>gums</finalName>
