@@ -511,7 +511,6 @@ public class Configuration {
 				+"bannedUserGroups='"+getBannedUserGroups()+"'"
 				+(getSimpleHostMatching() == TriState.Default ? "" : " simpleHostMatching='"
 					+(getSimpleHostMatching() == TriState.True ? "true" : "false") + "'")
-				+"simpleHostMatching='"+getSimpleHostMatching()+"'"
 				+">\n\n");
 
 		// Write persistence factories
