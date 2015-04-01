@@ -474,8 +474,13 @@ public class GUMS {
 		for (UserGroup group : bannedUserGroups) {
 			//gumsAdminLog.warn("Checking if user " + user + " is in banned group " + group.getName());
 			if (group == null) {continue;}
-			else if (group.getName().equals(UserGroup.getDefaultBannedGroupName()) && group.isDNInGroup(user)) { return true; }
-			else if (group.isInGroup(user)) { gumsAdminLog.warn("User is in group"); return true; }
+			else if (group.getName().equals(UserGroup.getDefaultBannedGroupName()) && group.isDNInGroup(user)) {
+				gumsAdminLog.warn("User " + user + " is in default banned group " + group.getName());
+				return true;
+			} else if (group.isInGroup(user)) {
+				gumsAdminLog.warn("User " + user + " is in banned group " + group.getName());
+				return true;
+			}
 		}
 		return false;
 	} // end isUserBanned()
