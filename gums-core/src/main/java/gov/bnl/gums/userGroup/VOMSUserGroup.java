@@ -449,7 +449,6 @@ public class VOMSUserGroup extends UserGroup {
         } catch (Throwable e) {
         	String message = "Couldn't retrieve users: ";
             log.error(message, e);
-            e.printStackTrace();
             throw new RuntimeException(message + e.getMessage(), e);
         }
     }
