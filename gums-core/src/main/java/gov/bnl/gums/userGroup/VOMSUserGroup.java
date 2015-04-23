@@ -441,9 +441,14 @@ public class VOMSUserGroup extends UserGroup {
             }
             System.setProperties(p);
             List entries = new ArrayList();
-            for (int n=0; n < users.length; n++) {
-            	GridUser gridUser = new GridUser(users[n], fqan);
-                entries.add(gridUser);
+            Set<String> ci_users = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            for (String user : users) {
+                if (ci_users.add(user)) {
+                    GridUser gridUser = new GridUser(user, fqan);
+                    entries.add(gridUser);
+                } else {
+                    log.warn("Duplicate user retrieved from VOMS: '" + user + "'");
+                }
             }
             return entries;
         } catch (Throwable e) {
