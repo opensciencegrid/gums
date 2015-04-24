@@ -120,7 +120,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -135,7 +136,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -150,7 +152,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}  
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}		
 	}
 
@@ -170,7 +173,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 	
@@ -190,7 +194,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}        
 
@@ -217,7 +222,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -237,7 +243,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -260,7 +267,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 		
@@ -278,7 +286,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 			}    	
 			return backupConfigDates;
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -294,7 +303,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();		
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -313,7 +323,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();	
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}		
 	}
 
@@ -334,7 +345,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();	
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}		
 	}
 	
@@ -351,7 +363,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();	
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}		
 	}
 
@@ -368,7 +381,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}			
 	}
 
@@ -385,7 +399,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}			
 	}
 	
@@ -402,7 +417,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}		
 	}
 	
@@ -438,13 +454,14 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		} finally {
 			if (inputStream != null) {
 				try {
 					inputStream.close();
 				} catch (IOException e) {
-					log.error(e.getMessage());
+					log.error(e.getMessage(), e);
 				}
 			}
 		}
@@ -463,7 +480,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}		
 	}
 
@@ -480,7 +498,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -489,6 +508,10 @@ public class GUMSAPIImpl implements GUMSAPI {
 		try {
 			return mappingCache.get(input);
 		} catch (ExecutionException e) {
+			log.error("Unhandled ExecutionException.", e);
+			throw new RuntimeException(e.getMessage(), e);
+		} catch (Exception e) {
+			log.error("Unhandled exception.", e);
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
@@ -516,6 +539,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
+			log.error("Unhandled exception.", e);
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
@@ -549,7 +573,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -564,7 +589,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}  	
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}		
 	}
 
@@ -581,7 +607,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 			gumsAdminLog.debug("Configuration was set: " + configuration.toXml());
 			siteAdminLog.debug("Configuration was set: " + configuration.toXml());
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}		
 	}
 
@@ -617,7 +644,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}		
 	}
 
@@ -634,7 +662,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -670,7 +699,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -700,7 +730,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -732,7 +763,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -764,7 +796,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -799,7 +832,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				throw new AuthorizationDeniedException();
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}		
 	}
 
@@ -905,7 +939,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				}
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
 		}		
 		return null;
 	}
