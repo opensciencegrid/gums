@@ -49,9 +49,9 @@ public class CoreLogic {
         StringBuffer osgMapBuffer = new StringBuffer("");
         HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
         if (host2GroupMapper == null) {
-        	String message = "Cannot generate osg user VO map for host '" + hostname + "' - it is not defined in any host to group mapping.";
+            String message = "Cannot generate osg user VO map for host '" + hostname + "' - it is not defined in any host to group mapping.";
             gumsAdminLog.warn(message);
-        	throw new RuntimeException(message);
+            throw new RuntimeException(message);
         }
         
         // Create header
@@ -60,17 +60,16 @@ public class CoreLogic {
         osgMapBuffer.append("# Next 2 lines with VO names, same order, all lowercase, with case (lines starting with #voi, #VOc)\n");
         String voi = "#voi";
         String voc = "#VOc";
-        Iterator iter = host2GroupMapper.getGroupToAccountMappings().iterator();
-        while (iter.hasNext()) {
-            GroupToAccountMapping gMap = (GroupToAccountMapping) conf.getGroupToAccountMapping( (String)iter.next() );
-            Collection userGroups = gMap.getUserGroups();
-            Iterator userGroupIt = userGroups.iterator();
-            while (userGroupIt.hasNext()) {
-            	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupIt.next() );
-	            if (userGroup.getMemberList().size()!=0 && !gMap.getAccountingVoSubgroup().equals("") && !gMap.getAccountingVo().equals("")) {
-	                voi = voi + " " + gMap.getAccountingVoSubgroup();
-	                voc = voc + " " + gMap.getAccountingVo();
-	            }
+        List<String> groupToAccountMappings = host2GroupMapper.getGroupToAccountMappings();
+        for (String mappingName : groupToAccountMappings) {
+            GroupToAccountMapping gMap = (GroupToAccountMapping) conf.getGroupToAccountMapping( mappingName );
+            List<String> userGroups = gMap.getUserGroups();
+            for (String groupName : userGroups) {
+                UserGroup userGroup = (UserGroup) conf.getUserGroup( groupName );
+                if (userGroup.getMemberList().size()!=0 && !gMap.getAccountingVoSubgroup().equals("") && !gMap.getAccountingVo().equals("")) {
+                    voi = voi + " " + gMap.getAccountingVoSubgroup();
+                    voc = voc + " " + gMap.getAccountingVo();
+                }
             }
         }
         osgMapBuffer.append(voi);
@@ -81,38 +80,33 @@ public class CoreLogic {
         // Loop through group to account mappings
         List accountsInMap = new ArrayList();
         int unknownCount = 1;
-        iter = host2GroupMapper.getGroupToAccountMappings().iterator();
-        while (iter.hasNext()) {
-            GroupToAccountMapping gMap = (GroupToAccountMapping) conf.getGroupToAccountMapping( (String)iter.next() );
+        for (String mappingName : groupToAccountMappings) {
+            GroupToAccountMapping gMap = (GroupToAccountMapping) conf.getGroupToAccountMapping( mappingName );
             if (!gMap.getAccountingVoSubgroup().equals("") && !gMap.getAccountingVo().equals("")) {
-	            Collection userGroups = gMap.getUserGroups();
-            	Collection accountMappers = gMap.getAccountMappers();
-	            Iterator userGroupIt = userGroups.iterator();
-	            while (userGroupIt.hasNext()) {
-	            	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupIt.next() );
-		            List members = userGroup.getMemberList();
-		            members = new ArrayList(members);
-		            osgMapBuffer.append("#---- accounts for vo: " + userGroup.getName() + " ----#\n");          
-		            Collections.sort(members, retrieveUserComparatorByDN());
-		            Iterator memberIter = members.iterator();
-		            while (memberIter.hasNext()) {
-		                GridUser user = (GridUser) memberIter.next();
-		                if (gums.isUserBanned(user))
-		                	continue;
-	                    Iterator accountMapperIt = accountMappers.iterator();
-	                    while (accountMapperIt.hasNext()) {
-	                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMapperIt.next() );
-			                AccountInfo account = accountMapper.mapUser(user, false);
-			                if ((account != null && account.getUser() != null) && !accountsInMap.contains(account.getUser())) {
-			                	osgMapBuffer.append(account.getUser());
-			                	osgMapBuffer.append(' ');
-			                	osgMapBuffer.append(gMap.getAccountingVoSubgroup());
-			                	osgMapBuffer.append("\n");
-			                    accountsInMap.add(account.getUser());
-			                }
-	                    }
-		            }
-	            }
+                List<String> userGroups = gMap.getUserGroups();
+                List<String> accountMappers = gMap.getAccountMappers();
+                for (String groupName : userGroups) {
+                    UserGroup userGroup = (UserGroup) conf.getUserGroup( groupName );
+                    List<GridUser> members = userGroup.getMemberList();
+                    members = new List<GridUser>(members);
+                    osgMapBuffer.append("#---- accounts for vo: " + userGroup.getName() + " ----#\n");
+                    Collections.sort(members, retrieveUserComparatorByDN());
+                    for (GridUser user : members) {
+                        if (gums.isUserBanned(user))
+                            continue;
+                        for (String mapperName : accountMappers) {
+                            AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( mapperName );
+                            AccountInfo account = accountMapper.mapUser(user, false);
+                            if ((account != null && account.getUser() != null) && !accountsInMap.contains(account.getUser())) {
+                                osgMapBuffer.append(account.getUser());
+                                osgMapBuffer.append(' ');
+                                osgMapBuffer.append(gMap.getAccountingVoSubgroup());
+                                osgMapBuffer.append("\n");
+                                accountsInMap.add(account.getUser());
+                            }
+                        }
+                    }
+                }
             }
         }
         
