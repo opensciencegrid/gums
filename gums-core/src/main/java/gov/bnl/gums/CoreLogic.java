@@ -88,7 +88,7 @@ public class CoreLogic {
                 for (String groupName : userGroups) {
                     UserGroup userGroup = (UserGroup) conf.getUserGroup( groupName );
                     List<GridUser> members = userGroup.getMemberList();
-                    members = new List<GridUser>(members);
+                    members = new ArrayList<GridUser>(members);
                     osgMapBuffer.append("#---- accounts for vo: " + userGroup.getName() + " ----#\n");
                     Collections.sort(members, retrieveUserComparatorByDN());
                     for (GridUser user : members) {
