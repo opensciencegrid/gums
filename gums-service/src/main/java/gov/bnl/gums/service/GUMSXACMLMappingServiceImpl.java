@@ -144,7 +144,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			}
 		} catch (Exception e1) {
 			statusCode.setValue(ERROR);
-			log.debug(e1.getMessage(), e1);
+			log.debug("Unhandled exception.", e1);
 			throw e1;
 		}
 
@@ -211,7 +211,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 			return xacmlAuthzStatement;
 		} catch (Exception e1) {
 			statusCode.setValue(ERROR);
-			log.debug(e1.getMessage());
+			log.debug("Unhandled exception.", e1);
 			throw e1;
 		}
 	}
