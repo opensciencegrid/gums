@@ -241,7 +241,8 @@ public class FileConfigurationStore extends ConfigurationStore {
 				int ch;
 				while ((ch = fileInputStream.read()) != -1)
 					configBuffer.append((char)ch);
-				this.conf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
+				ConfigurationToolkit.parseConfiguration(configBuffer.toString(), true);
+				this.conf = ConfigurationToolkit.parseConfiguration(configBuffer.toString(), false);
 				curModification = new Date(new File(configPath).lastModified());
 			} catch (Exception e) {
 				throw new RuntimeException(e.getMessage(), e);
