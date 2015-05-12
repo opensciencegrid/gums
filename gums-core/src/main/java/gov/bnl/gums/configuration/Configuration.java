@@ -579,7 +579,7 @@ public class Configuration {
 			out.write("\t</hostToGroupMappings>\n\n");
 		}                
 
-		out.write("</gums>");   	
+		out.write("</gums>\n");
     }
 	 
     public void mergeConfiguration(Configuration configuraton, String persistenceFactory, String hostToGroupMapping) {
