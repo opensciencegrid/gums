@@ -13,14 +13,19 @@ package gov.bnl.gums.db;
 
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.persistence.HibernatePersistenceFactory;
+import gov.bnl.gums.account.MappedAccountInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import java.sql.Timestamp;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -39,11 +44,15 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
     private HibernatePersistenceFactory persistenceFactory;
     private String map;
     private static Map needsCacheRefresh = Collections.synchronizedMap(new HashMap());
-    
+    private Set<String> recentAccounts;
+    private final boolean recyclable;
+ 
     /** Creates a new instance of HibernateMapping */
-    public HibernateAccountMapperDB(HibernatePersistenceFactory persistenceFactory, String map) {
+    public HibernateAccountMapperDB(HibernatePersistenceFactory persistenceFactory, String map, boolean recyclable) {
         this.persistenceFactory = persistenceFactory;
         this.map = map;
+        this.recyclable = recyclable;
+        this.recentAccounts = Collections.synchronizedSet(new HashSet<String>());
     }
 
     public void addAccount(String account) {
@@ -101,6 +110,8 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
                 return null;
             }
             mapping.setDn(user.getCertificateDN());
+            mapping.setRecycle(recyclable);
+            mapping.setLastuse(new java.sql.Timestamp(System.currentTimeMillis()));
             tx.commit();
             setNeedsCacheRefresh(true);
             return mapping.getAccount();
@@ -265,6 +276,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             tx.commit();
             if (mapping == null) 
             	return null;
+            recordAccess(session, mapping);
             return mapping.getAccount();
         // Handles when transaction goes wrong...
         } catch (Exception e) {
@@ -307,6 +319,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             while (iter.hasNext()) {
                 HibernateMapping mapping = (HibernateMapping) iter.next();
                 map.put(mapping.getDn(), mapping.getAccount());
+                recordAccess(session, mapping);
             }
             tx.commit();
             return map;
@@ -345,6 +358,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             tx.commit();
             if (map == null) 
             	return null;
+            recordAccess(session, map);
             return map.getAccount();
         // Handles when transaction goes wrong...
         } catch (Exception e) {
@@ -370,7 +384,7 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
         }
     }
     
-    public java.util.Map retrieveReverseAccountMap() {
+    public Map<String, String> retrieveReverseAccountMap() {
         Session session = null;
         Transaction tx = null;
         try {
@@ -413,7 +427,45 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
             }
         }
     }
-    
+
+    public List<? extends MappedAccountInfo> retrieveAccountInfo() {
+        Session session = null;
+        Transaction tx = null;
+        try {
+            log.trace("Retrieving account info for pool '" + map + "'");
+            session = persistenceFactory.retrieveSessionFactory().openSession();
+            tx = session.beginTransaction();
+            Query q;
+            q = session.createQuery("FROM HibernateMapping m WHERE m.map = ? AND m.account is not null");
+            q.setCacheable(true).setCacheRegion("gumsmapper");
+            q.setString(0, map);
+            List<HibernateMapping> mappings = (List) q.list();
+            tx.commit();
+            return mappings;
+        // Handles when transaction goes wrong...
+        } catch (Exception e) {
+            log.error("Couldn't retrieve account info for pool '" + map + "'", e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: rollback failed", e1);
+                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
+                }
+            }
+            throw new RuntimeException("Database error: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: couldn't close session", e1);
+                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
+                }
+            }
+        }
+    }
+
     public java.util.List retrieveUsersNotUsedSince(java.util.Date date) {
         throw new UnsupportedOperationException("retrieveUsersNotUsedSince is not supported anymore");
     }
@@ -510,6 +562,8 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
 	    hMapping.setMap(map);
 	    hMapping.setDn(userDN);
 	    hMapping.setAccount(account);
+            hMapping.setLastuse(new java.sql.Timestamp(System.currentTimeMillis()));
+            hMapping.setRecycle(recyclable);
 	    session.save(hMapping);
     }
 
@@ -535,7 +589,9 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
         q.setString(0, map);
         q.setString(1, userDN);
         q.setCacheable(true).setCacheRegion("gumsmapper");
-        return (HibernateMapping) q.uniqueResult();
+        HibernateMapping hMapping = (HibernateMapping) q.uniqueResult();
+        recordAccess(session, hMapping);
+        return hMapping;
     }
     
     private HibernateMapping retrieveMapping(Session session, Transaction tx, String userDN, String account) throws Exception{
@@ -553,9 +609,128 @@ public class HibernateAccountMapperDB implements ManualAccountMapperDB, AccountP
 	        q.setString(1, account);
                 q.setCacheable(true).setCacheRegion("gumsmapper");
         }
-        return (HibernateMapping) q.uniqueResult();
+        HibernateMapping hMapping = (HibernateMapping) q.uniqueResult();
+        recordAccess(session, hMapping);
+        return hMapping;
     }
-    
+
+    private void recordAccess(Session session, HibernateMapping hMapping) {
+
+        if (hMapping == null) {return;}
+
+        String account = hMapping.getAccount();
+        if (account != null) {recentAccounts.add(account);}
+
+        // IMPORTANT: If we are not a recyclable pool group and the
+        // account was indeed recyclable, then mark is as not recyclable.
+        if (!recyclable && hMapping.getRecycle()) {
+            hMapping.setRecycle(false);
+            session.save(hMapping);
+        }
+    }
+
+    public void setAccountRecyclable(String account, boolean recycle) {
+
+        Session session = null;
+        Transaction tx = null;
+        try {
+            log.trace("Setting account '" + account + "' recyclable setting to " + recycle);
+            session = persistenceFactory.retrieveSessionFactory().openSession();
+            tx = session.beginTransaction();
+
+            Query q = session.createQuery("UPDATE HibernateMapping SET recycle = ? WHERE map = ? AND account = ?");
+            q.setBoolean(0, recycle);
+            q.setString(1, this.map);
+            q.setString(2, account);
+            q.executeUpdate();
+            tx.commit();
+            setNeedsCacheRefresh(true);
+
+        // Handles when transaction goes wrong...
+        } catch (Exception e) {
+            log.error("Couldn't set account '" + account + "' recyclable setting to " + recycle, e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: rollback failed", e1);
+                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
+                }
+            }
+            throw new RuntimeException("Database error: " + map + ": " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: couldn't close session", e1);
+                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
+                }
+            }
+        }
+    }
+
+    public boolean cleanAccounts(int days) {
+        boolean successful = true;
+
+        Session session = null;
+        Transaction tx = null;
+        int userCount = 0;
+        try {
+            log.trace("Cleaning accounts unused in the last " + days + " days and updating usage for " + recentAccounts.size() + " users.");
+            session = persistenceFactory.retrieveSessionFactory().openSession();
+            tx = session.beginTransaction();
+
+            Timestamp expiry = new Timestamp(System.currentTimeMillis());
+            Query q = session.createQuery("UPDATE HibernateMapping SET lastuse = ? WHERE map = ? AND account = ?");
+            q.setTimestamp(0, expiry);
+            q.setString(1, this.map);
+            synchronized (recentAccounts) {
+                for (String account : recentAccounts) {
+                    q.setString(2, account);
+                    successful = (q.executeUpdate() > 0) && successful;
+                    userCount += 1;
+                }
+                recentAccounts.clear();
+            }
+
+            Query q2;
+            q2 = session.createQuery("UPDATE HibernateMapping SET dn = null WHERE map = ? AND recycle = true AND lastuse < ? AND lastuse > 0");
+            expiry = new Timestamp(System.currentTimeMillis() - days*86400*1000);
+            q2.setString(0, this.map);
+            q2.setTimestamp(1, expiry);
+            if (days > 0) {
+                q2.executeUpdate();
+            }
+            tx.commit();
+            setNeedsCacheRefresh(true);
+
+        // Handles when transaction goes wrong...
+        } catch (Exception e) {
+            log.error("Couldn't clean from last " + days + " and update usage for the " + userCount + " users.", e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: rollback failed", e1);
+                    throw new RuntimeException("Database errors: " + e.getMessage() + " - " + e1.getMessage(), e);
+                }
+            }
+            throw new RuntimeException("Database error: " + map + ": " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (Exception e1) {
+                    log.error("Hibernate error: couldn't close session", e1);
+                    throw new RuntimeException("Database error: " + e1.getMessage(), e1);
+                }
+            }
+        }
+
+        return successful;
+    }
+
     private void setNeedsCacheRefresh(boolean value) {
         try {
             persistenceFactory.retrieveSessionFactory().getCache().evictQueryRegion("gumsmapper");

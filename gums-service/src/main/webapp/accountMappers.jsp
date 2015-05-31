@@ -170,6 +170,8 @@ if (request.getParameter("command")==null ||
 				    		</a><br>	
 				    		Description: <%=accountMapper.getDescription()%><br>	
 							Pool: <%=((AccountPoolMapper)accountMapper).getAccountPool()%><br>
+							Recyclable: <%=((AccountPoolMapper)accountMapper).getRecyclable()%><br/>
+							Expiration Days: <%=((AccountPoolMapper)accountMapper).getExpiration()%><br/>
 				    		Persistence Factory:
 				    		<a href="persistenceFactories.jsp?command=edit&name=<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>">
 				    			<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>
@@ -437,6 +439,25 @@ else if ("edit".equals(request.getParameter("command"))
 				myPool.myPrimaryGroup.mySecondaryGroup1.mySecondaryGroup2...
 		    </td>
 		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				Recyclable:
+			</td>
+			<td>
+				<select name="recyclable">
+					<option <%=(((AccountPoolMapper)accountMapper).getRecyclable()?"selected":"")%>>true</option>
+					<option <%=(((AccountPoolMapper)accountMapper).getRecyclable()?"":"selected")%>>false</option>
+				</select>
+			</td>
+		</tr>
+        <tr>
+            <td nowrap style="text-align: right;">
+                Expiration Days:
+            </td>
+            <td>
+                <input maxlength="256" size="34" name="expiration" value="<%=((AccountPoolMapper)accountMapper).getExpiration()%>"/>(number of days before recyclable accounts retire)
+            </td>
+        </tr>
 		<tr>
 			<td nowrap style="text-align: right;">
 				Persistence Factory:

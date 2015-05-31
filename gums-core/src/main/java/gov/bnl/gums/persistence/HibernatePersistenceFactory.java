@@ -132,8 +132,8 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 		return "hibernate";
 	}
     
-    public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
-        return new HibernateAccountMapperDB(this, name);
+    public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name, boolean recyclable) {
+        return new HibernateAccountMapperDB(this, name, recyclable);
     }
 
 	public ConfigurationDB retrieveConfigurationDB() {
@@ -141,7 +141,7 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
 	}	
     
     public ManualAccountMapperDB retrieveManualAccountMapperDB(String name) {
-        return new HibernateAccountMapperDB(this, name);
+        return new HibernateAccountMapperDB(this, name, false);
     }
 
     public ManualUserGroupDB retrieveManualUserGroupDB(String name) {
@@ -214,6 +214,8 @@ public class HibernatePersistenceFactory extends PersistenceFactory {
                 .addClass(gov.bnl.gums.db.HibernateMapping.class)
                 .addClass(gov.bnl.gums.db.HibernateUser.class)
                 .addClass(gov.bnl.gums.db.HibernateConfig.class);
+
+            new org.hibernate.tool.hbm2ddl.SchemaUpdate(cfg).execute(true, true);
             return cfg.buildSessionFactory();
         } catch (Exception e) {
             log.error("Couldn't initialize Hibernate", e);

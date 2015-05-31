@@ -127,7 +127,7 @@ public abstract class PersistenceFactory {
 		return storeConfig;
 	}
 
-	public abstract AccountPoolMapperDB retrieveAccountPoolMapperDB(String name);
+	public abstract AccountPoolMapperDB retrieveAccountPoolMapperDB(String name, boolean recyclable);
 	
 	public abstract ConfigurationDB retrieveConfigurationDB();
 	

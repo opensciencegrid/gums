@@ -12,6 +12,7 @@ package gov.bnl.gums.db;
 
 import gov.bnl.gums.GUMS;
 import gov.bnl.gums.GridUser;
+import gov.bnl.gums.account.MappedAccountInfo;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 
 import java.util.Collections;
@@ -77,6 +78,16 @@ public class LDAPAccountMapperDB implements AccountPoolMapperDB, ManualAccountMa
 		log.trace("LDAPMapDB object create: map '" + map + "' factory "
 				+ factory + " primary group '" + group + "' secondary groups '"
 				+ secondaryGroups + "'");
+	}
+
+	// We don't clean accounts; this is a no-op.
+	@Override
+	public boolean cleanAccounts(int days) {return false;}
+	@Override
+	public void setAccountRecyclable(String accountName, boolean recycle) {}
+	@Override
+	public List<? extends MappedAccountInfo> retrieveAccountInfo() {
+		throw new RuntimeException("Account info is not available for LDAP pool accounts.");
 	}
 
 	public void addAccount(String account) {

@@ -471,6 +471,15 @@ public class CoreLogic {
             throw new RuntimeException(failedGroups.toString());
         }
     }
+
+    public void cleanAccounts() throws Exception {
+        Collection<AccountMapper> accountMappers = gums.getConfiguration().getAccountMappers().values();
+        for (AccountMapper mapper : accountMappers) {
+            if (mapper instanceof AccountPoolMapper) {
+                ((AccountPoolMapper)mapper).cleanAccounts();
+            }
+        }
+    }
     
     private void updateBannedGroupsImpl() throws Exception {
         Collection<String> groups = gums.getConfiguration().getBannedUserGroupList();

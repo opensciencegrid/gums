@@ -7,8 +7,10 @@
 package gov.bnl.gums.admin;
 
 import java.rmi.Remote;
+import java.util.List;
 import java.util.Collection;
 
+import gov.bnl.gums.account.MappedAccountInfo;
 import gov.bnl.gums.AccountInfo;
 import gov.bnl.gums.configuration.Configuration;
 
@@ -114,7 +116,24 @@ public interface GUMSAPI extends Remote {
      * @return printout of assignments
      */
     String getPoolAccountAssignments(String accountMapper);
-    
+
+    /**
+     * Get detailed information about pool account assignments.
+     *
+     * @param accountMapper Name of account mapper
+     * @return List of MappedAccountInfo objects
+     */
+    List<? extends MappedAccountInfo> getAccountInfo(String accountMapper);
+
+    /**
+     * Set a pool account as recyclable.
+     *
+     * @param accountMapper Name of account mapper
+     * @param account Name of pool account within mapper
+     * @param recyle Value of recyclable attribute
+     */
+    void setRecyclable(String accountMapper, String account, boolean recycle);
+
     /**
      * Get current version of GUMS
      * 

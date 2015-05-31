@@ -525,7 +525,7 @@ public class LDAPPersistenceFactory extends PersistenceFactory {
 		}
 	}
 	
-	public AccountPoolMapperDB retrieveAccountPoolMapperDB(String nameAndGroups) {
+	public AccountPoolMapperDB retrieveAccountPoolMapperDB(String nameAndGroups, boolean recyclable) {
 		StringTokenizer tokens = new StringTokenizer(nameAndGroups, ".");
 		if (!tokens.hasMoreTokens()) {
 			log.trace("Creating LDAP AccountPoolMapperDB '" + nameAndGroups + "' (no GIDs)");

@@ -11,7 +11,9 @@ import gov.bnl.gums.AccountInfo;
 import gov.bnl.gums.GUMS;
 import gov.bnl.gums.account.AccountMapper;
 import gov.bnl.gums.account.AccountPoolMapper;
+import gov.bnl.gums.account.MappedAccountInfo;
 import gov.bnl.gums.account.ManualAccountMapper;
+import gov.bnl.gums.account.MappedAccountInfoComparator;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.configuration.ConfigurationToolkit;
 import gov.bnl.gums.configuration.FileConfigurationStore;
@@ -31,8 +33,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ExecutionException;
+import java.util.Collections;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.cache.CacheLoader;
@@ -53,7 +57,7 @@ import gov.bnl.gums.persistence.PersistenceFactory;
  * @author Gabriele Carcassi, Jay Packard
  */
 public class GUMSAPIImpl implements GUMSAPI {
-	static private GUMS gums;
+	static private volatile GUMS gums;
 	private Logger log = Logger.getLogger(GUMSAPI.class);
 	private Logger gumsAdminLog = Logger.getLogger(GUMS.gumsAdminLogName);
 	private Logger siteAdminLog = Logger.getLogger(GUMS.siteAdminLogName);
@@ -327,6 +331,30 @@ public class GUMSAPIImpl implements GUMSAPI {
 			throw new RuntimeException(e.getMessage(), e);
 		}		
 	}
+
+	public List<? extends MappedAccountInfo> getAccountInfo(String accountMapper) {
+		try {
+			if (hasReadAllAccess(currentUser(), null)) {
+				AccountMapper mapper = gums().getConfiguration().getAccountMapper(accountMapper);
+				if (mapper instanceof AccountPoolMapper) {
+					List<? extends MappedAccountInfo> accountInfo = ((AccountPoolMapper)mapper).getAccountInfo();
+					Collections.sort(accountInfo, new MappedAccountInfoComparator());
+					return accountInfo;
+				}
+				throw new RuntimeException("Account mapper " + accountMapper + " is not a pool mapper.");
+			}
+			else {
+				String message = logUserAccess() + "Unauthorized access to getAccountInfo for '"+accountMapper+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
+				throw new AuthorizationDeniedException();
+			}
+		} catch (Exception e) {
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
 
 	public String getVersion() {
 		return GUMS.getVersion();
@@ -612,26 +640,47 @@ public class GUMSAPIImpl implements GUMSAPI {
 		}		
 	}
 
+	public void setRecyclable(String accountPoolMapperName, String account, boolean recycle) {
+		try {
+			if (hasWriteAccess(currentUser())) {
+				getAccountPoolMapperDB(accountPoolMapperName).setAccountRecyclable(account, recycle);
+			}
+			else {
+				String message = logUserAccess() + "Unauthorized access to setRecyclable for '"+accountPoolMapperName+" "+account+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
+				throw new AuthorizationDeniedException();
+			}
+		} catch (Exception e) {
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
 	public void unassignAccountRange(String accountPoolMapperName, String range) {
 		try {
 			if (hasWriteAccess(currentUser())) {
-				String firstAccount = range.substring(0, range.indexOf('-'));
-				String lastAccountN = range.substring(range.indexOf('-') + 1);
-				String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
-				String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
-				int nFirstAccount = Integer.parseInt(firstAccountN);
-				int nLastAccount = Integer.parseInt(lastAccountN);
+				if (range.indexOf('-') == -1) {
+					getAccountPoolMapperDB(accountPoolMapperName).unassignAccount(range);
+				} else {
+					String firstAccount = range.substring(0, range.indexOf('-'));
+					String lastAccountN = range.substring(range.indexOf('-') + 1);
+					String firstAccountN = firstAccount.substring(firstAccount.length() - lastAccountN.length());
+					String accountBase = firstAccount.substring(0, firstAccount.length() - lastAccountN.length());
+					int nFirstAccount = Integer.parseInt(firstAccountN);
+					int nLastAccount = Integer.parseInt(lastAccountN);
 	
-				StringBuffer last = new StringBuffer(firstAccount);
-				String nLastAccountString = Integer.toString(nLastAccount);
-				last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
+					StringBuffer last = new StringBuffer(firstAccount);
+					String nLastAccountString = Integer.toString(nLastAccount);
+					last.replace(firstAccount.length() - nLastAccountString.length(), firstAccount.length(), nLastAccountString);
 	
-				StringBuffer buf = new StringBuffer(firstAccount);
-				int len = firstAccount.length();
-				for (int account = nFirstAccount; account <= nLastAccount; account++) {
-					String nAccount = Integer.toString(account);
-					buf.replace(len - nAccount.length(), len, nAccount);
-					getAccountPoolMapperDB(accountPoolMapperName).unassignAccount(buf.toString());
+					StringBuffer buf = new StringBuffer(firstAccount);
+					int len = firstAccount.length();
+					for (int account = nFirstAccount; account <= nLastAccount; account++) {
+						String nAccount = Integer.toString(account);
+						buf.replace(len - nAccount.length(), len, nAccount);
+						getAccountPoolMapperDB(accountPoolMapperName).unassignAccount(buf.toString());
+					}
 				}
 	
 				gumsAdminLog.info(logUserAccess() + "Unassigned accounts from account mapper '" + accountPoolMapperName + "'");
@@ -821,7 +870,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 				if (factory == null) {
 					throw new RuntimeException("PersistenceFactory '" + persistanceFactory + "' does not exist");
 				}
-				AccountPoolMapperDB db = factory.retrieveAccountPoolMapperDB(group);
+				AccountPoolMapperDB db = factory.retrieveAccountPoolMapperDB(group, false);
 				db.addAccount(accountName);
 				gumsAdminLog.info(logUserAccess() + "Added account to pool: persistence '" + persistanceFactory + "' group '" + group + "' account '" + accountName + "'");
 				siteAdminLog.info(logUserAccess() + "Added account to pool: persistence '" + persistanceFactory + "' group '" + group + "' account '" + accountName + "'");
@@ -875,6 +924,15 @@ public class GUMSAPIImpl implements GUMSAPI {
 			gums = new GUMS(confStore);
 		}
 		return gums;
+	}
+
+	public void cleanAccounts() {
+		try {
+			gums().getCoreLogic().cleanAccounts();
+		} catch (Exception e) {
+			log.error("Failure when cleaning accounts", e);
+			throw new RuntimeException(e.getMessage(), e);
+		}
 	}
 
 	private boolean hasReadAllAccess(GridUser user, String hostname) throws Exception {
