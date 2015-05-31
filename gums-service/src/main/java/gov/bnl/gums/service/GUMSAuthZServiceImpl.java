@@ -27,7 +27,7 @@ public class GUMSAuthZServiceImpl implements GRIDIdentityMappingService {
     public LocalId mapCredentials(GridId gridID) {
         log.debug("Mapping credentials on '" + gridID.getHostDN() + "' for '" + gridID.getUserDN() + "' coming as '" + gridID.getUserFQAN() + "' authenticated by '" + gridID.getUserFQANIssuer() + "'");
         if (gridID.getHostDN() == null) throw new RuntimeException("The request had a null host");
-        AccountInfo account = gums.mapUser(gridID.getHostDN(), gridID.getUserDN(), gridID.getUserFQAN());
+        AccountInfo account = gums.mapUser(gridID.getHostDN(), gridID.getUserDN(), gridID.getUserFQAN(), false);
         if (account == null || account.getUser() == null) {
             log.debug("Denied access on '" + gridID.getHostDN() + "' for '" + gridID.getUserDN() + "' with fqan '" + gridID.getUserFQAN() + "'");
             return null;

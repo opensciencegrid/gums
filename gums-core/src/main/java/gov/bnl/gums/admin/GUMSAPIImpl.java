@@ -78,7 +78,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 			.build(
 				new CacheLoader<MappingInput, AccountInfo>() {
 					public AccountInfo load(MappingInput input) {
-						return mapUserNonCached(input.getHostname(), input.getUserDN(), input.getFQAN());
+						return mapUserNonCached(input.getHostname(), input.getUserDN(), input.getFQAN(), input.getVerified());
 					}
 				}
 			);
@@ -531,8 +531,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 		}
 	}
 
-	public AccountInfo mapUser(String hostname, String userDN, String fqan) {
-		MappingInput input = new MappingInput(currentUser(), hostname, userDN, fqan);
+	public AccountInfo mapUser(String hostname, String userDN, String fqan, boolean verified) {
+		MappingInput input = new MappingInput(currentUser(), hostname, userDN, fqan, verified);
 		try {
 			return mappingCache.get(input);
 		} catch (ExecutionException e) {
@@ -544,10 +544,11 @@ public class GUMSAPIImpl implements GUMSAPI {
 		}
 	}
 
-	private AccountInfo mapUserNonCached(String hostname, String userDN, String fqan) {
+	private AccountInfo mapUserNonCached(String hostname, String userDN, String fqan, boolean verified) {
 		try {
 			if ( (hasReadSelfAccess(currentUser()) && currentUser().compareDn(userDN)==0) || hasReadAllAccess(currentUser(), hostname)) {
-				GridUser user = new GridUser(userDN, fqan);
+				GridUser user = new GridUser(userDN, fqan, verified);
+				user.setVerified(verified);
 				AccountInfo account = null;
 				boolean isUserBanned = gums().isUserBanned(user);
 				if (!isUserBanned)

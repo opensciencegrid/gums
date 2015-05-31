@@ -5,6 +5,7 @@
 <%  String hostname = request.getParameter("host"); if (hostname!=null) hostname=hostname.trim();
   String DN = request.getParameter("DN"); if (DN!=null) DN=DN.trim();
   String FQAN = request.getParameter("FQAN"); if (FQAN!=null) FQAN=FQAN.trim();
+  boolean verified = Boolean.parseBoolean(request.getParameter("verified"));
   if ("".equals(FQAN)) FQAN = null;%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -24,7 +25,7 @@
 <% 
 	AccountInfo account = null;
 	try {
-		account = gums.mapUser(hostname, DN, FQAN);
+		account = gums.mapUser(hostname, DN, FQAN, verified);
 %>
 
 <p>On '<%= hostname %>', '<%= DN %>' is mapped to:</p>

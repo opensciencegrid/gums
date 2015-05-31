@@ -213,9 +213,10 @@ public interface GUMSAPI extends Remote {
      * @param hostname
      * @param userDN
      * @param fqan
+     * @param verified Whether the FQAN was verified by the client.
      * @return The resulting account information
      */
-    AccountInfo mapUser(String hostname, String userDN, String fqan);
+    AccountInfo mapUser(String hostname, String userDN, String fqan, boolean verified);
     
     /**
      * Merge configuration into current configuration

@@ -258,7 +258,7 @@ public class VOMSUserGroup extends UserGroup {
         
         // FQAN matches, let's look up if the DN is in the db
         // If not, he's kicked out
-		if (getVoDB()!=null)
+		if ((getVoDB()!=null) && !user.getVerified())
 			return getVoDB().isMemberInGroup(new GridUser(user.getCertificateDN(), fqan));
 		else
 			return true;
