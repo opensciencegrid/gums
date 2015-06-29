@@ -242,8 +242,8 @@ public class Configuration {
     /**
      * @return
      */
-    public Map getAccountMappers()  {
-        return Collections.unmodifiableMap(accountMappers);
+    public Map<String, AccountMapper> getAccountMappers()  {
+        return (Map<String, AccountMapper>)Collections.unmodifiableMap(accountMappers);
     }
  
     public boolean getAllowGridmapFiles() {

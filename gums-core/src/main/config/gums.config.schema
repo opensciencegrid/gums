@@ -197,6 +197,8 @@
 										<xs:attribute name="description" type="xs:string"/>
 										<xs:attribute name="persistenceFactory" type="xs:string" use="required"/>
 										<xs:attribute name="accountPool" type="xs:string" use="required"/>
+										<xs:attribute name="recyclable" type="xs:boolean"/>
+										<xs:attribute name="expiration" type="xs:int"/>
 									</xs:complexType>
 								</xs:element>
 								<xs:element name="manualAccountMapper">

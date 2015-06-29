@@ -50,8 +50,9 @@ import org.opensciencegrid.authz.xacml.common.XACMLConstants;
 import org.opensaml.xacml.ctx.AttributeValueType;
 
 public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
-	private static String ERROR = "http://oasis/names/tc/xacml/1.0/status/error";
-	private static String OK = "http://oasis/names/tc/xacml/1.0/status/ok";
+	private final static String ERROR = "http://oasis/names/tc/xacml/1.0/status/error";
+	private final static String OK = "http://oasis/names/tc/xacml/1.0/status/ok";
+	private final static String NOT_VERIFIED = "http://authz-interop.org/xacml/issuer/none";
 	private Logger log = Logger.getLogger(GUMSXACMLMappingServiceImpl.class);
 	private static GUMSAPI gums = new GUMSAPIImpl();
 
@@ -64,7 +65,8 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 		String userDn = getSubjectAttributeValue(request, XACMLConstants.SUBJECT_X509_ID);
 		String userFqan = getSubjectAttributeValue(request, XACMLConstants.SUBJECT_VOMS_PRIMARY_FQAN_ID);
 
-		//String fqanIssuer = getSubjectAttributeIssuerValue(request, XACMLConstants.SUBJECT_VOMS_PRIMARY_FQAN_ID);
+		String fqanIssuer = getSubjectAttributeIssuerValue(request, XACMLConstants.SUBJECT_VOMS_PRIMARY_FQAN_ID);
+		if (fqanIssuer.equals(NOT_VERIFIED)) {fqanIssuer = null;}
 		
 		String hostDn = getResourceAttributeValue(request, XACMLConstants.RESOURCE_X509_ID);
 		if (hostDn==null || hostDn.length()==0) {
@@ -99,8 +101,8 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 		StatusCodeType statusCode = statusCodeBuilder.buildObject();
 		statusCode.setValue(OK);
 		try {
-			log.debug("Checking access on '" + hostDn + "' for '" + userDn + "' with fqan '" + userFqan + "'");
-			AccountInfo account = gums.mapUser(hostDn, userDn, userFqan);
+			log.debug("Checking access on '" + hostDn + "' for '" + userDn + "' with fqan '" + userFqan + "' (issuer '" +(fqanIssuer!=null ? fqanIssuer : "unknown") + "')");
+			AccountInfo account = gums.mapUser(hostDn, userDn, userFqan, fqanIssuer!=null);
 			if (account == null || account.getUser() == null) {
 				decision.setDecision(DecisionType.DECISION.Deny);
 				

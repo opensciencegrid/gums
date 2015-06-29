@@ -11,13 +11,15 @@ public class MappingInput {
 	private String hostname;
 	private String userDN;
 	private String fqan;
+	private boolean verified;
 
-        public MappingInput(GridUser user, String hostname, String userDN, String fqan)
+        public MappingInput(GridUser user, String hostname, String userDN, String fqan, boolean verified)
 	{
 		this.user = user;
 		this.hostname = hostname;
 		this.userDN = userDN;
 		this.fqan = fqan;
+		this.verified = verified;
 	}
 
 	public int hashCode()
@@ -32,11 +34,13 @@ public class MappingInput {
 		return Objects.equals(this.user, m.getAuthUser()) &&
 			Objects.equals(this.hostname, m.getHostname()) &&
 			Objects.equals(this.userDN, m.getUserDN()) &&
-			Objects.equals(this.fqan, m.getFQAN());
+			Objects.equals(this.fqan, m.getFQAN()) &&
+			(this.verified == m.getVerified());
 	}
 
 	public GridUser getAuthUser() {return user;}
 	public String getHostname() {return hostname;}
 	public String getUserDN() {return userDN;}
 	public String getFQAN() {return fqan;}
+	public boolean getVerified() {return verified;}
 }

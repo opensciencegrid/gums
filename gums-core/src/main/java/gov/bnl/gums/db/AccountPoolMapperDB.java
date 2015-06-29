@@ -7,6 +7,7 @@
 package gov.bnl.gums.db;
 
 import gov.bnl.gums.GridUser;
+import gov.bnl.gums.account.MappedAccountInfo;
 
 import java.util.Date;
 import java.util.List;
@@ -86,7 +87,17 @@ public interface AccountPoolMapperDB {
      * 
      * @return a Map between the userDN (String) as the key and the account (String).
      */
-    Map retrieveReverseAccountMap();
+    Map<String, String> retrieveReverseAccountMap();
+
+    /**
+     * Returns a set of account information
+     */
+    List<? extends MappedAccountInfo> retrieveAccountInfo();
+
+    /**
+     * Set a particular account to be recyclable
+     */
+    void setAccountRecyclable(String accountName, boolean recycle);
 
     /** 
      * Retrieve the list of accounts not in use since the given date.
@@ -115,4 +126,12 @@ public interface AccountPoolMapperDB {
      * @param user the user that shouldn't be mapped anymore
      */
     void unassignUser(String user);
+
+    /**
+     * If applicable, clean user accounts older than expiry days.
+     *
+     * @param expiry time, in days, for expiring the accounts.
+     * @return true on success.
+     */
+    boolean cleanAccounts(int expiry);
 }

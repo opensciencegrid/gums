@@ -10,15 +10,20 @@
 
 package gov.bnl.gums.db;
 
+import java.sql.Timestamp;
+import gov.bnl.gums.account.MappedAccountInfo;
+
 /**
  *
  * @author Gabriele Carcassi, Jay Packard
  */
-public class HibernateMapping {
+public class HibernateMapping implements MappedAccountInfo {
     private Long id;
     private String dn;
     private String account;
     private String map;
+    private Timestamp lastuse;
+    private boolean recycle;
 
     /**
      * Creates a new instance of Mapping 
@@ -98,5 +103,20 @@ public class HibernateMapping {
         this.map = map;
     }
 
-    
+    public void setLastuse(Timestamp lastuse) {
+        this.lastuse = lastuse;
+    }
+
+    public Timestamp getLastuse() {
+        return this.lastuse;
+    }
+
+    public void setRecycle(Boolean recycle) {
+        if (recycle == null) {recycle = false;}
+        else {this.recycle = recycle;}
+    }
+
+    public boolean getRecycle() {
+        return this.recycle;
+    }
 }

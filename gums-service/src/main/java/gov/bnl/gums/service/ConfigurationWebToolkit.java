@@ -126,6 +126,18 @@ public class ConfigurationWebToolkit implements Remote {
 				((AccountPoolMapper)accountMapper).setAccountPool( request.getParameter("accountPool").trim() );
 			if (request.getParameter("persistenceFactory")!=null)
 				((AccountPoolMapper)accountMapper).setPersistenceFactory( request.getParameter("persistenceFactory").trim() );
+			if (request.getParameter("recyclable")!=null) {
+				((AccountPoolMapper)accountMapper).setRecyclable( Boolean.parseBoolean(request.getParameter("recyclable").trim()) );
+			}
+			if (request.getParameter("expiration")!=null) {
+				int expiry;
+				try {
+					expiry = Integer.parseInt(request.getParameter("expiration").trim());
+				} catch (NumberFormatException nfe) {
+					throw new RuntimeException("Unable to convert expiration string into an integer.");
+				}
+				((AccountPoolMapper)accountMapper).setExpiration(expiry);
+			}
 		}
 		else if (type.equals(GecosLdapAccountMapper.getTypeStatic())) {
 			accountMapper = new GecosLdapAccountMapper();

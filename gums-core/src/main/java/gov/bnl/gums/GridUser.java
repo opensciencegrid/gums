@@ -13,11 +13,12 @@ import org.apache.log4j.Logger;
  *
  * @author  Gabriele Carcassi, Jay Packard
  */
-public class GridUser {
+public final class GridUser {
     private Logger log = Logger.getLogger(GridUser.class);
     private String certificateDN;
     private FQAN voFQAN;
     private String email;
+    private boolean verified;
     
     /**
      * Creates a GRID credentail with no DN and FQAN.
@@ -69,6 +70,7 @@ public class GridUser {
         if (fqan!=null && fqan.length()>0)
         	setVoFQAN(new FQAN(fqan, enforceFqanWellFormedness));
        	setEmail(email);
+        setVerified(false);
     }
 
   /**
@@ -111,6 +113,9 @@ public class GridUser {
             }
             return false;
         }
+        if (verified != user.getVerified()) {
+            return false;
+        }
         if (log.isTraceEnabled()) {
             log.trace(this + " equals " + obj);
         }
@@ -143,7 +148,14 @@ public class GridUser {
     public FQAN getVoFQAN() {
         return this.voFQAN;
     }
-    
+
+    /**
+     * Returns true if the FQAN was verified on the client.
+     */
+    public boolean getVerified() {
+        return this.verified;
+    }
+
     /**
      * Changed to reflect the change in equals, as in Object contract.
      * 
@@ -158,7 +170,14 @@ public class GridUser {
         }
         return 0;
     }
-    
+
+    /**
+     * Indicate whether the FQAN was verified on the client.
+     */
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
     /**
      * Changes the certificate DN for the Grid credential.
      * 

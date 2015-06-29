@@ -11,5 +11,7 @@
     <property name="dn" column="DN" type="string" length="255"/>
     <property name="account" column="ACCOUNT" type="string" length="31" />
     <property name="map" column="MAP" type="string" length="255" />
+    <property name="lastuse" column="LASTUSE" type="java.sql.Timestamp" />
+    <property name="recycle" column="RECYCLE" type="boolean" />
   </class>
 </hibernate-mapping>

@@ -60,6 +60,10 @@ Determines the local account used for the grid identity on a specific service.
         <td>/myvo/mygroup/Role=test</td>
       </tr>
       <tr>
+        <td style="text-align: right;">Trust FQAN</td>
+        <td><input type="checkbox" name="verified" value="true"/></td>
+      </tr>
+      <tr>
         <td colspan="2" rowspan="1">
         <div style="text-align: center;"><button type="submit">map user</button></div>
         </td>

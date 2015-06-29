@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.account;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,6 +42,8 @@ public class AccountPoolMapper extends AccountMapper {
     private AccountPoolMapperDB db;
     private String persistenceFactory = "";
 	private String accountPool = "";
+    private boolean recyclable = false;
+    private int expiry = 60;
 	private static Map assignments = Collections.synchronizedMap(new HashMap());
     
     public AccountPoolMapper() {
@@ -60,6 +63,8 @@ public class AccountPoolMapper extends AccountMapper {
     	accountMapper.setDescription(new String(getDescription()));
     	accountMapper.setAccountPool(new String(accountPool));
     	accountMapper.setPersistenceFactory(new String(persistenceFactory));
+        accountMapper.setRecyclable(recyclable);
+        accountMapper.setExpiration(expiry);
     	return accountMapper;
     }
     
@@ -76,10 +81,15 @@ public class AccountPoolMapper extends AccountMapper {
     }
 
     public AccountPoolMapperDB getDB() {
-    	if (db==null)
-    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveAccountPoolMapperDB(accountPool);
+    	if (db==null) {
+    		db = getConfiguration().getPersistenceFactory(persistenceFactory).retrieveAccountPoolMapperDB(accountPool, recyclable);
+        }
     	return db;
-    }    
+    }
+
+    public List<? extends MappedAccountInfo> getAccountInfo() {
+        return getDB().retrieveAccountInfo();
+    }
 
     /**
      * @return String representation of how many accounts are assigned in database for each root account
@@ -114,7 +124,7 @@ public class AccountPoolMapper extends AccountMapper {
 	    	while (it.hasNext()) {
 	    		String accountRoot = (String)it.next();
 	    		retStr += accountRoot;
-	    		ArrayList numbers = (ArrayList)((Object[])accountRoots.get(accountRoot))[2];
+	    		List numbers = (ArrayList)((Object[])accountRoots.get(accountRoot))[2];
 	    		Collections.sort(numbers);
 	    		Iterator numIt = numbers.iterator();
 	    		String lastNumber = null;
@@ -176,6 +186,28 @@ public class AccountPoolMapper extends AccountMapper {
         this.persistenceFactory = persistenceFactory;
     }
 
+    public void setRecyclable(boolean recyclable) {
+        this.recyclable = recyclable;
+    }
+
+    public boolean getRecyclable() {
+        return recyclable;
+    }
+
+    public void setExpiration(int days) {
+        this.expiry = days;
+    }
+
+    public int getExpiration() {
+        return expiry;
+    }
+
+    public void cleanAccounts() {
+        if (recyclable && (expiry > 0)) {
+            getDB().cleanAccounts(this.expiry);
+        }
+    }
+
     public String toString(String bgColor) {
     	return "<td bgcolor=\""+bgColor+"\"><a href=\"accountMappers.jsp?command=edit&name=" + getName() + "\">" + getName() + "</a></td><td bgcolor=\""+bgColor+"\">" + getType() + "</td><td bgcolor=\""+bgColor+"\">" + getAssignments() + "</td>";
     }
@@ -185,6 +217,8 @@ public class AccountPoolMapper extends AccountMapper {
 			"\t\t\tname='"+getName()+"'\n"+
 			"\t\t\tdescription='"+getDescription()+"'\n"+
 			"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
+			"\t\t\trecyclable='"+recyclable+"'\n" +
+			"\t\t\texpiration='"+expiry+"'\n" +
     		"\t\t\taccountPool='"+accountPool+"'/>\n\n";
     }
     

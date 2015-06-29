@@ -8,6 +8,7 @@ package gov.bnl.gums.persistence;
 
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
+import gov.bnl.gums.account.MappedAccountInfo;
 import gov.bnl.gums.db.AccountPoolMapperDB;
 import gov.bnl.gums.db.LDAPAccountMapperDB;
 import gov.bnl.gums.db.ManualAccountMapperDB;
@@ -48,7 +49,7 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		public LocalAccountPoolMapperDB(String poolname, String group, List secondaryGroups) {
 			this.group = group;
 			this.secondaryGroups = secondaryGroups;
-			db = persFactory.retrieveAccountPoolMapperDB(poolname);
+			db = persFactory.retrieveAccountPoolMapperDB(poolname, false);
 		}
 
 		public void addAccount(String account) {
@@ -70,7 +71,15 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 				throw e;
 			}
 		}
-		
+
+		@Override
+		public boolean cleanAccounts(int days) {return db.cleanAccounts(days);}
+		@Override
+		public void setAccountRecyclable(String accountName, boolean recycle) {db.setAccountRecyclable(accountName, recycle);}
+		@Override
+		public List<? extends MappedAccountInfo> retrieveAccountInfo() {return db.retrieveAccountInfo();}
+
+
 	    public String getMap() {
 	    	return db.getMap();
 	    }
@@ -267,14 +276,14 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 		return this.synch;
 	}
 
-	public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
+	public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name, boolean recyclable) {
 		StringTokenizer tokens = new StringTokenizer(name, ".");
 		if (!tokens.hasMoreTokens()) {
-			return persFactory.retrieveAccountPoolMapperDB(name);
+			return persFactory.retrieveAccountPoolMapperDB(name, recyclable);
 		}
 		String pool = tokens.nextToken();
 		if (!tokens.hasMoreTokens()) {
-			return persFactory.retrieveAccountPoolMapperDB(name);
+			return persFactory.retrieveAccountPoolMapperDB(name, recyclable);
 		}
 		String group = tokens.nextToken();
 		List secondaryGroups = new ArrayList();

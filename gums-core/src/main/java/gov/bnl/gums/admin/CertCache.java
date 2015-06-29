@@ -141,6 +141,8 @@ public class CertCache implements Filter {
 	}
 
 	public void destroy() {
+		GUMSAPIImpl api = new GUMSAPIImpl();
+		api.cleanAccounts();
 	}
 
 	public void doFilter(javax.servlet.ServletRequest servletRequest,

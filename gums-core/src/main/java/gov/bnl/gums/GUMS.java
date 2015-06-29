@@ -96,6 +96,14 @@ public class GUMS {
 									gumsAdminLog.warn("Automatic group update had failures - " + e.getMessage(), e);
 									gumsAdminEmailLog.put("updateUserGroup", e.getMessage(), false);
 								}
+								try {
+									gumsAdminLog.info("Cleaning unused pool accounts");
+									gums.getCoreLogic().cleanAccounts();
+									gumsAdminLog.info("Finished cleaning unused pool accounts");
+								} catch (Exception e) {
+									gumsAdminLog.warn("Cleaning pool accounts had failures - " + e.getMessage(), e);
+									gumsAdminEmailLog.put("cleanAccounts", e.getMessage(), false);
+								}
 							}
 						}
 					};
