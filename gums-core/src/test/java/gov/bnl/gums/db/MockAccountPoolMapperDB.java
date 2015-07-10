@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.db;
 
+import gov.bnl.gums.account.MappedAccountInfo;
 import gov.bnl.gums.GridUser;
 
 import java.util.*;
