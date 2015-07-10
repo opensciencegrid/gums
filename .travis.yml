@@ -14,6 +14,8 @@ before_install:
   - mvn install:install-file -B -DgroupId=javax.security -DartifactId=jacc -Dversion=1.0 -Dpackaging=jar -Dfile=jacc-1.0.jar
   - curl https://vdt.cs.wisc.edu/upstream/gums/1.3.18.009/jta-1.0.1B.jar > jta-1.0.1B.jar
   - mvn install:install-file -B -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=jta-1.0.1B.jar
+  - curl http://t2.unl.edu/store/sources/trustmanager.jar > trustmanager.jar
+  - mvn install:install-file -B -DgroupId=emi -DartifactId=emi-trustmanager -Dversion=3.0.3 -Dpackaging=jar -Dfile=trustmanager.jar
 
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -X
 
