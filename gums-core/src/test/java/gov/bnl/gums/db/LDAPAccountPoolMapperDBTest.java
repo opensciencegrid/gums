@@ -30,7 +30,7 @@ public class LDAPAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
         LDAPPersistenceFactory factory = new LDAPPersistenceFactory(new Configuration(), "ldapPers1");
         factory.setEmailField("homeDirectory"); // hack since current test ldap schema doesn't have an email field
         factory.setProperties(LDAPPersistenceFactoryTest.readLdapProperties());
-        db = factory.retrieveAccountPoolMapperDB("testPool.griddevGroup.griddevGroup");
+        db = factory.retrieveAccountPoolMapperDB("testPool.griddevGroup.griddevGroup", false);
         initDB();
     }
     

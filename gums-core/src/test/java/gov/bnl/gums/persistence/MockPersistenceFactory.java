@@ -44,7 +44,7 @@ public class MockPersistenceFactory extends PersistenceFactory {
         return userGroupDB;
     }
     
-    public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name) {
+    public AccountPoolMapperDB retrieveAccountPoolMapperDB(String name, boolean recyclable) {
         return accountPoolMapperDB;
     }
     

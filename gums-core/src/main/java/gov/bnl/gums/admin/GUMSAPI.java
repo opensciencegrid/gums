@@ -123,7 +123,7 @@ public interface GUMSAPI extends Remote {
      * @param accountMapper Name of account mapper
      * @return List of MappedAccountInfo objects
      */
-    List<? extends MappedAccountInfo> getAccountInfo(String accountMapper);
+    List getAccountInfo(String accountMapper);
 
     /**
      * Set a pool account as recyclable.

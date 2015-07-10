@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.AccountInfo;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.LDAPPersistenceFactory;
 import gov.bnl.gums.persistence.LDAPPersistenceFactoryTest;
@@ -45,9 +46,9 @@ public class LDAPAccountMapperTest extends TestCase {
     }
 
     public void testMap() {
-    	String account = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith", false);
+    	String account = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith", false).getUser();
     	assertEquals(account, "jsmith");
-    	account = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", false);
+    	account = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", false).getUser();
     	assertEquals(account, "jdoe");
     }
     

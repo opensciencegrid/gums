@@ -27,7 +27,7 @@ public class HibernateAccountPoolMapperDBTest extends AccountPoolMapperDBTest {
     public void setUp() throws Exception {
         HibernatePersistenceFactory hibernate = new HibernatePersistenceFactory(new Configuration(), "hibPers1");
         hibernate.setConnectionFromHibernateProperties();
-        db = hibernate.retrieveAccountPoolMapperDB("test");
+        db = hibernate.retrieveAccountPoolMapperDB("test", false);
         sessions = hibernate.retrieveSessionFactory();
         Session session = sessions.openSession();
         Transaction tx = session.beginTransaction();

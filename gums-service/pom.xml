@@ -90,7 +90,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
           <optimize>false</optimize>
           <verbose>false</verbose>
           <includes>
-            <include>**/*.*</include>
+            <include>**/*.java</include>
           </includes>
           <excludes>
             <exclude>**/.svn</exclude>
@@ -243,6 +243,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
       <version>1.4.1</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

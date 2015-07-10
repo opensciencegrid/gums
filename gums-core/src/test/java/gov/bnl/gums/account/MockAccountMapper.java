@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.AccountInfo;
 import gov.bnl.gums.GridUser;
 import gov.bnl.gums.configuration.Configuration;
 
@@ -26,10 +27,11 @@ public class MockAccountMapper extends AccountMapper {
 	public MockAccountMapper(Configuration configuration, String name) {
     	super(configuration, name);
     }
-    
-    public String mapUser(GridUser user, boolean createIfDoesNotExist) {
+
+    @Override
+    public AccountInfo mapUser(GridUser user, boolean createIfDoesNotExist) {
         if (user.getCertificateDN().equals("/DC=org/DC=griddev/OU=People/CN=John Smith"))
-            return "jsmith";
+            return new AccountInfo("jsmith");
         return null;
     }
     

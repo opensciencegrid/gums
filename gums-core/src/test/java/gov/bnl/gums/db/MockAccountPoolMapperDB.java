@@ -6,6 +6,7 @@
 
 package gov.bnl.gums.db;
 
+import gov.bnl.gums.account.MappedAccountInfo;
 import gov.bnl.gums.GridUser;
 
 import java.util.*;
@@ -57,6 +58,9 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
     public boolean needsCacheRefresh() {
     	return true;
     }
+
+    public boolean cleanAccounts(int days) {return false;}
+    public void setAccountRecyclable(String account, boolean recycle) {}
     
     public boolean removeAccount(String account) {
     	Iterator it = freeAccounts.iterator();
@@ -84,6 +88,11 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
     	String userDN = user.getCertificateDN();
         userToLastDate.put(userDN, new Date());
         return (String) userToAccount.get(userDN);
+    }
+
+    @Override
+    public List<? extends MappedAccountInfo> retrieveAccountInfo() {
+        throw new RuntimeException("Account info is not available for mock pool accounts.");
     }
     
     public java.util.Map retrieveAccountMap() {

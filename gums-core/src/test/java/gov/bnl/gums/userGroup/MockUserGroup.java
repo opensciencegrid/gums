@@ -30,6 +30,8 @@ public class MockUserGroup extends UserGroup {
     public java.util.List getMemberList() {
         return Collections.unmodifiableList(members);
     }
+
+    public boolean isDNInGroup(GridUser user) {return isInGroup(user);}
     
     public boolean isInGroup(GridUser user) {
     	Iterator it = members.iterator();

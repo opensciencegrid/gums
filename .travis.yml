@@ -1,0 +1,26 @@
+
+language: java
+
+before_install:
+  - curl http://t2.unl.edu/store/sources/voms-api-java.jar > voms-api-java.jar
+  - mvn install:install-file -B -DgroupId=org.italiangrid -DartifactId=voms-api-java -Dversion=2.0.8 -Dpackaging=jar -Dfile=voms-api-java.jar
+  - curl https://vdt.cs.wisc.edu/upstream/gums/1.3.18.009/privilege-1.0.1.3.jar > privilege-1.0.1.3.jar
+  - mvn install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege -Dversion=1.0.1.3 -Dpackaging=jar -Dfile=privilege-1.0.1.3.jar
+  - curl https://vdt.cs.wisc.edu/upstream/gums/1.3.18.009/openws-1.2.2.jar > openws-1.2.2.jar
+  - mvn install:install-file -B -DgroupId=org.opensaml -DartifactId=openws -Dversion=1.2.2 -Dpackaging=jar -Dfile=openws-1.2.2.jar
+  - curl http://t2.unl.edu/store/sources/privilege-xacml.jar > privilege-xacml.jar
+  - mvn install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.6.4 -Dpackaging=jar -Dfile=privilege-xacml.jar
+  - curl https://vdt.cs.wisc.edu/upstream/gums/1.3.18.009/jacc-1.0.jar > jacc-1.0.jar
+  - mvn install:install-file -B -DgroupId=javax.security -DartifactId=jacc -Dversion=1.0 -Dpackaging=jar -Dfile=jacc-1.0.jar
+  - curl https://vdt.cs.wisc.edu/upstream/gums/1.3.18.009/jta-1.0.1B.jar > jta-1.0.1B.jar
+  - mvn install:install-file -B -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=jta-1.0.1B.jar
+  - curl http://t2.unl.edu/store/sources/trustmanager.jar > trustmanager.jar
+  - mvn install:install-file -B -DgroupId=emi -DartifactId=emi-trustmanager -Dversion=3.0.3 -Dpackaging=jar -Dfile=trustmanager.jar
+  - curl http://t2.unl.edu/store/sources/xerces-j2.jar > xerces-j2.jar
+  - mvn install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xercesImpl -Dversion=2.10.0 -Dpackaging=jar -Dfile=xerces-j2.jar
+
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+after_failure:
+  - find gums-core
+

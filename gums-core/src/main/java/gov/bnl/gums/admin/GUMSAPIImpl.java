@@ -332,7 +332,7 @@ public class GUMSAPIImpl implements GUMSAPI {
 		}		
 	}
 
-	public List<? extends MappedAccountInfo> getAccountInfo(String accountMapper) {
+	public List getAccountInfo(String accountMapper) {
 		try {
 			if (hasReadAllAccess(currentUser(), null)) {
 				AccountMapper mapper = gums().getConfiguration().getAccountMapper(accountMapper);
