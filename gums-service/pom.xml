@@ -90,7 +90,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
           <optimize>false</optimize>
           <verbose>false</verbose>
           <includes>
-            <include>**/*.*</include>
+            <include>**/*.java</include>
           </includes>
           <excludes>
             <exclude>**/.svn</exclude>
