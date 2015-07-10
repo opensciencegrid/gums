@@ -16,6 +16,8 @@ before_install:
   - mvn install:install-file -B -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=jta-1.0.1B.jar
   - curl http://t2.unl.edu/store/sources/trustmanager.jar > trustmanager.jar
   - mvn install:install-file -B -DgroupId=emi -DartifactId=emi-trustmanager -Dversion=3.0.3 -Dpackaging=jar -Dfile=trustmanager.jar
+  - curl http://t2.unl.edu/store/sources/xerces-j2.jar > xerces-j2.jar
+  - mvn install:install-file -B -DgroupId=org.apache.xerces -DartifactId=xercesImpl -Dversion=2.10.0 -Dpackaging=jar -Dfile=xerces-j2.jar
 
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -X
 
