@@ -59,6 +59,7 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
     }
 
     public boolean cleanAccounts(int days) {return false;}
+    public void setAccountRecyclable(String account, boolean recycle) {}
     
     public boolean removeAccount(String account) {
     	Iterator it = freeAccounts.iterator();

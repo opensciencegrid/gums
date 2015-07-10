@@ -46,9 +46,9 @@ public class LDAPAccountMapperTest extends TestCase {
     }
 
     public void testMap() {
-    	String account = mapper.mapUser(new AccountInfo("/DC=org/DC=griddev/OU=People/CN=John Smith"), false);
+    	String account = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=John Smith", false).getUser();
     	assertEquals(account, "jsmith");
-    	account = mapper.mapUser(new AccountInfo("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345"), false);
+    	account = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=Jane Doe 12345", false).getUser();
     	assertEquals(account, "jdoe");
     }
     
