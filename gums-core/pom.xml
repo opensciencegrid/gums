@@ -247,7 +247,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <includes>
-                        <include>**/*.*</include>
+                        <include>**/*.java</include>
                     </includes>
                     <excludes>
                         <exclude>**/.svn</exclude>
