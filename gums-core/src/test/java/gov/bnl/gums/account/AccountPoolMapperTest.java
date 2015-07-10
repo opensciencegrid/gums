@@ -7,6 +7,7 @@
 
 package gov.bnl.gums.account;
 
+import gov.bnl.gums.AccountInfo;
 import gov.bnl.gums.configuration.Configuration;
 import gov.bnl.gums.persistence.MockPersistenceFactory;
 import gov.bnl.gums.persistence.PersistenceFactory;
@@ -50,22 +51,22 @@ public class AccountPoolMapperTest extends TestCase {
     public void testMapUser() {
         int i = 0;
         Set accounts = new HashSet();
-        String account = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User "+i, true);
+        String account = mapper.mapUser(new AccountInfo("/DC=org/DC=griddev/OU=People/CN=User "+i), true);
         while (account != null) {
             i++;
             assertFalse(accounts.contains(account));
             accounts.add(account);
-            account = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User "+i, true);
+            account = mapper.mapUser(new AccountInfo("/DC=org/DC=griddev/OU=People/CN=User "+i), true);
         }
     }
     
     public void testMapUser2() {
-        String account1 = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User 1", true);
-        String account2 = mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User 2", true);
-        assertEquals(account1, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User 1", true));
-        assertEquals(account2, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User 2", true));
-        assertEquals(account2, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User 2", true));
-        assertEquals(account1, mapper.mapUser("/DC=org/DC=griddev/OU=People/CN=User 1", true));
+        String account1 = mapper.mapUser(new AccountInfo("/DC=org/DC=griddev/OU=People/CN=User 1"), true);
+        String account2 = mapper.mapUser(new AccountInfo("/DC=org/DC=griddev/OU=People/CN=User 2"), true);
+        assertEquals(account1, mapper.mapUser(new AccountInfo("/DC=org/DC=griddev/OU=People/CN=User 1"), true));
+        assertEquals(account2, mapper.mapUser(new AccountInfo("/DC=org/DC=griddev/OU=People/CN=User 2"), true));
+        assertEquals(account2, mapper.mapUser(new AccountInfo("/DC=org/DC=griddev/OU=People/CN=User 2"), true));
+        assertEquals(account1, mapper.mapUser(new AccountInfo("/DC=org/DC=griddev/OU=People/CN=User 1"), true));
     }
     
 }

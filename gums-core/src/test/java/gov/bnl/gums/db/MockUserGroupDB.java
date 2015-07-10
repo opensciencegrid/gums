@@ -31,7 +31,11 @@ public class MockUserGroupDB implements UserGroupDB {
     public boolean isMemberInGroup(GridUser dn) {
         return currentMembers.contains(dn);
     }
-    
+
+    public boolean isDNInGroup(GridUser dn) {
+        return isMemberInGroup(GridUser dn);
+    }
+
     public void loadUpdatedList(java.util.List members) {
         newMembers = new ArrayList(members);
         newMembers.removeAll(currentMembers);

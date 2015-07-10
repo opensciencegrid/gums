@@ -57,6 +57,8 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
     public boolean needsCacheRefresh() {
     	return true;
     }
+
+    public boolean cleanAccounts(int) {return false;}
     
     public boolean removeAccount(String account) {
     	Iterator it = freeAccounts.iterator();
