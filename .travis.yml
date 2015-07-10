@@ -10,4 +10,8 @@ before_install:
   - mvn install:install-file -B -DgroupId=emi -DartifactId=emi-trustmanager -Dversion=3.0.3 -Dpackaging=jar -Dfile=openws-1.2.2.jar
   - curl -k https://t2.unl.edu/store/sources/privilege-xacml.jar > privilege-xacml.jar
   - mvn install:install-file -B -DgroupId=org.opensciencegrid -DartifactId=privilege-xacml -Dversion=2.6.4 -Dpackaging=jar -Dfile=privilege-xacml.jar
+  - curl https://vdt.cs.wisc.edu/upstream/gums/1.3.18.009/jacc-1.0.jar > jacc-1.0.jar
+  - mvn install:install-file -B -DgroupId=javax.security -DartifactId=jacc -Dversion=1.0 -Dpackaging=jar -Dfile=jacc-1.0.jar
+  - curl https://vdt.cs.wisc.edu/upstream/gums/1.3.18.009/jta-1.0.1B.jar > jta-1.0.1B.jar
+  - mvn install:install-file -B -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=jta-1.0.1B.jar
 
