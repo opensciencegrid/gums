@@ -33,7 +33,7 @@ public class MockUserGroupDB implements UserGroupDB {
     }
 
     public boolean isDNInGroup(GridUser dn) {
-        return isMemberInGroup(GridUser dn);
+        return isMemberInGroup(dn);
     }
 
     public void loadUpdatedList(java.util.List members) {
