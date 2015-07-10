@@ -88,6 +88,11 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
         userToLastDate.put(userDN, new Date());
         return (String) userToAccount.get(userDN);
     }
+
+    @Override
+    public List<? extends MappedAccountInfo> retrieveAccountInfo() {
+        throw new RuntimeException("Account info is not available for mock pool accounts.");
+    }
     
     public java.util.Map retrieveAccountMap() {
         return Collections.unmodifiableMap(userToAccount);
