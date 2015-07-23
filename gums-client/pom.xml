@@ -5,7 +5,7 @@
 	<artifactId>gums-client</artifactId>
 	<name>gums-client</name>
 	<packaging>jar</packaging>
-	<version>1.4.3</version>
+	<version>1.4.4</version>
 	<description>GUMS Client provides the administrative command line tools to administer GUMS.
     It allows querying and changing the state of the GUMS server.</description>
 
@@ -366,7 +366,7 @@ However, it can only be run from the normal lifecycle, no via rpm:rpm, so it mus
         <dependency>
             <groupId>gov.bnl.racf.gums</groupId>
             <artifactId>gums-core</artifactId>
-            <version>1.4.3</version>
+            <version>1.4.4</version>
         </dependency>
 		<dependency>	
 			<groupId>log4j</groupId>
