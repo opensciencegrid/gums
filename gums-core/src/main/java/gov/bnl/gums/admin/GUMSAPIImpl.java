@@ -560,6 +560,8 @@ public class GUMSAPIImpl implements GUMSAPI {
 				}
 				else
 					gumsAdminLog.info(logUserAccess() + "Mapped on host '" + hostname + "' the user '" + userDN + "' / '" + fqan + "' to '" + account + "'");
+				// CacheLoader will refuse to cache null objects.  Below will create an account mapped to a null user, which the mapping will handle correctly.
+				if (account == null) {account = new AccountInfo();}
 				return account;
 			} else {
 				String message = logUserAccess() + "Unauthorized access to mapUser for '" + hostname + "' from user '" + userDN + "' / '" + fqan + "'";

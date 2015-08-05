@@ -66,7 +66,7 @@ public class GUMSXACMLMappingServiceImpl implements XACMLMappingService {
 		String userFqan = getSubjectAttributeValue(request, XACMLConstants.SUBJECT_VOMS_PRIMARY_FQAN_ID);
 
 		String fqanIssuer = getSubjectAttributeIssuerValue(request, XACMLConstants.SUBJECT_VOMS_PRIMARY_FQAN_ID);
-		if (fqanIssuer.equals(NOT_VERIFIED)) {fqanIssuer = null;}
+		if ((fqanIssuer != null) && fqanIssuer.equals(NOT_VERIFIED)) {fqanIssuer = null;}
 		
 		String hostDn = getResourceAttributeValue(request, XACMLConstants.RESOURCE_X509_ID);
 		if (hostDn==null || hostDn.length()==0) {
