@@ -8,7 +8,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
   <artifactId>gums-service</artifactId>
   <packaging>war</packaging>
   <name>gums-service</name>
-  <version>1.4.3</version>
+  <version>1.5.0</version>
   <description>GUMS Service provides web services used by the
   client tool and a web interface for administering
   GUMS</description>
@@ -196,7 +196,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <dependency>
       <groupId>gov.bnl.racf.gums</groupId>
       <artifactId>gums-core</artifactId>
-      <version>1.4.3</version>
+      <version>1.5.0</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -248,6 +248,21 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
       <groupId>org.glassfish</groupId>
       <artifactId>javax.json</artifactId>
       <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.owasp</groupId>
+      <artifactId>csrfguard</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.4</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
     </dependency>
   </dependencies>
 </project>
