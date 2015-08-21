@@ -87,21 +87,22 @@ public class JSONMapper extends HttpServlet {
 
         Writer out = response.getWriter();
         JsonGenerator gen = Json.createGenerator(out);
+        boolean gotAccount = (account != null) && (account.getUser() != null) && !account.getUser().equals("");
         gen.writeStartObject()
-            .write("result", account == null ? "FAILED" : "OK");
-        if (account != null)
+            .write("result", gotAccount ? "OK" : "FAILED");
+        if (gotAccount)
         {
             gen.write("username", account.getUser());
-        }
-        if (account.getGroup() != null && !account.getGroup().equals(""))
-        {
-            try
+            if (account.getGroup() != null && !account.getGroup().equals(""))
             {
-                gen.write("gid", Integer.parseInt(account.getGroup()));
-            }
-            catch (NumberFormatException _)
-            {
-                gen.write("groupname", account.getGroup());
+                try
+                {
+                    gen.write("gid", Integer.parseInt(account.getGroup()));
+                }
+                catch (NumberFormatException _)
+                {
+                    gen.write("groupname", account.getGroup());
+                }
             }
         }
         gen.writeEnd();
