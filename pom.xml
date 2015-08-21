@@ -25,8 +25,8 @@
     </scm>
   
     <organization>
-  	     <name>RHIC/ATLAS Computing Facility, Brookhaven National Laboratory</name>
-  	     <url>http://www.racf.bnl.gov/experiments/usatlas/griddev</url>
+  	     <name>Open Science Grid</name>
+  	     <url>https://github.com/opensciencegrid/gums/</url>
     </organization>
   
     <repositories>
@@ -41,16 +41,6 @@
         </repository>
     </repositories>
     
-    <pluginRepositories>
-        <pluginRepository>
-            <id>codehaus snapshot repository</id>
-            <url>http://snapshots.repository.codehaus.org/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
-
     <distributionManagement>
         <repository>
             <id>internal</id>
