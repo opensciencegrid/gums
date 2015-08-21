@@ -6,6 +6,9 @@
 <%@ page import="gov.bnl.gums.configuration.*" %>
 <%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -31,7 +34,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure"><%= e.getMessage() %></div></p>
+<p><div class="failure"><c:out value="${e.getMessage}" /></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
@@ -58,20 +61,22 @@ if (request.getParameter("command")==null ||
 	if ("save".equals(request.getParameter("command"))) {
 		ManualUserGroup manualUserGroup = (ManualUserGroup)userGroups.get(request.getParameter("userGroup"));
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.manualGroupAdd3(manualUserGroup.getName(), request.getParameter("dn"), request.getParameter("fqan"), request.getParameter("email"));
 			message = "<div class=\"success\">User has been saved.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error saving user: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error saving user: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("command"))) {
 		ManualUserGroup manualUserGroup = (ManualUserGroup)userGroups.get(request.getParameter("userGroup"));
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.manualGroupRemove3(manualUserGroup.getName(), request.getParameter("dn"), request.getParameter("fqan"));
 			message = "<div class=\"success\">User has been deleted.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error deleting user: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error deleting user: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}
 
@@ -101,13 +106,13 @@ if (request.getParameter("command")==null ||
 %>
    	<tr>
 		<td width="25" valign="top">
-			<form action="manualUserGroups.jsp" method="get">
+			<csrf:form action="manualUserGroups.jsp" method="post">
 				<input type="submit" style="width:80px"  name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this user?'))return false;">
 				<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>">
 				<input type="hidden" name="fqan" value="<%=user.getVoFQAN()!=null?user.getVoFQAN():""%>">
 				<input type="hidden" name="email" value="<%=user.getEmail()!=null?user.getEmail():""%>">
 				<input type="hidden" name="userGroup" value="<%=manualUserGroup.getName()%>">
-			</form>
+			</csrf:form>
 		</td>
   		<td align="left">
 	   		<table class="userElement" width="100%">
@@ -130,29 +135,35 @@ if (request.getParameter("command")==null ||
 %>
 	<tr>
 		<td colspan=2>
-			<form action="manualUserGroups.jsp" method="get">
+			<csrf:form action="manualUserGroups.jsp" method="post">
 				<div style="text-align: center;"><input type="submit" name="command" value="add"></div>
-			</form>
+			</csrf:form>
 	    </td>
 	</tr>
   </table>
-</form>
 <%
 }
 
 else if ("add".equals(request.getParameter("command"))) {
-	
-	GridUser user = new GridUser();
-	
-	ArrayList manualUserGroups = new ArrayList();
-	Iterator userGroupIt = userGroups.values().iterator();
-	while(userGroupIt.hasNext()) {
-		UserGroup userGroup = (UserGroup)userGroupIt.next();
-		if (userGroup instanceof ManualUserGroup)
-			manualUserGroups.add(userGroup.getName());
+
+	ArrayList manualUserGroups = null;
+	try {
+		ConfigurationWebToolkit.checkPost(request, response);
+		GridUser user = new GridUser();
+
+		manualUserGroups = new ArrayList();
+		Iterator userGroupIt = userGroups.values().iterator();
+		while(userGroupIt.hasNext()) {
+			UserGroup userGroup = (UserGroup)userGroupIt.next();
+			if (userGroup instanceof ManualUserGroup)
+				manualUserGroups.add(userGroup.getName());
+		}
+	} catch (Exception e) {
+		out.write( "<div class=\"failure\">Error adding manual account mapper: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
+		return;
 	}
 %>
-<form action="manualUserGroups.jsp" method="get">
+<csrf:form action="manualUserGroups.jsp" method="post">
 	<input type="hidden" name="command" value="">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
@@ -216,7 +227,7 @@ else if ("add".equals(request.getParameter("command"))) {
 	        </td>
 		</tr>
 	</table>
-</form>
+</csrf:form>
 <%
 }
 %>

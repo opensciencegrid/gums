@@ -5,6 +5,9 @@
 <%@ page import="gov.bnl.gums.configuration.*" %>
 <%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 <%  String command = request.getParameter("command");%>
 <%  String accountMapperName = request.getParameter("accountMapper");%>
 <%  String range = request.getParameter("range"); if (range!=null)range = range.trim();%>
@@ -31,34 +34,38 @@
 <%
 	if ("add".equals(command)) {
 		try {
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.addAccountRange2( accountMapperName, range );
 			out.println("<div class=\"success\">Accounts have been added to the pool.</div>");
 		} catch(Exception e) {
-			out.println("<div class=\"failure\">Error saving pool account range: " + e.getMessage() + "</div>");
+			out.println("<div class=\"failure\">Error saving pool account range: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>");
 		}
 	}
 	else if ("remove".equals(command)) {
 		try {
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.removeAccountRange( accountMapperName, range );
 			out.println("<div class=\"success\">Accounts have been removed from the pool.</div>");
 		} catch(Exception e) {
-			out.println("<div class=\"failure\">Error removing pool account range: " + e.getMessage() + "</div>");
+			out.println("<div class=\"failure\">Error removing pool account range: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>");
 		}
 	}
 	else if ("unassign".equals(command)) {
 		try {
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.unassignAccountRange( accountMapperName, range );
 			out.println("<div class=\"success\">Accounts have been unassigned.</div>");
 		} catch(Exception e) {
-			out.println("<div class=\"failure\">Error unassigning accounts: " + e.getMessage() + "</div>");
+			out.println("<div class=\"failure\">Error unassigning accounts: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>");
 		}
 	}
 	else if ("recycle".equals(command)) {
 		try {
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.setRecyclable(accountMapperName, range, recycle);
 			out.println("<div class=\"success\">Account recycle setting has been updated.</div>");
 		} catch (Exception e) {
-			out.println("<div class=\"failure\">Error setting recycle attribute: " + e.getMessage() + "</div>");
+			out.println("<div class=\"failure\">Error setting recycle attribute: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>");
 		}
 	}
 %>
@@ -71,7 +78,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure"><%= e.getMessage() %></div></p>
+<p><div class="failure"><c:out value="${e.getMessage}"/></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
@@ -86,7 +93,18 @@ try {
 Adds, removes, or unassigns accounts in pool.
 </p>
 
-<form action="accountRange_form.jsp" method="get">
+<%
+ArrayList accountMappers = new ArrayList();
+for (AccountMapper accountMapper : configuration.getAccountMappers().values()) {
+    if (accountMapper instanceof AccountPoolMapper)
+    {
+        accountMappers.add( ((AccountPoolMapper)accountMapper).getName() );
+    }
+}
+
+%>
+
+<csrf:form action="accountRange_form.jsp" method="post">
   <input type="hidden" name="command">
   <table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
     <tbody>
@@ -94,12 +112,6 @@ Adds, removes, or unassigns accounts in pool.
         <td style="text-align: right;">Account Pool Mapper: </td>
         <td style="text-align: left;">
 <%
-		ArrayList accountMappers = new ArrayList();
-                for (AccountMapper accountMapper : configuration.getAccountMappers().values()) {
-			if (accountMapper instanceof AccountPoolMapper)
-				accountMappers.add( ((AccountPoolMapper)accountMapper).getName()  );
-		}
-
 		out.write(
 			ConfigurationWebToolkit.createSelectBox("accountMapper", 
 				accountMappers, 
@@ -148,7 +160,7 @@ Adds, removes, or unassigns accounts in pool.
 	</tr>
     </tbody>
   </table>
-</form>
+</csrf:form>
 
 <%
 if (accountMappers.size()>0) {
@@ -160,7 +172,7 @@ if (accountMappers.size()>0) {
 View assigned account information
 </p>
 
-<form action="accountRange_form.jsp" method="get">
+<csrf:form action="accountRange_form.jsp" method="post">
   <input type="hidden" name="command">
   <input type="hidden" name="recycle">
   <input type="hidden" name="range">
@@ -202,7 +214,7 @@ View assigned account information
 %>
     </tbody>
   </table>
-</form>
+</csrf:form>
 <%
     } else {
 %>

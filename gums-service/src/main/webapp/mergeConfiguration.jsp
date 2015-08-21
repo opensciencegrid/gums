@@ -3,6 +3,9 @@
 <%@page import="gov.bnl.gums.*"%>
 <%@page import="gov.bnl.gums.service.*"%>
 <%@page import="gov.bnl.gums.configuration.*"%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
 <%  String persistenceFactory = request.getParameter("persistenceFactory"); if (persistenceFactory!=null) persistenceFactory=persistenceFactory.trim();%>
 <%  String h2gMapping = request.getParameter("h2gMapping"); if (h2gMapping!=null) h2gMapping=h2gMapping.trim();%>
@@ -33,7 +36,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure"><%= e.getMessage() %></div></p>
+<p><div class="failure"><c:out value="${e.getMessage}" /></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
@@ -74,11 +77,12 @@ if ( "merge".equals(request.getParameter("command")) ) {
 	
 	Configuration clonedConfiguration = (Configuration)configuration.clone();
 	try{
+		ConfigurationWebToolkit.checkPost(request, response);
 		gums.mergeConfiguration(clonedConfiguration, uri, persistenceFactory, h2gMapping);
 		gums.setConfiguration(clonedConfiguration);
 		message = "<div class=\"success\">Configuration has been merged. It is recommended to update VO members.</div>";
 	}catch(Exception e){
-		message = "<div class=\"failure\">Error merging configuration: " + e.getMessage() + "</div>";
+		message = "<div class=\"failure\">Error merging configuration: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 	}
 
 	out.write(
@@ -88,11 +92,11 @@ if ( "merge".equals(request.getParameter("command")) ) {
 		out.write( "<tr><td colspan=\"2\">" + message + "</td></tr>" );		
 		
 	out.write(
-		"</table></form>");
+		"</table>");
 }
 else {
 %>
-<form action="mergeConfiguration.jsp" method="get">
+<csrf:form action="mergeConfiguration.jsp" method="post">
 	<input type="hidden" name="command" value="">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
         <tr>
@@ -147,7 +151,7 @@ else {
 		</tr>
         
 	</table>
-</form>
+</csrf:form>
 <%
 }
 %>

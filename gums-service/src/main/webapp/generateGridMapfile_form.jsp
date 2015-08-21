@@ -1,6 +1,7 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%@page import="gov.bnl.gums.*"%>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -25,7 +26,7 @@
 Generates the grid-mapfile relative to the given service.
 </p>
 
-<form action="generateGridMapfile.jsp" method="get">
+<csrf:form action="generateGridMapfile.jsp" method="post">
   <table id="form" border="0" cellpadding="2" cellspacing="2">
     <tbody>
       <tr>
@@ -54,7 +55,7 @@ Generates the grid-mapfile relative to the given service.
       </tr>
     </tbody>
   </table>
-</form>
+</csrf:form>
 
 </div>
 <%@include file="bottomNav.jspf"%>

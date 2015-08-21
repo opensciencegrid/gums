@@ -3,6 +3,7 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.io.PrintWriter"%>
 <%@page import="gov.bnl.gums.*"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -21,7 +22,7 @@
 <div id="body">
 <h1>GUMS encountered an error</h1>
 <p>Error Type: <%= exception.getClass().getName() %></p>
-<p>Error Message: <%= exception.getMessage() %></p>
+<p>Error Message: <c:out value="${exception.getMessage}" /></p>
 <p><i>We want GUMS to have helpful error messages. If you feel this message wasn't
 helpful, or that it was due to a bug in GUMS, please report
 the following information to <a href="mailto:gums-users-l@lists.bnl.gov">gums-users-l@lists.bnl.gov</a>, as it might help them.</i></p>

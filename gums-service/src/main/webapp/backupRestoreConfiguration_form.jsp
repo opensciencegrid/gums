@@ -3,6 +3,8 @@
 <%@page import="gov.bnl.gums.*"%>
 <%@page import="gov.bnl.gums.service.ConfigurationWebToolkit"%>
 <%@ page import="java.util.*" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -30,7 +32,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure">Error getting backup configuration dates: <%= e.getMessage() %></div></p>
+<p><div class="failure">Error getting backup configuration dates: <c:out value="${e.getMessage}" /></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
@@ -44,7 +46,7 @@ try {
 Backs up or restores configuration.
 </p>
 
-<form action="backupRestoreConfiguration.jsp" method="get">
+<csrf:form action="backupRestoreConfiguration.jsp" method="post">
   <input type="hidden" name="command" value="backup">
   <table id="form" border="0" cellpadding="2" cellspacing="2">
     <tbody>
@@ -84,7 +86,7 @@ Backs up or restores configuration.
 %>
     </tbody>
   </table>
-
+</csrf:form>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
