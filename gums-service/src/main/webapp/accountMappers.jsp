@@ -36,7 +36,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure"><c:out value="${e.getMessage}" /></div></p>
+<p><div class="failure"><c:out value="<%=e.getMessage()%>" /></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
@@ -170,16 +170,23 @@ if (request.getParameter("command")==null ||
 		} else if (accountMapper instanceof AccountPoolMapper) {
 %>
 				    		Account Pool Mapper:
-				    		<a href="accountMappers.jsp?command=edit&name=<%=accountMapper.getName()%>">
-				    			<%=accountMapper.getName()%>
-				    		</a><br>	
+						<c:url var="edit_pool_url" value="accountMappers.jsp?command=edit">
+							<c:param name="name" value="<%=accountMapper.getName()%>"/>
+						</c:url>
+						<c:url var="edit_persist_url" value="persistenceFactories.jsp?command=edit">
+							<c:param name="name" value="<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>"/>
+						</c:url>
+				    		<a href="${edit_pool_url}">
+				    			<c:out value="<%=accountMapper.getName()%>" />
+				    		</a>
+						<br />
 				    		Description: <%=accountMapper.getDescription()%><br>	
 							Pool: <%=((AccountPoolMapper)accountMapper).getAccountPool()%><br>
 							Recyclable: <%=((AccountPoolMapper)accountMapper).getRecyclable()%><br/>
 							Expiration Days: <%=((AccountPoolMapper)accountMapper).getExpiration()%><br/>
 				    		Persistence Factory:
-				    		<a href="persistenceFactories.jsp?command=edit&name=<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>">
-				    			<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>
+				    		<a href="${edit_persist_url}">
+				    			<c:out value="<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>"/>
 				    		</a><br>
 <%
 		} else if (accountMapper instanceof GecosLdapAccountMapper) {
@@ -221,8 +228,11 @@ if (request.getParameter("command")==null ||
 		} else if (accountMapper instanceof GecosNisAccountMapper) {
 %>
 							NIS Account Mapper:
-				    		<a href="accountMappers.jsp?command=edit&name=<%=accountMapper.getName()%>">
-				    			<%=accountMapper.getName()%>
+						<c:url var="nis_url" value="accountMappers.jsp?command=edit">
+							<c:param name="name" value="<%=accountMapper.getName()%>"/>
+						</c:url>
+				    		<a href="$nis_url">
+				    			<c:out value="<%=accountMapper.getName()%>" />
 				    		</a><br>	
 				    		Description: <%=accountMapper.getDescription()%><br>	
 							JNDI NIS Service: <%=((GecosNisAccountMapper)accountMapper).getJndiNisUrl()%>

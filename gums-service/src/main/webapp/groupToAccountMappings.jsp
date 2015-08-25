@@ -36,7 +36,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure"><c:out value="${e.getMessage}"/></div></p>
+<p><div class="failure"><c:out value="<%=e.getMessage()%>"/></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
