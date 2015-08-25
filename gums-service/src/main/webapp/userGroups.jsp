@@ -250,7 +250,6 @@ else if ("edit".equals(request.getParameter("command"))
 	
 	if ("edit".equals(request.getParameter("command"))) {
 		try {
-			ConfigurationWebToolkit.checkPost(request, response);
 			userGroup = (UserGroup)configuration.getUserGroups().get( request.getParameter("name") );
 		} catch(Exception e) {
 			out.write( "<div class=\"failure\">Error getting user group: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );

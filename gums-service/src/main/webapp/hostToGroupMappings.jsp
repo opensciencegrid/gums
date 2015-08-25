@@ -210,7 +210,6 @@ else if ("edit".equals(request.getParameter("command"))
 	
 	if ("edit".equals(request.getParameter("command"))) {
 		try {
-			ConfigurationWebToolkit.checkPost(request, response);
 			h2GMapping = (HostToGroupMapping)configuration.getHostToGroupMapping( request.getParameter("name") );
 		} catch(Exception e) {
 			out.write( "<div class=\"failure\">Error getting host to group mapping: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );

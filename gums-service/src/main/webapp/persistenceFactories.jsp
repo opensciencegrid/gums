@@ -190,7 +190,6 @@ else if ("edit".equals(request.getParameter("command"))
 	
 	if ("edit".equals(request.getParameter("command"))) {
 		try {
-			ConfigurationWebToolkit.checkPost(request, response);
 			persistenceFactory = (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("name") );
 		} catch(Exception e) {
 			out.write( "<div class=\"failure\">Error getting persistence factory: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );

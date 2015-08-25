@@ -200,7 +200,6 @@ else if ("edit".equals(request.getParameter("command"))
 	
 	if ("edit".equals(request.getParameter("command"))) {
 		try {
-			ConfigurationWebToolkit.checkPost(request, response);
 			g2AMapping = (GroupToAccountMapping)configuration.getGroupToAccountMappings().get( request.getParameter("name") );
 		} catch(Exception e) {
 			out.write( "<div class=\"failure\">Error getting group to account mapping: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );

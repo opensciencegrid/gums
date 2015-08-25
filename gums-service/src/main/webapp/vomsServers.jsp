@@ -157,7 +157,6 @@ else if ("edit".equals(request.getParameter("command"))
 	
 	if ("edit".equals(request.getParameter("command"))) {
 		try {
-			ConfigurationWebToolkit.checkPost(request, response);
 			vomsServer = (VomsServer)configuration.getVomsServers().get( request.getParameter("name") );
 		} catch(Exception e) {
 			out.write( "<div class=\"failure\">Error getting VOMS server: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
