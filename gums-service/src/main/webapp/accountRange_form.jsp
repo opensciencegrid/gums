@@ -104,7 +104,7 @@ for (AccountMapper accountMapper : configuration.getAccountMappers().values()) {
 
 %>
 
-<csrf:form action="accountRange_form.jsp" method="post">
+<csrf:form action="/gums/accountRange_form.jsp" method="post">
   <input type="hidden" name="command">
   <table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
     <tbody>
@@ -172,7 +172,7 @@ if (accountMappers.size()>0) {
 View assigned account information
 </p>
 
-<csrf:form action="accountRange_form.jsp" method="post">
+<csrf:form action="/gums/accountRange_form.jsp" method="post">
   <input type="hidden" name="command">
   <input type="hidden" name="recycle">
   <input type="hidden" name="range">

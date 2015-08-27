@@ -110,7 +110,7 @@ Add or Remove Banned Users:
 %>
 
 	<tr>
-		<csrf:form action="banning.jsp" method="post">
+		<csrf:form action="/gums/banning.jsp" method="post">
 			<td>
 				<div style="text-align: center;"><input style="width:80px" type="submit" name="command" value="save" /></div>
 			</td>
@@ -131,7 +131,7 @@ Add or Remove Banned Users:
 				<tr>
 					<td width="1" valign="top">
 					<table><tr><td>
-						<csrf:form action="banning.jsp" method="post">
+						<csrf:form action="/gums/banning.jsp" method="post">
 							<input type="submit" style="width:80px" name="command" value="delete"
 							 onclick="if(!confirm('Are you sure you want to delete this user from the banned list?'))return false;"/>
 							<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>"/>
@@ -172,7 +172,7 @@ Add or Remove Banned Users:
 			<tr>
 				<td width="1" valign="top">
 				<table><tr><td>
-					<csrf:form action="userGroups.jsp" method="post">
+					<csrf:form action="/gums/userGroups.jsp" method="post">
 						<input type="submit" style="width:80px" value="edit group">
 						<input type="hidden" name="command" value="edit">
 						<input type="hidden" name="name" value="<%=group.getName()%>">
@@ -256,7 +256,7 @@ Add or Remove Banned Users:
 			<tr>
 				<td width="1" valign="top">
 				<table><tr><td>
-					<csrf:form action="userGroups.jsp" method="post">
+					<csrf:form action="/gums/userGroups.jsp" method="post">
 						<input type="submit" style="width:80px" value="edit group">
 						<input type="hidden" name="command" value="edit">
 						<input type="hidden" name="name" value="<%=group.getName()%>">

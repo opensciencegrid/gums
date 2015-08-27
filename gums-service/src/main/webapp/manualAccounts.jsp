@@ -108,7 +108,7 @@ if (request.getParameter("command")==null ||
 %>
    	<tr>
 		<td width="25" valign="top">
-			<csrf:form action="manualAccounts.jsp" method="post">
+			<csrf:form action="/gums/manualAccounts.jsp" method="post">
 				<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this mapping?'))return false;">
 				<input type="hidden" name="dn" value="<%=dn%>">
 				<input type="hidden" name="accountMapper" value="<%=manualAccountMapper.getName()%>">
@@ -134,7 +134,7 @@ if (request.getParameter("command")==null ||
 %>
 	<tr>
 		<td colspan=2>
-			<csrf:form action="manualAccounts.jsp" method="post">
+			<csrf:form action="/gums/manualAccounts.jsp" method="post">
 				<div style="text-align: center;"><input type="submit" name="command" value="add"></div>
 			</csrf:form>
 	    </td>
@@ -163,7 +163,7 @@ else if ("add".equals(request.getParameter("command"))) {
 		return;
 	}
 %>
-<csrf:form action="manualAccounts.jsp" method="post">
+<csrf:form action="/gums/manualAccounts.jsp" method="post">
 	<input type="hidden" name="command" value="">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>

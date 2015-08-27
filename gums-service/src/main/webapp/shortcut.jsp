@@ -104,7 +104,7 @@ else {
         ArrayList types = new ArrayList();
         types.add("VOMS / group account");	
 %>
-<csrf:form action="shortcut.jsp" method="post">
+<csrf:form action="/gums/shortcut.jsp" method="post">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
         <tr>
             <td nowrap style="text-align: right;">

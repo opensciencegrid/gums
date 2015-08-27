@@ -26,7 +26,7 @@
 Generates the grid-mapfile relative to the given service.
 </p>
 
-<csrf:form action="generateGridMapfile.jsp" method="post">
+<csrf:form action="/gums/generateGridMapfile.jsp" method="post">
   <table id="form" border="0" cellpadding="2" cellspacing="2">
     <tbody>
       <tr>

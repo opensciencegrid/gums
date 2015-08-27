@@ -122,7 +122,7 @@ if(message!=null)
 		"<tr><td colspan=\"2\">" + message + "</td></tr>" );
 	
 %>
-<csrf:form action="globalConfiguration.jsp" method="post">
+<csrf:form action="/gums/globalConfiguration.jsp" method="post">
 	<input type="hidden" name="command" value="save">
 	<input type="hidden" name="insertCounter">
 	

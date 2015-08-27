@@ -112,7 +112,7 @@ if (request.getParameter("command")==null ||
 %>
 	   	<tr>
 			<td width="1" valign="top">
-				<csrf:form action="accountMappers.jsp" method="post">
+				<csrf:form action="/gums/accountMappers.jsp" method="post">
 					<input type="submit" style="width:80px" name="command" value="edit">
 					<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this account mapper?'))return false;">
 					<input type="hidden" name="name" value="<%=accountMapper.getName()%>">
@@ -250,7 +250,7 @@ if (request.getParameter("command")==null ||
 %>	
 		<tr>
 	        <td colspan=2>
-	        	<csrf:form action="accountMappers.jsp" method="post">
+	        	<csrf:form action="/gums/accountMappers.jsp" method="post">
 	        		<div style="text-align: center;"><input type="submit" name="command" value="add"></div>
 	        	</csrf:form>
 	        </td>
@@ -305,7 +305,7 @@ else if ("edit".equals(request.getParameter("command"))
 	}		
 		
 %>
-<csrf:form action="accountMappers.jsp" method="post">
+<csrf:form action="/gums/accountMappers.jsp" method="post">
 	<input type="hidden" name="command" value="">
 	<input type="hidden" name="originalCommand" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalCommand") : request.getParameter("command"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">

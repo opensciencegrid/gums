@@ -46,7 +46,7 @@ try {
 Backs up or restores configuration.
 </p>
 
-<csrf:form action="backupRestoreConfiguration.jsp" method="post">
+<csrf:form action="/gums/backupRestoreConfiguration.jsp" method="post">
   <input type="hidden" name="command" value="backup">
   <table id="form" border="0" cellpadding="2" cellspacing="2">
     <tbody>

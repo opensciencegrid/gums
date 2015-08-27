@@ -96,7 +96,7 @@ if ( "merge".equals(request.getParameter("command")) ) {
 }
 else {
 %>
-<csrf:form action="mergeConfiguration.jsp" method="post">
+<csrf:form action="/gums/mergeConfiguration.jsp" method="post">
 	<input type="hidden" name="command" value="">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
         <tr>
