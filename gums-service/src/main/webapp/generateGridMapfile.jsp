@@ -2,6 +2,8 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.io.*"%>
 <%@page import="gov.bnl.gums.*"%>
+<%@page import="gov.bnl.gums.service.ConfigurationWebToolkit"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
 <%  String hostname = request.getParameter("host"); if (hostname!=null) hostname=hostname.trim();%>
 <%  String fqan = request.getParameter("fqan"); if (fqan!=null) fqan=fqan.trim();%>
@@ -23,6 +25,7 @@
 <%
 	String result = null;
 	try {
+		ConfigurationWebToolkit.checkPost(request, response);
 		if(fqan!=null)
 			result = gums.generateVoGridMapfile(hostname); 
 		else
@@ -47,7 +50,7 @@
 
 <%
 	} catch(Exception e) {
-		out.println("<p><div class=\"failure\">Error generating grid-mapfile: " + e.getMessage() + "</div></p>");
+		out.println("<p><div class=\"failure\">Error generating grid-mapfile: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div></p>");
 	}
 %>
 </div>

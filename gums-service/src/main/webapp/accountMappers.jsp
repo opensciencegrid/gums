@@ -7,6 +7,9 @@
 <%@ page import="gov.bnl.gums.configuration.*" %>
 <%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -33,7 +36,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure"><%= e.getMessage() %></div></p>
+<p><div class="failure"><c:out value="<%=e.getMessage()%>" /></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
@@ -59,19 +62,21 @@ if (request.getParameter("command")==null ||
 	if ("save".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			newConfiguration.removeAccountMapper( request.getParameter("name") );
 			newConfiguration.addAccountMapper( ConfigurationWebToolkit.parseAccountMapper(request) );
 			gums.setConfiguration(newConfiguration);
 			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">Account mapper has been saved.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error saving account mapper: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error saving account mapper: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			String references = ConfigurationWebToolkit.getGroupToAccountMappingReferences(newConfiguration, request.getParameter("name"), "gov.bnl.gums.account.AccountMapper");
 			if( references==null ) {
 				if (newConfiguration.removeAccountMapper( request.getParameter("name") )!=null) {
@@ -85,7 +90,7 @@ if (request.getParameter("command")==null ||
 			else
 				message = "<div class=\"failure\">You cannot delete this item until removing references to it within group to account mapping(s): " + references + "</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error deleting account mapper: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error deleting account mapper: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}
 	
@@ -107,11 +112,11 @@ if (request.getParameter("command")==null ||
 %>
 	   	<tr>
 			<td width="1" valign="top">
-				<form action="accountMappers.jsp" method="get">
+				<csrf:form action="/gums/accountMappers.jsp" method="post">
 					<input type="submit" style="width:80px" name="command" value="edit">
 					<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this account mapper?'))return false;">
 					<input type="hidden" name="name" value="<%=accountMapper.getName()%>">
-				</form>
+				</csrf:form>
 			</td>
 	  		<td align="left">
 		   		<table class="configElement" width="100%">
@@ -165,16 +170,23 @@ if (request.getParameter("command")==null ||
 		} else if (accountMapper instanceof AccountPoolMapper) {
 %>
 				    		Account Pool Mapper:
-				    		<a href="accountMappers.jsp?command=edit&name=<%=accountMapper.getName()%>">
-				    			<%=accountMapper.getName()%>
-				    		</a><br>	
+						<c:url var="edit_pool_url" value="accountMappers.jsp?command=edit">
+							<c:param name="name" value="<%=accountMapper.getName()%>"/>
+						</c:url>
+						<c:url var="edit_persist_url" value="persistenceFactories.jsp?command=edit">
+							<c:param name="name" value="<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>"/>
+						</c:url>
+				    		<a href="${edit_pool_url}">
+				    			<c:out value="<%=accountMapper.getName()%>" />
+				    		</a>
+						<br />
 				    		Description: <%=accountMapper.getDescription()%><br>	
 							Pool: <%=((AccountPoolMapper)accountMapper).getAccountPool()%><br>
 							Recyclable: <%=((AccountPoolMapper)accountMapper).getRecyclable()%><br/>
 							Expiration Days: <%=((AccountPoolMapper)accountMapper).getExpiration()%><br/>
 				    		Persistence Factory:
-				    		<a href="persistenceFactories.jsp?command=edit&name=<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>">
-				    			<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>
+				    		<a href="${edit_persist_url}">
+				    			<c:out value="<%=((AccountPoolMapper)accountMapper).getPersistenceFactory()%>"/>
 				    		</a><br>
 <%
 		} else if (accountMapper instanceof GecosLdapAccountMapper) {
@@ -216,8 +228,11 @@ if (request.getParameter("command")==null ||
 		} else if (accountMapper instanceof GecosNisAccountMapper) {
 %>
 							NIS Account Mapper:
-				    		<a href="accountMappers.jsp?command=edit&name=<%=accountMapper.getName()%>">
-				    			<%=accountMapper.getName()%>
+						<c:url var="nis_url" value="accountMappers.jsp?command=edit">
+							<c:param name="name" value="<%=accountMapper.getName()%>"/>
+						</c:url>
+				    		<a href="$nis_url">
+				    			<c:out value="<%=accountMapper.getName()%>" />
 				    		</a><br>	
 				    		Description: <%=accountMapper.getDescription()%><br>	
 							JNDI NIS Service: <%=((GecosNisAccountMapper)accountMapper).getJndiNisUrl()%>
@@ -235,13 +250,12 @@ if (request.getParameter("command")==null ||
 %>	
 		<tr>
 	        <td colspan=2>
-	        	<form action="accountMappers.jsp" method="get">
+	        	<csrf:form action="/gums/accountMappers.jsp" method="post">
 	        		<div style="text-align: center;"><input type="submit" name="command" value="add"></div>
-	        	</form>
+	        	</csrf:form>
 	        </td>
 		</tr>
 	  </table>
-</form>
 <%
 }
 
@@ -265,26 +279,33 @@ else if ("edit".equals(request.getParameter("command"))
 		try {
 			accountMapper = (AccountMapper)configuration.getAccountMappers().get( request.getParameter("name") );
 		} catch(Exception e) {
-			out.write( "<div class=\"failure\">Error getting account mapper: " + e.getMessage() + "</div>" );
+			out.write( "<div class=\"failure\">Error getting account mapper: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
 			return;
 		}
 	}
 
 	if ("reload".equals(request.getParameter("command"))) {
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			accountMapper = ConfigurationWebToolkit.parseAccountMapper(request);
 		} catch(Exception e) {
-			out.write( "<div class=\"failure\">Error reloading account mapper: " + e.getMessage() + "</div>" );
+			out.write( "<div class=\"failure\">Error reloading account mapper: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
 			return;
 		}
 	}
 		
 	else if ("add".equals(request.getParameter("command"))) {
-		accountMapper = new GroupAccountMapper(configuration);
+		try {
+			ConfigurationWebToolkit.checkPost(request, response);
+			accountMapper = new GroupAccountMapper(configuration);
+		} catch (Exception e) {
+			out.write( "<div class=\"failure\">Error creating new account mapper: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
+			return;
+		}
 	}		
 		
 %>
-<form action="accountMappers.jsp" method="get">
+<csrf:form action="/gums/accountMappers.jsp" method="post">
 	<input type="hidden" name="command" value="">
 	<input type="hidden" name="originalCommand" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalCommand") : request.getParameter("command"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
@@ -659,7 +680,7 @@ else if ("edit".equals(request.getParameter("command"))
 	        </td>
 		</tr>
 	</table>
-</form>
+</csrf:form>
 <%
 }
 %>

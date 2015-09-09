@@ -13,11 +13,14 @@ import gov.bnl.gums.persistence.*;
 import gov.bnl.gums.userGroup.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import java.rmi.Remote;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
+
+import java.io.IOException;
 
 /** 
  * Toolkit for providing configuration functionality for the web pages.
@@ -627,5 +630,12 @@ public class ConfigurationWebToolkit implements Remote {
 				return subStr.substring(0, index);
 		}
 		return voGroup;
-	}	
+	}
+
+	static public void checkPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		if ((request.getMethod() == null) || !request.getMethod().equals("POST")) {
+			response.sendRedirect(request.getContextPath() + "/csrf.jsp");
+			throw new RuntimeException("This operation can only be done via HTTP POST");
+		}
+	}
 }

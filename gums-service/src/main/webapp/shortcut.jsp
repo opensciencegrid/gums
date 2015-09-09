@@ -8,6 +8,9 @@
 <%@ page import="gov.bnl.gums.configuration.*" %>
 <%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -33,7 +36,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure"><%= e.getMessage() %></div></p>
+<p><div class="failure"><c:out value="<%=e.getMessage()%>" /></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
@@ -65,6 +68,7 @@ if ( "save".equals(request.getParameter("command")) ) {
 	if ("save".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			if (request.getParameter("baseURL")!=null && !request.getParameter("baseURL").equals("")) {
 				newConfiguration.removeVomsServer( request.getParameter("name") );
 				newConfiguration.addVomsServer( ConfigurationWebToolkit.parseVomsServer(request) );
@@ -84,7 +88,7 @@ if ( "save".equals(request.getParameter("command")) ) {
 			gums.setConfiguration(newConfiguration);
 			message = "<div class=\"success\">Elements have been saved.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error saving elements: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error saving elements: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}
 	out.write(
@@ -94,13 +98,13 @@ if ( "save".equals(request.getParameter("command")) ) {
 		out.write( "<tr><td colspan=\"2\">" + message + "</td></tr>" );		
 		
 	out.write(
-		"</table></form>");
+		"</table>");
 }
 else {
         ArrayList types = new ArrayList();
         types.add("VOMS / group account");	
 %>
-<form action="shortcut.jsp" method="get">
+<csrf:form action="/gums/shortcut.jsp" method="post">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
         <tr>
             <td nowrap style="text-align: right;">
@@ -248,7 +252,7 @@ else {
 	}	
 %>
 	</table>
-</form>
+</csrf:form>
 <%
 }
 %>

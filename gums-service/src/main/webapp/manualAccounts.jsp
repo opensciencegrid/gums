@@ -7,6 +7,9 @@
 <%@ page import="gov.bnl.gums.configuration.*" %>
 <%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -32,7 +35,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure"><%= e.getMessage() %></div></p>
+<p><div class="failure"><c:out value="<%=e.getMessage()%>"/></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
@@ -59,20 +62,22 @@ if (request.getParameter("command")==null ||
 	if ("save".equals(request.getParameter("command"))) {
 		ManualAccountMapper manualAccountMapper = (ManualAccountMapper)accountMappers.get(request.getParameter("accountMapper"));
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.manualMappingAdd2(manualAccountMapper.getName(), request.getParameter("dn"), request.getParameter("account"));
 			message = "<div class=\"success\">Mapping has been saved.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error saving mapping: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error saving mapping: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("command"))) {
 		ManualAccountMapper manualAccountMapper = (ManualAccountMapper)accountMappers.get(request.getParameter("accountMapper"));
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.manualMappingRemove2(manualAccountMapper.getName(), request.getParameter("dn"));
 			message = "<div class=\"success\">Mapping has been deleted.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error deleting mapping: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error deleting mapping: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}
 
@@ -103,11 +108,11 @@ if (request.getParameter("command")==null ||
 %>
    	<tr>
 		<td width="25" valign="top">
-			<form action="manualAccounts.jsp" method="get">
+			<csrf:form action="/gums/manualAccounts.jsp" method="post">
 				<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this mapping?'))return false;">
 				<input type="hidden" name="dn" value="<%=dn%>">
 				<input type="hidden" name="accountMapper" value="<%=manualAccountMapper.getName()%>">
-			</form>
+			</csrf:form>
 		</td>
   		<td align="left">
 	   		<table class="userElement" width="100%">
@@ -129,30 +134,36 @@ if (request.getParameter("command")==null ||
 %>
 	<tr>
 		<td colspan=2>
-			<form action="manualAccounts.jsp" method="get">
+			<csrf:form action="/gums/manualAccounts.jsp" method="post">
 				<div style="text-align: center;"><input type="submit" name="command" value="add"></div>
-			</form>
+			</csrf:form>
 	    </td>
 	</tr>
   </table>
-</form>
 <%
 }
 
 else if ("add".equals(request.getParameter("command"))) {
-	HibernateMapping mapping = new HibernateMapping();
+	ArrayList manualAccountMappers = null;
+	try {
+		ConfigurationWebToolkit.checkPost(request, response);
 
-	// Retrieve mappings in Manual Account Mappers
-	ArrayList manualAccountMappers = new ArrayList();
-	Iterator accountMappersIt = accountMappers.values().iterator();
-	while (accountMappersIt.hasNext()) {
-		AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();	
-		if (accountMapper instanceof ManualAccountMapper)
-			manualAccountMappers.add( accountMapper.getName() );
+		HibernateMapping mapping = new HibernateMapping();
+
+		// Retrieve mappings in Manual Account Mappers
+		manualAccountMappers = new ArrayList();
+		Iterator accountMappersIt = accountMappers.values().iterator();
+		while (accountMappersIt.hasNext()) {
+			AccountMapper accountMapper = (AccountMapper)accountMappersIt.next();	
+			if (accountMapper instanceof ManualAccountMapper)
+				manualAccountMappers.add( accountMapper.getName() );
+		}
+	} catch (Exception e) {
+		out.write( "<div class=\"failure\">Error adding mapping: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
+		return;
 	}
-		
 %>
-<form action="manualAccounts.jsp" method="get">
+<csrf:form action="/gums/manualAccounts.jsp" method="post">
 	<input type="hidden" name="command" value="">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
 		<tr>
@@ -203,7 +214,7 @@ else if ("add".equals(request.getParameter("command"))) {
 	        </td>
 		</tr>
 	</table>
-</form>
+</csrf:form>
 <%
 }
 %>

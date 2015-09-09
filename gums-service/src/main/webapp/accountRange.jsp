@@ -2,6 +2,8 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="gov.bnl.gums.*"%>
 <%@page import="gov.bnl.gums.account.*"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%  String command = request.getParameter("command");%>
 <%  String accountMapper = request.getParameter("accountMapper");%>
 <%  String range = request.getParameter("range"); if (range!=null)range = range.trim();%>
@@ -26,26 +28,29 @@
 <% 
 	if ("add".equals(command)) {
 		try {
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.addAccountRange2( accountMapper, range ); 
 			out.println("Accounts have been added to the pool.");
 		} catch(Exception e) {
-			out.println("<div class=\"failure\">Error saving pool account range: " + e.getMessage() + "</div>");
+			out.println("<div class=\"failure\">Error saving pool account range: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>");
 		}
 	}
 	else if ("remove".equals(command)) {	
 		try {
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.removeAccountRange( accountMapper, range ); 
 			out.println("Accounts have been removed from the pool.");
 		} catch(Exception e) {
-			out.println("<div class=\"failure\">Error removing pool account range: " + e.getMessage() + "</div>");
+			out.println("<div class=\"failure\">Error removing pool account range: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>");
 		}
 	}
 	else if ("unassign".equals(command)) {	
 		try {
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.unassignAccountRange( accountMapper, range ); 
 			out.println("Accounts have been unassigned.");
 		} catch(Exception e) {
-			out.println("<div class=\"failure\">Error unassigning accounts: " + e.getMessage() + "</div>");
+			out.println("<div class=\"failure\">Error unassigning accounts: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>");
 		}
 	}
 %>

@@ -5,6 +5,9 @@
 <%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.lang.StringBuffer" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 <jsp:useBean id="gums" scope="application" class="gov.bnl.gums.admin.GUMSAPIImpl" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -31,7 +34,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure"><%= e.getMessage() %></div></p>
+<p><div class="failure"><c:out value="<%=e.getMessage()%>" /></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
@@ -54,6 +57,7 @@ String message = null;
 if ("save".equals(request.getParameter("command"))) {
 	Configuration newConfiguration = (Configuration)configuration.clone();
 	try{
+		ConfigurationWebToolkit.checkPost(request, response);
 		newConfiguration.setAllowGridmapFiles("on".equals(request.getParameter("allowGMP")));
 		StringBuffer buffer = new StringBuffer();
 		int counter = 0;
@@ -73,12 +77,13 @@ if ("save".equals(request.getParameter("command"))) {
 		allowGridMapfiles = "on".equals(request.getParameter("allowGMP"));
 		message = "<div class=\"success\">Configuration has been saved.</div>";
 	}catch(Exception e){
-		message = "<div class=\"failure\">Error saving configuration: " + e.getMessage() + "</div>";
+		message = "<div class=\"failure\">Error saving configuration: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 	}
 }
 
 else if ("reload".equals(request.getParameter("command"))) {
 	try{
+		ConfigurationWebToolkit.checkPost(request, response);
 		int counter = 0;
 		ArrayList tempArray = new ArrayList();
 		while(request.getParameter("bug" + counter)!=null) {
@@ -96,7 +101,7 @@ else if ("reload".equals(request.getParameter("command"))) {
 		}
 		allowGridMapfiles = "on".equals(request.getParameter("allowGMP"));
 	} catch(Exception e) {
-		out.write( "<div class=\"failure\">Error reloading host to group mapping: " + e.getMessage() + "</div>" );
+		out.write( "<div class=\"failure\">Error reloading host to group mapping: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
 		return;
 	}
 }
@@ -107,7 +112,7 @@ else {
 			bannedUserGroups = configuration.getBannedUserGroups().split(",");
 		allowGridMapfiles = configuration.getAllowGridmapFiles();
 	} catch(Exception e) {
-		out.write( "<div class=\"failure\">Error reloading host to group mapping: " + e.getMessage() + "</div>" );
+		out.write( "<div class=\"failure\">Error reloading host to group mapping: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
 		return;
 	}
 }
@@ -117,7 +122,7 @@ if(message!=null)
 		"<tr><td colspan=\"2\">" + message + "</td></tr>" );
 	
 %>
-<form action="globalConfiguration.jsp" method="get">
+<csrf:form action="/gums/globalConfiguration.jsp" method="post">
 	<input type="hidden" name="command" value="save">
 	<input type="hidden" name="insertCounter">
 	
@@ -173,7 +178,7 @@ if(message!=null)
 	        </td>
 		</tr>
 	  </table>
-</form>
+</csrf:form>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>

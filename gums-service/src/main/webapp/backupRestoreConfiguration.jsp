@@ -3,6 +3,8 @@
 <%@page import="gov.bnl.gums.*"%>
 <%@page import="java.util.Date"%>
 <%@page import="gov.bnl.gums.configuration.ConfigurationStore"%>
+<%@page import="gov.bnl.gums.service.ConfigurationWebToolkit"%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%  String command = request.getParameter("command");%>
 <%  String name = request.getParameter("name");%>
 <%  String newName = request.getParameter("newName");%>
@@ -28,26 +30,29 @@
 		if (newName == null || newName.length()==0)
 			newName = ConfigurationStore.getFormat().format(new Date());
 		try {
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.backupConfiguration(newName);
 			out.println("Configuration successfully backed up!");
 		} catch(Exception e) {
-			out.println("<div class=\"failure\">Error backing up configuration: " + e.getMessage() + "</div>");
+			out.println("<div class=\"failure\">Error backing up configuration: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>");
 		}
 	} 
 	else if ("restore".equals(command)) {
 		try {
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.restoreConfiguration(name);
 			out.println("Configuration successfully restored!");
 		} catch(Exception e) {
-			out.println("<div class=\"failure\">Error restoring configuration: " + e.getMessage() + "</div>");
+			out.println("<div class=\"failure\">Error restoring configuration: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>");
 		}	
 	}
 	else if ("delete".equals(command)) {
 		try {
+			ConfigurationWebToolkit.checkPost(request, response);
 			gums.deleteBackupConfiguration(name);
 			out.println("Configuration successfully deleted!");
 		} catch(Exception e) {
-			out.println("<div class=\"failure\">Error deleting configuration: " + e.getMessage() + "</div>");
+			out.println("<div class=\"failure\">Error deleting configuration: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>");
 		}	
 	}
 	else {

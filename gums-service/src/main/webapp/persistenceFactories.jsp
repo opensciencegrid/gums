@@ -6,6 +6,9 @@
 <%@ page import="gov.bnl.gums.configuration.*" %>
 <%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -31,7 +34,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure"><%= e.getMessage() %></div></p>
+<p><div class="failure"><c:out value="<%=e.getMessage()%>" /></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
@@ -55,19 +58,21 @@ if (request.getParameter("command")==null ||
 	if ("save".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			newConfiguration.removePersistenceFactory( request.getParameter("name") );
 			newConfiguration.addPersistenceFactory( ConfigurationWebToolkit.parsePersistenceFactory(request) );
 			gums.setConfiguration(newConfiguration);
 			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">Persistence factory has been saved.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error saving persistence factory: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error saving persistence factory: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			String references = ConfigurationWebToolkit.getReferencesForPersistenceFactory(newConfiguration, request.getParameter("name"));
 			if( references==null ) {
 				if (newConfiguration.removePersistenceFactory( request.getParameter("name") )!=null) {
@@ -81,7 +86,7 @@ if (request.getParameter("command")==null ||
 			else
 				message = "<div class=\"failure\">You cannot delete this item until removing references to it within " + references + ".</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error deleting persistence factory: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error deleting persistence factory: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}
 	
@@ -99,11 +104,11 @@ if (request.getParameter("command")==null ||
 %>
 	   	<tr>
 			<td width="1" valign="top">
-				<form action="persistenceFactories.jsp" method="get">
+				<csrf:form action="/gums/persistenceFactories.jsp" method="post">
 					<input type="submit" style="width:80px" name="command" value="edit">
 					<input type="submit" style="width:80px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this persistence factory?'))return false;">
 					<input type="hidden" name="name" value="<%=persistenceFactory.getName()%>">
-				</form>
+				</csrf:form>
 			</td>
 	  		<td align="left">
 		   		<table class="configElement" width="100%">
@@ -153,13 +158,12 @@ if (request.getParameter("command")==null ||
 %>
 		<tr>
 	       <td colspan=2>
-	        	<form action="persistenceFactories.jsp" method="get">
+	        	<csrf:form action="/gums/persistenceFactories.jsp" method="post">
 	        		<div style="text-align: center;"><input type="submit" name="command" value="add"></div>
-	        	</form>
+	        	</csrf:form>
 	        </td>
 		</tr>
 	 </table>
-</form>
 <%
 }
 
@@ -188,27 +192,34 @@ else if ("edit".equals(request.getParameter("command"))
 		try {
 			persistenceFactory = (PersistenceFactory)configuration.getPersistenceFactories().get( request.getParameter("name") );
 		} catch(Exception e) {
-			out.write( "<div class=\"failure\">Error getting persistence factory: " + e.getMessage() + "</div>" );
+			out.write( "<div class=\"failure\">Error getting persistence factory: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
 			return;
 		}
 	}
 
 	if ("reload".equals(request.getParameter("command"))) {
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			persistenceFactory = ConfigurationWebToolkit.parsePersistenceFactory(request);
 		} catch(Exception e) {
-			out.write( "<div class=\"failure\">Error reloading persistence factory: " + e.getMessage() + "</div>" );
+			out.write( "<div class=\"failure\">Error reloading persistence factory: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
 			return;
 		}
 	}
 		
 	else if ("add".equals(request.getParameter("command"))) {
-		persistenceFactory = new HibernatePersistenceFactory(configuration);
-		((HibernatePersistenceFactory)persistenceFactory).setProperties( ConfigurationWebToolkit.getHibernateProperties(persistenceFactory, request, false) );
+		try {
+			ConfigurationWebToolkit.checkPost(request, response);
+			persistenceFactory = new HibernatePersistenceFactory(configuration);
+			((HibernatePersistenceFactory)persistenceFactory).setProperties( ConfigurationWebToolkit.getHibernateProperties(persistenceFactory, request, false) );
+		} catch (Exception e) {
+			out.write( "<div class=\"failure\">Error creating persistence factory: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
+			return;
+		}
 	}		
 			
 %>
-<form action="persistenceFactories.jsp" method="get">
+<csrf:form action="/gums/persistenceFactories.jsp" method="post">
 	<input type="hidden" name="command" value="">
 	<input type="hidden" name="originalCommand" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalCommand") : request.getParameter("command"))%>">
 	<table id="form" border="0" cellpadding="2" cellspacing="2" align="center">
@@ -749,7 +760,7 @@ else if ("edit".equals(request.getParameter("command"))
 	        </td>
 		</tr>
 	</table>
-</form>
+</csrf:form>
 <%
 }
 %>

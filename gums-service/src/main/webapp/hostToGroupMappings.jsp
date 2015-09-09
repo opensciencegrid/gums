@@ -8,6 +8,9 @@
 <%@ page import="java.lang.Math" %>
 <%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -33,7 +36,7 @@ try {
 }catch(Exception e){
 %>
 
-	<p><div class="failure"><%= e.getMessage() %></div></p>
+	<p><div class="failure"><c:out value="<%=e.getMessage()%>"/></div></p>
 	</div>
 	<%@include file="bottomNav.jspf"%>
 	</body>
@@ -61,6 +64,7 @@ if (request.getParameter("command")==null ||
 	if ("save".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			int index = newConfiguration.getHostToGroupMappings().indexOf( newConfiguration.getHostToGroupMapping(request.getParameter("originalName")) );
 			newConfiguration.removeHostToGroupMapping( request.getParameter("originalName") );
 			if (index!=-1)
@@ -71,13 +75,14 @@ if (request.getParameter("command")==null ||
 			configuration = gums.getConfiguration();
 			message = "<div class=\"success\">Host to group mapping has been saved.</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error saving host to group mapping: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error saving host to group mapping: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}
 
 	if ("delete".equals(request.getParameter("command"))) {
 		Configuration newConfiguration = (Configuration)configuration.clone();
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			if( newConfiguration.removeHostToGroupMapping( request.getParameter("name") )!=null ) {
 				gums.setConfiguration(newConfiguration);
 				configuration = gums.getConfiguration();
@@ -86,12 +91,13 @@ if (request.getParameter("command")==null ||
 			else
 				message = "<div class=\"failure\">Error deleting host to group mapping</div>";
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error deleting host to group mapping: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error deleting host to group mapping: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}
 
 	if ("up".equals(request.getParameter("command"))) {
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			Configuration newConfiguration = (Configuration)configuration.clone();
 			HostToGroupMapping h2GMapping = newConfiguration.getHostToGroupMapping( request.getParameter("name") );
 			int index = newConfiguration.getHostToGroupMappings().indexOf(h2GMapping);
@@ -101,12 +107,13 @@ if (request.getParameter("command")==null ||
 			configuration = newConfiguration;
 			movedName = request.getParameter("name");
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error moving up: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error moving up: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}
 	
 	if ("down".equals(request.getParameter("command"))) {
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			Configuration newConfiguration = (Configuration)configuration.clone();
 			HostToGroupMapping h2GMapping = newConfiguration.getHostToGroupMapping( request.getParameter("name") );
 			int index = newConfiguration.getHostToGroupMappings().indexOf(h2GMapping);
@@ -116,7 +123,7 @@ if (request.getParameter("command")==null ||
 			configuration = newConfiguration;
 			movedName = request.getParameter("name");
 		}catch(Exception e){
-			message = "<div class=\"failure\">Error moving down: " + e.getMessage() + "</div>";
+			message = "<div class=\"failure\">Error moving down: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>";
 		}
 	}	
 	
@@ -141,7 +148,7 @@ if (request.getParameter("command")==null ||
 %>
 	   	<tr>
 			<td width="1" valign="top">
-				<form action="hostToGroupMappings.jsp#<%=cH2GMapping.getName()%>" method="get">
+				<csrf:form action="/gums/hostToGroupMappings.jsp#<%=cH2GMapping.getName()%>" method="post">
 					<a name="<%=cH2GMapping.getName()%>">
 						<input type="submit" style="width:95px" name="command" value="edit">
 						<input type="submit" style="width:95px" name="command" value="delete" onclick="if(!confirm('Are you sure you want to delete this host to group mapping?'))return false;">
@@ -149,7 +156,7 @@ if (request.getParameter("command")==null ||
 						<input type="hidden" name="name" value="<%=cH2GMapping.getName()%>">
 						<input type="hidden" name="dt" value="<%=new java.util.Date().getTime()%>">
 					</a>
-				</form>
+				</csrf:form>
 			</td>
 	  		<td align="left">
 		   		<table class="<%=(cH2GMapping.getName().equals(movedName)?"configMovedElement":"configElement")%>" width="100%">
@@ -184,13 +191,12 @@ if (request.getParameter("command")==null ||
 %>
 		<tr>
 	        <td colspan=2>
-	        	<form action="hostToGroupMappings.jsp" method="get">
+	        	<csrf:form action="/gums/hostToGroupMappings.jsp" method="post">
 	        		<div style="text-align: center;"><input type="submit" name="command" value="add"></div>
-	        	</form>
+	        	</csrf:form>
 	        </td>
 		</tr>
-	</table>	
-</form>
+	</table>
 <%
 }
 
@@ -206,27 +212,34 @@ else if ("edit".equals(request.getParameter("command"))
 		try {
 			h2GMapping = (HostToGroupMapping)configuration.getHostToGroupMapping( request.getParameter("name") );
 		} catch(Exception e) {
-			out.write( "<div class=\"failure\">Error getting host to group mapping: " + e.getMessage() + "</div>" );
+			out.write( "<div class=\"failure\">Error getting host to group mapping: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
 			return;
 		}
 	}
 
 	if ("reload".equals(request.getParameter("command"))) {
 		try{
+			ConfigurationWebToolkit.checkPost(request, response);
 			h2GMapping = ConfigurationWebToolkit.parseHostToGroupMapping(request);
 		} catch(Exception e) {
-			out.write( "<div class=\"failure\">Error reloading host to group mapping: " + e.getMessage() + "</div>" );
+			out.write( "<div class=\"failure\">Error reloading host to group mapping: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
 			return;
 		}
 	}
 	
 	else if ("add".equals(request.getParameter("command"))) {
-		h2GMapping = new CertificateHostToGroupMapping(configuration);
+		try {
+			ConfigurationWebToolkit.checkPost(request, response);
+			h2GMapping = new CertificateHostToGroupMapping(configuration);
+		} catch (Exception e) {
+			out.write( "<div class=\"failure\">Error creating host to group mapping: " + StringEscapeUtils.escapeHtml(e.getMessage()) + "</div>" );
+			return;
+		}
 	}
 	
 	CertificateHostToGroupMapping cH2GMapping = (CertificateHostToGroupMapping)h2GMapping;
 %>
-<form action="hostToGroupMappings.jsp" method="get">
+<csrf:form action="/gums/hostToGroupMappings.jsp" method="post">
 	<input type="hidden" name="command" value="">
 	<input type="hidden" name="originalName" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalName") : request.getParameter("name"))%>"/>
 	<input type="hidden" name="originalCommand" value="<%=("reload".equals(request.getParameter("command")) ? request.getParameter("originalCommand") : request.getParameter("command"))%>">
@@ -310,7 +323,7 @@ else if ("edit".equals(request.getParameter("command"))
 	        </td>
 		</tr>
 	</table>
-</form>
+</csrf:form>
 <%
 }
 %>

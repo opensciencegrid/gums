@@ -38,6 +38,48 @@
   <filter-name>CertFilter</filter-name>
   <url-pattern>/*</url-pattern>
 </filter-mapping>
+<!-- Add CSRF protections. -->
+<listener>
+  <listener-class>org.owasp.csrfguard.CsrfGuardServletContextListener</listener-class>
+</listener>
+<listener>
+  <listener-class>org.owasp.csrfguard.CsrfGuardHttpSessionListener</listener-class>
+</listener>
+<context-param>
+  <param-name>Owasp.CsrfGuard.Config</param-name>
+  <param-value>WEB-INF/Owasp.CsrfGuard.properties</param-value>
+</context-param>
+<filter>
+  <filter-name>CSRFGuard</filter-name>
+  <filter-class>org.owasp.csrfguard.CsrfGuardFilter</filter-class>
+</filter>
+<filter-mapping>
+  <filter-name>CSRFGuard</filter-name> 
+  <url-pattern>/accountMappers.jsp</url-pattern>
+  <url-pattern>/accountRange.jsp</url-pattern>
+  <url-pattern>/accountRange_form.jsp</url-pattern>
+  <url-pattern>/backupRestoreConfiguration.jsp</url-pattern>
+  <url-pattern>/banning.jsp</url-pattern>
+  <url-pattern>/generateGridMapfile.jsp</url-pattern>
+  <url-pattern>/globalConfiguration.jsp</url-pattern>
+  <url-pattern>/groupToAccountMappings.jsp</url-pattern>
+  <url-pattern>/hostToGroupMappings.jsp</url-pattern>
+  <url-pattern>/manualAccounts.jsp</url-pattern>
+  <url-pattern>/manualUserGroups.jsp</url-pattern>
+  <url-pattern>/mergeConfiguration.jsp</url-pattern>
+  <url-pattern>/persistenceFactories.jsp</url-pattern>
+  <url-pattern>/shortcut.jsp</url-pattern>
+  <url-pattern>/userGroups.jsp</url-pattern>
+  <url-pattern>/vomsServers.jsp</url-pattern>
+</filter-mapping>
+<filter>
+  <filter-name>OriginFilter</filter-name>
+  <filter-class>org.opensciencegrid.gums.service.OriginFilter</filter-class>
+</filter>
+<filter-mapping>
+  <filter-name>OriginFilter</filter-name>
+  <url-pattern>/services/*</url-pattern>
+</filter-mapping>
     <session-config>
         <session-timeout>
             30

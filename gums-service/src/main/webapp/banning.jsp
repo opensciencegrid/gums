@@ -8,6 +8,8 @@
 <%@ page import="gov.bnl.gums.service.ConfigurationWebToolkit" %>
 <%@ page import="java.util.*" %>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -33,7 +35,7 @@ try {
 }catch(Exception e){
 %>
 
-<p><div class="failure"><%= e.getMessage() %></div></p>
+<p><div class="failure"><c:out value="<%=e.getMessage()%>"/></div></p>
 </div>
 <%@include file="bottomNav.jspf"%>
 </body>
@@ -57,6 +59,7 @@ if (request.getParameter("command")==null ||
 	
 	if ("save".equals(request.getParameter("command"))) {
 		try {
+			ConfigurationWebToolkit.checkPost(request, response);
 			ManualUserGroup group = configuration.getDefaultBannedGroup();
 			group.addMember(new GridUser(request.getParameter("dn"), null));
 			message = "<div class=\"success\">User " + StringEscapeUtils.escapeHtml(request.getParameter("dn")) + " has been added to the ban list.</div>";
@@ -67,6 +70,7 @@ if (request.getParameter("command")==null ||
 
 	if ("delete".equals(request.getParameter("command"))) {
 		try {
+			ConfigurationWebToolkit.checkPost(request, response);
 			ManualUserGroup group = configuration.getDefaultBannedGroup();
 			group.removeMember(new GridUser(request.getParameter("dn"), null));
 			message = "<div class=\"success\">User " + StringEscapeUtils.escapeHtml(request.getParameter("dn")) + " has been removed from ban list.</div>";
@@ -106,7 +110,7 @@ Add or Remove Banned Users:
 %>
 
 	<tr>
-		<form action="banning.jsp" method="get">
+		<csrf:form action="/gums/banning.jsp" method="post">
 			<td>
 				<div style="text-align: center;"><input style="width:80px" type="submit" name="command" value="save" /></div>
 			</td>
@@ -115,7 +119,7 @@ Add or Remove Banned Users:
 				<input maxlength="256" size="100" name="dn"/>
 			</td>
 			<td width="10"></td>
-		</form>
+		</csrf:form>
 	</tr>
 
 <%
@@ -127,11 +131,11 @@ Add or Remove Banned Users:
 				<tr>
 					<td width="1" valign="top">
 					<table><tr><td>
-						<form action="banning.jsp" method="get">
+						<csrf:form action="/gums/banning.jsp" method="post">
 							<input type="submit" style="width:80px" name="command" value="delete"
 							 onclick="if(!confirm('Are you sure you want to delete this user from the banned list?'))return false;"/>
 							<input type="hidden" name="dn" value="<%=user.getCertificateDN()%>"/>
-						</form>
+						</csrf:form>
 					</td></tr></table>
 					</td>
 					<td align="left">
@@ -168,11 +172,11 @@ Add or Remove Banned Users:
 			<tr>
 				<td width="1" valign="top">
 				<table><tr><td>
-					<form action="userGroups.jsp" method="get">
+					<csrf:form action="/gums/userGroups.jsp" method="post">
 						<input type="submit" style="width:80px" value="edit group">
 						<input type="hidden" name="command" value="edit">
 						<input type="hidden" name="name" value="<%=group.getName()%>">
-					</form>
+					</csrf:form>
 				</td></tr></table>
 				</td>
 				<td align="left">
@@ -182,7 +186,8 @@ Add or Remove Banned Users:
 <%
 								if (group instanceof ManualUserGroup && (((ManualUserGroup)group).getNonMembersUri().length() == 0)) {
 %>
-									<form action="manualUserGroups.jsp" method="get">
+									<form action="manualUserGroups.jsp" method="post">
+										<input type="hidden" name="<csrf:token-name/>" value="<csrf:token-value uri="manualUserGroups.jsp"/>"/>
 <%
 								}
 %>
@@ -251,11 +256,11 @@ Add or Remove Banned Users:
 			<tr>
 				<td width="1" valign="top">
 				<table><tr><td>
-					<form action="userGroups.jsp" method="get">
+					<csrf:form action="/gums/userGroups.jsp" method="post">
 						<input type="submit" style="width:80px" value="edit group">
 						<input type="hidden" name="command" value="edit">
 						<input type="hidden" name="name" value="<%=group.getName()%>">
-					</form>
+					</csrf:form>
 				</td></tr></table>
 				</td>
 				<td align="left">
