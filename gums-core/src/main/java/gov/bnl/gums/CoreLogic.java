@@ -160,29 +160,33 @@ public class CoreLogic {
      * @return
      */
     public String mapAccount(String accountName) throws Exception {
-    	TreeSet dns = new TreeSet();
+        TreeSet dns = new TreeSet();
         Configuration conf = gums.getConfiguration();
-        Iterator g2AMappingsIt = conf.getGroupToAccountMappings().values().iterator();
-        while (g2AMappingsIt.hasNext()) {
-            GroupToAccountMapping g2AMapping = (GroupToAccountMapping) g2AMappingsIt.next();
-            Collection userGroups = g2AMapping.getUserGroups();
-            Iterator userGroupsIt = userGroups.iterator();
-            while (userGroupsIt.hasNext()) {
-            	UserGroup userGroup = (UserGroup) conf.getUserGroup( (String)userGroupsIt.next() );
-            	List users = userGroup.getMemberList();
-            	Iterator usersIt = users.iterator();
-            	while (usersIt.hasNext()) {
-            		GridUser user = (GridUser)usersIt.next();
-            		if (gums.isUserBanned(user))
-                    	continue;
-                	Collection accountMappers = g2AMapping.getAccountMappers();
-                    Iterator accountMappersIt = accountMappers.iterator();
-                    while (accountMappersIt.hasNext()) {
-                    	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
-			if (accountName.equals(accountMapper.mapUser(user, false)) && !dns.contains(user.getCertificateDN()))
-                        	dns.add(user.getCertificateDN());
-                    }            		
-            	}
+        Collection<GroupToAccountMapping> g2AMappings = conf.getGroupToAccountMappings().values();
+        for (GroupToAccountMapping g2AMapping : g2AMappings)
+        {
+            Collection<String> userGroups = g2AMapping.getUserGroups();
+            for (String userGroupString : userGroups)
+            {
+                UserGroup userGroup = (UserGroup) conf.getUserGroup( userGroupString );
+                List<GridUser> users = userGroup.getMemberList();
+                for (GridUser user : users)
+                {
+                    if (gums.isUserBanned(user))
+                    {
+                        continue;
+                    }
+                    Collection<String> accountMappers = g2AMapping.getAccountMappers();
+                    for (String accountMapperStr : accountMappers)
+                    {
+                        AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( accountMapperStr );
+                        AccountInfo mappedAccount = accountMapper.mapUser(user, false);
+                        if ((mappedAccount != null) && accountName.equals(mappedAccount.getUser()) && !dns.contains(user.getCertificateDN()))
+                        {
+                            dns.add(user.getCertificateDN());
+                        }
+                    }
+                }
             }
         }
         
@@ -193,11 +197,11 @@ public class CoreLogic {
         StringBuffer output = new StringBuffer();
         Iterator it = dns.iterator();
         while(it.hasNext()) {
-        	output.append( (String)it.next() );
-        	output.append("\n");
+            output.append( (String)it.next() );
+            output.append("\n");
         }
 
-		gumsAdminLog.info("Mapped the account '" + accountName + "' to '" + output.toString() + "'");
+        gumsAdminLog.info("Mapped the account '" + accountName + "' to '" + output.toString() + "'");
         return output.toString();
     }
     
