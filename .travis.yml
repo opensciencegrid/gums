@@ -21,6 +21,8 @@ before_install:
 
 install: mvn install -P tomcat6 -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
+script: mvn test -P tomcat6
+
 after_failure:
   - find gums-core
 
