@@ -442,7 +442,7 @@ public class GUMS {
 		return resMan;
 	} // end getCoreLogic()
 	
-	static public String getVersion() {
+	static public synchronized String getVersion() {
 		if (version==null) {
 			String pomFile = CertCache.getMetaDir()+"/maven/gov.bnl.racf.gums/gums-service/pom.xml";
 			Digester digester = new Digester();
