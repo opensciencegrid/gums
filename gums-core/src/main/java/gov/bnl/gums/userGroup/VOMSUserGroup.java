@@ -206,6 +206,12 @@ public class VOMSUserGroup extends UserGroup {
 
     @Override
     public boolean isInGroup(GridUser user) {
+        if (fqan == null) {
+            log.error("FQAN missing for VOMS User Group '" + getName() +
+                      "' (this indicates a missing 'voGroup' attribute in gums.config).");
+            return false;
+        }
+
     	if (user.getVoFQAN() == null) {
             // If the user comes in without FQAN and we don't accept proxies without fqan,
             // kick him out right away
