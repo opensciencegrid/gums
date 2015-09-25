@@ -75,6 +75,14 @@ public interface AccountPoolMapperDB {
      */
     String retrieveAccount(GridUser user);
     
+    /**
+     * Retrieves a user mapping from the database.
+     * 
+     * @param userDN a certificate DN
+     * @return the UNIX account provided by the mapping
+     */
+    String retrieveMapping(String userDN);
+
     /** Retrieves a user to account map.
      * 
      * @return a Map between the userDN (String) as the key and the account (String).
