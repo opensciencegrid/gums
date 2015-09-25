@@ -42,6 +42,7 @@ public class AccountPoolMapper extends AccountMapper {
     private AccountPoolMapperDB db;
     private String persistenceFactory = "";
 	private String accountPool = "";
+    private String groupName = "";
     private boolean recyclable = false;
     private int expiry = 60;
 	private static Map assignments = Collections.synchronizedMap(new HashMap());
@@ -63,6 +64,7 @@ public class AccountPoolMapper extends AccountMapper {
     	accountMapper.setDescription(new String(getDescription()));
     	accountMapper.setAccountPool(new String(accountPool));
     	accountMapper.setPersistenceFactory(new String(persistenceFactory));
+        accountMapper.setGroupName(new String(groupName));
         accountMapper.setRecyclable(recyclable);
         accountMapper.setExpiration(expiry);
     	return accountMapper;
@@ -71,7 +73,11 @@ public class AccountPoolMapper extends AccountMapper {
     public String getAccountPool() {
     	return accountPool;
     }
-    
+
+    public String getGroupName() {
+        return groupName;
+    }
+
     public String getAccountPoolRoot() {
     	int index = accountPool.indexOf(".");
     	if (index != -1)
@@ -163,6 +169,9 @@ public class AccountPoolMapper extends AccountMapper {
 
     @Override
     public AccountInfo mapUser(GridUser user, boolean createIfDoesNotExist) {
+        if (groupName != null && !groupName.equals("")) {
+            return new AccountInfo(getDB().retrieveMapping(user.getCertificateDN()), groupName);
+        }
         String account = getDB().retrieveAccount(user);
         if (account != null) return new AccountInfo(account);
         if (createIfDoesNotExist) {
@@ -181,7 +190,11 @@ public class AccountPoolMapper extends AccountMapper {
     public void setAccountPool(String accountPool) {
     	this.accountPool = accountPool;
     }
-    
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
     public void setPersistenceFactory(String persistenceFactory) {
         this.persistenceFactory = persistenceFactory;
     }
@@ -213,13 +226,18 @@ public class AccountPoolMapper extends AccountMapper {
     }
     
     public String toXML() {
-    	return "\t\t<accountPoolMapper\n"+
-			"\t\t\tname='"+getName()+"'\n"+
-			"\t\t\tdescription='"+getDescription()+"'\n"+
-			"\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
-			"\t\t\trecyclable='"+recyclable+"'\n" +
-			"\t\t\texpiration='"+expiry+"'\n" +
-    		"\t\t\taccountPool='"+accountPool+"'/>\n\n";
+        String retStr =
+            "\t\t<accountPoolMapper\n"+
+            "\t\t\tname='"+getName()+"'\n"+
+            "\t\t\tdescription='"+getDescription()+"'\n"+
+            "\t\t\tpersistenceFactory='"+persistenceFactory+"'\n" +
+            "\t\t\trecyclable='"+recyclable+"'\n" +
+            "\t\t\texpiration='"+expiry+"'\n" +
+            "\t\t\taccountPool='"+accountPool+"'";
+        if (groupName != null && !groupName.equals(""))
+            retStr += "\n\t\t\tgroupName='"+groupName+"'";
+        retStr += "/>\n\n";
+        return retStr;
     }
     
     private static String getRoot(String account) {
