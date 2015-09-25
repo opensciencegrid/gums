@@ -95,7 +95,7 @@ public class MockAccountPoolMapperDB implements AccountPoolMapperDB {
         throw new RuntimeException("Account info is not available for mock pool accounts.");
     }
     
-    public String retrieveAccount(String userDN) {
+    public String retrieveMapping(String userDN) {
         return (String) userToAccount.get(userDN);
     }
 
