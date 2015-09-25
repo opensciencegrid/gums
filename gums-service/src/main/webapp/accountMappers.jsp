@@ -181,6 +181,14 @@ if (request.getParameter("command")==null ||
 				    		</a>
 						<br />
 				    		Description: <%=accountMapper.getDescription()%><br>	
+<%
+						AccountPoolMapper pMapper = (AccountPoolMapper)accountMapper;
+						if (pMapper.getGroupName() != null && !pMapper.getGroupName().equals("")) {
+%>
+							Group: <%=pMapper.getGroupName()%><br>
+<%
+						}
+%>
 							Pool: <%=((AccountPoolMapper)accountMapper).getAccountPool()%><br>
 							Recyclable: <%=((AccountPoolMapper)accountMapper).getRecyclable()%><br/>
 							Expiration Days: <%=((AccountPoolMapper)accountMapper).getExpiration()%><br/>
@@ -450,6 +458,14 @@ else if ("edit".equals(request.getParameter("command"))
 			</td>
 			<td>
 				<input maxlength="256" size="34" name="accountPool" value="<%=((AccountPoolMapper)accountMapper).getAccountPool()%>"/> (groups are assigned only if using LDAP persistence factory)
+			</td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				Group:
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="groupName" value="<%=((AccountPoolMapper)accountMapper).getGroupName()%>"/> (the primary Unix group to map to)
 			</td>
 		</tr>
 		<tr>
