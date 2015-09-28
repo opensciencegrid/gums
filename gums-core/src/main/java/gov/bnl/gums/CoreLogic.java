@@ -425,7 +425,9 @@ public class CoreLogic {
                     while (accountMappersIt.hasNext()) {
                     	AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( (String)accountMappersIt.next() );
                         AccountInfo localUser = accountMapper.mapUser(user, true);
-                        if (localUser != null)
+                        // Require that an account mapper at least sets the user name in order to use it.
+                        // Replicates the logic in 1.3.x series.
+                        if ((localUser != null) && (localUser.getUser() != null))
                             return localUser;
                     }
                 } else if (gumsAdminLog.isDebugEnabled()) {
