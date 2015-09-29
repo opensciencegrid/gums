@@ -462,19 +462,19 @@ else if ("edit".equals(request.getParameter("command"))
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
-				Group:
-			</td>
-			<td>
-				<input maxlength="256" size="32" name="groupName" value="<%=((AccountPoolMapper)accountMapper).getGroupName()%>"/> (the primary Unix group to map to)
-			</td>
-		</tr>
-		<tr>
-			<td nowrap style="text-align: right;">
 	    		i.e.
 		    </td>
 		    <td nowrap>
 				myPool.myPrimaryGroup.mySecondaryGroup1.mySecondaryGroup2...
 		    </td>
+		</tr>
+		<tr>
+			<td nowrap style="text-align: right;">
+				Group:
+			</td>
+			<td>
+				<input maxlength="256" size="32" name="groupName" value="<%=((AccountPoolMapper)accountMapper).getGroupName()%>"/> (the primary Unix group to map to)
+			</td>
 		</tr>
 		<tr>
 			<td nowrap style="text-align: right;">
