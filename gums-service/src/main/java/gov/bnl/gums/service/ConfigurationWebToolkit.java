@@ -141,6 +141,8 @@ public class ConfigurationWebToolkit implements Remote {
 				}
 				((AccountPoolMapper)accountMapper).setExpiration(expiry);
 			}
+			if (request.getParameter("groupName")!=null)
+				((AccountPoolMapper)accountMapper).setGroupName( request.getParameter("groupName").trim() );
 		}
 		else if (type.equals(GecosLdapAccountMapper.getTypeStatic())) {
 			accountMapper = new GecosLdapAccountMapper();
