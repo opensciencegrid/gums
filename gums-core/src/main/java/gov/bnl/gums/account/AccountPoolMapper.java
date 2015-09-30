@@ -178,7 +178,7 @@ public class AccountPoolMapper extends AccountMapper {
         		gumsAdminLog.warn(message);
         		GUMS.gumsAdminEmailLog.put("noPoolAccounts", message, false);
         	}
-        	return new AccountInfo(newAccount);
+        	return new AccountInfo(newAccount, groupName);
         }
         else
         	return null;
