@@ -170,7 +170,8 @@ public class AccountPoolMapper extends AccountMapper {
     @Override
     public AccountInfo mapUser(GridUser user, boolean createIfDoesNotExist) {
         String account = getDB().retrieveAccount(user);
-        if (account != null) return new AccountInfo(account, groupName);
+        String group = groupName == null || groupName.equals("") ? null : groupName;
+        if (account != null) return new AccountInfo(account, group);
         if (createIfDoesNotExist) {
         	String newAccount = getDB().assignAccount(user);
         	if (newAccount==null) {
@@ -178,7 +179,7 @@ public class AccountPoolMapper extends AccountMapper {
         		gumsAdminLog.warn(message);
         		GUMS.gumsAdminEmailLog.put("noPoolAccounts", message, false);
         	}
-        	return new AccountInfo(newAccount, groupName);
+        	return new AccountInfo(newAccount, group);
         }
         else
         	return null;
