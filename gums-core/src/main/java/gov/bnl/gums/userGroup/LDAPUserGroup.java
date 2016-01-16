@@ -305,25 +305,27 @@ public class LDAPUserGroup extends UserGroup {
 		 return db;
 	 }
 
-	 private List retrieveGroupMembers(DirContext rootCtx, Attribute members) throws javax.naming.NamingException {
-		 Map people = retrievePeopleMap(rootCtx);
+	 private List<GridUser> retrieveGroupMembers(DirContext rootCtx, Attribute members) throws javax.naming.NamingException {
+		 Map<String, Set<String>> people = retrievePeopleMap(rootCtx);
 		 NamingEnumeration names = members.getAll();
-		 List list = new ArrayList();
+		 List<GridUser> groupMembers = new ArrayList<GridUser>();
 		 while (names.hasMore()) {
 			 // Converting the people to the DN, by looking up the person description attribute
 			 String ldapName = (String) names.next();
 			 ldapName = ldapName.trim();
-			 String certDN = (String) people.get(ldapName);
-			 if (certDN == null) {
-				 gumsAdminLog.warn("Member of a LDAP VO group not mapped to any certificate: '" + ldapName + "'");
+			 Set<String> certDNs = people.get(ldapName);
+			 if (certDNs == null) {
+				 gumsAdminLog.debug("Member of a LDAP VO group not mapped to any certificate: '" + ldapName + "'");
 			 } else {
-				 list.add(new GridUser(certDN, null));
+				 for (String certDN : certDNs) {
+					 groupMembers.add(new GridUser(certDN, null));
+				 }
 			 }
 		 }
-		 if (list.isEmpty()) {
+		 if (groupMembers.isEmpty()) {
 			 gumsAdminLog.warn("The following group returned no members: " + this);
 		 }
-		 return list;
+		 return groupMembers;
 	 }
 
 	 /**
@@ -371,40 +373,41 @@ public class LDAPUserGroup extends UserGroup {
 		 return properties;
 	 }
 
-	 private List retrieveVOMembers(DirContext rootCtx) throws NamingException {
-		 Map people = retrievePeopleMap(rootCtx);
-		 List list = new ArrayList(people.values());
-		 if (list.isEmpty()) {
+	 private List<GridUser> retrieveVOMembers(DirContext rootCtx) throws NamingException {
+		 Map<String, Set<String>> people = retrievePeopleMap(rootCtx);
+		 List<Set<String>> listOfDNs = new ArrayList<Set<String>>(people.values());
+		 List<GridUser> users = new ArrayList<GridUser>(listOfDNs.size());
+		 if (listOfDNs.isEmpty()) {
 			 gumsAdminLog.warn("The following group returned no members: " + this);
 		 }
-		 Iterator iter = list.iterator();
-		 List users = new ArrayList();
-		 while (iter.hasNext()) {
-			 String dn = (String) iter.next();
-			 users.add(new GridUser(dn, null));
-		 }
-		 if (list.isEmpty()) {
-			 gumsAdminLog.warn("The following group returned no members: " + this);
+		 for (Set<String> DNs : listOfDNs) {
+		 	 for (String dn : DNs) {
+				 users.add(new GridUser(dn, null));
+			 }
 		 }
 		 return users;
 	 }    
 
-	 protected Map retrievePeopleMap(DirContext ldap) throws javax.naming.NamingException {
+	 protected Map<String, Set<String>> retrievePeopleMap(DirContext ldap) throws javax.naming.NamingException {
 		 NamingEnumeration people = ldap.search(peopleObject, "("+certDNField+"=*)", null);
-		 Map map = new Hashtable();
+		 Map<String, Set<String>> map = new Hashtable<String, Set<String>>();
 		 while (people.hasMore()) {
 			 SearchResult person = (SearchResult) people.next();
 			 Attributes personAtts = person.getAttributes();
-			 String ldapDN = (String)personAtts.get(uidField).get();//person.getName();
-			 //if (person.isRelative()) {
-			 //ldapDN = ldapDN + "," + peopleObject + "," + ldap.getNameInNamespace();
-			 //}
-			 String certDN = (String) personAtts.get(certDNField).get();
-			 if (certDN.startsWith("subject=")) {
-				 certDN = certDN.substring(8);
+			 if (personAtts == null) {continue;}
+			 String ldapDN = (String)personAtts.get(uidField).get();
+			 Attribute attrDNs = personAtts.get(certDNField);
+			 int valueCount = attrDNs.size();
+			 Set<String> allDNs = new HashSet<String>(valueCount);
+			 for (int idx = 0; idx < valueCount; idx++) {
+				 String certDN = (String) personAtts.get(certDNField).get(idx);
+				 if (certDN.startsWith("subject=")) {
+					 certDN = certDN.substring(8);
+				 }
+				 certDN = certDN.trim();
+				 allDNs.add(certDN);
 			 }
-			 certDN = certDN.trim();
-			 map.put(ldapDN, certDN);
+			 map.put(ldapDN, allDNs);
 		 }
 		 return map;
 	 }
