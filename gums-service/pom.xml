@@ -35,11 +35,83 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <url>
     https://github.com/opensciencegrid/gums</url>
   </scm>
+
+  <!-- Allow us to switch between tomcat compiler versions
+
+       The enforcer plugin will force the user to select a plugin;
+       hence the property below is overwritten.
+    -->
+  <properties>
+    <jspc.compiler.version>jspc-compiler-tomcat5</jspc.compiler.version>
+  </properties>
+  <profiles>
+    <profile>
+      <id>tomcat5</id>
+      <properties>
+        <jspc.compiler.version>jspc-compiler-tomcat5</jspc.compiler.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>tomcat6</id>
+      <properties>
+        <jspc.compiler.version>jspc-compiler-tomcat6</jspc.compiler.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>tomcat7</id>
+      <properties>
+        <jspc.compiler.version>jspc-compiler-tomcat7</jspc.compiler.version>
+      </properties>
+    </profile>
+  </profiles>
+
   <build>
     <finalName>gums</finalName>
     <plugins>
+
+    <!-- Always run mvn dependency:analyze to make sure
+         dependencies are correct
+      -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <ignoreNonCompile>true</ignoreNonCompile>
+                    <ignoredDependencies>
+                        <ignoredDependency>org.apache.axis:axis-jaxrpc</ignoredDependency>
+                    </ignoredDependencies>
+                </configuration>
+            </plugin>
+
+      <!-- One of 'tomcat5', 'tomcat6', or 'tomcat7' must be active -->
       <plugin>
-        <groupId>org.codehaus.mojo.jspc</groupId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.4.1</version>
+        <executions>
+          <execution>
+            <id>select-tomcat-profile</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireActiveProfile>
+                  <message>Must activate at least one tomcat profile (tomcat5, tomcat6, tomcat7).  For example, add "-P tomcat6" to maven command line</message>
+                  <profiles>tomcat5,tomcat6,tomcat7</profiles>
+                  <all>false</all>
+                </requireActiveProfile>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Pre-compile the JSP pages for inclusion in the WAR. -->
+      <plugin>
+        <groupId>org.jasig.mojo.jspc</groupId>
         <artifactId>jspc-maven-plugin</artifactId>
         <executions>
           <execution>
@@ -51,8 +123,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <configuration>
           <inputwebxml>
           ${pom.basedir}/src/main/webapp/WEB-INF/web.xml</inputwebxml>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>1.7</source>
+          <target>1.7</target>
           <sources>
             <directory>${pom.basedir}/src/main/webapp</directory>
             <includes>
@@ -62,9 +134,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>org.codehaus.mojo.jspc</groupId>
-            <artifactId>jspc-compiler-tomcat6</artifactId>
-            <version>2.0-alpha-3</version>
+            <groupId>org.jasig.mojo.jspc</groupId>
+            <artifactId>${jspc.compiler.version}</artifactId>
+            <version>2.0.0</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -88,6 +160,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
           </excludes>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -97,6 +170,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
           </excludes>
         </configuration>
       </plugin>
+
+      <!-- Create and deploy a WAR file. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -132,65 +207,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         </configuration>
         <version>2.4</version>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.cargo</groupId>
-        <artifactId>cargo-maven2-plugin</artifactId>
-        <version>0.3</version>
-        <configuration>
-          <container>
-            <containerId>tomcat5x</containerId>
-            <type>remote</type>
-          </container>
-          <configuration>
-            <type>runtime</type>
-            <properties>
-              <cargo.tomcat.manager.url>
-              http://localhost:8080/manager</cargo.tomcat.manager.url>
-              <cargo.remote.username>
-              manager</cargo.remote.username>
-              <cargo.remote.password>gums</cargo.remote.password>
-            </properties>
-          </configuration>
-          <deployer>
-            <deployables>
-              <deployable>
-                <properties>
-                  <context>gums</context>
-                </properties>
-              </deployable>
-            </deployables>
-          </deployer>
-        </configuration>
-      </plugin>
-      <!--
-           <plugin>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>2.1</version>
-            <configuration>
-                <tagBase>
-                 https://svn.usatlas.bnl.gov/svn/privilege/tags
-                </tagBase>
-            </configuration>
-            </plugin>
--->
     </plugins>
-    <!-- 
-       <resources>
-              <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                  <include>**/*.wsdd</include>
-                  <include>**/log4j.properties</include>
-                </includes>
-              </resource>
-              <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                  <include>**/log4j.properties</include>
-                </includes>
-              </resource>
-            </resources>
-            -->
   </build>
   <dependencies>
     <dependency>
@@ -204,15 +221,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
       <version>1.2.12</version>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>1.5.5</version>
-    </dependency>
-    <dependency>
       <groupId>org.opensciencegrid</groupId>
       <artifactId>privilege</artifactId>
       <version>1.0.1.3</version>
     </dependency>
+
     <dependency>
       <groupId>org.opensciencegrid</groupId>
       <artifactId>privilege-xacml</artifactId>
@@ -227,16 +240,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
       <groupId>org.opensaml</groupId>
       <artifactId>xmltooling</artifactId>
       <version>1.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>activation</artifactId>
-      <version>1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.4.1</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -255,14 +258,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
       <version>3.0.0</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.4</version>
-    </dependency>
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
       <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
     </dependency>
   </dependencies>
 </project>

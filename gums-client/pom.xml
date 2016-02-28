@@ -55,8 +55,22 @@
 		          </execution>
 		        </executions>
 			</plugin>
-			
-			
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <ignoreNonCompile>true</ignoreNonCompile>
+                    <ignoredUnusedDeclaredDependencies>
+                        <ignoredUnusedDeclaredDependency>org.apache.xerces:xercesImpl:jar:2.10.0</ignoredUnusedDeclaredDependency>
+                    </ignoredUnusedDeclaredDependencies>
+                    <ignoredUsedUndeclaredDependencies>
+                        <ignoredUsedUndeclaredDependency>org.apache.axis:axis-jaxrpc:jar:1.4</ignoredUsedUndeclaredDependency>
+                    </ignoredUsedUndeclaredDependencies>
+                </configuration>
+            </plugin>
+
 			<plugin>
                 <groupId>org.apache.axis2</groupId>
                 <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
@@ -137,33 +151,7 @@
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
-					<!-- 
-					<execution>
-						<id>1</id>
-						<phase>generate-sources</phase>
-						<configuration>
-							<tasks>
-								<mkdir dir="target/temp" />
-								<copy filtering="on" todir="target/temp">
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-ant/1.4" />
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis/1.4" />
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-saaj/1.4" />
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-jaxrpc/1.4" />
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/axis/axis-wsdl4j/1.5.1" />
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-discovery/commons-discovery/0.2" />
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/commons-logging/commons-logging/1.0.4" />
-									<fileset includes="*.jar" dir="${user.home}/.m2/repository/log4j/log4j/1.2.12" />
-								</copy>
-								<ant antfile="wsdl2java.xml" target="createClientStub" inheritRefs="true" />
-								<delete dir="target/temp" />
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					-->
-					
+
 					<execution>
 						<id>1</id>
 						<phase>package</phase>
@@ -205,9 +193,6 @@
 			</plugin>
 			
 			
-			
-			
-			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -243,101 +228,7 @@
 					</execution>
 				</executions>
 			</plugin>
-<!-- maven-release-plugin requires maven 2.0.9+
-			 <plugin>
-            <artifactId>maven-release-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <tagBase>
-                    https://svn.usatlas.bnl.gov/svn/privilege/tags
-                    </tagBase>
-                    <!- 
-                    <checkModificationExcludes>
-                        <checkModificationExclude>${basedir}/src/main/java/org/apache/xml/xml_soap/MapItem.java</checkModificationExclude>
-                        <checkModificationExclude>${basedir}/src/main/java/gov/bnl/gums/admin/AdminSoapBindingStub.java</checkModificationExclude>
-                        <checkModificationExclude>${basedir}/src/main/java/gov/bnl/gums/admin/GUMSAPIService.java</checkModificationExclude>
-                        <checkModificationExclude>${basedir}/src/main/java/gov/bnl/gums/admin/GUMSAPIServiceLocator.java</checkModificationExclude>
-                    </checkModificationExcludes>
-                    ->
-                </configuration>
-            </plugin>
--->
-			
-        <!--
-commented out by drs - the rpm program is not available on all platforms and this might
-hide other problems. To build an rpm, type mvn rpm:rpm 
 
-However, it can only be run from the normal lifecycle, no via rpm:rpm, so it must stay. 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>rpm-maven-plugin</artifactId>
-
-
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>rpm</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
-                <configuration>
-                    <release>1</release>
-                    <copyright>GPL</copyright>
-                    <distribution>myapp</distribution>
-                    <group>Grid/Security</group>
-                    <packager>John R. Hover</packager>
-                    <prefix>/usr</prefix>
-
-                    <mappings>
-                        <mapping>
-                            <directory>/usr/bin</directory>
-                            <filemode>775</filemode>
-                            <username>root</username>
-                            <groupname>root</groupname>
-                            <sources>
-                                <source>
-                                    <location>src/main/scripts</location>
-                                </source>
-                            </sources>
-                        </mapping>
-             
-                        <mapping>
-                            <directory>/etc/gums</directory>
-                            <configuration>true</configuration>
-                            <filemode>655</filemode>
-                            <username>root</username>
-                            <groupname>root</groupname>
-                            <sources>
-                                <source>
-                                    <location>src/main/config</location>
-                                </source>
-                            </sources>
-                        </mapping>
-
-                        <mapping>
-                            <directory>/usr/lib/gums</directory>
-                            <filemode>755</filemode>
-                            <username>root</username>
-                            <groupname>root</groupname>
-                            <artifact />
-                            <sources>
-                                <source>
-                                    <location>target/lib</location>
-                                </source>
-                            </sources>
-                        </mapping>             
-              
-                        <mapping>
-                            <directory>/log</directory>
-                            <filemode>750</filemode>
-                            <username>root</username>
-                            <groupname>root</groupname>
-                        </mapping>
-                    </mappings>                    
-                </configuration>
-            </plugin>
-        -->
         </plugins>
     </build>
 	 
@@ -358,7 +249,34 @@ However, it can only be run from the normal lifecycle, no via rpm:rpm, so it mus
             <artifactId>opensaml</artifactId>
             <version>1.0.1</version>
         </dependency>
-		
+
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>emi</groupId>
+            <artifactId>emi-trustmanager</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+            <version>1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.santuario</groupId>
+            <artifactId>xmlsec</artifactId>
+            <version>1.4.4</version>
+        </dependency>
+
 		<dependency>
             <groupId>org.opensaml</groupId>
             <artifactId>opensaml</artifactId>
@@ -384,21 +302,6 @@ However, it can only be run from the normal lifecycle, no via rpm:rpm, so it mus
 			<artifactId>xercesImpl</artifactId>
 			<version>2.10.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.5.5</version>
-		</dependency>
-		<dependency>
-		     <groupId>javax.activation</groupId>
-		     <artifactId>activation</artifactId>
-		      <version>1.1</version>
-	    </dependency>	
-    	<dependency>
-		    <groupId>javax.mail</groupId>
-		    <artifactId>mail</artifactId>
-		   <version>1.4.1</version>
-	    </dependency>	
 
  	</dependencies>  
 </project>
