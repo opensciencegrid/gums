@@ -88,14 +88,17 @@ fi
 # Construct MySQL parameters
 #
 #-------------------------------------------
+SERVER_WO_PORT=`echo $SERVER | awk -F: '{ print $1 }'`
+SERVER_PORT=`echo $SERVER | awk -F: '{ print $2 }'`
+
 if [ "$PROMPT" -eq 1 ]
 then
-	MYSQLPARAM="-u root -p"
+	MYSQLPARAM="-u root -p -h $SERVER_WO_PORT -P $SERVER_PORT"
 else
 	# When the root doesn't have a password
 	# (like in the VDT setup), -u root doesn't
 	# cause a prompt.
-	MYSQLPARAM="-u root"
+	MYSQLPARAM="-u root -h $SERVER_WO_PORT -P $SERVER_PORT"
 fi
 
 if [ -n "$SOCKET" ]
@@ -135,7 +138,6 @@ then
 	echo Enter the root mysql password
 fi
 
-SERVER_WO_PORT=`echo $SERVER | awk -F: '{ print $1 }'`
 cat /usr/lib/gums/sql/setupDatabase.mysql       \
   | sed -e s/@USER@/$USER/g         \
              -e s/@SERVER@/$SERVER_WO_PORT/g     \
