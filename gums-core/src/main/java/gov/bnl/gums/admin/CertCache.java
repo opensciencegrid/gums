@@ -17,10 +17,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.glite.security.util.CertUtil;
-import org.glite.voms.VOMSValidator;
-import org.glite.voms.VOMSAttribute;
-import org.glite.voms.FQAN;
+import eu.emi.security.authn.x509.proxy.ProxyUtils;
+import org.italiangrid.voms.VOMSAttribute;
+import org.italiangrid.voms.VOMSValidators;
+import org.italiangrid.voms.ac.VOMSACValidator;
+import org.italiangrid.voms.ac.impl.DefaultVOMSValidator;
+import org.italiangrid.voms.util.CertificateValidatorBuilder;
 
 import org.apache.log4j.Logger;
 
@@ -36,8 +38,8 @@ public class CertCache implements Filter {
 	// the reset method.
 	static private ThreadLocal certificate = new ThreadLocal();
 	static private ThreadLocal certificateChain = new ThreadLocal();
-	static private ThreadLocal dn = new ThreadLocal();
-	static private ThreadLocal fqan = new ThreadLocal();
+	static private ThreadLocal<String> dn = new ThreadLocal();
+	static private ThreadLocal<String> fqan = new ThreadLocal();
 
 	/**
 	 * Get the directory path for the configuration files
@@ -93,7 +95,7 @@ public class CertCache implements Filter {
 	 * Return the FQAN associated with the current client
 	 */
 	static public String getUserFQAN() {
-		return (String) fqan.get();
+		return fqan.get();
 	}
 
 	/**
@@ -102,23 +104,20 @@ public class CertCache implements Filter {
 	 */
 	static public void setUserCertificateChain(X509Certificate[] chain) {
 		certificateChain.set(chain);
-		int i = CertUtil.findClientCert(chain);
-		X509Certificate cert = null;
-		if (i < 0) {
+		X509Certificate cert = ProxyUtils.getEndUserCertificate(chain);
+		if (cert == null) {
 			log.warn("No client certificate found in the supplied certificate chain");
 		} else {
-			cert = chain[i];
 			certificate.set(cert);
 		}
-		Vector voms_list = VOMSValidator.parse(chain);
-		if ((voms_list != null) && (voms_list.size() > 0)) {
-			VOMSAttribute attribute = (VOMSAttribute)voms_list.get(0);
-			if (attribute != null) {
-				List fqans = attribute.getListOfFQAN();
-				if ((fqans != null) && (fqans.size() > 0)) {
-					fqan.set(((FQAN)(fqans.get(0))).getFQAN());
-				}
+		VOMSACValidator validator = VOMSValidators.newValidator();
+		List<VOMSAttribute> attrs = validator.validate(chain);
+		for (VOMSAttribute attr : attrs) {
+			for (String fqan_str : attr.getFQANs()) {
+				fqan.set(fqan_str);
+				break;
 			}
+			break;
 		}
 		if (cert != null) {
 			dn.set(CertToolkit.getUserDN(getUserCertificate()));

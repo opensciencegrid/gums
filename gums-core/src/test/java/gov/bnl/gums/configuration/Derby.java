@@ -6,7 +6,7 @@
 package gov.bnl.gums.configuration;
 
 import java.sql.*;
-import org.apache.log4j.*;
+import org.apache.log4j.Logger;
 
 public class Derby {
 

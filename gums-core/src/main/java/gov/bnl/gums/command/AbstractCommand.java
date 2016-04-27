@@ -30,14 +30,6 @@ import org.glite.security.util.DirectoryList;
 public abstract class AbstractCommand {
 	static protected AbstractCommand command;
 
-	/*static {
-		String vomsdir;
-		Logger.getLogger(org.glite.security.trustmanager.CRLFileTrustManager.class.getName()).setLevel(Level.ERROR);
-		Logger.getLogger("org.glite.security.trustmanager.axis.AXISSocketFactory").setLevel(Level.OFF);
-		Logger.getLogger("org.glite.security.util.DirectoryList").setLevel(Level.OFF);
-		VOMSValidator.setTrustStore(new BasicVOMSTrustStore(System.getProperty("sslCAFiles"), 12*3600*1000));
-	}*/
-	
     static public void main(String[] args) {
         command.execute(args);
     }

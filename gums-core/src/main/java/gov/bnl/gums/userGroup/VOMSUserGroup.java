@@ -39,13 +39,6 @@ public class VOMSUserGroup extends UserGroup {
 	static private final String defaultMatchFQAN = "ignore";
 	static private String[] matchFQANTypes = {"exact","vorole","role","vogroup","vo","ignore"};
 	
-	/*static {
-       Logger.getLogger(org.glite.security.trustmanager.CRLFileTrustManager.class.getName()).setLevel(Level.ERROR);
-       Logger.getLogger("org.glite.security.trustmanager.axis.AXISSocketFactory").setLevel(Level.OFF);
-       Logger.getLogger("org.glite.security.util.DirectoryList").setLevel(Level.OFF);
-       VOMSValidator.setTrustStore(new BasicVOMSTrustStore("/etc/grid-security/certificates", 12*3600*1000));
-	}*/
-	
     static public String getTypeStatic() {
 		return "voms";
 	}
