@@ -34,12 +34,16 @@ import org.apache.log4j.Logger;
 public class CertCache implements Filter {
 	static private Logger log = Logger.getLogger(CertCache.class);
 	static private ServletContext context;
+
+        static private ThreadLocal<VOMSACValidator> validator = new ThreadLocal();
+
 	// If you add a new variable here, make sure to add it to
 	// the reset method.
 	static private ThreadLocal certificate = new ThreadLocal();
 	static private ThreadLocal certificateChain = new ThreadLocal();
 	static private ThreadLocal<String> dn = new ThreadLocal();
 	static private ThreadLocal<String> fqan = new ThreadLocal();
+
 
 	/**
 	 * Get the directory path for the configuration files
@@ -110,8 +114,12 @@ public class CertCache implements Filter {
 		} else {
 			certificate.set(cert);
 		}
-		VOMSACValidator validator = VOMSValidators.newValidator();
-		List<VOMSAttribute> attrs = validator.validate(chain);
+                VOMSACValidator local_validator = validator.get();
+                if (local_validator == null) {
+                      local_validator = VOMSValidators.newValidator();
+                      validator.set(local_validator);
+                }
+		List<VOMSAttribute> attrs = local_validator.validate(chain);
 		for (VOMSAttribute attr : attrs) {
 			for (String fqan_str : attr.getFQANs()) {
 				fqan.set(fqan_str);
