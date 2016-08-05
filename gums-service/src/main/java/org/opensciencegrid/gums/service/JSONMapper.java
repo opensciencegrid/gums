@@ -62,6 +62,10 @@ public class JSONMapper extends HttpServlet {
         {
             errorResponse(response, response.SC_NOT_FOUND, "REST API not specified; known JSON APIs are /gums/json/mapGridIdentity, /gums/json/manualMapper, /gums/json/userGroup, /gums/json/poolMapper, and /gums/json/version");
         }
+        else if (path_info.equals("/generateOsgUserVoMap"))
+        {
+            doGenerateOsgUserVoMap(request, response);
+        }
         else if (path_info.equals("/mapGridIdentity"))
         {
             doMap(request, response);
@@ -104,6 +108,39 @@ public class JSONMapper extends HttpServlet {
         gen.close();
     }
 
+
+    private void doGenerateOsgUserVoMap(HttpServletRequest request,
+                          HttpServletResponse response)
+        throws ServletException, IOException
+    {
+        String hostname = request.getParameter("hostname");
+        if (hostname == null)
+        {
+            errorResponse(response, response.SC_BAD_REQUEST, "Missing required input parameter 'hostname'");
+            return;
+        }
+
+        String map = null;
+        try
+        {
+            map = gums.generateOsgUserVoMap(hostname);
+        }
+        catch (Exception e)
+        {
+            errorResponse(response, response.SC_INTERNAL_SERVER_ERROR, "Error generating osg user VO map: " + e.getMessage());
+        }
+
+        Writer out = response.getWriter();
+        JsonGenerator gen = Json.createGenerator(out);
+        gen.writeStartObject()
+            .write("result", (map != null) ? "OK" : "FAILED");
+        if (map != null)
+        {
+            gen.write("map", map);
+        }
+        gen.writeEnd();
+        gen.close();
+    }
 
     private void doUserGroup(HttpServletRequest request,
                           HttpServletResponse response)
