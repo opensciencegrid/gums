@@ -231,6 +231,27 @@ public class GUMSAPIImpl implements GUMSAPI {
 		}
 	}
 
+	public Map getOsgUserVoMap(String hostname) {
+		try {
+			if (hasReadAllAccess(currentUser(), hostname)) {
+				Map map = gums().getCoreLogic().getOsgUserVoMap(hostname);
+				if (gumsAdminLog.isDebugEnabled())
+					gumsAdminLog.debug(logUserAccess() + "Generated osg vo-user map object for host '" + hostname + "': " + map);
+				else
+					gumsAdminLog.info(logUserAccess() + "Generated osg vo-user map object for host '" + hostname + "'");
+				return map;
+			} else {
+				String message = logUserAccess() + "Unauthorized access to getOsgUserVoMap for host '"+hostname+"'";
+				gumsAdminLog.warn(message);
+				siteAdminLog.warn(message);
+				throw new AuthorizationDeniedException();
+			}
+		} catch (Exception e) {
+			log.error("Unhandled exception.", e);
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
 	public String generateOsgUserVoMap(String hostname) {
 		try {
 			if (hasReadAllAccess(currentUser(), hostname)) {
