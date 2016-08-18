@@ -44,13 +44,13 @@ public class CoreLogic {
      * @param hostname
      * @return
      */
-    public Map getOsgUserVoMap(String hostname) throws Exception {
+    public Map getOsgVoUserMap(String hostname) throws Exception {
         Configuration conf = gums.getConfiguration();
         Map<String, Set<String> > osgMap = new TreeMap<String, Set<String> >();
         HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
 
         if (host2GroupMapper == null) {
-            String message = "Cannot generate osg user VO map for host '" + hostname + "' - it is not defined in any host to group mapping.";
+            String message = "Cannot generate osg VO user map for host '" + hostname + "' - it is not defined in any host to group mapping.";
             gumsAdminLog.warn(message);
             throw new RuntimeException(message);
         }

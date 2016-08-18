@@ -63,7 +63,7 @@ public class JSONMapper extends HttpServlet {
         {
             errorResponse(response, response.SC_NOT_FOUND, "REST API not specified; known JSON APIs are /gums/json/mapGridIdentity, /gums/json/manualMapper, /gums/json/userGroup, /gums/json/poolMapper, and /gums/json/version");
         }
-        else if (path_info.equals("/getOsgUserVoMap"))
+        else if (path_info.equals("/getOsgVoUserMap"))
         {
             doGetOsgUserVoMap(request, response);
         }
@@ -128,11 +128,11 @@ public class JSONMapper extends HttpServlet {
         Map<String, Set<String> > map = null;
         try
         {
-            map = gums.getOsgUserVoMap(hostname);
+            map = gums.getOsgVoUserMap(hostname);
         }
         catch (Exception e)
         {
-            errorResponse(response, response.SC_INTERNAL_SERVER_ERROR, "Error getting osg user VO map: " + e.getMessage());
+            errorResponse(response, response.SC_INTERNAL_SERVER_ERROR, "Error getting osg VO user map: " + e.getMessage());
         }
 
         Writer out = response.getWriter();
