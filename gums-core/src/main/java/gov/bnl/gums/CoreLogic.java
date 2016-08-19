@@ -67,10 +67,8 @@ public class CoreLogic {
             List<String> userGroups = gMap.getUserGroups();
             List<String> accountMappers = gMap.getAccountMappers();
             Set<String> userNames = osgMap.get(voSubgroup);
-            if (userNames == null) {
+            if (userNames == null)
                 userNames = new TreeSet<String>();
-                osgMap.put(voSubgroup, userNames);
-            }
             for (String groupName : userGroups) {
                 UserGroup userGroup = (UserGroup) conf.getUserGroup( groupName );
                 List<GridUser> members = userGroup.getMemberList();
@@ -86,6 +84,8 @@ public class CoreLogic {
                     }
                 }
             }
+            if (!userNames.isEmpty())
+                osgMap.put(voSubgroup, userNames);
         }
 
         return osgMap;
