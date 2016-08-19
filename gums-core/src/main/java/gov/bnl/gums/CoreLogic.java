@@ -44,6 +44,57 @@ public class CoreLogic {
      * @param hostname
      * @return
      */
+    public Map getOsgVoUserMap(String hostname) throws Exception {
+        Configuration conf = gums.getConfiguration();
+        Map<String, Set<String> > osgMap = new TreeMap<String, Set<String> >();
+        HostToGroupMapping host2GroupMapper = hostToGroupMapping(conf, hostname);
+
+        if (host2GroupMapper == null) {
+            String message = "Cannot generate osg VO user map for host '" + hostname + "' - it is not defined in any host to group mapping.";
+            gumsAdminLog.warn(message);
+            throw new RuntimeException(message);
+        }
+
+        List<String> groupToAccountMappings = host2GroupMapper.getGroupToAccountMappings();
+
+        // Loop through group to account mappings
+        for (String mappingName : groupToAccountMappings) {
+            GroupToAccountMapping gMap = (GroupToAccountMapping) conf.getGroupToAccountMapping( mappingName );
+            String voName = gMap.getAccountingVo();
+            String voSubgroup = gMap.getAccountingVoSubgroup();
+            if (voSubgroup.equals("") || voName.equals(""))
+                continue;
+            List<String> userGroups = gMap.getUserGroups();
+            List<String> accountMappers = gMap.getAccountMappers();
+            Set<String> userNames = osgMap.get(voSubgroup);
+            if (userNames == null)
+                userNames = new TreeSet<String>();
+            for (String groupName : userGroups) {
+                UserGroup userGroup = (UserGroup) conf.getUserGroup( groupName );
+                List<GridUser> members = userGroup.getMemberList();
+                members = new ArrayList<GridUser>(members);
+                for (GridUser user : members) {
+                    if (gums.isUserBanned(user))
+                        continue;
+                    for (String mapperName : accountMappers) {
+                        AccountMapper accountMapper = (AccountMapper) conf.getAccountMapper( mapperName );
+                        AccountInfo account = accountMapper.mapUser(user, false);
+                        if (account != null && account.getUser() != null)
+                            userNames.add(account.getUser());
+                    }
+                }
+            }
+            if (!userNames.isEmpty())
+                osgMap.put(voSubgroup, userNames);
+        }
+
+        return osgMap;
+    }
+
+    /**
+     * @param hostname
+     * @return
+     */
     public String generateOsgUserVoMap(String hostname) throws Exception {
         Configuration conf = gums.getConfiguration();
         StringBuffer osgMapBuffer = new StringBuffer("");

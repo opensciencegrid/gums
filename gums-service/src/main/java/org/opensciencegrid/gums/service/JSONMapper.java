@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -62,6 +63,14 @@ public class JSONMapper extends HttpServlet {
         {
             errorResponse(response, response.SC_NOT_FOUND, "REST API not specified; known JSON APIs are /gums/json/mapGridIdentity, /gums/json/manualMapper, /gums/json/userGroup, /gums/json/poolMapper, and /gums/json/version");
         }
+        else if (path_info.equals("/getOsgVoUserMap"))
+        {
+            doGetOsgUserVoMap(request, response);
+        }
+        else if (path_info.equals("/generateOsgUserVoMap"))
+        {
+            doGenerateOsgUserVoMap(request, response);
+        }
         else if (path_info.equals("/mapGridIdentity"))
         {
             doMap(request, response);
@@ -104,6 +113,86 @@ public class JSONMapper extends HttpServlet {
         gen.close();
     }
 
+
+    private void doGetOsgUserVoMap(HttpServletRequest request,
+                          HttpServletResponse response)
+        throws ServletException, IOException
+    {
+        String hostname = request.getParameter("hostname");
+        if (hostname == null)
+        {
+            errorResponse(response, response.SC_BAD_REQUEST, "Missing required input parameter 'hostname'");
+            return;
+        }
+
+        Map<String, Set<String> > map = null;
+        try
+        {
+            map = gums.getOsgVoUserMap(hostname);
+        }
+        catch (Exception e)
+        {
+            errorResponse(response, response.SC_INTERNAL_SERVER_ERROR, "Error getting osg VO user map: " + e.getMessage());
+        }
+
+        Writer out = response.getWriter();
+        // see: http://docs.oracle.com/javaee/7/api/javax/json/stream/JsonGenerator.html
+        JsonGenerator gen = Json.createGenerator(out);
+        gen.writeStartObject()
+            .write("result", (map != null) ? "OK" : "FAILED");
+        if (map != null)
+        {
+            gen.writeStartObject("map");
+
+            for (Map.Entry<String, Set<String> > entry : map.entrySet())
+            {
+                String vo = entry.getKey();
+                gen.writeStartArray(vo);
+                Set<String> users = entry.getValue();
+                for (String user : users) {
+                    gen.write(user);
+                }
+                gen.writeEnd();
+            }
+
+            gen.writeEnd();
+        }
+        gen.writeEnd();
+        gen.close();
+    }
+
+    private void doGenerateOsgUserVoMap(HttpServletRequest request,
+                          HttpServletResponse response)
+        throws ServletException, IOException
+    {
+        String hostname = request.getParameter("hostname");
+        if (hostname == null)
+        {
+            errorResponse(response, response.SC_BAD_REQUEST, "Missing required input parameter 'hostname'");
+            return;
+        }
+
+        String map = null;
+        try
+        {
+            map = gums.generateOsgUserVoMap(hostname);
+        }
+        catch (Exception e)
+        {
+            errorResponse(response, response.SC_INTERNAL_SERVER_ERROR, "Error generating osg user VO map: " + e.getMessage());
+        }
+
+        Writer out = response.getWriter();
+        JsonGenerator gen = Json.createGenerator(out);
+        gen.writeStartObject()
+            .write("result", (map != null) ? "OK" : "FAILED");
+        if (map != null)
+        {
+            gen.write("map", map);
+        }
+        gen.writeEnd();
+        gen.close();
+    }
 
     private void doUserGroup(HttpServletRequest request,
                           HttpServletResponse response)
