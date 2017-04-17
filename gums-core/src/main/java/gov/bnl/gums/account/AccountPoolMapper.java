@@ -169,6 +169,9 @@ public class AccountPoolMapper extends AccountMapper {
 
     @Override
     public AccountInfo mapUser(GridUser user, boolean createIfDoesNotExist) {
+        if (groupName != null && !groupName.equals("")) {
+            return new AccountInfo(getDB().retrieveMapping(user.getCertificateDN()), groupName);
+        }
         String account = getDB().retrieveAccount(user);
         String group = groupName == null || groupName.equals("") ? null : groupName;
         if (account != null) return new AccountInfo(account, group);

@@ -101,6 +101,10 @@ public class LocalPersistenceFactory extends PersistenceFactory {
 			return account;
 		}
 
+		public String retrieveMapping(String userDN) {
+			return db.retrieveMapping(userDN);
+		}
+
 		public java.util.Map retrieveAccountMap() {
 			return db.retrieveAccountMap();
 		}
