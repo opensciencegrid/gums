@@ -138,7 +138,7 @@ else {
                 i.e.
             </td>
             <td nowrap>
-                http://software.grid.iu.edu/pacman/tarballs/vo-version/gums.template
+                http://repo.grid.iu.edu/pacman/tarballs/vo-version/gums.template
             </td>
         </tr>
 
