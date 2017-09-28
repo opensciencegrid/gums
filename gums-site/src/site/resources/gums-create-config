@@ -96,9 +96,7 @@ done
 
 if [ "$OSGTEMPLATE" -eq 1 ]
 then
-	echo Downloading OSG GUMS template...
-	wget --no-verbose --output-document=/tmp/gums.template http://software.grid.iu.edu/pacman/tarballs/vo-version/gums.template
-	TEMPLATE="/tmp/gums.template"
+	TEMPLATE=/etc/gums/gums.config.template
 fi
 
 parseConfig() {
